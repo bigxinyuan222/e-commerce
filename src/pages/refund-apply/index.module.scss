@@ -1,0 +1,296 @@
+@use '@/styles/variables.scss' as *;
+
+.refundPage {
+  min-height: 100vh;
+  background-color: $color-bg-page;
+  padding-bottom: 120rpx;
+}
+
+.loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  color: $color-text-secondary;
+}
+
+.sectionTitle {
+  padding: 24rpx $page-padding;
+  background-color: $color-bg-card;
+  border-bottom: 1rpx solid $color-border;
+  
+  .titleText {
+    font-size: $font-size-md;
+    font-weight: $font-weight-semibold;
+    color: $color-text-primary;
+  }
+}
+
+.orderSection {
+  margin-bottom: 24rpx;
+}
+
+.orderCard {
+  background-color: $color-bg-card;
+  padding: 24rpx $page-padding;
+  
+  .orderHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20rpx;
+    
+    .orderNo {
+      font-size: $font-size-sm;
+      color: $color-text-secondary;
+    }
+    
+    .orderStatus {
+      font-size: $font-size-sm;
+      color: $color-success;
+    }
+  }
+  
+  .orderItems {
+    margin-bottom: 20rpx;
+  }
+  
+  .orderItem {
+    display: flex;
+    padding: 16rpx 0;
+    
+    .itemImage {
+      width: 160rpx;
+      height: 160rpx;
+      border-radius: $radius-sm;
+      margin-right: 20rpx;
+      flex-shrink: 0;
+    }
+    
+    .itemInfo {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      
+      .itemName {
+        font-size: $font-size-sm;
+        color: $color-text-primary;
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 2;
+        overflow: hidden;
+      }
+      
+      .itemSpecs {
+        font-size: $font-size-xs;
+        color: $color-text-secondary;
+      }
+      
+      .itemBottom {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        
+        .itemPrice {
+          font-size: $font-size-sm;
+          color: $color-primary;
+          font-weight: $font-weight-medium;
+        }
+        
+        .itemQuantity {
+          font-size: $font-size-xs;
+          color: $color-text-secondary;
+        }
+      }
+    }
+  }
+  
+  .orderTotal {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 20rpx;
+    border-top: 1rpx dashed $color-border;
+    
+    .totalLabel {
+      font-size: $font-size-sm;
+      color: $color-text-secondary;
+    }
+    
+    .totalAmount {
+      font-size: $font-size-lg;
+      color: $color-primary;
+      font-weight: $font-weight-semibold;
+    }
+  }
+}
+
+.refundSection {
+  background-color: $color-bg-card;
+  margin-bottom: 24rpx;
+}
+
+.formItem {
+  padding: 24rpx $page-padding;
+  border-bottom: 1rpx solid $color-border;
+  
+  &:last-child {
+    border-bottom: none;
+  }
+  
+  .formLabel {
+    font-size: $font-size-sm;
+    color: $color-text-primary;
+    margin-bottom: 16rpx;
+    display: block;
+  }
+}
+
+.amountInputWrap {
+  display: flex;
+  align-items: center;
+  background-color: $color-bg-page;
+  border-radius: $radius-md;
+  padding: 20rpx;
+  
+  .amountPrefix {
+    font-size: $font-size-xl;
+    color: $color-primary;
+    font-weight: $font-weight-semibold;
+    margin-right: 8rpx;
+  }
+  
+  .amountInput {
+    flex: 1;
+    font-size: $font-size-xl;
+    color: $color-text-primary;
+    font-weight: $font-weight-semibold;
+    background: transparent;
+    border: none;
+    outline: none;
+  }
+}
+
+.reasonList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16rpx;
+}
+
+.reasonItem {
+  display: flex;
+  align-items: center;
+  padding: 16rpx 24rpx;
+  background-color: $color-bg-page;
+  border-radius: $radius-md;
+  border: 2rpx solid transparent;
+  transition: all 0.2s ease;
+  
+  &.selected {
+    background-color: rgba(226, 35, 26, 0.08);
+    border-color: $color-primary;
+  }
+  
+  .reasonRadio {
+    width: 32rpx;
+    height: 32rpx;
+    border: 2rpx solid $color-border;
+    border-radius: 50%;
+    margin-right: 12rpx;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    
+    .radioInner {
+      width: 16rpx;
+      height: 16rpx;
+      background-color: $color-primary;
+      border-radius: 50%;
+    }
+  }
+  
+  &.selected .reasonRadio {
+    border-color: $color-primary;
+  }
+  
+  .reasonLabel {
+    font-size: $font-size-sm;
+    color: $color-text-primary;
+  }
+}
+
+.remarkInput {
+  width: 100%;
+  height: 160rpx;
+  background-color: $color-bg-page;
+  border-radius: $radius-md;
+  padding: 20rpx;
+  font-size: $font-size-sm;
+  color: $color-text-primary;
+  border: none;
+  outline: none;
+  resize: none;
+  box-sizing: border-box;
+}
+
+.tipsSection {
+  background-color: rgba(255, 235, 59, 0.1);
+  margin: 0 $page-padding;
+  padding: 24rpx;
+  border-radius: $radius-md;
+  
+  .tipsTitle {
+    font-size: $font-size-sm;
+    color: $color-warning;
+    font-weight: $font-weight-medium;
+    margin-bottom: 16rpx;
+    display: block;
+  }
+  
+  .tipsContent {
+    font-size: $font-size-xs;
+    color: $color-text-secondary;
+    line-height: 1.8;
+    display: block;
+  }
+}
+
+.bottomSpace {
+  height: 40rpx;
+}
+
+.bottomBar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: $color-bg-card;
+  padding: 20rpx $page-padding;
+  padding-bottom: calc(20rpx + env(safe-area-inset-bottom));
+  box-shadow: 0 -4rpx 16rpx rgba(0, 0, 0, 0.05);
+}
+
+.submitBtn {
+  background: linear-gradient(135deg, $color-primary 0%, $color-primary-dark 100%);
+  color: #fff;
+  border-radius: $radius-lg;
+  padding: 28rpx;
+  text-align: center;
+  transition: all 0.2s ease;
+  
+  &:active {
+    opacity: 0.8;
+    transform: scale(0.98);
+  }
+  
+  &[disabled] {
+    opacity: 0.6;
+  }
+  
+  .submitText {
+    font-size: $font-size-md;
+    font-weight: $font-weight-semibold;
+    color: #fff;
+  }
+}

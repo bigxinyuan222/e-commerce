@@ -1,0 +1,829 @@
+@use '@/styles/variables.scss' as *;
+
+.productDetailPage {
+  min-height: 100vh;
+  background-color: $color-bg-page;
+  padding-bottom: 120rpx;
+}
+
+// 商品轮播图
+.productBanner {
+  position: relative;
+  
+  swiper {
+    height: 750rpx;
+    
+    image {
+      width: 100%;
+      height: 100%;
+    }
+  }
+  
+  .bannerIndicator {
+    position: absolute;
+    bottom: 32rpx;
+    right: 32rpx;
+    background-color: rgba(0, 0, 0, 0.6);
+    color: white;
+    font-size: $font-size-xs;
+    padding: 8rpx 20rpx;
+    border-radius: $radius-button;
+  }
+}
+
+// 价格信息
+.priceSection {
+  background-color: $color-bg-card;
+  padding: 24rpx $page-padding;
+  
+  .priceRow {
+    display: flex;
+    align-items: baseline;
+    margin-bottom: 12rpx;
+    
+    .currentPrice {
+      font-size: 56rpx;
+      font-weight: $font-weight-bold;
+      color: $color-primary;
+      
+      &::before {
+        content: '¥';
+        font-size: $font-size-xl;
+      }
+    }
+    
+    .originalPrice {
+      font-size: $font-size-sm;
+      color: $color-text-tertiary;
+      text-decoration: line-through;
+      margin-left: 16rpx;
+      
+      &::before {
+        content: '¥';
+      }
+    }
+    
+    .discount {
+      font-size: $font-size-xs;
+      color: white;
+      background-color: $color-primary;
+      padding: 4rpx 12rpx;
+      border-radius: 4rpx;
+      margin-left: 12rpx;
+    }
+  }
+  
+  .activityTags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12rpx;
+    
+    .tag {
+      font-size: $font-size-xs;
+      color: $color-primary;
+      background-color: rgba(226, 35, 26, 0.1);
+      padding: 6rpx 16rpx;
+      border-radius: 4rpx;
+    }
+  }
+}
+
+// 商品名称和基础信息
+.infoSection {
+  background-color: $color-bg-card;
+  margin-top: 16rpx;
+  padding: 24rpx $page-padding;
+  
+  .productName {
+    font-size: $font-size-lg;
+    font-weight: $font-weight-semibold;
+    color: $color-text-primary;
+    line-height: 1.5;
+    margin-bottom: 16rpx;
+  }
+  
+  .productTags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8rpx;
+    margin-bottom: 20rpx;
+    
+    .tag {
+      font-size: $font-size-xs;
+      color: $color-primary;
+      background-color: rgba(226, 35, 26, 0.1);
+      padding: 4rpx 12rpx;
+      border-radius: 4rpx;
+    }
+  }
+  
+  .baseInfo {
+    display: flex;
+    justify-content: space-between;
+    padding-top: 20rpx;
+    border-top: 1px solid $color-divider;
+    
+    .infoItem {
+      text-align: center;
+      
+      .infoValue {
+        font-size: $font-size-md;
+        font-weight: $font-weight-semibold;
+        color: $color-text-primary;
+        margin-bottom: 4rpx;
+      }
+      
+      .infoLabel {
+        font-size: $font-size-xs;
+        color: $color-text-tertiary;
+      }
+    }
+  }
+}
+
+// 促销信息
+.promotionSection {
+  background-color: $color-bg-card;
+  margin-top: 16rpx;
+  padding: 24rpx $page-padding;
+  
+  .sectionTitle {
+    font-size: $font-size-md;
+    font-weight: $font-weight-semibold;
+    color: $color-text-primary;
+    margin-bottom: 20rpx;
+  }
+  
+  .promotionItem {
+    display: flex;
+    align-items: center;
+    padding: 16rpx 0;
+    border-bottom: 1px solid $color-divider;
+    
+    &:last-child {
+      border-bottom: none;
+    }
+    
+    .promotionTag {
+      font-size: $font-size-xs;
+      color: white;
+      background-color: $color-primary;
+      padding: 4rpx 12rpx;
+      border-radius: 4rpx;
+      margin-right: 12rpx;
+    }
+    
+    .promotionText {
+      flex: 1;
+      font-size: $font-size-sm;
+      color: $color-text-secondary;
+    }
+  }
+}
+
+// SKU选择
+.skuSection {
+  background-color: $color-bg-card;
+  margin-top: 16rpx;
+  padding: 24rpx $page-padding;
+  
+  .sectionTitle {
+    font-size: $font-size-md;
+    font-weight: $font-weight-semibold;
+    color: $color-text-primary;
+    margin-bottom: 20rpx;
+  }
+  
+  .selectedSku {
+    display: flex;
+    align-items: center;
+    padding: 20rpx;
+    background-color: $color-bg-page;
+    border-radius: $radius-md;
+    
+    .skuImage {
+      width: 120rpx;
+      height: 120rpx;
+      border-radius: $radius-sm;
+      margin-right: 16rpx;
+      background-color: #f5f5f5;
+    }
+    
+    .skuInfo {
+      flex: 1;
+      
+      .skuPrice {
+        font-size: $font-size-lg;
+        font-weight: $font-weight-bold;
+        color: $color-primary;
+        margin-bottom: 8rpx;
+        
+        &::before {
+          content: '¥';
+          font-size: $font-size-xs;
+        }
+      }
+      
+      .skuStock {
+        font-size: $font-size-xs;
+        color: $color-text-tertiary;
+        margin-bottom: 4rpx;
+      }
+      
+      .skuName {
+        font-size: $font-size-sm;
+        color: $color-text-primary;
+      }
+    }
+    
+    .selectBtn {
+      color: $color-text-tertiary;
+      font-size: $font-size-sm;
+      display: flex;
+      align-items: center;
+      
+      &::after {
+        content: ' >';
+      }
+    }
+  }
+  
+  .skuOptions {
+    margin-top: 20rpx;
+    
+    .skuOptionGroup {
+      margin-bottom: 24rpx;
+      
+      &:last-child {
+        margin-bottom: 0;
+      }
+      
+      .optionLabel {
+        font-size: $font-size-sm;
+        color: $color-text-secondary;
+        margin-bottom: 16rpx;
+      }
+      
+      .optionValues {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 16rpx;
+        
+        .optionValue {
+          min-width: 100rpx;
+          padding: 12rpx 24rpx;
+          font-size: $font-size-sm;
+          color: $color-text-primary;
+          background-color: $color-bg-page;
+          border: 2rpx solid $color-border;
+          border-radius: $radius-sm;
+          text-align: center;
+          
+          &.active {
+            color: $color-primary;
+            border-color: $color-primary;
+            background-color: rgba(226, 35, 26, 0.05);
+          }
+          
+          &.disabled {
+            color: $color-text-disabled;
+            background-color: #f5f5f5;
+            border-color: $color-border;
+          }
+          
+          &:active {
+            opacity: 0.8;
+          }
+        }
+      }
+    }
+  }
+}
+
+// 商品评价
+.evaluateSection {
+  background-color: $color-bg-card;
+  margin-top: 16rpx;
+  padding: 24rpx $page-padding;
+  
+  .sectionHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20rpx;
+    
+    .sectionTitle {
+      font-size: $font-size-md;
+      font-weight: $font-weight-semibold;
+      color: $color-text-primary;
+    }
+    
+    .viewAll {
+      font-size: $font-size-sm;
+      color: $color-text-tertiary;
+      display: flex;
+      align-items: center;
+      
+      &::after {
+        content: ' >';
+      }
+      
+      &:active {
+        color: $color-primary;
+      }
+    }
+  }
+  
+  .evaluateStats {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20rpx;
+    
+    .score {
+      font-size: 48rpx;
+      font-weight: $font-weight-bold;
+      color: $color-primary;
+      margin-right: 8rpx;
+    }
+    
+    .scoreLabel {
+      font-size: $font-size-sm;
+      color: $color-text-tertiary;
+    }
+  }
+  
+  .evaluateTags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12rpx;
+    margin-bottom: 20rpx;
+    
+    .tag {
+      font-size: $font-size-xs;
+      color: $color-text-secondary;
+      background-color: $color-bg-page;
+      padding: 8rpx 16rpx;
+      border-radius: 20rpx;
+      
+      &.active {
+        color: $color-primary;
+        background-color: rgba(226, 35, 26, 0.1);
+      }
+    }
+  }
+  
+  .evaluateList {
+    .evaluateItem {
+      padding: 20rpx 0;
+      border-top: 1px solid $color-divider;
+      
+      &:first-child {
+        border-top: none;
+        padding-top: 0;
+      }
+      
+      .evaluateHeader {
+        display: flex;
+        align-items: center;
+        margin-bottom: 12rpx;
+        
+        .userAvatar {
+          width: 64rpx;
+          height: 64rpx;
+          border-radius: 50%;
+          margin-right: 12rpx;
+          background-color: #f5f5f5;
+        }
+        
+        .userInfo {
+          flex: 1;
+          
+          .userName {
+            font-size: $font-size-sm;
+            color: $color-text-primary;
+            margin-bottom: 4rpx;
+          }
+          
+          .evaluateTime {
+            font-size: $font-size-xs;
+            color: $color-text-tertiary;
+          }
+        }
+        
+        .rating {
+          color: $color-warning;
+          font-size: $font-size-sm;
+        }
+      }
+      
+      .evaluateContent {
+        font-size: $font-size-sm;
+        color: $color-text-primary;
+        line-height: 1.6;
+        margin-bottom: 12rpx;
+      }
+      
+      .evaluateImages {
+        display: flex;
+        gap: 12rpx;
+        
+        image {
+          width: 160rpx;
+          height: 160rpx;
+          border-radius: $radius-sm;
+          background-color: #f5f5f5;
+        }
+      }
+    }
+  }
+}
+
+// 商品详情
+.detailSection {
+  background-color: $color-bg-card;
+  margin-top: 16rpx;
+  padding: 24rpx $page-padding;
+  
+  .sectionTitle {
+    font-size: $font-size-md;
+    font-weight: $font-weight-semibold;
+    color: $color-text-primary;
+    margin-bottom: 20rpx;
+  }
+  
+  .detailContent {
+    font-size: $font-size-sm;
+    color: $color-text-secondary;
+    line-height: 1.8;
+    
+    image {
+      width: 100%;
+      margin: 16rpx 0;
+    }
+  }
+}
+
+// 门店信息
+.storeSection {
+  background-color: $color-bg-card;
+  margin-top: 16rpx;
+  padding: 24rpx $page-padding;
+  
+  .sectionTitle {
+    font-size: $font-size-md;
+    font-weight: $font-weight-semibold;
+    color: $color-text-primary;
+    margin-bottom: 20rpx;
+  }
+  
+  .storeInfo {
+    display: flex;
+    align-items: center;
+    padding: 20rpx;
+    background-color: $color-bg-page;
+    border-radius: $radius-md;
+    
+    .storeAvatar {
+      width: 80rpx;
+      height: 80rpx;
+      border-radius: $radius-md;
+      margin-right: 16rpx;
+      background-color: #f5f5f5;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 40rpx;
+    }
+    
+    .storeDetails {
+      flex: 1;
+      
+      .storeName {
+        font-size: $font-size-md;
+        font-weight: $font-weight-medium;
+        color: $color-text-primary;
+        margin-bottom: 8rpx;
+      }
+      
+      .storeAddress {
+        font-size: $font-size-xs;
+        color: $color-text-tertiary;
+        margin-bottom: 4rpx;
+      }
+      
+      .storeHours {
+        font-size: $font-size-xs;
+        color: $color-text-tertiary;
+      }
+    }
+    
+    .storeAction {
+      color: $color-primary;
+      font-size: $font-size-sm;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      
+      &:active {
+        opacity: 0.7;
+      }
+      
+      .phoneIcon {
+        font-size: 40rpx;
+        margin-bottom: 4rpx;
+      }
+    }
+  }
+}
+
+// 底部操作栏
+.bottomBar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: $color-bg-card;
+  padding: 16rpx $page-padding;
+  padding-bottom: calc(16rpx + env(safe-area-inset-bottom));
+  display: flex;
+  align-items: center;
+  box-shadow: 0 -4rpx 16rpx rgba(0, 0, 0, 0.08);
+  z-index: 100;
+  
+  .actionIcons {
+    display: flex;
+    gap: 32rpx;
+    margin-right: 24rpx;
+    
+    .actionItem {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      color: $color-text-secondary;
+      font-size: $font-size-xs;
+      position: relative;
+      
+      .icon {
+        font-size: 40rpx;
+        margin-bottom: 4rpx;
+      }
+      
+      &:active {
+        opacity: 0.6;
+        transform: scale(0.95);
+      }
+    }
+  }
+
+  .actionButtons {
+    flex: 1;
+    display: flex;
+    gap: 16rpx;
+    
+    .addCartBtn {
+      flex: 1;
+      height: $button-height-md;
+      background-color: $color-warning;
+      color: white;
+      border-radius: $radius-button;
+      font-size: $font-size-md;
+      font-weight: $font-weight-semibold;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4rpx 16rpx rgba(255, 125, 0, 0.3);
+      
+      &:active {
+        opacity: 0.9;
+        transform: scale(0.98);
+      }
+    }
+    
+    .buyNowBtn {
+      flex: 1;
+      height: $button-height-md;
+      background: linear-gradient(135deg, $color-primary 0%, $color-primary-light 100%);
+      color: white;
+      border-radius: $radius-button;
+      font-size: $font-size-md;
+      font-weight: $font-weight-semibold;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4rpx 16rpx rgba(226, 35, 26, 0.3);
+      
+      &:active {
+        opacity: 0.9;
+        transform: scale(0.98);
+      }
+    }
+  }
+}
+
+// SKU弹窗
+.skuModal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1000;
+  
+  .modalMask {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+  }
+  
+  .modalContent {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: $color-bg-card;
+    border-radius: $radius-xl $radius-xl 0 0;
+    max-height: 80vh;
+    overflow-y: auto;
+    padding-bottom: calc(120rpx + env(safe-area-inset-bottom));
+    
+    .modalHeader {
+      padding: 32rpx $page-padding;
+      display: flex;
+      align-items: center;
+      border-bottom: 1px solid $color-divider;
+      
+      .selectedImage {
+        width: 180rpx;
+        height: 180rpx;
+        border-radius: $radius-md;
+        margin-right: 20rpx;
+        background-color: #f5f5f5;
+      }
+      
+      .selectedInfo {
+        flex: 1;
+        
+        .selectedPrice {
+          font-size: $font-size-xl;
+          font-weight: $font-weight-bold;
+          color: $color-primary;
+          margin-bottom: 8rpx;
+          
+          &::before {
+            content: '¥';
+            font-size: $font-size-sm;
+          }
+        }
+        
+        .selectedStock {
+          font-size: $font-size-xs;
+          color: $color-text-tertiary;
+          margin-bottom: 4rpx;
+        }
+        
+        .selectedName {
+          font-size: $font-size-sm;
+          color: $color-text-primary;
+        }
+      }
+      
+      .closeBtn {
+        width: 48rpx;
+        height: 48rpx;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: $color-text-tertiary;
+        font-size: 40rpx;
+        
+        &:active {
+          color: $color-text-primary;
+        }
+      }
+    }
+    
+    .modalBody {
+      padding: 24rpx $page-padding;
+      
+      .optionGroup {
+        margin-bottom: 32rpx;
+        
+        .optionLabel {
+          font-size: $font-size-sm;
+          color: $color-text-secondary;
+          margin-bottom: 16rpx;
+        }
+        
+        .optionValues {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 16rpx;
+          
+          .optionValue {
+            min-width: 100rpx;
+            padding: 16rpx 24rpx;
+            font-size: $font-size-sm;
+            color: $color-text-primary;
+            background-color: $color-bg-page;
+            border: 2rpx solid $color-border;
+            border-radius: $radius-sm;
+            text-align: center;
+            
+            &.active {
+              color: $color-primary;
+              border-color: $color-primary;
+              background-color: rgba(226, 35, 26, 0.05);
+            }
+            
+            &.disabled {
+              color: $color-text-disabled;
+              background-color: #f5f5f5;
+            }
+            
+            &:active {
+              opacity: 0.8;
+            }
+          }
+        }
+      }
+      
+      .quantityRow {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        
+        .quantityLabel {
+          font-size: $font-size-sm;
+          color: $color-text-secondary;
+        }
+        
+        .quantityControl {
+          display: flex;
+          align-items: center;
+          background-color: $color-bg-page;
+          border-radius: $radius-button;
+          
+          .quantityBtn {
+            width: 64rpx;
+            height: 56rpx;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28rpx;
+            color: $color-text-primary;
+            
+            &:active {
+              background-color: rgba(0, 0, 0, 0.05);
+            }
+            
+            &.disabled {
+              color: $color-text-disabled;
+            }
+          }
+          
+          .quantityNum {
+            min-width: 80rpx;
+            text-align: center;
+            font-size: $font-size-md;
+            color: $color-text-primary;
+            font-weight: $font-weight-medium;
+          }
+        }
+      }
+    }
+    
+    .modalFooter {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: 16rpx $page-padding;
+      padding-bottom: calc(16rpx + env(safe-area-inset-bottom));
+      display: flex;
+      gap: 16rpx;
+      background-color: $color-bg-card;
+      border-top: 1px solid $color-divider;
+      
+      .confirmBtn {
+        flex: 1;
+        height: $button-height-md;
+        background: linear-gradient(135deg, $color-primary 0%, $color-primary-light 100%);
+        color: white;
+        border-radius: $radius-button;
+        font-size: $font-size-md;
+        font-weight: $font-weight-semibold;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        
+        &:active {
+          opacity: 0.9;
+          transform: scale(0.98);
+        }
+      }
+    }
+  }
+}

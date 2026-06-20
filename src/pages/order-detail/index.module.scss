@@ -1,0 +1,227 @@
+@use '@/styles/variables.scss' as *;
+
+.orderDetailPage {
+  min-height: 100vh;
+  background-color: $color-bg-page;
+  padding-bottom: 120rpx;
+}
+
+.statusSection {
+  background: linear-gradient(135deg, $color-primary 0%, $color-primary-light 100%);
+  padding: 48rpx $page-padding;
+  color: white;
+  display: flex;
+  align-items: center;
+  
+  .statusIcon {
+    font-size: 48rpx;
+    margin-right: 16rpx;
+  }
+  
+  .statusText {
+    font-size: $font-size-lg;
+    font-weight: $font-weight-semibold;
+  }
+}
+
+.storeSection {
+  background-color: $color-bg-card;
+  margin: $page-spacing;
+  border-radius: $radius-lg;
+  padding: 24rpx;
+  display: flex;
+  justify-content: space-between;
+  box-shadow: $shadow-card;
+  
+  .storeInfo {
+    flex: 1;
+    
+    .storeName {
+      font-size: $font-size-md;
+      font-weight: $font-weight-semibold;
+      color: $color-text-primary;
+      margin-bottom: 8rpx;
+    }
+    
+    .storeAddress {
+      font-size: $font-size-sm;
+      color: $color-text-secondary;
+      margin-bottom: 4rpx;
+    }
+    
+    .storeHours {
+      font-size: $font-size-xs;
+      color: $color-text-tertiary;
+    }
+  }
+  
+  .storeAction {
+    font-size: 48rpx;
+    display: flex;
+    align-items: center;
+    
+    &:active {
+      opacity: 0.7;
+    }
+  }
+}
+
+.goodsSection {
+  background-color: $color-bg-card;
+  margin: $page-spacing;
+  border-radius: $radius-lg;
+  overflow: hidden;
+  box-shadow: $shadow-card;
+  
+  .goodsItem {
+    display: flex;
+    padding: 24rpx;
+    
+    &:active {
+      background-color: $color-bg-hover;
+    }
+    
+    .goodsImage {
+      width: 160rpx;
+      height: 160rpx;
+      border-radius: $radius-sm;
+      margin-right: 16rpx;
+      background-color: #f5f5f5;
+    }
+    
+    .goodsInfo {
+      flex: 1;
+      
+      .goodsName {
+        font-size: $font-size-sm;
+        color: $color-text-primary;
+        line-height: 1.4;
+        margin-bottom: 8rpx;
+      }
+      
+      .goodsSpecs {
+        font-size: $font-size-xs;
+        color: $color-text-tertiary;
+        margin-bottom: 8rpx;
+      }
+      
+      .goodsBottom {
+        display: flex;
+        justify-content: space-between;
+        
+        .goodsPrice {
+          font-size: $font-size-md;
+          font-weight: $font-weight-bold;
+          color: $color-primary;
+        }
+        
+        .goodsQuantity {
+          font-size: $font-size-sm;
+          color: $color-text-tertiary;
+        }
+      }
+    }
+  }
+}
+
+.orderInfo {
+  background-color: $color-bg-card;
+  margin: $page-spacing;
+  border-radius: $radius-lg;
+  padding: 24rpx;
+  box-shadow: $shadow-card;
+  
+  .infoTitle {
+    font-size: $font-size-md;
+    font-weight: $font-weight-semibold;
+    color: $color-text-primary;
+    margin-bottom: 16rpx;
+  }
+  
+  .infoRow {
+    display: flex;
+    justify-content: space-between;
+    padding: 8rpx 0;
+    
+    .infoLabel {
+      font-size: $font-size-sm;
+      color: $color-text-secondary;
+    }
+    
+    .infoValue {
+      font-size: $font-size-sm;
+      color: $color-text-primary;
+    }
+  }
+}
+
+.amountSection {
+  background-color: $color-bg-card;
+  margin: $page-spacing;
+  border-radius: $radius-lg;
+  padding: 24rpx;
+  box-shadow: $shadow-card;
+  
+  .amountRow {
+    display: flex;
+    justify-content: space-between;
+    padding: 8rpx 0;
+    
+    .amountLabel {
+      font-size: $font-size-sm;
+      color: $color-text-secondary;
+    }
+    
+    .amountValue {
+      font-size: $font-size-sm;
+      color: $color-text-primary;
+    }
+    
+    &.highlight {
+      border-top: 1px solid $color-divider;
+      padding-top: 16rpx;
+      margin-top: 8rpx;
+      
+      .amountValue {
+        font-size: $font-size-md;
+        font-weight: $font-weight-bold;
+        color: $color-primary;
+      }
+    }
+  }
+}
+
+.bottomBar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  gap: 24rpx;
+  padding: 20rpx $page-padding;
+  padding-bottom: calc(20rpx + env(safe-area-inset-bottom));
+  background-color: $color-bg-card;
+  box-shadow: 0 -4rpx 16rpx rgba(0, 0, 0, 0.08);
+  
+  .actionBtn {
+    flex: 1;
+    height: $button-height-md;
+    border: 2rpx solid $color-border;
+    color: $color-text-secondary;
+    border-radius: $radius-button;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: $font-size-md;
+    
+    &:active {
+      opacity: 0.7;
+    }
+    
+    &.primary {
+      background-color: $color-primary;
+      border-color: $color-primary;
+      color: white;
+    }
+  }
+}

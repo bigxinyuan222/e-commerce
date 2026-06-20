@@ -1,0 +1,91 @@
+@use '@/styles/variables.scss' as *;
+
+.addressListPage {
+  min-height: 100vh;
+  background-color: $color-bg-page;
+  padding: $page-spacing;
+}
+
+.addressCard {
+  background-color: $color-bg-card;
+  border-radius: $radius-lg;
+  padding: 24rpx;
+  margin-bottom: 24rpx;
+  box-shadow: $shadow-card;
+  
+  .addressInfo {
+    margin-bottom: 16rpx;
+    
+    .nameRow {
+      display: flex;
+      align-items: center;
+      margin-bottom: 8rpx;
+      
+      .name {
+        font-size: $font-size-md;
+        font-weight: $font-weight-semibold;
+        color: $color-text-primary;
+        margin-right: 12rpx;
+      }
+      
+      .defaultTag {
+        font-size: $font-size-xs;
+        color: white;
+        background-color: $color-primary;
+        padding: 4rpx 12rpx;
+        border-radius: 4rpx;
+      }
+    }
+    
+    .phone {
+      font-size: $font-size-sm;
+      color: $color-text-secondary;
+      margin-bottom: 8rpx;
+    }
+    
+    .address {
+      font-size: $font-size-sm;
+      color: $color-text-tertiary;
+      line-height: 1.4;
+    }
+  }
+  
+  .actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 32rpx;
+    padding-top: 16rpx;
+    border-top: 1px solid $color-divider;
+    
+    .editBtn, .deleteBtn {
+      font-size: $font-size-sm;
+      color: $color-text-secondary;
+      
+      &:active {
+        color: $color-primary;
+      }
+    }
+    
+    .deleteBtn {
+      &:active {
+        color: $color-error;
+      }
+    }
+  }
+}
+
+.addBtn {
+  height: $button-height-lg;
+  background-color: $color-bg-card;
+  border: 2rpx dashed $color-border;
+  border-radius: $radius-lg;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: $font-size-md;
+  color: $color-primary;
+  
+  &:active {
+    opacity: 0.7;
+  }
+}
