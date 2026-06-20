@@ -12,44 +12,52 @@
   top: 0;
   z-index: 100;
   background: linear-gradient(135deg, $color-primary 0%, $color-primary-light 100%);
-  padding: 20rpx $page-padding 30rpx;
+  padding: 16rpx $page-padding 28rpx;
+  box-shadow: 0 4rpx 16rpx rgba($color-primary, 0.3);
   
   .searchBox {
     display: flex;
     align-items: center;
-    background-color: rgba(255, 255, 255, 0.2);
+    background-color: rgba(255, 255, 255, 0.25);
     border-radius: 50rpx;
-    padding: 16rpx 24rpx;
+    padding: 18rpx 28rpx;
     backdrop-filter: blur(10px);
+    border: 2rpx solid rgba(255, 255, 255, 0.3);
+    transition: all 0.2s ease;
+    
+    &:active {
+      background-color: rgba(255, 255, 255, 0.35);
+      transform: scale(0.98);
+    }
     
     .searchIcon {
-      width: 32rpx;
-      height: 32rpx;
-      margin-right: 12rpx;
-      opacity: 0.8;
+      width: 36rpx;
+      height: 36rpx;
+      margin-right: 14rpx;
+      opacity: 0.9;
     }
     
     .searchText {
       font-size: $font-size-sm;
-      color: rgba(255, 255, 255, 0.9);
+      color: rgba(255, 255, 255, 0.95);
     }
   }
 }
 
 // 主体内容
 .content {
-  margin-top: -10rpx;
+  margin-top: -8rpx;
 }
 
 // 轮播图
 .banner {
   margin: 0 $page-padding;
-  border-radius: $radius-lg;
+  border-radius: $radius-xl;
   overflow: hidden;
-  box-shadow: $shadow-card;
+  box-shadow: $shadow-card, 0 8rpx 24rpx rgba(0, 0, 0, 0.1);
   
   swiper {
-    height: 320rpx;
+    height: 340rpx;
     
     image {
       width: 100%;
@@ -65,7 +73,7 @@
   padding: 32rpx $page-padding;
   background-color: $color-bg-card;
   margin: 24rpx $page-padding;
-  border-radius: $radius-lg;
+  border-radius: $radius-xl;
   box-shadow: $shadow-card;
   
   .categoryItem {
@@ -74,26 +82,38 @@
     align-items: center;
     min-width: 120rpx;
     
+    &:active {
+      opacity: 0.8;
+      transform: scale(0.95);
+    }
+    
     .categoryIcon {
-      width: 80rpx;
-      height: 80rpx;
+      width: 88rpx;
+      height: 88rpx;
       border-radius: 50%;
       background: linear-gradient(135deg, $color-primary 0%, $color-primary-light 100%);
       display: flex;
       align-items: center;
       justify-content: center;
-      margin-bottom: 12rpx;
+      margin-bottom: 14rpx;
+      box-shadow: 0 6rpx 16rpx rgba($color-primary, 0.3);
+      transition: transform 0.2s ease;
+      
+      &:active {
+        transform: scale(0.92);
+      }
       
       image {
-        width: 48rpx;
-        height: 48rpx;
+        width: 52rpx;
+        height: 52rpx;
         border-radius: 50%;
       }
     }
     
     .categoryName {
-      font-size: $font-size-xs;
+      font-size: $font-size-sm;
       color: $color-text-secondary;
+      font-weight: $font-weight-medium;
     }
   }
 }
@@ -111,7 +131,7 @@
     
     .sectionTitle {
       font-size: $font-size-lg;
-      font-weight: $font-weight-semibold;
+      font-weight: $font-weight-bold;
       color: $color-text-primary;
     }
     
@@ -122,8 +142,13 @@
       align-items: center;
       
       &::after {
-        content: ' >';
-        font-size: $font-size-xs;
+        content: ' ›';
+        font-size: $font-size-sm;
+        font-weight: bold;
+      }
+      
+      &:active {
+        color: $color-primary;
       }
     }
   }
@@ -132,19 +157,28 @@
 // 秒杀区域
 .seckillArea {
   background: linear-gradient(135deg, #ff4d4d 0%, #ff7d00 100%);
-  border-radius: $radius-lg;
-  padding: 24rpx;
+  border-radius: $radius-xl;
+  padding: 28rpx;
   color: $color-text-white;
+  box-shadow: 0 8rpx 24rpx rgba(255, 77, 77, 0.35);
   
   .seckillHeader {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 20rpx;
+    margin-bottom: 24rpx;
     
     .seckillTitle {
       font-size: $font-size-lg;
       font-weight: $font-weight-bold;
+      display: flex;
+      align-items: center;
+      
+      &::before {
+        content: '⚡';
+        margin-right: 10rpx;
+        font-size: $font-size-md;
+      }
     }
     
     .seckillSubtitle {
@@ -156,15 +190,16 @@
     .countdown {
       display: flex;
       align-items: center;
-      gap: 8rpx;
+      gap: 10rpx;
       font-size: $font-size-sm;
       
       .countdownItem {
-        background-color: rgba(0, 0, 0, 0.3);
-        padding: 6rpx 10rpx;
+        background-color: rgba(0, 0, 0, 0.35);
+        padding: 8rpx 12rpx;
         border-radius: 8rpx;
-        min-width: 40rpx;
+        min-width: 44rpx;
         text-align: center;
+        font-weight: $font-weight-bold;
       }
     }
   }
@@ -176,27 +211,33 @@
     .seckillProduct {
       flex: 1;
       margin-right: 16rpx;
-      background-color: rgba(255, 255, 255, 0.95);
-      border-radius: $radius-md;
+      background-color: rgba(255, 255, 255, 0.98);
+      border-radius: $radius-lg;
       padding: 16rpx;
       color: $color-text-primary;
+      box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.1);
+      transition: transform 0.2s ease;
       
       &:last-child {
         margin-right: 0;
       }
       
+      &:active {
+        transform: scale(0.98);
+      }
+      
       .productImage {
         width: 100%;
         padding-top: 100%;
-        border-radius: $radius-sm;
-        margin-bottom: 12rpx;
+        border-radius: $radius-md;
+        margin-bottom: 14rpx;
         background-color: #f5f5f5;
         background-size: cover;
         background-position: center;
       }
       
       .seckillPrice {
-        font-size: $font-size-md;
+        font-size: $font-size-lg;
         font-weight: $font-weight-bold;
         color: $color-primary;
         margin-bottom: 8rpx;
@@ -313,38 +354,33 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 32rpx 0;
+    padding: 40rpx 0;
     
     .recommendLine {
-      width: 120rpx;
-      height: 1px;
-      background-color: $color-border;
+      width: 140rpx;
+      height: 2rpx;
+      background: linear-gradient(90deg, transparent 0%, $color-primary 50%, transparent 100%);
     }
     
     .recommendTitle {
       font-size: $font-size-lg;
-      font-weight: $font-weight-semibold;
+      font-weight: $font-weight-bold;
       color: $color-primary;
-      margin: 0 24rpx;
+      margin: 0 28rpx;
       display: flex;
       align-items: center;
+      letter-spacing: 4rpx;
       
       &::before {
-        content: '';
-        width: 40rpx;
-        height: 40rpx;
-        background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%23e2231a"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/></svg>') no-repeat center;
-        background-size: contain;
-        margin-right: 8rpx;
+        content: '❤';
+        margin-right: 12rpx;
+        font-size: $font-size-md;
       }
       
       &::after {
-        content: '';
-        width: 40rpx;
-        height: 40rpx;
-        background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%23e2231a"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/></svg>') no-repeat center;
-        background-size: contain;
-        margin-left: 8rpx;
+        content: '❤';
+        margin-left: 12rpx;
+        font-size: $font-size-md;
       }
     }
   }
@@ -359,9 +395,15 @@
   
   .productCard {
     background-color: $color-bg-card;
-    border-radius: $radius-lg;
+    border-radius: $radius-xl;
     overflow: hidden;
     box-shadow: $shadow-card;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    
+    &:active {
+      transform: scale(0.98);
+      box-shadow: $shadow-card-hover;
+    }
     
     .productImage {
       width: 100%;
@@ -370,32 +412,35 @@
     }
     
     .productInfo {
-      padding: 16rpx;
+      padding: 20rpx;
       
       .productName {
         font-size: $font-size-sm;
         color: $color-text-primary;
-        line-height: 1.4;
-        height: 2.8em;
+        line-height: 1.5;
+        height: 3em;
         overflow: hidden;
         text-overflow: ellipsis;
         display: -webkit-box;
         -webkit-line-clamp: 2;
         -webkit-box-orient: vertical;
-        margin-bottom: 12rpx;
+        margin-bottom: 14rpx;
+        font-weight: $font-weight-medium;
       }
       
       .productTags {
         display: flex;
+        flex-wrap: wrap;
         gap: 8rpx;
-        margin-bottom: 12rpx;
+        margin-bottom: 14rpx;
         
         .tag {
           font-size: $font-size-xs;
           color: $color-primary;
-          background-color: rgba(226, 35, 26, 0.1);
-          padding: 4rpx 8rpx;
-          border-radius: 4rpx;
+          background: linear-gradient(135deg, rgba($color-primary, 0.1) 0%, rgba($color-primary-light, 0.08) 100%);
+          padding: 6rpx 10rpx;
+          border-radius: $radius-xs;
+          border: 1rpx solid rgba($color-primary, 0.15);
         }
       }
       
@@ -404,13 +449,13 @@
         align-items: baseline;
         
         .currentPrice {
-          font-size: $font-size-lg;
+          font-size: $font-size-xl;
           font-weight: $font-weight-bold;
           color: $color-primary;
           
           &::before {
             content: '¥';
-            font-size: $font-size-xs;
+            font-size: $font-size-sm;
           }
         }
         
@@ -418,7 +463,7 @@
           font-size: $font-size-xs;
           color: $color-text-tertiary;
           text-decoration: line-through;
-          margin-left: 12rpx;
+          margin-left: 14rpx;
           
           &::before {
             content: '¥';
@@ -429,7 +474,7 @@
       .salesInfo {
         font-size: $font-size-xs;
         color: $color-text-tertiary;
-        margin-top: 8rpx;
+        margin-top: 10rpx;
       }
     }
   }
