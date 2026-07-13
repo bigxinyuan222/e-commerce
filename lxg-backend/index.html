@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
+    <title>乐享购后台 · 运营端</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link rel="stylesheet" href="css/style.css?v=20260704a" />
+</head>
+<body>
+    <div id="loginContainer"></div>
+    <div id="mainContainer" style="display:none;">
+        <aside class="sidebar">
+            <div class="sidebar-brand">
+                <div class="brand-icon"><i class="fas fa-store"></i></div>
+                <div class="brand-text">乐享<span>购</span></div>
+            </div>
+            <nav class="sidebar-nav" id="sidebarNav"></nav>
+        </aside>
+
+        <div class="main-wrapper">
+            <header class="header">
+                <div class="header-left">
+                    <div class="breadcrumb">首页 / <span id="pageTitle">数据统计</span></div>
+                </div>
+                <div class="header-right">=
+                    
+                    <button class="icon-btn" title="切换主题" onclick="toggleTheme()"><i class="fas fa-moon"></i></button>
+                    <button class="icon-btn" title="待办事项" id="todoBtn" onclick="toggleTodoMenu()"><i class="fas fa-bars"></i><span class="dot" id="todoDot"></span></button>
+                    <div class="todo-dropdown" id="todoDropdown" style="display:none;">
+                        <div class="dropdown-header">
+                            <span class="dropdown-title"><i class="fas fa-tasks"></i> 待办事项</span>
+                            <span class="dropdown-count" id="todoCount">0</span>
+                        </div>
+                        <div class="dropdown-body" id="todoDropdownBody"></div>
+                    </div>
+                    <div class="admin-profile" id="adminProfile" style="cursor:pointer;" onclick="toggleAdminMenu()">
+                        <div class="avatar">管</div>
+                        <div class="info">
+                            <div class="name" id="adminName">超级管理员</div>
+                            <div class="role" id="adminRole">超级管理员</div>
+                        </div>
+                        <i class="fas fa-chevron-down" id="adminArrow" style="font-size:12px;color:#94a3b8;"></i>
+                    </div>
+                    <div class="admin-dropdown" id="adminDropdown" style="display:none;">
+                        <div class="dropdown-item" onclick="showAdminInfo()">
+                            <i class="fas fa-user-circle"></i>
+                            <span>个人信息</span>
+                        </div>
+                        <div class="dropdown-divider"></div>
+                        <div class="dropdown-item" onclick="handleLogout()">
+                            <i class="fas fa-sign-out-alt"></i>
+                            <span>退出登录</span>
+                        </div>
+                    </div>
+                </div>
+            </header>
+            <div class="content" id="contentArea"></div>
+        </div>
+    </div>
+
+    <script src="js/common/config.js?v=20260704a"></script>
+    <script src="js/core/stats.js?v=20260704a"></script>
+    <script src="js/core/goods.js?v=20260707c"></script>
+    <script src="js/core/stock.js?v=20260704a"></script>
+    <script src="js/core/stores.js?v=20260704a"></script>
+    <script src="js/core/homepage.js?v=20260704a"></script>
+    <script src="js/trade/orders.js?v=20260704a"></script>
+    <script src="js/trade/returns.js?v=20260704a"></script>
+    <script src="js/trade/reviews.js?v=20260704a"></script>
+    <script src="js/trade/coupons.js?v=20260704a"></script>
+    <script src="js/trade/marketing.js?v=20260704a"></script>
+    <script src="js/system/service.js?v=20260704a"></script>
+    <script src="js/system/users.js?v=20260704a"></script>
+    <script src="js/system/payment.js?v=20260704a"></script>
+    <script src="js/system/notification.js?v=20260704a"></script>
+    <script src="js/system/admin.js?v=20260704a"></script>
+    <script src="js/system/settings.js?v=20260704a"></script>
+    <script src="js/common/login.js?v=20260704a"></script>
+    <script src="js/common/search.js?v=20260704a"></script>
+    <script src="js/common/main.js?v=20260704a"></script>
+</body>
+</html>
