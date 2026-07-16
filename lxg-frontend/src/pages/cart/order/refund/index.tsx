@@ -210,7 +210,7 @@ const RefundApplyPage: React.FC = () => {
       </ScrollView>
 
       <View className={styles.bottomBar}>
-        <View className={styles.submitBtn} onClick={handleSubmit} disabled={isSubmitting}>
+        <View className={`${styles.submitBtn} ${isSubmitting ? styles.submitBtnDisabled : ''}`} onClick={handleSubmit}>
           <Text className={styles.submitText}>{isSubmitting ? '提交中...' : '提交退款申请'}</Text>
         </View>
       </View>

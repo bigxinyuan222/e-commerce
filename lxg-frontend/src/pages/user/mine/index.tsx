@@ -6,10 +6,9 @@ import { userInfo as defaultUserInfo } from '@/data/user/user';
 import styles from '@/styles/user/mine.module.scss';
 
 // 订单状态项组件
-const OrderStatusItem = React.memo(({ icon, label, status, onClick }: { 
+const OrderStatusItem = React.memo(({ icon, label, onClick }: { 
   icon: string; 
   label: string; 
-  status?: string;
   onClick: () => void;
 }) => (
   <View className={styles.orderStatusItem} onClick={onClick}>

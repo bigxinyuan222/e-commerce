@@ -9,7 +9,7 @@ const OrderReviewPage: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [rating, setRating] = useState<'good' | 'bad'>('good');
   const [reviewContent, setReviewContent] = useState('');
-  const [images, setImages] = useState<string[]>([]);
+  const [images] = useState<string[]>([]);
 
   useEffect(() => {
     const params = Taro.getCurrentInstance()?.router?.params || {};
@@ -143,9 +143,9 @@ const OrderReviewPage: React.FC = () => {
           <textarea 
             className={styles.contentInput}
             value={reviewContent}
-            onChange={(e: any) => setReviewContent(e.detail.value)}
+            onChange={(e: any) => setReviewContent(e.target.value)}
             placeholder="请输入您对商品的评价..."
-            maxlength={500}
+            maxLength={500}
           />
           <Text className={styles.contentHint}>{reviewContent.length}/500</Text>
         </View>

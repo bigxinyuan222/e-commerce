@@ -112,7 +112,7 @@ const recommendTabs = [
 const HomePage: React.FC = () => {
   const [activeTab, setActiveTab] = useState('recommend');
   const [countdown, setCountdown] = useState({ hours: '00', minutes: '00', seconds: '00' });
-  const hotBrands = useMemo(() => getHotBrands(), []);
+  const hotBrands = useMemo(() => getHotBrands(), []) as any[];
   
   const recommendedProducts = useMemo(() => {
     if (activeTab === 'recommend') {

@@ -32,7 +32,7 @@ const CustomerServicePage: React.FC = () => {
     }
   ]);
   const [inputValue, setInputValue] = useState('');
-  const scrollViewRef = React.createRef<ScrollView>();
+  
 
   useEffect(() => {
     scrollToBottom();

@@ -32,7 +32,7 @@ export function getUserAvatarUrl(userInfo: UserInfo | null): string {
 
 // 检查用户信息是否完整
 export function isUserInfoComplete(userInfo: UserInfo): boolean {
-  return userInfo.nickname && userInfo.avatar && userInfo.gender && userInfo.birthday;
+  return !!(userInfo.nickname && userInfo.avatar && userInfo.gender && userInfo.birthday);
 }
 
 // 获取用户等级描述

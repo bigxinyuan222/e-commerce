@@ -9,7 +9,7 @@ import { messages, getUnreadCount } from '@/data/common/messages';
 
 // 获取消息列表
 export function getMessages(): Message[] {
-  return messages as Message[];
+  return messages as unknown as Message[];
 }
 
 // 获取未读消息数量
@@ -51,6 +51,6 @@ export function deleteMessage(messageId: string): void {
 }
 
 // 按类型筛选消息
-export function filterMessagesByType(type: 'store' | 'system'): Message[] {
-  return messages.filter(m => m.type === type) as Message[];
+export function filterMessagesByType(type: 'session' | 'official'): Message[] {
+  return messages.filter(m => m.type === type) as unknown as Message[];
 }

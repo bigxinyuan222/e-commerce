@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { View, Text, Image, ScrollView, Input } from '@tarojs/components';
 import Taro from '@tarojs/taro';
-import { getAllProducts } from '@/data/product/products';
+import { products } from '@/data/product/products';
 import styles from '@/styles/home/search-inner.module.scss';
 
 const SearchPage: React.FC = () => {
@@ -25,7 +25,7 @@ const SearchPage: React.FC = () => {
       return;
     }
     
-    const allProducts = getAllProducts();
+    const allProducts = products;
     const results = allProducts.filter(product => {
       const nameMatch = product.name.toLowerCase().includes(searchKeyword.toLowerCase());
       const categoryMatch = product.categoryName.toLowerCase().includes(searchKeyword.toLowerCase());
@@ -73,7 +73,7 @@ const SearchPage: React.FC = () => {
           <Input
             className={styles.searchInput}
             value={inputValue}
-            onChange={handleInput}
+            onInput={handleInput}
             placeholder="搜索商品/店铺"
             confirmType="search"
             onConfirm={handleSearch}

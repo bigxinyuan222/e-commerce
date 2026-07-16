@@ -15,12 +15,16 @@ export function getProductDetail(productId: string): Product | null {
 
 // 获取商品评价列表
 export function getProductEvaluations(productId: string, filter?: 'all' | 'positive' | 'negative' | 'withImages'): Evaluation[] {
-  return getEvaluationsByProduct(productId, filter) as Evaluation[];
+  const evaluations = getEvaluationsByProduct(productId) as unknown as Evaluation[];
+  if (filter === 'positive') return evaluations.filter(e => e.rating >= 4);
+  if (filter === 'negative') return evaluations.filter(e => e.rating <= 2);
+  if (filter === 'withImages') return evaluations.filter(e => e.images && e.images.length > 0);
+  return evaluations;
 }
 
 // 获取评价统计
 export function getProductEvaluationStats(productId: string): EvaluationStats {
-  return getEvaluationStats(productId) as EvaluationStats;
+  return getEvaluationStats(productId) as unknown as EvaluationStats;
 }
 
 // 获取相关推荐商品

@@ -6,7 +6,7 @@ import styles from '@/styles/user/coupons.module.scss';
 
 const MyCouponsPage: React.FC = () => {
   const [currentTab, setCurrentTab] = useState('available');
-  const [coupons, setCoupons] = useState<Coupon[]>(myCoupons);
+  const [coupons] = useState<Coupon[]>(myCoupons);
 
   const availableCoupons = coupons.filter(c => c.status === 'available');
   const usedCoupons = coupons.filter(c => c.status === 'used');

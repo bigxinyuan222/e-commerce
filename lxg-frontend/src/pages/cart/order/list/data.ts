@@ -18,9 +18,9 @@ export function getOrders(status: OrderStatus | 'all'): Order[] {
       ...getOrdersByStatus('cancelled'),
       ...getOrdersByStatus('refunding'),
     ];
-    return allOrders as Order[];
+    return allOrders as unknown as Order[];
   }
-  return getOrdersByStatus(status) as Order[];
+  return getOrdersByStatus(status) as unknown as Order[];
 }
 
 // 取消订单
@@ -39,8 +39,8 @@ export function confirmPickupById(orderId: string): boolean {
 }
 
 // 申请退款
-export function applyRefundById(orderId: string): boolean {
-  return applyRefund(orderId);
+export function applyRefundById(orderId: string, reason: string): boolean {
+  return applyRefund(orderId, reason);
 }
 
 // 获取订单详情

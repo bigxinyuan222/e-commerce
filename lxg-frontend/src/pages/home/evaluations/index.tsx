@@ -7,7 +7,7 @@ import styles from '@/styles/home/evaluations.module.scss';
 type FilterType = 'all' | 'good' | 'bad' | 'image';
 
 const ProductEvaluationsPage: React.FC = () => {
-  const [productId, setProductId] = useState<string>('product-1');
+  const [, setProductId] = useState<string>('product-1');
   const [evaluations, setEvaluations] = useState<Evaluation[]>([]);
   const [stats, setStats] = useState<any>(null);
   const [currentFilter, setCurrentFilter] = useState<FilterType>('all');

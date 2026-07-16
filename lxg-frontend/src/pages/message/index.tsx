@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { View, Text, Image, ScrollView } from '@tarojs/components';
 import Taro from '@tarojs/taro';
-import { messages, getUnreadCount } from '@/data/common/messages';
+import { messages } from '@/data/common/messages';
 import styles from '@/styles/message/message.module.scss';
 
 const MessagePage: React.FC = () => {
-  const [unreadCount] = useState(getUnreadCount());
+  
 
   // 只保留店铺和乐享购两种类型的消息
   const filteredMessages = messages.filter(msg => 
