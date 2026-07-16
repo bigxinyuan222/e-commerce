@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, Image, ScrollView } from '@tarojs/components';
 import Taro from '@tarojs/taro';
 import { messages, getUnreadCount } from '@/data/common/messages';
-import styles from './index.module.scss';
+import styles from '@/styles/message/message.module.scss';
 
 const MessagePage: React.FC = () => {
   const [unreadCount] = useState(getUnreadCount());

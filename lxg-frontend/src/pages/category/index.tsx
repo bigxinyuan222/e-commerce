@@ -3,7 +3,7 @@ import { View, Text, Image, ScrollView } from '@tarojs/components';
 import Taro from '@tarojs/taro';
 import { categories } from '@/data/common/home';
 import { products } from '@/data/product/products';
-import styles from './index.module.scss';
+import styles from '@/styles/category/category.module.scss';
 
 // 子分类项组件
 const SubCategoryItem = React.memo(({ 
@@ -59,7 +59,7 @@ const CategoryPage: React.FC = () => {
 
   // 使用 useCallback 缓存事件处理函数
   const goToProductDetail = useCallback((productId: string) => {
-    Taro.navigateTo({ url: `/pages/product/detail/index?id=${productId}` });
+    Taro.navigateTo({ url: `/pages/home/detail/index?id=${productId}` });
   }, []);
 
   // 使用 useCallback 缓存分类点击处理

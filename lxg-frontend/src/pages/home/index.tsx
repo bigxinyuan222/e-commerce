@@ -4,7 +4,7 @@ import Taro from '@tarojs/taro';
 import { banners, categories, seckillActivity } from '@/data/common/home';
 import { getRecommendedProducts, getProductsByRecommendType } from '@/data/product/products';
 import { getHotBrands } from '@/data/product/brands';
-import styles from './index.module.scss';
+import styles from '@/styles/home/home.module.scss';
 
 // 商品卡片组件 - 使用 memo 避免不必要渲染
 const ProductCard = React.memo(({ product, onClick }: { product: any; onClick: (id: string) => void }) => (
@@ -123,19 +123,19 @@ const HomePage: React.FC = () => {
 
   // 使用 useCallback 缓存事件处理函数
   const goToSearch = useCallback(() => {
-    Taro.navigateTo({ url: '/pages/product/search/index' });
+    Taro.navigateTo({ url: '/pages/home/search/index' });
   }, []);
 
   const goToProductDetail = useCallback((productId: string) => {
-    Taro.navigateTo({ url: `/pages/product/detail/index?id=${productId}` });
+    Taro.navigateTo({ url: `/pages/home/detail/index?id=${productId}` });
   }, []);
 
   const goToSeckill = useCallback(() => {
-    Taro.navigateTo({ url: '/pages/product/seckill/index' });
+    Taro.navigateTo({ url: '/pages/home/seckill/index' });
   }, []);
 
   const goToSeckillProduct = useCallback((productId: string) => {
-    Taro.navigateTo({ url: `/pages/product/detail/index?id=${productId}&seckill=1` });
+    Taro.navigateTo({ url: `/pages/home/detail/index?id=${productId}&seckill=1` });
   }, []);
 
   const goToCategory = useCallback((categoryId?: string) => {
@@ -147,11 +147,11 @@ const HomePage: React.FC = () => {
   }, []);
 
   const goToBrands = useCallback(() => {
-    Taro.navigateTo({ url: '/pages/product/brands/index' });
+    Taro.navigateTo({ url: '/pages/home/brands/index' });
   }, []);
 
   const goToBrandDetail = useCallback((brandId: string) => {
-    Taro.navigateTo({ url: `/pages/product/brand-detail/index?id=${brandId}` });
+    Taro.navigateTo({ url: `/pages/home/brand-detail/index?id=${brandId}` });
   }, []);
 
   // 计算秒杀倒计时 - 使用 useMemo 缓存 endTime

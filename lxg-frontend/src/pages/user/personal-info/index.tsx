@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, Image } from '@tarojs/components';
 import Taro from '@tarojs/taro';
 import { useAppContext } from '@/store/AppContext';
-import styles from './index.module.scss';
+import styles from '@/styles/user/personal-info.module.scss';
 
 const PersonalInfoPage: React.FC = () => {
   const { userInfo, setUserInfo } = useAppContext();

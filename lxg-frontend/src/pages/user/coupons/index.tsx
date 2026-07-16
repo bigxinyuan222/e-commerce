@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, ScrollView } from '@tarojs/components';
 import Taro from '@tarojs/taro';
 import { myCoupons, Coupon } from '@/data/common/coupons';
-import styles from './index.module.scss';
+import styles from '@/styles/user/coupons.module.scss';
 
 const MyCouponsPage: React.FC = () => {
   const [currentTab, setCurrentTab] = useState('available');
@@ -31,9 +31,9 @@ const MyCouponsPage: React.FC = () => {
 
   const handleUseCoupon = (coupon: Coupon) => {
     if (coupon.scope === 'product' && coupon.productId) {
-      Taro.navigateTo({ url: `/pages/product/detail/index?id=${coupon.productId}` });
+      Taro.navigateTo({ url: `/pages/home/detail/index?id=${coupon.productId}` });
     } else if (coupon.scope === 'category' && coupon.categoryId) {
-      Taro.navigateTo({ url: `/pages/product/search-results/index?keyword=${coupon.scopeText}` });
+      Taro.navigateTo({ url: `/pages/home/search-results/index?keyword=${coupon.scopeText}` });
     } else {
       Taro.navigateTo({ url: '/pages/home/index' });
     }

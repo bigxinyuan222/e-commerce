@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, Image, Switch } from '@tarojs/components';
 import Taro from '@tarojs/taro';
 import { useAppContext } from '@/store/AppContext';
-import styles from './index.module.scss';
+import styles from '@/styles/user/profile.module.scss';
 
 const ProfilePage: React.FC = () => {
   const { userInfo, setUserInfo } = useAppContext();

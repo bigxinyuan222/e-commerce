@@ -3,7 +3,7 @@ import { View, Text, Image, ScrollView } from '@tarojs/components';
 import Taro from '@tarojs/taro';
 import { useAppContext } from '@/store/AppContext';
 import { userInfo as defaultUserInfo } from '@/data/user/user';
-import styles from './index.module.scss';
+import styles from '@/styles/user/mine.module.scss';
 
 // 订单状态项组件
 const OrderStatusItem = React.memo(({ icon, label, status, onClick }: { 
@@ -84,7 +84,7 @@ const MinePage: React.FC = () => {
   }, [isLoggedIn, goToLogin]);
 
   const goToStores = useCallback(() => {
-    Taro.navigateTo({ url: '/pages/store/stores/index' });
+    Taro.navigateTo({ url: '/pages/category/stores/index' });
   }, []);
 
   const goToPersonalInfo = useCallback(() => {
