@@ -300,7 +300,6 @@ function showAddGoodsModal() {
                             <div><label style="display:block;font-size:13px;color:#64748b;margin-bottom:4px;">商品名称 <span style="color:#ef4444;">*</span></label><input type="text" placeholder="请输入商品名称" style="width:100%;padding:8px 12px;border:1px solid #e2e8f0;border-radius:6px;font-size:13px;outline:none;" onfocus="this.style.borderColor='#4f6ef7'" /></div>
                             <div><label style="display:block;font-size:13px;color:#64748b;margin-bottom:4px;">品牌</label><select style="width:100%;padding:8px 12px;border:1px solid #e2e8f0;border-radius:6px;font-size:13px;outline:none;"><option>请选择品牌</option><option>华为</option><option>苹果</option><option>小米</option><option>索尼</option><option>三星</option><option>美的</option></select></div>
                             <div><label style="display:block;font-size:13px;color:#64748b;margin-bottom:4px;">分类 <span style="color:#ef4444;">*</span></label><select style="width:100%;padding:8px 12px;border:1px solid #e2e8f0;border-radius:6px;font-size:13px;outline:none;"><option>请选择分类</option><option>手机数码</option><option>家用电器</option><option>服装服饰</option><option>运动户外</option><option>美妆护肤</option></select></div>
-                            <div><label style="display:block;font-size:13px;color:#64748b;margin-bottom:4px;">原价 <span style="color:#ef4444;">*</span></label><input type="number" placeholder="请输入原价" style="width:100%;padding:8px 12px;border:1px solid #e2e8f0;border-radius:6px;font-size:13px;outline:none;" onfocus="this.style.borderColor='#4f6ef7'" /></div>
                             <div style="grid-column:span 2;"><label style="display:block;font-size:13px;color:#64748b;margin-bottom:4px;">商品描述</label><textarea rows="3" placeholder="请输入商品描述" style="width:100%;padding:8px 12px;border:1px solid #e2e8f0;border-radius:6px;font-size:13px;outline:none;resize:vertical;" onfocus="this.style.borderColor='#4f6ef7'"></textarea></div>
                             <div><label style="display:block;font-size:13px;color:#64748b;margin-bottom:4px;">主图</label><div style="border:1px dashed #e2e8f0;border-radius:8px;padding:24px;text-align:center;"><i class="fas fa-upload" style="color:#94a3b8;font-size:24px;"></i><div style="font-size:13px;color:#94a3b8;margin-top:8px;">点击上传主图</div></div></div>
                             <div><label style="display:block;font-size:13px;color:#64748b;margin-bottom:4px;">轮播图</label><div style="border:1px dashed #e2e8f0;border-radius:8px;padding:24px;text-align:center;"><i class="fas fa-images" style="color:#94a3b8;font-size:24px;"></i><div style="font-size:13px;color:#94a3b8;margin-top:8px;">点击上传轮播图</div></div></div>
@@ -389,14 +388,12 @@ function nextGoodsStep() {
         const selects = document.querySelectorAll('#goodsAddForm select');
         const brandInput = selects[0];
         const categoryInput = selects[1];
-        const priceInput = document.querySelector('#goodsAddForm input[type="number"]');
         const descInput = document.querySelector('#goodsAddForm textarea');
         const statusInputs = document.querySelectorAll('input[name="initialStatus"]');
         
         tempGoodsData.name = nameInput?.value || '';
         tempGoodsData.brand = brandInput?.value === '请选择品牌' ? '' : brandInput?.value || '';
         tempGoodsData.category = categoryInput?.value === '请选择分类' ? '' : categoryInput?.value || '';
-        tempGoodsData.originalPrice = parseInt(priceInput?.value) || 0;
         tempGoodsData.description = descInput?.value || '';
         tempGoodsData.status = Array.from(statusInputs).find(i => i.checked)?.nextElementSibling?.textContent?.includes('上架') ? 'on_shelf' : 'off_shelf';
         
@@ -406,10 +403,6 @@ function nextGoodsStep() {
         }
         if (!tempGoodsData.category) {
             alert('请选择商品分类');
-            return;
-        }
-        if (!tempGoodsData.originalPrice || tempGoodsData.originalPrice <= 0) {
-            alert('请输入正确的原价');
             return;
         }
     } else if (goodsAddStep === 2) {
@@ -658,7 +651,6 @@ function showEditGoodsModal(goodsId) {
                                     ${categoriesData.map(c => `<option value="${c.name}" ${c.name === goods.category ? 'selected' : ''}>${c.name}</option>`).join('')}
                                 </select>
                             </div>
-                            <div><label style="display:block;font-size:13px;color:#64748b;margin-bottom:4px;">原价 <span style="color:#ef4444;">*</span></label><input type="number" id="editGoodsPrice" value="${goods.originalPrice}" placeholder="请输入原价" style="width:100%;padding:8px 12px;border:1px solid #e2e8f0;border-radius:6px;font-size:13px;outline:none;" onfocus="this.style.borderColor='#4f6ef7'" /></div>
                             <div style="grid-column:span 2;"><label style="display:block;font-size:13px;color:#64748b;margin-bottom:4px;">商品描述</label><textarea id="editGoodsDesc" rows="3" placeholder="请输入商品描述" style="width:100%;padding:8px 12px;border:1px solid #e2e8f0;border-radius:6px;font-size:13px;outline:none;resize:vertical;" onfocus="this.style.borderColor='#4f6ef7'"></textarea></div>
                             <div><label style="display:block;font-size:13px;color:#64748b;margin-bottom:4px;">主图</label><div style="border:1px dashed #e2e8f0;border-radius:8px;padding:24px;text-align:center;"><i class="fas fa-image" style="color:#4f6ef7;font-size:24px;"></i><div style="font-size:13px;color:#64748b;margin-top:8px;">已有图片</div></div></div>
                             <div><label style="display:block;font-size:13px;color:#64748b;margin-bottom:4px;">轮播图</label><div style="border:1px dashed #e2e8f0;border-radius:8px;padding:24px;text-align:center;"><i class="fas fa-images" style="color:#4f6ef7;font-size:24px;"></i><div style="font-size:13px;color:#64748b;margin-top:8px;">已有图片</div></div></div>

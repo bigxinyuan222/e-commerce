@@ -13,6 +13,8 @@ let notificationData = [
 let currentNotifSearchKeyword = '';
 let currentNotifTypeFilter = 'all';
 let currentNotifStatusFilter = 'all';
+let currentNotifPage = 1;
+let notifPageSize = 5;
 
 let mockUsers = [
     { id: 'user-001', username: '张三', phone: '138****1234', realName: '张三' },
@@ -235,17 +237,25 @@ function searchNotifications() {
     const input = document.getElementById('notifSearchInput');
     if (input) {
         currentNotifSearchKeyword = input.value.trim();
+        currentNotifPage = 1;
         refreshNotificationPage();
     }
 }
 
 function switchNotifType(type) {
     currentNotifTypeFilter = type;
+    currentNotifPage = 1;
     refreshNotificationPage();
 }
 
 function switchNotifStatus(status) {
     currentNotifStatusFilter = status;
+    currentNotifPage = 1;
+    refreshNotificationPage();
+}
+
+function setNotifPage(page) {
+    currentNotifPage = page;
     refreshNotificationPage();
 }
 
@@ -368,6 +378,10 @@ function sendNotificationPage() {
 
 function notificationRecordPage() {
     const filteredNotifications = filterNotifications();
+    const totalNotifications = filteredNotifications.length;
+    const totalPages = Math.ceil(totalNotifications / notifPageSize);
+    const startIndex = (currentNotifPage - 1) * notifPageSize;
+    const pageNotifications = filteredNotifications.slice(startIndex, startIndex + notifPageSize);
     
     const getTypeBadge = (type) => {
         const styles = {
@@ -425,7 +439,7 @@ function notificationRecordPage() {
                             </tr>
                         </thead>
                         <tbody>
-                            ${filteredNotifications.map(n => `
+                            ${pageNotifications.map(n => `
                                 <tr>
                                     <td>${n.id}</td>
                                     <td>${n.title}</td>
@@ -445,6 +459,27 @@ function notificationRecordPage() {
                     </table>
                 </div>
             </div>
+            ${totalPages > 1 ? `
+            <div class="card-footer">
+                <div style="display:flex;align-items:center;justify-content:center;gap:6px;">
+                    <button onclick="setNotifPage(1)" ${currentNotifPage === 1 ? 'disabled' : ''} style="width:32px;height:32px;border-radius:50%;border:none;background:#fff;border:1px solid #e2e8f0;color:#64748b;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;transition:all 0.2s;${currentNotifPage === 1 ? 'opacity:0.5;cursor:not-allowed;' : ''}" onmouseover="if(!this.disabled) this.style.borderColor='#4f6ef7';this.style.color='#4f6ef7'" onmouseout="if(!this.disabled) this.style.borderColor='#e2e8f0';this.style.color='#64748b'">
+                        <i class="fas fa-angle-double-left"></i>
+                    </button>
+                    <button onclick="setNotifPage(${currentNotifPage - 1})" ${currentNotifPage === 1 ? 'disabled' : ''} style="width:32px;height:32px;border-radius:50%;border:none;background:#fff;border:1px solid #e2e8f0;color:#64748b;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;transition:all 0.2s;${currentNotifPage === 1 ? 'opacity:0.5;cursor:not-allowed;' : ''}" onmouseover="if(!this.disabled) this.style.borderColor='#4f6ef7';this.style.color='#4f6ef7'" onmouseout="if(!this.disabled) this.style.borderColor='#e2e8f0';this.style.color='#64748b'">
+                        <i class="fas fa-angle-left"></i>
+                    </button>
+                    ${Array.from({ length: totalPages }, (_, i) => i + 1).map(p => `
+                        <button onclick="setNotifPage(${p})" style="width:32px;height:32px;border-radius:50%;border:none;color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:500;transition:all 0.2s;${p === currentNotifPage ? 'background:#4f6ef7;' : 'background:#fff;border:1px solid #e2e8f0;color:#64748b;'};" onmouseover="${p !== currentNotifPage ? 'this.style.borderColor=\'#4f6ef7\';this.style.color=\'#4f6ef7\'' : ''}" onmouseout="${p !== currentNotifPage ? 'this.style.borderColor=\'#e2e8f0\';this.style.color=\'#64748b\'' : ''}">${p}</button>
+                    `).join('')}
+                    <button onclick="setNotifPage(${currentNotifPage + 1})" ${currentNotifPage === totalPages ? 'disabled' : ''} style="width:32px;height:32px;border-radius:50%;border:none;background:#fff;border:1px solid #e2e8f0;color:#64748b;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;transition:all 0.2s;${currentNotifPage === totalPages ? 'opacity:0.5;cursor:not-allowed;' : ''}" onmouseover="if(!this.disabled) this.style.borderColor='#4f6ef7';this.style.color='#4f6ef7'" onmouseout="if(!this.disabled) this.style.borderColor='#e2e8f0';this.style.color='#64748b'">
+                        <i class="fas fa-angle-right"></i>
+                    </button>
+                    <button onclick="setNotifPage(${totalPages})" ${currentNotifPage === totalPages ? 'disabled' : ''} style="width:32px;height:32px;border-radius:50%;border:none;background:#fff;border:1px solid #e2e8f0;color:#64748b;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;transition:all 0.2s;${currentNotifPage === totalPages ? 'opacity:0.5;cursor:not-allowed;' : ''}" onmouseover="if(!this.disabled) this.style.borderColor='#4f6ef7';this.style.color='#4f6ef7'" onmouseout="if(!this.disabled) this.style.borderColor='#e2e8f0';this.style.color='#64748b'">
+                        <i class="fas fa-angle-double-right"></i>
+                    </button>
+                </div>
+                <span style="font-size:13px;color:#64748b;">共 ${totalNotifications} 条记录，第 ${currentNotifPage}/${totalPages} 页</span>
+            </div>` : ''}
         </div>
     `;
 }

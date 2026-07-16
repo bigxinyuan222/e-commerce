@@ -208,10 +208,6 @@ function showStoreDetail(storeId) {
                                         <span>${store.businessHours}</span>
                                     </div>
                                     <div style="display:flex;justify-content:space-between;">
-                                        <span style="color:#64748b;">店员数量</span>
-                                        <span>${store.clerkCount} 人</span>
-                                    </div>
-                                    <div style="display:flex;justify-content:space-between;">
                                         <span style="color:#64748b;">累计订单</span>
                                         <span>${store.orderCount} 笔</span>
                                     </div>
@@ -319,7 +315,6 @@ function showEditStoreModal(storeId) {
                     <div><label style="display:block;font-size:13px;color:#64748b;margin-bottom:4px;">联系电话 <span style="color:#ef4444;">*</span></label><input type="text" id="storePhone" value="${store.phone}" placeholder="请输入联系电话" style="width:100%;padding:8px 12px;border:1px solid #e2e8f0;border-radius:6px;font-size:13px;outline:none;" onfocus="this.style.borderColor='#4f6ef7'" /></div>
                     <div style="grid-column:span 2;"><label style="display:block;font-size:13px;color:#64748b;margin-bottom:4px;">门店地址 <span style="color:#ef4444;">*</span></label><input type="text" id="storeAddress" value="${store.address}" placeholder="请输入门店地址" style="width:100%;padding:8px 12px;border:1px solid #e2e8f0;border-radius:6px;font-size:13px;outline:none;" onfocus="this.style.borderColor='#4f6ef7'" /></div>
                     <div><label style="display:block;font-size:13px;color:#64748b;margin-bottom:4px;">营业时间</label><div style="display:flex;gap:8px;"><input type="time" id="storeStartHour" value="${startHour || '09:00'}" style="flex:1;padding:8px;border:1px solid #e2e8f0;border-radius:6px;" /><span style="color:#94a3b8;">~</span><input type="time" id="storeEndHour" value="${endHour || '21:00'}" style="flex:1;padding:8px;border:1px solid #e2e8f0;border-radius:6px;" /></div></div>
-                    <div><label style="display:block;font-size:13px;color:#64748b;margin-bottom:4px;">店员数量</label><input type="number" id="storeClerkCount" value="${store.clerkCount}" placeholder="请输入店员数量" style="width:100%;padding:8px 12px;border:1px solid #e2e8f0;border-radius:6px;font-size:13px;outline:none;" onfocus="this.style.borderColor='#4f6ef7'" /></div>
                 </div>
             </div>
             <div class="modal-footer">
@@ -349,7 +344,6 @@ function saveEditStore(storeId) {
     store.phone = phone;
     store.address = address;
     store.businessHours = `${document.getElementById('storeStartHour').value}-${document.getElementById('storeEndHour').value}`;
-    store.clerkCount = parseInt(document.getElementById('storeClerkCount').value) || 0;
     
     alert('门店信息更新成功！');
     closeStoreModal();
@@ -498,17 +492,13 @@ function storesPage() {
                                     <span>${store?.phone || '-'}</span>
                                 </div>
                                 <div style="display:flex;justify-content:space-between;">
-                                    <span style="color:#64748b;">营业时间</span>
-                                    <span>${store?.businessHours || '-'}</span>
-                                </div>
-                                <div style="display:flex;justify-content:space-between;">
-                                    <span style="color:#64748b;">店员数量</span>
-                                    <span>${store?.clerkCount || 0} 人</span>
-                                </div>
-                                <div style="display:flex;justify-content:space-between;">
-                                    <span style="color:#64748b;">累计订单</span>
-                                    <span>${store?.orderCount || 0} 笔</span>
-                                </div>
+                                <span style="color:#64748b;">营业时间</span>
+                                <span>${store?.businessHours || '-'}</span>
+                            </div>
+                            <div style="display:flex;justify-content:space-between;">
+                                <span style="color:#64748b;">累计订单</span>
+                                <span>${store?.orderCount || 0} 笔</span>
+                            </div>
                             </div>
                         </div>
                     </div>
@@ -571,7 +561,7 @@ function storesPage() {
             </div>
             <div class="card-body no-pad">
                 <div class="table-wrap"><table>
-                    <thead><tr><th>门店名称</th><th>地址</th><th>电话</th><th>营业时间</th><th>店员数量</th><th>累计订单</th><th>状态</th><th>操作</th></tr></thead>
+                    <thead><tr><th>门店名称</th><th>地址</th><th>电话</th><th>营业时间</th><th>累计订单</th><th>状态</th><th>操作</th></tr></thead>
                     <tbody>
                         ${storesData.map(store => `
                             <tr>
@@ -579,7 +569,6 @@ function storesPage() {
                                 <td style="max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${store.address}</td>
                                 <td>${store.phone}</td>
                                 <td>${store.businessHours}</td>
-                                <td>${store.clerkCount}人</td>
                                 <td>${store.orderCount}</td>
                                 <td>${getStatusBadge(store.status)}</td>
                                 <td>

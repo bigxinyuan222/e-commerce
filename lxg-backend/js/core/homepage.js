@@ -445,6 +445,7 @@ function homepagePage() {
             <div class="card">
                 <div class="card-header">
                     <span class="card-title"><i class="fas fa-images"></i> 轮播图 / Banner</span>
+                    <button class="btn btn-primary btn-sm" onclick="showAddBannerModal()"><i class="fas fa-plus"></i> 新增轮播图</button>
                 </div>
                 <div class="card-body no-pad">
                     <div class="table-wrap"><table>
