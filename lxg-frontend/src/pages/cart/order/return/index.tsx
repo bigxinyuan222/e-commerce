@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, Input, Image, Radio } from '@tarojs/components';
 import Taro from '@tarojs/taro';
-import styles from './index.module.scss';
+import styles from '@/styles/cart/order-return.module.scss';
 
 const ReturnApplyPage: React.FC = () => {
   const [reason, setReason] = useState('');

@@ -3,7 +3,7 @@ import { View, Text, Input } from '@tarojs/components';
 import Taro from '@tarojs/taro';
 import { hotSearchKeywords } from '@/data/common/home';
 import { products } from '@/data/product/products';
-import styles from './index.module.scss';
+import styles from '@/styles/home/search.module.scss';
 
 const SearchPage: React.FC = () => {
   const [searchValue, setSearchValue] = useState('');
@@ -34,7 +34,7 @@ const SearchPage: React.FC = () => {
       return;
     }
     Taro.navigateTo({ 
-      url: `/pages/product/search-results/index?keyword=${encodeURIComponent(searchValue)}` 
+      url: `/pages/home/search-results/index?keyword=${encodeURIComponent(searchValue)}` 
     });
   };
 
@@ -46,13 +46,13 @@ const SearchPage: React.FC = () => {
 
   const handleKeywordSearch = (keyword: string) => {
     Taro.navigateTo({ 
-      url: `/pages/product/search-results/index?keyword=${encodeURIComponent(keyword)}` 
+      url: `/pages/home/search-results/index?keyword=${encodeURIComponent(keyword)}` 
     });
   };
 
   const handleSuggestionClick = (suggestion: string) => {
     Taro.navigateTo({ 
-      url: `/pages/product/search-results/index?keyword=${encodeURIComponent(suggestion)}` 
+      url: `/pages/home/search-results/index?keyword=${encodeURIComponent(suggestion)}` 
     });
   };
 

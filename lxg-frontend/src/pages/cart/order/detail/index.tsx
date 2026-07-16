@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, Image, ScrollView } from '@tarojs/components';
 import Taro from '@tarojs/taro';
 import { getOrderById, confirmPickup, payOrder, applyRefund, cancelOrder, confirmDelivery } from '@/data/order/orders';
-import styles from './index.module.scss';
+import styles from '@/styles/cart/order-detail.module.scss';
 
 const OrderDetailPage: React.FC = () => {
   const [order, setOrder] = useState<any>(null);
@@ -22,7 +22,7 @@ const OrderDetailPage: React.FC = () => {
   }, []);
 
   const goToProductDetail = (productId: string) => {
-    Taro.navigateTo({ url: `/pages/product/detail/index?id=${productId}` });
+    Taro.navigateTo({ url: `/pages/home/detail/index?id=${productId}` });
   };
 
   const callStore = () => {

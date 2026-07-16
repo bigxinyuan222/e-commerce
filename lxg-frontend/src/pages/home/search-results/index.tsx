@@ -2,7 +2,7 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { View, Text, Image, ScrollView, Input } from '@tarojs/components';
 import Taro from '@tarojs/taro';
 import { searchProducts, products } from '@/data/product/products';
-import styles from './index.module.scss';
+import styles from '@/styles/home/search-results.module.scss';
 
 type SortType = 'default' | 'sales' | 'price-asc' | 'price-desc';
 
@@ -106,7 +106,7 @@ const SearchResultsPage: React.FC = () => {
   };
 
   const goToProductDetail = (productId: string) => {
-    Taro.navigateTo({ url: `/pages/product/detail/index?id=${productId}` });
+    Taro.navigateTo({ url: `/pages/home/detail/index?id=${productId}` });
   };
 
   const goBack = () => {

@@ -5,7 +5,7 @@ import { useAppContext } from '@/store/AppContext';
 import { getStoreById } from '@/data/common/stores';
 import { myCoupons } from '@/data/common/coupons';
 import { createOrder, OrderItem } from '@/data/order/orders';
-import styles from './index.module.scss';
+import styles from '@/styles/cart/checkout.module.scss';
 
 interface BuyNowItem {
   productId: string;
@@ -25,7 +25,7 @@ const CheckoutPage: React.FC = () => {
   const [buyNowItem, setBuyNowItem] = useState<BuyNowItem | null>(null);
 
   const handleSwitchStore = useCallback(() => {
-    Taro.navigateTo({ url: '/pages/store/stores/index' });
+    Taro.navigateTo({ url: '/pages/category/stores/index' });
   }, []);
 
   useEffect(() => {

@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { View, Text, Image, ScrollView } from '@tarojs/components';
 import Taro from '@tarojs/taro';
 import { getOrdersByStatus, cancelOrder, payOrder, confirmDelivery, confirmPickup, applyRefund, updateRefundStatus } from '@/data/order/orders';
-import styles from './index.module.scss';
+import styles from '@/styles/cart/order-list.module.scss';
 
 // 订单状态映射
 const statusMap: { [key: string]: string } = {

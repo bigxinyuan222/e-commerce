@@ -6,7 +6,7 @@ import { getProductById } from '@/data/product/products';
 import { getEvaluationsByProduct, getEvaluationStats, getAiSummary } from '@/data/product/evaluations';
 import { availableCoupons, Coupon } from '@/data/common/coupons';
 
-import styles from './index.module.scss';
+import styles from '@/styles/home/detail.module.scss';
 
 interface Product {
   id: string;
@@ -250,7 +250,7 @@ const ProductDetailPage: React.FC = () => {
 
   // 跳转到评价页面
   const goToEvaluations = useCallback(() => {
-    Taro.navigateTo({ url: `/pages/product/evaluations/index?id=${product?.id}` });
+    Taro.navigateTo({ url: `/pages/home/evaluations/index?id=${product?.id}` });
   }, [product]);
 
   // 拨打电话
@@ -262,7 +262,7 @@ const ProductDetailPage: React.FC = () => {
 
   // 切换门店
   const handleSwitchStore = useCallback(() => {
-    Taro.navigateTo({ url: '/pages/store/stores/index' });
+    Taro.navigateTo({ url: '/pages/category/stores/index' });
   }, []);
 
   // 跳转到客服页面

@@ -2,7 +2,7 @@ import React, { useState, useCallback, useMemo } from 'react';
 import { View, Text, Image, ScrollView } from '@tarojs/components';
 import Taro from '@tarojs/taro';
 import { useAppContext } from '@/store/AppContext';
-import styles from './index.module.scss';
+import styles from '@/styles/cart/cart.module.scss';
 
 // 购物车商品项组件
 const CartItemComponent = React.memo(({ 
@@ -143,7 +143,7 @@ const CartPage: React.FC = () => {
   }, [selectAllCartItems, allSelected]);
 
   const handleProductClick = useCallback((productId: string) => {
-    Taro.navigateTo({ url: `/pages/product/detail/index?id=${productId}` });
+    Taro.navigateTo({ url: `/pages/home/detail/index?id=${productId}` });
   }, []);
 
   const handleToggleItem = useCallback((id: string) => {

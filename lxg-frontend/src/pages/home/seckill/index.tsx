@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { View, Text, Image, ScrollView } from '@tarojs/components';
 import Taro from '@tarojs/taro';
 import { seckillProducts } from '@/data/common/home';
-import styles from './index.module.scss';
+import styles from '@/styles/home/seckill.module.scss';
 
 const SeckillPage: React.FC = () => {
   const [timeLeft, setTimeLeft] = useState({
@@ -44,7 +44,7 @@ const SeckillPage: React.FC = () => {
   }, [updateCountdown]);
 
   const goToProductDetail = (productId: string) => {
-    Taro.navigateTo({ url: `/pages/product/detail/index?id=${productId}&seckill=1` });
+    Taro.navigateTo({ url: `/pages/home/detail/index?id=${productId}&seckill=1` });
   };
 
   const filteredProducts = activeCategory === '推荐' 

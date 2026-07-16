@@ -3,7 +3,7 @@ import { View, Text, Input } from '@tarojs/components';
 import Taro from '@tarojs/taro';
 import { useAppContext } from '@/store/AppContext';
 import { userInfo } from '@/data/user/user';
-import styles from './index.module.scss';
+import styles from '@/styles/user/login.module.scss';
 
 const LoginPage: React.FC = () => {
   const { setUserInfo } = useAppContext();

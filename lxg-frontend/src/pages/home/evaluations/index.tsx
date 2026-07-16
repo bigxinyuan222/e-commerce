@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, Image, ScrollView, Input } from '@tarojs/components';
 import Taro from '@tarojs/taro';
 import { getEvaluationsByProduct, getEvaluationStats, Evaluation } from '@/data/product/evaluations';
-import styles from './index.module.scss';
+import styles from '@/styles/home/evaluations.module.scss';
 
 type FilterType = 'all' | 'good' | 'bad' | 'image';
 

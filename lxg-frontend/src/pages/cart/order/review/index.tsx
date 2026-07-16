@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, Image, ScrollView } from '@tarojs/components';
 import Taro from '@tarojs/taro';
 import { getOrderById, updateOrderStatus } from '@/data/order/orders';
-import styles from './index.module.scss';
+import styles from '@/styles/cart/order-review.module.scss';
 
 const OrderReviewPage: React.FC = () => {
   const [order, setOrder] = useState<any>(null);
@@ -46,7 +46,7 @@ const OrderReviewPage: React.FC = () => {
   const handleBuyAgain = () => {
     if (order?.items?.[0]?.productId) {
       Taro.navigateTo({ 
-        url: `/pages/product/detail/index?id=${order.items[0].productId}` 
+        url: `/pages/home/detail/index?id=${order.items[0].productId}` 
       });
     }
   };

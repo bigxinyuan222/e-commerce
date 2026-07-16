@@ -1,7 +1,7 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import { View, Text, Input, ScrollView, Image } from '@tarojs/components';
 import Taro from '@tarojs/taro';
-import styles from './index.module.scss';
+import styles from '@/styles/message/customer-service.module.scss';
 
 interface ChatMessage {
   id: string;

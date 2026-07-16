@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { View, Text, Image, ScrollView, Input } from '@tarojs/components';
 import Taro from '@tarojs/taro';
 import { getAllProducts } from '@/data/product/products';
-import styles from './index.module.scss';
+import styles from '@/styles/home/search-inner.module.scss';
 
 const SearchPage: React.FC = () => {
   const [keyword, setKeyword] = useState('');
@@ -55,7 +55,7 @@ const SearchPage: React.FC = () => {
   }, []);
 
   const goToProductDetail = useCallback((productId: string) => {
-    Taro.navigateTo({ url: `/pages/product/detail/index?id=${productId}` });
+    Taro.navigateTo({ url: `/pages/home/detail/index?id=${productId}` });
   }, []);
 
   const goBack = useCallback(() => {

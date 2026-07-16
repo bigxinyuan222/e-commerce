@@ -3,7 +3,7 @@ import { View, Text, Image, ScrollView } from '@tarojs/components';
 import Taro from '@tarojs/taro';
 import { getBrandById } from '@/data/product/brands';
 import { products } from '@/data/product/products';
-import styles from './index.module.scss';
+import styles from '@/styles/home/brand-detail.module.scss';
 
 const BrandDetailPage = function() {
   const [brand, setBrand] = useState(null);
@@ -22,7 +22,7 @@ const BrandDetailPage = function() {
   }, []);
 
   const goToProductDetail = function(productId) {
-    Taro.navigateTo({ url: '/pages/product-detail/index?id=' + productId });
+    Taro.navigateTo({ url: '/pages/home/detail/index?id=' + productId });
   };
 
   if (!brand) {

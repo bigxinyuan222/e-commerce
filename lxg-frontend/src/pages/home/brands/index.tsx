@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, Image, ScrollView } from '@tarojs/components';
 import Taro from '@tarojs/taro';
 import { brands, getHotBrands } from '@/data/product/brands';
-import styles from './index.module.scss';
+import styles from '@/styles/home/brands.module.scss';
 
 const BrandsPage = function() {
   const [activeTab, setActiveTab] = useState('hot');
@@ -19,7 +19,7 @@ const BrandsPage = function() {
   }
 
   const goToBrandDetail = function(brandId) {
-    Taro.navigateTo({ url: '/pages/brand-detail/index?id=' + brandId });
+    Taro.navigateTo({ url: '/pages/home/brand-detail/index?id=' + brandId });
   };
 
   return (

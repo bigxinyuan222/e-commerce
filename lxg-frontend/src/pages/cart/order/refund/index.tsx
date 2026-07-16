@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, Image, ScrollView } from '@tarojs/components';
 import Taro from '@tarojs/taro';
 import { getOrderById, applyRefund } from '@/data/order/orders';
-import styles from './index.module.scss';
+import styles from '@/styles/cart/order-refund.module.scss';
 
 const RefundApplyPage: React.FC = () => {
   const [order, setOrder] = useState<any>(null);
