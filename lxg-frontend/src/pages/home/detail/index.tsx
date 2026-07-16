@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { View, Text, Image, Swiper, SwiperItem, ScrollView, Input } from '@tarojs/components';
 import Taro from '@tarojs/taro';
 import { useAppContext } from '@/store/AppContext';
@@ -115,7 +115,7 @@ const SkuOptionGroup = React.memo(({
 ));
 
 const ProductDetailPage: React.FC = () => {
-  const { addToCart, currentStore, setCurrentStore } = useAppContext();
+  const { addToCart, currentStore } = useAppContext();
   const [product, setProduct] = useState<Product | null>(null);
   const [currentImage, setCurrentImage] = useState(0);
   const [selectedSku, setSelectedSku] = useState<any>(null);
@@ -124,7 +124,7 @@ const ProductDetailPage: React.FC = () => {
   const [skuModalType, setSkuModalType] = useState<'cart' | 'buy'>('cart');
   const [specSelections, setSpecSelections] = useState<{ [key: string]: string }>({});
   const [evaluations, setEvaluations] = useState<any[]>([]);
-  const [evalStats, setEvalStats] = useState<any>(null);
+  const [, setEvalStats] = useState<any>(null);
   const [aiSummary, setAiSummary] = useState<any>(null);
   const [isSeckill, setIsSeckill] = useState(false);
   const [seckillCountdown, setSeckillCountdown] = useState('');
@@ -134,10 +134,7 @@ const ProductDetailPage: React.FC = () => {
   const [productCoupons, setProductCoupons] = useState<Coupon[]>([]);
 
   // 使用 useMemo 缓存折扣计算
-  const discount = useMemo(() => {
-    if (!product) return 0;
-    return Math.round((product.price / product.originalPrice) * 100) / 10;
-  }, [product]);
+  
 
   // 使用 useCallback 缓存事件处理函数
   const onBannerChange = useCallback((e: any) => {

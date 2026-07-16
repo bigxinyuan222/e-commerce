@@ -323,14 +323,17 @@
       transform: scale(0.98);
     }
     
-    &[disabled] {
-      opacity: 0.6;
-    }
+    
     
     .submitText {
       font-size: $font-size-md;
       font-weight: $font-weight-semibold;
       color: #fff;
     }
+  }
+  
+  .submitBtnDisabled {
+    opacity: 0.6;
+    pointer-events: none;
   }
 }

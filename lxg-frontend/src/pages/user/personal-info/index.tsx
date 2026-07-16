@@ -28,12 +28,16 @@ const PersonalInfoPage: React.FC = () => {
           // 清除用户信息
           Taro.removeStorageSync('userInfo');
           setUserInfo({
+            id: '',
             avatar: '',
             nickname: '',
             phone: '',
             gender: '',
             birthday: '',
-            registerDate: ''
+            registerDate: '',
+            accountName: '',
+            email: '',
+            isLoggedIn: false
           });
           // 跳转到登录页面
           Taro.navigateTo({ url: '/pages/user/login/index' });
@@ -54,12 +58,16 @@ const PersonalInfoPage: React.FC = () => {
           // 清除用户信息
           Taro.removeStorageSync('userInfo');
           setUserInfo({
+            id: '',
             avatar: '',
             nickname: '',
             phone: '',
             gender: '',
             birthday: '',
-            registerDate: ''
+            registerDate: '',
+            accountName: '',
+            email: '',
+            isLoggedIn: false
           });
           // 返回首页
           Taro.switchTab({ url: '/pages/home/index' });

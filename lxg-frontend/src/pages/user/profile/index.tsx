@@ -75,7 +75,7 @@ const ProfilePage: React.FC = () => {
         <View className={styles.menuItem} onClick={() => handleMenuItemClick('消息通知')}>
           <Text className={styles.menuIcon}>🔔</Text>
           <Text className={styles.menuTitle}>消息通知</Text>
-          <Switch color="#e2231a" checked={notificationEnabled} onChange={setNotificationEnabled} />
+          <Switch color="#e2231a" checked={notificationEnabled} onClick={() => setNotificationEnabled(!notificationEnabled)} />
         </View>
         <View className={styles.menuItem} onClick={() => handleMenuItemClick('隐私设置')}>
           <Text className={styles.menuIcon}>🔒</Text>

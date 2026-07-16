@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { View, Text, Image, ScrollView } from '@tarojs/components';
 import Taro from '@tarojs/taro';
-import { getOrdersByStatus, cancelOrder, payOrder, confirmDelivery, confirmPickup, applyRefund, updateRefundStatus } from '@/data/order/orders';
+import { getOrdersByStatus, cancelOrder, payOrder, confirmDelivery, confirmPickup, updateRefundStatus } from '@/data/order/orders';
 import styles from '@/styles/cart/order-list.module.scss';
 
 // 订单状态映射

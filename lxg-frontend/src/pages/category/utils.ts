@@ -19,7 +19,7 @@ export function getCategoryIcon(categoryId: string): string {
 
 // 检查分类是否有子分类
 export function hasSubCategories(category: Category): boolean {
-  return category.children && category.children.length > 0;
+  return !!(category.children && category.children.length > 0);
 }
 
 // 获取分类层级路径

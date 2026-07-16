@@ -1,27 +1,28 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { View, Text, Image, ScrollView } from '@tarojs/components';
 import Taro from '@tarojs/taro';
-import { getBrandById } from '@/data/product/brands';
+import { getBrandById, brands } from '@/data/product/brands';
 import { products } from '@/data/product/products';
 import styles from '@/styles/home/brand-detail.module.scss';
 
-const BrandDetailPage = function() {
-  const [brand, setBrand] = useState(null);
-  const [brandProducts, setBrandProducts] = useState([]);
+type Brand = typeof brands[0];
+type Product = typeof products[0];
 
-  useEffect(function() {
-    var params = Taro.getCurrentInstance()?.router?.params;
+const BrandDetailPage: React.FC = () => {
+  const [brand, setBrand] = useState<Brand | null>(null);
+  const [brandProducts, setBrandProducts] = useState<Product[]>([]);
+
+  useEffect(() => {
+    const params = Taro.getCurrentInstance()?.router?.params;
     if (params?.id) {
-      var foundBrand = getBrandById(params.id);
-      setBrand(foundBrand);
-      var filteredProducts = products.filter(function(p) {
-        return p.brandId === params.id;
-      });
+      const foundBrand = getBrandById(params.id);
+      setBrand(foundBrand || null);
+      const filteredProducts = products.filter((p) => p.brandId === params.id);
       setBrandProducts(filteredProducts);
     }
   }, []);
 
-  const goToProductDetail = function(productId) {
+  const goToProductDetail = (productId: string) => {
     Taro.navigateTo({ url: '/pages/home/detail/index?id=' + productId });
   };
 
@@ -65,31 +66,29 @@ const BrandDetailPage = function() {
           <Text className={styles.sectionMore}>查看全部 ›</Text>
         </View>
         <View className={styles.productGrid}>
-          {brandProducts.map(function(product) {
-            return (
-              <View 
-                key={product.id} 
-                className={styles.productItem}
-                onClick={function() { goToProductDetail(product.id); }}
-              >
-                <Image 
-                  src={product.images[0]} 
-                  className={styles.productImage} 
-                  mode="aspectFill" 
-                />
-                <View className={styles.productInfo}>
-                  <Text className={styles.productName}>{product.name}</Text>
-                  <View className={styles.productPriceWrap}>
-                    <Text className={styles.productPrice}>¥{product.price}</Text>
-                    {product.originalPrice > product.price && (
-                      <Text className={styles.productOriginalPrice}>¥{product.originalPrice}</Text>
-                    )}
-                  </View>
-                  <Text className={styles.productSales}>已售 {product.sales}</Text>
+          {brandProducts.map((product) => (
+            <View 
+              key={product.id} 
+              className={styles.productItem}
+              onClick={() => goToProductDetail(product.id)}
+            >
+              <Image 
+                src={product.images[0]} 
+                className={styles.productImage} 
+                mode="aspectFill" 
+              />
+              <View className={styles.productInfo}>
+                <Text className={styles.productName}>{product.name}</Text>
+                <View className={styles.productPriceWrap}>
+                  <Text className={styles.productPrice}>¥{product.price}</Text>
+                  {product.originalPrice > product.price && (
+                    <Text className={styles.productOriginalPrice}>¥{product.originalPrice}</Text>
+                  )}
                 </View>
+                <Text className={styles.productSales}>已售 {product.sales}</Text>
               </View>
-            );
-          })}
+            </View>
+          ))}
         </View>
 
         {brandProducts.length === 0 && (

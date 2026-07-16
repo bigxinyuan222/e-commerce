@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { View, Text, Image, Input } from '@tarojs/components';
 import Taro from '@tarojs/taro';
 import { useAppContext } from '@/store/AppContext';
-import { getStoreById } from '@/data/common/stores';
+
 import { myCoupons } from '@/data/common/coupons';
 import { createOrder, OrderItem } from '@/data/order/orders';
 import styles from '@/styles/cart/checkout.module.scss';
@@ -18,7 +18,7 @@ interface BuyNowItem {
 }
 
 const CheckoutPage: React.FC = () => {
-  const { cartItems, getCartTotal, currentStore, setCurrentStore, setCartItems } = useAppContext();
+  const { cartItems, getCartTotal, currentStore, setCartItems } = useAppContext();
   const [paymentMethod, setPaymentMethod] = useState<'wechat' | 'alipay'>('wechat');
   const [selectedCoupon] = useState(myCoupons[0]);
   const [remark, setRemark] = useState('');

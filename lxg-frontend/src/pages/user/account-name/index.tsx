@@ -7,7 +7,7 @@ import styles from '@/styles/user/account-name.module.scss';
 const AccountNamePage: React.FC = () => {
   const { userInfo, setUserInfo } = useAppContext();
   const [accountName, setAccountName] = useState(userInfo?.accountName || '');
-  const [canModify, setCanModify] = useState(true);
+  const [canModify] = useState(true);
 
   const handleBack = () => {
     Taro.navigateBack();

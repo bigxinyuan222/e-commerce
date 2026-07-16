@@ -9,23 +9,23 @@ import { getRecommendedProducts } from '@/data/product/products';
 import { getHotBrands } from '@/data/product/brands';
 
 export function getBanners(): Banner[] {
-  return banners as Banner[];
+  return banners as unknown as Banner[];
 }
 
 export function getCategories(): Category[] {
-  return categories as Category[];
+  return categories as unknown as Category[];
 }
 
 export function getSeckillActivity(): SeckillActivity | null {
-  return seckillActivity as SeckillActivity;
+  return seckillActivity as unknown as SeckillActivity;
 }
 
 export function getHotBrandsList(): Brand[] {
-  return getHotBrands() as Brand[];
+  return getHotBrands() as unknown as Brand[];
 }
 
 export function getRecommendedProductsList(limit: number = 10) {
-  return getRecommendedProducts(limit);
+  return getRecommendedProducts().slice(0, limit);
 }
 
 export function calculateSeckillRemainingTime(endTime: string): { hours: number; minutes: number; seconds: number } {

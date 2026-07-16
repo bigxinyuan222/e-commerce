@@ -2,7 +2,7 @@
 // 首页 - 工具函数
 // ============================================
 
-import { SeckillProduct, Brand } from './types';
+
 
 export function formatSeckillPrice(price: number): string {
   return `¥${price.toFixed(0)}`;

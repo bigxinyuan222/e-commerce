@@ -155,7 +155,7 @@ const SearchResultsPage: React.FC = () => {
           <Input
             className={styles.searchInput}
             value={inputValue}
-            onChange={handleInput}
+            onInput={handleInput}
             placeholder="搜索商品"
             confirmType="search"
             onConfirm={handleSearch}
@@ -218,7 +218,7 @@ const SearchResultsPage: React.FC = () => {
                   placeholder="最低价"
                   type="number"
                   value={filter.minPrice}
-                  onChange={(e) => setFilter(prev => ({ ...prev, minPrice: e.detail.value }))}
+                  onInput={(e: any) => setFilter(prev => ({ ...prev, minPrice: e.detail.value }))}
                 />
                 <Text className={styles.priceSeparator}>~</Text>
                 <Input 
@@ -226,7 +226,7 @@ const SearchResultsPage: React.FC = () => {
                   placeholder="最高价"
                   type="number"
                   value={filter.maxPrice}
-                  onChange={(e) => setFilter(prev => ({ ...prev, maxPrice: e.detail.value }))}
+                  onInput={(e: any) => setFilter(prev => ({ ...prev, maxPrice: e.detail.value }))}
                 />
               </View>
             </View>

@@ -6,7 +6,13 @@ export const userInfo = {
   id: 'user-1',
   nickname: '乐享购用户',
   avatar: 'https://picsum.photos/id/64/200/200',
-  phone: '138****8888'
+  phone: '138****8888',
+  accountName: '乐享购用户',
+  registerDate: '2024-01-15',
+  gender: '保密',
+  birthday: '请填写您的生日',
+  email: '',
+  isLoggedIn: true
 };
 
 export const addresses = [

@@ -5,7 +5,7 @@ import { seckillProducts } from '@/data/common/home';
 import styles from '@/styles/home/seckill.module.scss';
 
 const SeckillPage: React.FC = () => {
-  const [timeLeft, setTimeLeft] = useState({
+  const [, setTimeLeft] = useState({
     hours: 0,
     minutes: 0,
     seconds: 0

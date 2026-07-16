@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, Image, ScrollView } from '@tarojs/components';
 import Taro from '@tarojs/taro';
-import { getOrderById, confirmPickup, payOrder, applyRefund, cancelOrder, confirmDelivery } from '@/data/order/orders';
+import { getOrderById, confirmPickup, payOrder, cancelOrder, confirmDelivery } from '@/data/order/orders';
 import styles from '@/styles/cart/order-detail.module.scss';
 
 const OrderDetailPage: React.FC = () => {
