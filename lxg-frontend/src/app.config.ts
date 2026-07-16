@@ -6,32 +6,32 @@ export default defineAppConfig({
     'pages/message/index',
     'pages/cart/index',
     'pages/user/mine/index',
-    // 商品模块
-    'pages/product/detail/index',
-    'pages/product/evaluations/index',
-    'pages/product/search/index',
-    'pages/product/search-results/index',
-    'pages/product/seckill/index',
-    'pages/product/brands/index',
-    'pages/product/brand-detail/index',
+    // 首页模块（商品相关）
+    'pages/home/detail/index',
+    'pages/home/evaluations/index',
+    'pages/home/search/index',
+    'pages/home/search-results/index',
+    'pages/home/seckill/index',
+    'pages/home/brands/index',
+    'pages/home/brand-detail/index',
     // 购物车模块
     'pages/cart/checkout/index',
-    // 订单模块
-    'pages/order/list/index',
-    'pages/order/detail/index',
-    'pages/order/refund/index',
-    'pages/order/review/index',
-    'pages/order/return/index',
+    // 订单模块（购物车下单后）
+    'pages/cart/order/list/index',
+    'pages/cart/order/detail/index',
+    'pages/cart/order/refund/index',
+    'pages/cart/order/review/index',
+    'pages/cart/order/return/index',
     // 用户模块
     'pages/user/login/index',
     'pages/user/profile/index',
     'pages/user/personal-info/index',
     'pages/user/account-name/index',
     'pages/user/coupons/index',
-    // 客服模块
-    'pages/customer-service/index',
-    // 门店模块
-    'pages/store/stores/index',
+    // 消息模块（客服）
+    'pages/message/customer-service/index',
+    // 分类模块（门店）
+    'pages/category/stores/index',
   ],
   window: {
     backgroundTextStyle: 'light',
