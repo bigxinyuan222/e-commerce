@@ -32,6 +32,56 @@ function getReasonBadge(reasonType) {
 let currentReturnSearchKeyword = '';
 let currentReturnStatusFilter = 'all';
 let currentReturnStoreFilter = 'all';
+let currentReturnPage = 1;
+let returnPageSize = 5;
+
+let returnReasonsData = [
+    { id: 'quality', name: '质量问题', type: 'quality', color: '#dc2626', bgColor: '#fee2e2', sort: 1, status: 'active' },
+    { id: 'wrong_item', name: '发错货', type: 'wrong_item', color: '#e65100', bgColor: '#fff3e0', sort: 2, status: 'active' },
+    { id: 'no_need', name: '不想要了', type: 'no_need', color: '#7b1fa2', bgColor: '#f3e5f5', sort: 3, status: 'active' },
+    { id: 'damaged', name: '商品损坏', type: 'damaged', color: '#c62828', bgColor: '#ffebee', sort: 4, status: 'active' },
+    { id: 'other', name: '其他', type: 'other', color: '#64748b', bgColor: '#e2e8f0', sort: 5, status: 'active' }
+];
+
+let returnReasonTab = null;
+
+let useMockData = true;
+
+async function fetchReturnsData() {
+    if (useMockData) {
+        return returnsData;
+    }
+    
+    try {
+        const params = {
+            page: currentReturnPage,
+            pageSize: returnPageSize,
+            status: currentReturnStatusFilter === 'all' ? '' : currentReturnStatusFilter,
+            storeName: currentReturnStoreFilter === 'all' ? '' : currentReturnStoreFilter,
+            keyword: currentReturnSearchKeyword,
+            storeId: currentUser.storeId || ''
+        };
+        const result = await apiGet(API_CONFIG.returns.list, params);
+        return result.data || [];
+    } catch (error) {
+        console.error('获取退款列表失败:', error);
+        return returnsData;
+    }
+}
+
+async function fetchReturnReasons() {
+    if (useMockData) {
+        return returnReasonsData;
+    }
+    
+    try {
+        const result = await apiGet(API_CONFIG.returns.reasonList);
+        return result.data || [];
+    } catch (error) {
+        console.error('获取退货原因失败:', error);
+        return returnReasonsData;
+    }
+}
 
 function getReturnStats() {
     const returns = currentUser.storeId ? returnsData.filter(r => r.storeId === currentUser.storeId) : returnsData;
@@ -73,39 +123,69 @@ function searchReturns() {
     const input = document.getElementById('returnSearchInput');
     if (input) {
         currentReturnSearchKeyword = input.value.trim();
+        currentReturnPage = 1;
         refreshReturnsPage();
     }
 }
 
 function switchReturnStatus(status) {
     currentReturnStatusFilter = status;
+    currentReturnPage = 1;
     refreshReturnsPage();
 }
 
 function switchReturnStore(store) {
     currentReturnStoreFilter = store;
+    currentReturnPage = 1;
     refreshReturnsPage();
 }
 
-function handleReturnAction(returnId, action) {
+async function handleReturnAction(returnId, action) {
     const ret = returnsData.find(r => r.id === returnId);
     if (!ret) return;
     
     if (action === 'approve') {
+        if (!useMockData) {
+            try {
+                await apiPut(API_CONFIG.returns.approve, { status: 1 }, { id: returnId });
+            } catch (error) {
+                console.error('审核通过失败:', error);
+                return;
+            }
+        }
         ret.status = 'approved';
         ret.statusText = '已通过';
         ret.auditTime = new Date().toISOString().replace('T', ' ').substring(0, 19);
         alert('审核通过！请通知用户寄回商品，门店收货确认后财务将执行打款。');
+        refreshReturnsPage();
     } else if (action === 'reject') {
         const opinion = prompt('请输入拒绝原因：');
         if (!opinion) return;
+        
+        if (!useMockData) {
+            try {
+                await apiPut(API_CONFIG.returns.reject, { status: 2, audit_remark: opinion }, { id: returnId });
+            } catch (error) {
+                console.error('审核拒绝失败:', error);
+                return;
+            }
+        }
         ret.status = 'rejected';
         ret.statusText = '已拒绝';
         ret.auditOpinion = opinion;
         ret.auditTime = new Date().toISOString().replace('T', ' ').substring(0, 19);
         alert('审核已拒绝，系统将通知用户。');
+        refreshReturnsPage();
     } else if (action === 'refund') {
-        showConfirm('确定执行退款吗？此操作不可撤销。', function() {
+        showConfirm('确定执行退款吗？此操作不可撤销。', async function() {
+            if (!useMockData) {
+                try {
+                    await apiPut(API_CONFIG.returns.confirmRefund, {}, { id: returnId });
+                } catch (error) {
+                    console.error('执行退款失败:', error);
+                    return;
+                }
+            }
             ret.status = 'refunded';
             ret.statusText = '已完成';
             ret.refundTime = new Date().toISOString().replace('T', ' ').substring(0, 19);
@@ -293,11 +373,19 @@ function refreshReturnsPage() {
     if (panel) panel.innerHTML = returnsPage();
 }
 
+function setReturnPage(page) {
+    currentReturnPage = page;
+    refreshReturnsPage();
+}
+
 function returnsPage() {
     const stats = getReturnStats();
     const isStoreStaff = currentUser.role === 'store_staff';
     const filteredReturns = filterReturns();
     const totalReturns = filteredReturns.length;
+    const totalPages = Math.ceil(totalReturns / returnPageSize);
+    const startIndex = (currentReturnPage - 1) * returnPageSize;
+    const pageReturns = filteredReturns.slice(startIndex, startIndex + returnPageSize);
     
     const qualityCount = filteredReturns.filter(r => r.reasonType === 'quality').length;
     const wrongItemCount = filteredReturns.filter(r => r.reasonType === 'wrong_item').length;
@@ -359,7 +447,7 @@ function returnsPage() {
                 <div class="card-body no-pad"><div class="table-wrap"><table>
                     <thead><tr><th>退款单号</th><th>关联订单</th><th>商品</th><th>用户</th><th>退款金额</th><th>原因</th><th>门店</th><th>状态</th><th>申请时间</th><th>操作</th></tr></thead>
                     <tbody>
-                        ${filteredReturns.map(ret => `
+                        ${pageReturns.map(ret => `
                             <tr>
                                 <td>${ret.id}</td>
                                 <td>${ret.orderId}</td>
@@ -384,6 +472,27 @@ function returnsPage() {
                         `).join('')}
                     </tbody>
                 </table></div></div>
+                ${totalPages > 1 ? `
+                <div class="card-footer">
+                    <div style="display:flex;align-items:center;justify-content:center;gap:6px;">
+                        <button onclick="setReturnPage(1)" ${currentReturnPage === 1 ? 'disabled' : ''} style="width:32px;height:32px;border-radius:50%;border:none;background:#fff;border:1px solid #e2e8f0;color:#64748b;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;transition:all 0.2s;${currentReturnPage === 1 ? 'opacity:0.5;cursor:not-allowed;' : ''}" onmouseover="if(!this.disabled) this.style.borderColor='#4f6ef7';this.style.color='#4f6ef7'" onmouseout="if(!this.disabled) this.style.borderColor='#e2e8f0';this.style.color='#64748b'">
+                            <i class="fas fa-angle-double-left"></i>
+                        </button>
+                        <button onclick="setReturnPage(${currentReturnPage - 1})" ${currentReturnPage === 1 ? 'disabled' : ''} style="width:32px;height:32px;border-radius:50%;border:none;background:#fff;border:1px solid #e2e8f0;color:#64748b;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;transition:all 0.2s;${currentReturnPage === 1 ? 'opacity:0.5;cursor:not-allowed;' : ''}" onmouseover="if(!this.disabled) this.style.borderColor='#4f6ef7';this.style.color='#4f6ef7'" onmouseout="if(!this.disabled) this.style.borderColor='#e2e8f0';this.style.color='#64748b'">
+                            <i class="fas fa-angle-left"></i>
+                        </button>
+                        ${Array.from({ length: totalPages }, (_, i) => i + 1).map(p => `
+                            <button onclick="setReturnPage(${p})" style="width:32px;height:32px;border-radius:50%;border:none;color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:500;transition:all 0.2s;${p === currentReturnPage ? 'background:#4f6ef7;' : 'background:#fff;border:1px solid #e2e8f0;color:#64748b;'};" onmouseover="${p !== currentReturnPage ? 'this.style.borderColor=\'#4f6ef7\';this.style.color=\'#4f6ef7\'' : ''}" onmouseout="${p !== currentReturnPage ? 'this.style.borderColor=\'#e2e8f0\';this.style.color=\'#64748b\'' : ''}">${p}</button>
+                        `).join('')}
+                        <button onclick="setReturnPage(${currentReturnPage + 1})" ${currentReturnPage === totalPages ? 'disabled' : ''} style="width:32px;height:32px;border-radius:50%;border:none;background:#fff;border:1px solid #e2e8f0;color:#64748b;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;transition:all 0.2s;${currentReturnPage === totalPages ? 'opacity:0.5;cursor:not-allowed;' : ''}" onmouseover="if(!this.disabled) this.style.borderColor='#4f6ef7';this.style.color='#4f6ef7'" onmouseout="if(!this.disabled) this.style.borderColor='#e2e8f0';this.style.color='#64748b'">
+                            <i class="fas fa-angle-right"></i>
+                        </button>
+                        <button onclick="setReturnPage(${totalPages})" ${currentReturnPage === totalPages ? 'disabled' : ''} style="width:32px;height:32px;border-radius:50%;border:none;background:#fff;border:1px solid #e2e8f0;color:#64748b;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;transition:all 0.2s;${currentReturnPage === totalPages ? 'opacity:0.5;cursor:not-allowed;' : ''}" onmouseover="if(!this.disabled) this.style.borderColor='#4f6ef7';this.style.color='#4f6ef7'" onmouseout="if(!this.disabled) this.style.borderColor='#e2e8f0';this.style.color='#64748b'">
+                            <i class="fas fa-angle-double-right"></i>
+                        </button>
+                    </div>
+                    <span style="font-size:13px;color:#64748b;">共 ${totalReturns} 条记录，第 ${currentReturnPage}/${totalPages} 页</span>
+                </div>` : ''}
             </div>
 
             <div style="display:flex;flex-direction:column;gap:12px;">
@@ -472,7 +581,241 @@ function returnsPage() {
                         </div>
                     </div>
                 </div>
+
+                <div class="card" onclick="showReturnReasonConfig()" style="cursor:pointer;">
+                    <div class="card-header">
+                        <span class="card-title"><i class="fas fa-cog"></i> 退货原因配置</span>
+                        <i class="fas fa-arrow-right" style="color:#4f6ef7;font-size:14px;"></i>
+                    </div>
+                    <div class="card-body">
+                        <div style="display:flex;flex-direction:column;gap:6px;">
+                            <div style="display:flex;justify-content:space-between;align-items:center;">
+                                <span style="font-size:13px;color:#64748b;">当前可用原因</span>
+                                <span style="font-size:14px;font-weight:600;color:#4f6ef7;">${returnReasonsData.filter(r => r.status === 'active').length} 个</span>
+                            </div>
+                            <div style="display:flex;flex-wrap:gap:4px;">
+                                ${returnReasonsData.filter(r => r.status === 'active').slice(0, 4).map(r => `<span style="display:inline-block;padding:3px 8px;border-radius:4px;font-size:12px;color:${r.color};background:${r.bgColor};margin-right:4px;">${r.name}</span>`).join('')}
+                                ${returnReasonsData.filter(r => r.status === 'active').length > 4 ? `<span style="font-size:12px;color:#94a3b8;">+${returnReasonsData.filter(r => r.status === 'active').length - 4}</span>` : ''}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        ${showReturnReasonConfigModal()}
+    `;
+}
+
+function showReturnReasonConfig() {
+    returnReasonTab = 'list';
+    refreshReturnsPage();
+}
+
+function switchReturnReasonTab(tab) {
+    returnReasonTab = tab;
+    refreshReturnsPage();
+}
+
+function closeReturnReasonConfig() {
+    returnReasonTab = null;
+    refreshReturnsPage();
+}
+
+function showReturnReasonConfigModal() {
+    if (!returnReasonTab) return '';
+    
+    const activeReasons = returnReasonsData.filter(r => r.status === 'active');
+    
+    if (returnReasonTab === 'add') {
+        return `
+            <div class="modal-overlay" onclick="closeReturnReasonConfig()">
+                <div class="modal-content" style="width:500px;" onclick="event.stopPropagation()">
+                    <div class="modal-header">
+                        <h3><i class="fas fa-plus"></i> 新增退货原因</h3>
+                        <button class="modal-close" onclick="closeReturnReasonConfig()"><i class="fas fa-times"></i></button>
+                    </div>
+                    <div class="modal-body">
+                        <div style="display:flex;flex-direction:column;gap:12px;">
+                            <div><label style="display:block;font-size:13px;color:#64748b;margin-bottom:4px;">原因名称 <span style="color:#ef4444;">*</span></label><input type="text" id="newReasonName" placeholder="请输入原因名称" style="width:100%;padding:8px 12px;border:1px solid #e2e8f0;border-radius:6px;font-size:13px;outline:none;" /></div>
+                            <div><label style="display:block;font-size:13px;color:#64748b;margin-bottom:4px;">显示颜色</label><input type="color" id="newReasonColor" value="#64748b" style="width:100%;height:40px;border:1px solid #e2e8f0;border-radius:6px;cursor:pointer;" /></div>
+                            <div><label style="display:block;font-size:13px;color:#64748b;margin-bottom:4px;">排序</label><input type="number" id="newReasonSort" value="${returnReasonsData.length + 1}" min="1" style="width:100%;padding:8px 12px;border:1px solid #e2e8f0;border-radius:6px;font-size:13px;outline:none;" /></div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-outline" onclick="closeReturnReasonConfig()">取消</button>
+                        <button class="btn btn-primary" onclick="addReturnReason()">确认添加</button>
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+    
+    if (returnReasonTab.startsWith('edit_')) {
+        const reasonId = returnReasonTab.replace('edit_', '');
+        const reason = returnReasonsData.find(r => r.id === reasonId);
+        if (!reason) return '';
+        
+        return `
+            <div class="modal-overlay" onclick="closeReturnReasonConfig()">
+                <div class="modal-content" style="width:500px;" onclick="event.stopPropagation()">
+                    <div class="modal-header">
+                        <h3><i class="fas fa-edit"></i> 编辑退货原因</h3>
+                        <button class="modal-close" onclick="closeReturnReasonConfig()"><i class="fas fa-times"></i></button>
+                    </div>
+                    <div class="modal-body">
+                        <div style="display:flex;flex-direction:column;gap:12px;">
+                            <div><label style="display:block;font-size:13px;color:#64748b;margin-bottom:4px;">原因名称 <span style="color:#ef4444;">*</span></label><input type="text" id="editReasonName" value="${reason.name}" placeholder="请输入原因名称" style="width:100%;padding:8px 12px;border:1px solid #e2e8f0;border-radius:6px;font-size:13px;outline:none;" /></div>
+                            <div><label style="display:block;font-size:13px;color:#64748b;margin-bottom:4px;">显示颜色</label><input type="color" id="editReasonColor" value="${reason.color}" style="width:100%;height:40px;border:1px solid #e2e8f0;border-radius:6px;cursor:pointer;" /></div>
+                            <div><label style="display:block;font-size:13px;color:#64748b;margin-bottom:4px;">排序</label><input type="number" id="editReasonSort" value="${reason.sort}" min="1" style="width:100%;padding:8px 12px;border:1px solid #e2e8f0;border-radius:6px;font-size:13px;outline:none;" /></div>
+                            <div><label style="display:block;font-size:13px;color:#64748b;margin-bottom:8px;">状态</label><div style="display:flex;gap:16px;"><label style="display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer;"><input type="radio" name="editReasonStatus" ${reason.status === 'active' ? 'checked' : ''} />启用</label><label style="display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer;"><input type="radio" name="editReasonStatus" ${reason.status === 'inactive' ? 'checked' : ''} />禁用</label></div></div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-outline" onclick="closeReturnReasonConfig()">取消</button>
+                        <button class="btn btn-primary" onclick="editReturnReason('${reason.id}')">保存修改</button>
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+    
+    return `
+        <div class="modal-overlay" onclick="closeReturnReasonConfig()">
+            <div class="modal-content" style="width:700px;" onclick="event.stopPropagation()">
+                <div class="modal-header">
+                    <h3><i class="fas fa-cog"></i> 退货原因配置</h3>
+                    <button class="modal-close" onclick="closeReturnReasonConfig()"><i class="fas fa-times"></i></button>
+                </div>
+                <div class="modal-body">
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+                        <span style="font-size:13px;color:#64748b;">当前可用 ${activeReasons.length} 个退货原因</span>
+                        <button class="btn btn-sm btn-primary" onclick="switchReturnReasonTab('add')"><i class="fas fa-plus"></i> 新增原因</button>
+                    </div>
+                    <div class="table-wrap"><table>
+                        <thead><tr><th>排序</th><th>原因名称</th><th>显示颜色</th><th>状态</th><th>操作</th></tr></thead>
+                        <tbody>
+                            ${returnReasonsData.sort((a, b) => a.sort - b.sort).map(r => `
+                                <tr>
+                                    <td>${r.sort}</td>
+                                    <td>${r.name}</td>
+                                    <td><span style="display:inline-block;width:24px;height:24px;border-radius:4px;background:${r.color};vertical-align:middle;"></span></td>
+                                    <td>${r.status === 'active' ? '<span class="tag" style="color:#22c55e;background:#dcfce7;">启用</span>' : '<span class="tag" style="color:#94a3b8;background:#f1f5f9;">禁用</span>'}</td>
+                                    <td>
+                                        <button class="btn btn-sm btn-outline" onclick="switchReturnReasonTab('edit_${r.id}')"><i class="fas fa-edit"></i> 编辑</button>
+                                        <button class="btn btn-sm ${r.status === 'active' ? 'btn-warning' : 'btn-success'}" onclick="toggleReturnReason('${r.id}')">${r.status === 'active' ? '<i class="fas fa-ban"></i> 禁用' : '<i class="fas fa-check"></i> 启用'}</button>
+                                    </td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table></div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-primary" onclick="closeReturnReasonConfig()">关闭</button>
+                </div>
             </div>
         </div>
     `;
+}
+
+async function addReturnReason() {
+    const nameInput = document.getElementById('newReasonName');
+    const colorInput = document.getElementById('newReasonColor');
+    const sortInput = document.getElementById('newReasonSort');
+    
+    const name = nameInput?.value.trim();
+    const color = colorInput?.value || '#64748b';
+    const sort = parseInt(sortInput?.value) || returnReasonsData.length + 1;
+    
+    if (!name) {
+        alert('请输入原因名称');
+        return;
+    }
+    
+    const bgColor = hexToRgba(color, 0.1);
+    
+    if (!useMockData) {
+        try {
+            await apiPost(API_CONFIG.returns.reasonAdd, { content: name, sort });
+        } catch (error) {
+            console.error('添加退货原因失败:', error);
+            return;
+        }
+    }
+    
+    returnReasonsData.push({
+        id: `reason_${Date.now()}`,
+        name,
+        type: `reason_${Date.now()}`,
+        color,
+        bgColor,
+        sort,
+        status: 'active'
+    });
+    
+    alert('添加成功');
+    closeReturnReasonConfig();
+}
+
+async function editReturnReason(reasonId) {
+    const nameInput = document.getElementById('editReasonName');
+    const colorInput = document.getElementById('editReasonColor');
+    const sortInput = document.getElementById('editReasonSort');
+    const statusInputs = document.querySelectorAll('input[name="editReasonStatus"]');
+    
+    const name = nameInput?.value.trim();
+    const color = colorInput?.value || '#64748b';
+    const sort = parseInt(sortInput?.value) || 1;
+    const status = Array.from(statusInputs).find(i => i.checked) ? 'active' : 'inactive';
+    
+    if (!name) {
+        alert('请输入原因名称');
+        return;
+    }
+    
+    if (!useMockData) {
+        try {
+            await apiPut(API_CONFIG.returns.reasonEdit, { content: name, sort }, { id: reasonId });
+        } catch (error) {
+            console.error('编辑退货原因失败:', error);
+            return;
+        }
+    }
+    
+    const reason = returnReasonsData.find(r => r.id === reasonId);
+    if (reason) {
+        reason.name = name;
+        reason.color = color;
+        reason.bgColor = hexToRgba(color, 0.1);
+        reason.sort = sort;
+        reason.status = status;
+        alert('修改成功');
+    }
+    
+    closeReturnReasonConfig();
+}
+
+async function toggleReturnReason(reasonId) {
+    const reason = returnReasonsData.find(r => r.id === reasonId);
+    if (reason) {
+        const newStatus = reason.status === 'active' ? 'inactive' : 'active';
+        
+        if (!useMockData) {
+            try {
+                await apiDelete(API_CONFIG.returns.reasonDelete, {}, { id: reasonId });
+            } catch (error) {
+                console.error('删除退货原因失败:', error);
+                return;
+            }
+        }
+        
+        reason.status = newStatus;
+        refreshReturnsPage();
+    }
+}
+
+function hexToRgba(hex, alpha) {
+    const r = parseInt(hex.slice(1, 3), 16);
+    const g = parseInt(hex.slice(3, 5), 16);
+    const b = parseInt(hex.slice(5, 7), 16);
+    return `rgba(${r}, ${g}, ${b}, ${alpha})`;
 }

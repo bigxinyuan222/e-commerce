@@ -28,6 +28,8 @@ function getStatusBadge(status) {
 let currentCouponSearchKeyword = '';
 let currentCouponStatusFilter = 'all';
 let currentCouponTypeFilter = 'all';
+let currentCouponPage = 1;
+let couponPageSize = 5;
 
 function getTypeBadge(type) {
     const colors = { discount: 'primary', voucher: '', discount_rate: '' };
@@ -59,17 +61,25 @@ function searchCoupons() {
     const input = document.getElementById('couponSearchInput');
     if (input) {
         currentCouponSearchKeyword = input.value.trim();
+        currentCouponPage = 1;
         refreshCouponsPage();
     }
 }
 
 function switchCouponStatus(status) {
     currentCouponStatusFilter = status;
+    currentCouponPage = 1;
     refreshCouponsPage();
 }
 
 function switchCouponType(type) {
     currentCouponTypeFilter = type;
+    currentCouponPage = 1;
+    refreshCouponsPage();
+}
+
+function setCouponPage(page) {
+    currentCouponPage = page;
     refreshCouponsPage();
 }
 
@@ -380,6 +390,10 @@ function couponsPage() {
     const totalReceived = couponsData.reduce((sum, c) => sum + c.receivedQuantity, 0);
     const usageRate = totalReceived > 0 ? Math.round((couponsData.reduce((sum, c) => sum + c.usedQuantity, 0) / totalReceived) * 100) : 0;
     const filteredCoupons = filterCoupons();
+    const totalCoupons = filteredCoupons.length;
+    const totalPages = Math.ceil(totalCoupons / couponPageSize);
+    const startIndex = (currentCouponPage - 1) * couponPageSize;
+    const pageCoupons = filteredCoupons.slice(startIndex, startIndex + couponPageSize);
     
     return `
         <style>
@@ -426,7 +440,7 @@ function couponsPage() {
                     <div class="table-wrap"><table>
                         <thead><tr><th>名称</th><th>类型</th><th>优惠</th><th>门槛</th><th>有效期</th><th>适用范围</th><th>发放数量</th><th>已使用</th><th>状态</th><th>操作</th></tr></thead>
                         <tbody>
-                            ${filteredCoupons.map(coupon => `
+                            ${pageCoupons.map(coupon => `
                                 <tr>
                                     <td>${coupon.name}</td>
                                     <td>${getTypeBadge(coupon.type)}</td>
@@ -452,6 +466,27 @@ function couponsPage() {
                         </tbody>
                     </table></div>
                 </div>
+                ${totalPages > 1 ? `
+                <div class="card-footer">
+                    <div style="display:flex;align-items:center;justify-content:center;gap:6px;">
+                        <button onclick="setCouponPage(1)" ${currentCouponPage === 1 ? 'disabled' : ''} style="width:32px;height:32px;border-radius:50%;border:none;background:#fff;border:1px solid #e2e8f0;color:#64748b;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;transition:all 0.2s;${currentCouponPage === 1 ? 'opacity:0.5;cursor:not-allowed;' : ''}" onmouseover="if(!this.disabled) this.style.borderColor='#4f6ef7';this.style.color='#4f6ef7'" onmouseout="if(!this.disabled) this.style.borderColor='#e2e8f0';this.style.color='#64748b'">
+                            <i class="fas fa-angle-double-left"></i>
+                        </button>
+                        <button onclick="setCouponPage(${currentCouponPage - 1})" ${currentCouponPage === 1 ? 'disabled' : ''} style="width:32px;height:32px;border-radius:50%;border:none;background:#fff;border:1px solid #e2e8f0;color:#64748b;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;transition:all 0.2s;${currentCouponPage === 1 ? 'opacity:0.5;cursor:not-allowed;' : ''}" onmouseover="if(!this.disabled) this.style.borderColor='#4f6ef7';this.style.color='#4f6ef7'" onmouseout="if(!this.disabled) this.style.borderColor='#e2e8f0';this.style.color='#64748b'">
+                            <i class="fas fa-angle-left"></i>
+                        </button>
+                        ${Array.from({ length: totalPages }, (_, i) => i + 1).map(p => `
+                            <button onclick="setCouponPage(${p})" style="width:32px;height:32px;border-radius:50%;border:none;color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:500;transition:all 0.2s;${p === currentCouponPage ? 'background:#4f6ef7;' : 'background:#fff;border:1px solid #e2e8f0;color:#64748b;'};" onmouseover="${p !== currentCouponPage ? 'this.style.borderColor=\'#4f6ef7\';this.style.color=\'#4f6ef7\'' : ''}" onmouseout="${p !== currentCouponPage ? 'this.style.borderColor=\'#e2e8f0\';this.style.color=\'#64748b\'' : ''}">${p}</button>
+                        `).join('')}
+                        <button onclick="setCouponPage(${currentCouponPage + 1})" ${currentCouponPage === totalPages ? 'disabled' : ''} style="width:32px;height:32px;border-radius:50%;border:none;background:#fff;border:1px solid #e2e8f0;color:#64748b;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;transition:all 0.2s;${currentCouponPage === totalPages ? 'opacity:0.5;cursor:not-allowed;' : ''}" onmouseover="if(!this.disabled) this.style.borderColor='#4f6ef7';this.style.color='#4f6ef7'" onmouseout="if(!this.disabled) this.style.borderColor='#e2e8f0';this.style.color='#64748b'">
+                            <i class="fas fa-angle-right"></i>
+                        </button>
+                        <button onclick="setCouponPage(${totalPages})" ${currentCouponPage === totalPages ? 'disabled' : ''} style="width:32px;height:32px;border-radius:50%;border:none;background:#fff;border:1px solid #e2e8f0;color:#64748b;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;transition:all 0.2s;${currentCouponPage === totalPages ? 'opacity:0.5;cursor:not-allowed;' : ''}" onmouseover="if(!this.disabled) this.style.borderColor='#4f6ef7';this.style.color='#4f6ef7'" onmouseout="if(!this.disabled) this.style.borderColor='#e2e8f0';this.style.color='#64748b'">
+                            <i class="fas fa-angle-double-right"></i>
+                        </button>
+                    </div>
+                    <span style="font-size:13px;color:#64748b;">共 ${totalCoupons} 条记录，第 ${currentCouponPage}/${totalPages} 页</span>
+                </div>` : ''}
             </div>
 
             <div style="display:flex;flex-direction:column;gap:12px;">
