@@ -1,4 +1,0 @@
-export default definePageConfig({
-  navigationBarTitleText: '客服中心',
-  enablePullDownRefresh: false
-})

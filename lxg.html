@@ -1,0 +1,1192 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>乐享购后台 · 运营端</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <style>
+        /* ===== 全局重置 ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+        }
+        body {
+            background: #f0f2f6;
+            color: #1e293b;
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+        ::-webkit-scrollbar {
+            width: 5px;
+            height: 5px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 8px;
+        }
+
+        /* ===== 侧边栏 ===== */
+        .sidebar {
+            width: 220px;
+            height: 100vh;
+            background: #ffffff;
+            border-right: 1px solid #e2e8f0;
+            display: flex;
+            flex-direction: column;
+            flex-shrink: 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .sidebar-brand {
+            height: 60px;
+            display: flex;
+            align-items: center;
+            padding: 0 20px;
+            gap: 10px;
+            border-bottom: 1px solid #e2e8f0;
+            flex-shrink: 0;
+        }
+        .sidebar-brand .brand-icon {
+            width: 32px;
+            height: 32px;
+            background: #4f6ef7;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-weight: 700;
+            font-size: 16px;
+        }
+        .sidebar-brand .brand-text {
+            font-size: 18px;
+            font-weight: 700;
+            color: #1e293b;
+        }
+        .sidebar-brand .brand-text span {
+            color: #4f6ef7;
+        }
+        .sidebar-nav {
+            flex: 1;
+            overflow-y: auto;
+            padding: 12px 10px 20px;
+        }
+        .sidebar-nav .menu-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 14px;
+            border-radius: 6px;
+            color: #64748b;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: 0.2s;
+            margin-bottom: 2px;
+        }
+        .sidebar-nav .menu-item i {
+            width: 18px;
+            font-size: 15px;
+            text-align: center;
+        }
+        .sidebar-nav .menu-item:hover {
+            background: #f1f4f9;
+            color: #1e293b;
+        }
+        .sidebar-nav .menu-item.active {
+            background: #eef1ff;
+            color: #4f6ef7;
+            font-weight: 600;
+        }
+        .sidebar-nav .menu-label {
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #94a3b8;
+            padding: 12px 14px 4px;
+        }
+
+        /* ===== 主区域 ===== */
+        .main-wrapper {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow: hidden;
+            min-width: 0;
+        }
+
+        /* ===== 顶部导航 ===== */
+        .header {
+            height: 60px;
+            background: #ffffff;
+            border-bottom: 1px solid #e2e8f0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 28px;
+            flex-shrink: 0;
+        }
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 24px;
+        }
+        .header-left .breadcrumb {
+            font-size: 14px;
+            color: #64748b;
+        }
+        .header-left .breadcrumb span {
+            color: #1e293b;
+            font-weight: 600;
+        }
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        .header-right .icon-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border: none;
+            background: transparent;
+            color: #64748b;
+            font-size: 16px;
+            cursor: pointer;
+            transition: 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+        .header-right .icon-btn:hover {
+            background: #f1f4f9;
+        }
+        .header-right .icon-btn .dot {
+            width: 7px;
+            height: 7px;
+            background: #ef4444;
+            border-radius: 50%;
+            position: absolute;
+            top: 6px;
+            right: 6px;
+            border: 2px solid #fff;
+        }
+        .header-right .admin-profile {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 4px 12px 4px 4px;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .header-right .admin-profile:hover {
+            background: #f1f4f9;
+        }
+        .header-right .admin-profile .avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: #4f6ef7;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 13px;
+        }
+        .header-right .admin-profile .info {
+            line-height: 1.3;
+        }
+        .header-right .admin-profile .info .name {
+            font-size: 14px;
+            font-weight: 600;
+        }
+        .header-right .admin-profile .info .role {
+            font-size: 12px;
+            color: #94a3b8;
+        }
+
+        /* ===== 内容区 ===== */
+        .content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 24px 28px 40px;
+        }
+        .page-panel {
+            display: none;
+            animation: fadeUp 0.3s ease;
+        }
+        .page-panel.active {
+            display: block;
+        }
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* ===== 组件 ===== */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 18px;
+            margin-bottom: 24px;
+        }
+        .stat-card {
+            background: #ffffff;
+            border-radius: 10px;
+            padding: 18px 20px;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+            transition: 0.2s;
+        }
+        .stat-card:hover {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+        }
+        .stat-card .label {
+            font-size: 13px;
+            color: #64748b;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .stat-card .label i {
+            color: #4f6ef7;
+        }
+        .stat-card .value {
+            font-size: 26px;
+            font-weight: 700;
+            margin-top: 6px;
+            letter-spacing: -0.3px;
+        }
+        .stat-card .sub {
+            font-size: 13px;
+            color: #94a3b8;
+            margin-top: 4px;
+        }
+
+        .card {
+            background: #ffffff;
+            border-radius: 10px;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+            overflow: hidden;
+            margin-bottom: 24px;
+        }
+        .card-header {
+            padding: 14px 20px;
+            border-bottom: 1px solid #e2e8f0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 8px;
+            background: #fafbfc;
+        }
+        .card-header .card-title {
+            font-size: 15px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .card-header .card-title i {
+            color: #4f6ef7;
+        }
+        .card-body {
+            padding: 16px 20px;
+        }
+        .card-body.no-pad {
+            padding: 0;
+        }
+        .card-body .table-wrap {
+            overflow-x: auto;
+        }
+
+        .btn {
+            padding: 6px 16px;
+            border-radius: 6px;
+            border: none;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .btn-primary {
+            background: #4f6ef7;
+            color: #fff;
+        }
+        .btn-primary:hover {
+            background: #3a56d4;
+        }
+        .btn-success {
+            background: #22c55e;
+            color: #fff;
+        }
+        .btn-success:hover {
+            background: #16a34a;
+        }
+        .btn-danger {
+            background: #ef4444;
+            color: #fff;
+        }
+        .btn-danger:hover {
+            background: #dc2626;
+        }
+        .btn-outline {
+            background: transparent;
+            color: #64748b;
+            border: 1px solid #e2e8f0;
+        }
+        .btn-outline:hover {
+            background: #f1f4f9;
+        }
+        .btn-sm {
+            padding: 3px 12px;
+            font-size: 12px;
+        }
+
+        .search-bar {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        .search-bar input,
+        .search-bar select {
+            padding: 6px 14px;
+            border-radius: 6px;
+            border: 1px solid #e2e8f0;
+            background: #fff;
+            font-size: 13px;
+            color: #1e293b;
+            outline: none;
+            transition: 0.2s;
+            min-width: 150px;
+        }
+        .search-bar input:focus,
+        .search-bar select:focus {
+            border-color: #4f6ef7;
+            box-shadow: 0 0 0 3px rgba(79,110,247,0.12);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+        table th {
+            text-align: left;
+            padding: 10px 14px;
+            background: #f8fafc;
+            color: #64748b;
+            font-weight: 600;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        table td {
+            padding: 10px 14px;
+            border-bottom: 1px solid #e2e8f0;
+            vertical-align: middle;
+        }
+        table tr:hover td {
+            background: #fafbfc;
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 2px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        .status-badge .dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+        .status-badge.green { background: #dcfce7; color: #166534; }
+        .status-badge.green .dot { background: #22c55e; }
+        .status-badge.red { background: #fee2e2; color: #991b1b; }
+        .status-badge.red .dot { background: #ef4444; }
+        .status-badge.yellow { background: #fef3c7; color: #92400e; }
+        .status-badge.yellow .dot { background: #f59e0b; }
+        .status-badge.blue { background: #dbeafe; color: #1e40af; }
+        .status-badge.blue .dot { background: #3b82f6; }
+        .status-badge.gray { background: #f1f3f5; color: #6b7280; }
+        .status-badge.gray .dot { background: #9ca3af; }
+
+        .tag {
+            display: inline-block;
+            padding: 1px 12px;
+            border-radius: 4px;
+            font-size: 12px;
+            background: #f1f4f9;
+            color: #64748b;
+            margin: 2px 3px 2px 0;
+        }
+        .tag.primary {
+            background: #eef1ff;
+            color: #4f6ef7;
+        }
+
+        .flex-between {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .flex-center {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .mt-2 { margin-top: 8px; }
+        .mt-4 { margin-top: 16px; }
+        .mb-4 { margin-bottom: 16px; }
+        .text-muted { color: #94a3b8; }
+        .fw-600 { font-weight: 600; }
+
+        .chart-placeholder {
+            height: 150px;
+            background: #f8fafc;
+            border-radius: 8px;
+            display: flex;
+            align-items: flex-end;
+            padding: 12px 16px 8px;
+            gap: 12px;
+            justify-content: space-around;
+        }
+        .chart-placeholder .bar-group {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .chart-placeholder .bar {
+            width: 100%;
+            max-width: 36px;
+            background: #4f6ef7;
+            border-radius: 4px 4px 0 0;
+            min-height: 8px;
+            opacity: 0.7;
+        }
+        .chart-placeholder .bar-label {
+            font-size: 11px;
+            color: #94a3b8;
+            margin-top: 4px;
+        }
+
+        .msg-list {
+            list-style: none;
+        }
+        .msg-list li {
+            padding: 10px 0;
+            border-bottom: 1px solid #f1f4f9;
+            display: flex;
+            gap: 10px;
+            align-items: flex-start;
+        }
+        .msg-list li:last-child {
+            border-bottom: none;
+        }
+        .msg-list li .msg-icon {
+            color: #4f6ef7;
+            font-size: 14px;
+            margin-top: 2px;
+        }
+        .msg-list li .msg-content {
+            flex: 1;
+        }
+        .msg-list li .msg-content .title {
+            font-weight: 500;
+            font-size: 14px;
+        }
+        .msg-list li .msg-content .desc {
+            font-size: 13px;
+            color: #64748b;
+            margin-top: 2px;
+        }
+        .msg-list li .msg-time {
+            font-size: 12px;
+            color: #94a3b8;
+            white-space: nowrap;
+        }
+
+        /* ===== 响应式 ===== */
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 60px;
+            }
+            .sidebar-brand .brand-text {
+                display: none;
+            }
+            .sidebar-nav .menu-item span {
+                display: none;
+            }
+            .sidebar-nav .menu-label {
+                display: none;
+            }
+            .sidebar-nav .menu-item {
+                justify-content: center;
+                padding: 12px;
+            }
+            .sidebar-nav .menu-item i {
+                font-size: 18px;
+                margin: 0;
+            }
+            .stats-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+            .content {
+                padding: 16px;
+            }
+            .header {
+                padding: 0 16px;
+            }
+            .header-left .breadcrumb {
+                font-size: 13px;
+            }
+        }
+
+        /* ===== 客服聊天容器 ===== */
+        .chat-container {
+            display: flex;
+            height: 420px;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        .chat-sidebar {
+            width: 220px;
+            border-right: 1px solid #e2e8f0;
+            overflow-y: auto;
+            background: #fafbfc;
+            flex-shrink: 0;
+        }
+        .chat-sidebar .chat-item {
+            padding: 10px 14px;
+            border-bottom: 1px solid #e2e8f0;
+            cursor: pointer;
+            transition: 0.15s;
+        }
+        .chat-sidebar .chat-item:hover {
+            background: #f1f4f9;
+        }
+        .chat-sidebar .chat-item.active {
+            background: #fff;
+            border-left: 3px solid #4f6ef7;
+        }
+        .chat-sidebar .chat-item .name {
+            font-weight: 500;
+            font-size: 14px;
+        }
+        .chat-sidebar .chat-item .preview {
+            font-size: 12px;
+            color: #64748b;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .chat-window {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background: #fff;
+        }
+        .chat-window .chat-header {
+            padding: 12px 18px;
+            border-bottom: 1px solid #e2e8f0;
+            font-weight: 600;
+        }
+        .chat-window .chat-messages {
+            flex: 1;
+            padding: 16px 18px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .chat-window .chat-messages .msg {
+            max-width: 70%;
+            padding: 8px 14px;
+            border-radius: 12px;
+            font-size: 13px;
+        }
+        .chat-window .chat-messages .msg.me {
+            align-self: flex-end;
+            background: #4f6ef7;
+            color: #fff;
+        }
+        .chat-window .chat-messages .msg.other {
+            align-self: flex-start;
+            background: #f1f4f9;
+            color: #1e293b;
+        }
+        .chat-window .chat-input {
+            padding: 10px 16px;
+            border-top: 1px solid #e2e8f0;
+            display: flex;
+            gap: 8px;
+        }
+        .chat-window .chat-input input {
+            flex: 1;
+            padding: 6px 14px;
+            border-radius: 20px;
+            border: 1px solid #e2e8f0;
+            outline: none;
+            font-size: 13px;
+        }
+        .chat-window .chat-input input:focus {
+            border-color: #4f6ef7;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ===== 侧边栏 ===== -->
+    <aside class="sidebar">
+        <div class="sidebar-brand">
+            <div class="brand-icon"><i class="fas fa-store"></i></div>
+            <div class="brand-text">乐享<span>购</span></div>
+        </div>
+        <nav class="sidebar-nav" id="sidebarNav"></nav>
+    </aside>
+
+    <!-- ===== 主区域 ===== -->
+    <div class="main-wrapper">
+        <!-- 顶部 -->
+        <header class="header">
+            <div class="header-left">
+                <div class="breadcrumb">首页 / <span id="pageTitle">数据统计</span></div>
+            </div>
+            <div class="header-right">
+                <button class="icon-btn" title="搜索"><i class="fas fa-search"></i></button>
+                <button class="icon-btn" title="通知"><i class="far fa-bell"></i><span class="dot"></span></button>
+                <div class="admin-profile">
+                    <div class="avatar">管</div>
+                    <div class="info">
+                        <div class="name">超级管理员</div>
+                        <div class="role">超级管理员</div>
+                    </div>
+                    <i class="fas fa-chevron-down" style="font-size:12px;color:#94a3b8;"></i>
+                </div>
+            </div>
+        </header>
+
+        <!-- 内容 -->
+        <div class="content" id="contentArea"></div>
+    </div>
+
+    <script>
+        // ================================================================
+        // 1. 菜单配置（严格对应 1.2 管理后台模块）
+        // ================================================================
+        const MENUS = [
+            { label: '数据统计', icon: 'fas fa-chart-pie', id: 'stats' },
+            { label: '商品管理', icon: 'fas fa-box', id: 'goods' },
+            { label: '库存管理', icon: 'fas fa-warehouse', id: 'stock' },
+            { label: '门店管理', icon: 'fas fa-store-alt', id: 'stores' },
+            { label: '首页管理', icon: 'fas fa-home', id: 'homepage' },
+            { label: '订单管理', icon: 'fas fa-shopping-bag', id: 'orders' },
+            { label: '退货退款', icon: 'fas fa-undo-alt', id: 'returns' },
+            { label: '评价管理', icon: 'fas fa-star', id: 'reviews' },
+            { label: '优惠券管理', icon: 'fas fa-ticket-alt', id: 'coupons' },
+            { label: '营销活动', icon: 'fas fa-bullhorn', id: 'marketing' },
+            { label: '客服消息', icon: 'fas fa-headset', id: 'service' },
+            { label: '用户管理', icon: 'fas fa-users', id: 'users' },
+            { label: '支付管理', icon: 'fas fa-credit-card', id: 'payment' },
+            { label: '管理员管理', icon: 'fas fa-user-shield', id: 'admin' },
+            { label: '系统设置', icon: 'fas fa-cog', id: 'settings' }
+        ];
+
+        // ================================================================
+        // 2. 渲染侧边栏
+        // ================================================================
+        function renderSidebar() {
+            const nav = document.getElementById('sidebarNav');
+            nav.innerHTML = '';
+            const groups = [
+                { label: '核心运营', start: 0, end: 5 },
+                { label: '交易管理', start: 5, end: 10 },
+                { label: '系统管理', start: 10, end: 15 }
+            ];
+            groups.forEach(g => {
+                const label = document.createElement('div');
+                label.className = 'menu-label';
+                label.textContent = g.label;
+                nav.appendChild(label);
+                for (let i = g.start; i < g.end && i < MENUS.length; i++) {
+                    const menu = MENUS[i];
+                    const item = document.createElement('div');
+                    item.className = 'menu-item' + (i === 0 ? ' active' : '');
+                    item.dataset.id = menu.id;
+                    item.innerHTML = `<i class="${menu.icon}"></i><span>${menu.label}</span>`;
+                    item.onclick = () => switchPage(menu.id);
+                    nav.appendChild(item);
+                }
+            });
+        }
+
+        // ================================================================
+        // 3. 页面内容生成（完全对齐 1.2 功能点）
+        // ================================================================
+        function renderAllPages() {
+            const container = document.getElementById('contentArea');
+            container.innerHTML = '';
+            MENUS.forEach(menu => {
+                const panel = document.createElement('div');
+                panel.className = 'page-panel';
+                panel.id = 'panel-' + menu.id;
+                panel.innerHTML = buildPage(menu.id);
+                container.appendChild(panel);
+            });
+            document.getElementById('panel-' + MENUS[0].id).classList.add('active');
+        }
+
+        function buildPage(id) {
+            switch (id) {
+                case 'stats': return statsPage();
+                case 'goods': return goodsPage();
+                case 'stock': return stockPage();
+                case 'stores': return storesPage();
+                case 'homepage': return homepagePage();
+                case 'orders': return ordersPage();
+                case 'returns': return returnsPage();
+                case 'reviews': return reviewsPage();
+                case 'coupons': return couponsPage();
+                case 'marketing': return marketingPage();
+                case 'service': return servicePage();
+                case 'users': return usersPage();
+                case 'payment': return paymentPage();
+                case 'admin': return adminPage();
+                case 'settings': return settingsPage();
+                default: return '<div style="text-align:center;padding:60px 20px;color:#94a3b8;"><i class="fas fa-file" style="font-size:36px;opacity:0.3;"></i><p style="margin-top:12px;">页面建设中</p></div>';
+            }
+        }
+
+        // ---------- 数据统计：交易概览 · 商品排行 · 用户统计 ----------
+        function statsPage() {
+            return `
+                <div class="stats-grid">
+                    <div class="stat-card"><div class="label"><i class="fas fa-shopping-cart"></i> 订单量</div><div class="value">1,284</div><div class="sub">较昨日 ↑ 6.2%</div></div>
+                    <div class="stat-card"><div class="label"><i class="fas fa-yen-sign"></i> 销售额</div><div class="value">¥86.4万</div><div class="sub">较昨日 ↑ 4.8%</div></div>
+                    <div class="stat-card"><div class="label"><i class="fas fa-user"></i> 客单价</div><div class="value">¥673</div><div class="sub">较昨日 ↑ 2.1%</div></div>
+                    <div class="stat-card"><div class="label"><i class="fas fa-user-plus"></i> 新增用户数</div><div class="value">342</div><div class="sub">本月累计 1,208</div></div>
+                    <div class="stat-card"><div class="label"><i class="fas fa-chart-line"></i> 活跃度</div><div class="value">78%</div><div class="sub">较上周 ↑ 5.3%</div></div>
+                </div>
+
+                <div style="display:grid;grid-template-columns:2fr 1fr;gap:24px;">
+                    <div class="card">
+                        <div class="card-header"><span class="card-title"><i class="fas fa-chart-bar"></i> 交易概览 · 近7日趋势</span></div>
+                        <div class="card-body">
+                            <div class="chart-placeholder">
+                                ${[30,50,25,70,45,90,60].map((h,i) => `<div class="bar-group"><div class="bar" style="height:${h}px;"></div><div class="bar-label">${['一','二','三','四','五','六','日'][i]}</div></div>`).join('')}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-header"><span class="card-title"><i class="fas fa-bell"></i> 最新动态</span></div>
+                        <div class="card-body">
+                            <ul class="msg-list">
+                                <li><i class="fas fa-circle msg-icon" style="font-size:8px;color:#4f6ef7;"></i><div class="msg-content"><div class="title">新订单 #ORD-20260624-001</div><div class="desc">王小明 支付 ¥599.00</div></div><span class="msg-time">10:32</span></li>
+                                <li><i class="fas fa-circle msg-icon" style="font-size:8px;color:#f59e0b;"></i><div class="msg-content"><div class="title">退货申请待处理</div><div class="desc">无线蓝牙耳机 Pro 质量问题</div></div><span class="msg-time">09:15</span></li>
+                                <li><i class="fas fa-circle msg-icon" style="font-size:8px;color:#22c55e;"></i><div class="msg-content"><div class="title">拼团成团成功</div><div class="desc">好友拼团 · 便携移动电源</div></div><span class="msg-time">昨天</span></li>
+                                <li><i class="fas fa-circle msg-icon" style="font-size:8px;color:#ef4444;"></i><div class="msg-content"><div class="title">库存预警</div><div class="desc">SKU-005 智能手表 S8 银 仅剩32件</div></div><span class="msg-time">昨天</span></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header"><span class="card-title"><i class="fas fa-crown"></i> 商品排行 · 销量排行</span></div>
+                    <div class="card-body no-pad">
+                        <div class="table-wrap"><table>
+                            <thead><tr><th>#</th><th>商品</th><th>销量</th><th>销售额</th></tr></thead>
+                            <tbody>
+                                <tr><td>1</td><td>无线蓝牙耳机 Pro</td><td>1,240</td><td>¥37.2万</td></tr>
+                                <tr><td>2</td><td>智能手表 S8</td><td>876</td><td>¥26.3万</td></tr>
+                                <tr><td>3</td><td>便携移动电源 20000mAh</td><td>654</td><td>¥15.7万</td></tr>
+                                <tr><td>4</td><td>真无线降噪耳机</td><td>432</td><td>¥12.9万</td></tr>
+                            </tbody>
+                        </table></div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // ---------- 商品管理 ----------
+        function goodsPage() {
+            return `
+                <div class="flex-between mb-4">
+                    <div class="search-bar">
+                        <input type="text" placeholder="搜索商品名称 / SKU" />
+                        <select><option>全部分类</option><option>手机数码</option><option>家用电器</option></select>
+                        <select><option>全部状态</option><option>上架</option><option>下架</option></select>
+                        <button class="btn btn-primary"><i class="fas fa-search"></i> 搜索</button>
+                    </div>
+                    <button class="btn btn-primary"><i class="fas fa-plus"></i> 新增商品</button>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <span class="card-title"><i class="fas fa-list"></i> 商品列表 / 上下架</span>
+                        <span class="text-muted" style="font-size:13px;">共 1,284 件商品</span>
+                    </div>
+                    <div class="card-body no-pad">
+                        <div class="table-wrap"><table>
+                            <thead><tr><th>商品</th><th>分类</th><th>价格</th><th>库存</th><th>状态</th><th>操作</th></tr></thead>
+                            <tbody>
+                                <tr><td><div class="flex-center"><span style="width:32px;height:32px;background:#e2e8f0;border-radius:4px;display:inline-block;"></span> 无线蓝牙耳机 Pro</div></td><td>手机数码</td><td>¥299</td><td>1,240</td><td><span class="status-badge green"><span class="dot"></span> 上架</span></td><td><button class="btn btn-sm btn-outline">编辑</button><button class="btn btn-sm btn-danger">下架</button></td></tr>
+                                <tr><td><div class="flex-center"><span style="width:32px;height:32px;background:#e2e8f0;border-radius:4px;display:inline-block;"></span> 智能手表 S8</div></td><td>手机数码</td><td>¥1,299</td><td>876</td><td><span class="status-badge green"><span class="dot"></span> 上架</span></td><td><button class="btn btn-sm btn-outline">编辑</button><button class="btn btn-sm btn-danger">下架</button></td></tr>
+                                <tr><td><div class="flex-center"><span style="width:32px;height:32px;background:#e2e8f0;border-radius:4px;display:inline-block;"></span> 便携移动电源 20000mAh</div></td><td>手机数码</td><td>¥159</td><td>2,300</td><td><span class="status-badge yellow"><span class="dot"></span> 待审核</span></td><td><button class="btn btn-sm btn-outline">编辑</button><button class="btn btn-sm btn-success">审核</button></td></tr>
+                            </tbody>
+                        </table></div>
+                    </div>
+                </div>
+
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;">
+                    <div class="card">
+                        <div class="card-header"><span class="card-title"><i class="fas fa-sitemap"></i> 商品分类管理</span><button class="btn btn-sm btn-primary">新增分类</button></div>
+                        <div class="card-body"><span class="tag primary">手机数码</span><span class="tag">家用电器</span><span class="tag">服装服饰</span><span class="tag">运动户外</span><span class="tag">美妆护肤</span></div>
+                    </div>
+                    <div class="card">
+                        <div class="card-header"><span class="card-title"><i class="fas fa-trademark"></i> 商品品牌管理</span><button class="btn btn-sm btn-primary">新增品牌</button></div>
+                        <div class="card-body"><span class="tag primary">华为</span><span class="tag">苹果</span><span class="tag">小米</span><span class="tag">索尼</span><span class="tag">三星</span></div>
+                    </div>
+                    <div class="card">
+                        <div class="card-header"><span class="card-title"><i class="fas fa-cog"></i> 规格管理</span><button class="btn btn-sm btn-primary">新建规格</button></div>
+                        <div class="card-body"><span class="tag">颜色</span><span class="tag">尺码</span><span class="tag">存储容量</span><span class="tag">材质</span></div>
+                    </div>
+                    <div class="card">
+                        <div class="card-header"><span class="card-title"><i class="fas fa-barcode"></i> SKU 管理</span><button class="btn btn-sm btn-primary">管理SKU</button></div>
+                        <div class="card-body"><span class="text-muted">SKU-001 黑色 · ¥299 · 840件</span><br/><span class="text-muted">SKU-002 白色 · ¥299 · 400件</span></div>
+                    </div>
+                    <div class="card">
+                        <div class="card-header"><span class="card-title"><i class="fas fa-tags"></i> 商品标签管理</span><button class="btn btn-sm btn-primary">新增标签</button></div>
+                        <div class="card-body"><span class="tag" style="background:#fce4ec;color:#c62828;">热卖</span><span class="tag" style="background:#e8f5e9;color:#2e7d32;">新品</span><span class="tag" style="background:#fff3e0;color:#e65100;">限时特惠</span></div>
+                    </div>
+                    <div class="card">
+                        <div class="card-header"><span class="card-title"><i class="fas fa-robot"></i> AI 生成描述 / 图片</span></div>
+                        <div class="card-body">
+                            <div class="flex-between"><span>输入关键词，AI 自动扩写专业商品描述</span><button class="btn btn-sm btn-primary">生成描述</button></div>
+                            <div class="mt-2 flex-between"><span>根据描述，AI 自动生成商品图片</span><button class="btn btn-sm btn-primary">生成图片</button></div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // ---------- 库存管理 ----------
+        function stockPage() {
+            return `
+                <div class="flex-between mb-4">
+                    <div class="search-bar"><input placeholder="按 SKU 查询" /><select><option>全部仓库</option><option>总仓</option></select><button class="btn btn-primary"><i class="fas fa-search"></i> 查询</button></div>
+                    <button class="btn btn-primary"><i class="fas fa-plus"></i> 库存调整</button>
+                </div>
+                <div class="stats-grid" style="grid-template-columns:repeat(4,1fr);">
+                    <div class="stat-card"><div class="label"><i class="fas fa-boxes"></i> 当前总库存</div><div class="value" style="font-size:22px;">4,672</div></div>
+                    <div class="stat-card"><div class="label"><i class="fas fa-exclamation-triangle"></i> 低于阈值预警</div><div class="value" style="font-size:22px;color:#ef4444;">3</div></div>
+                    <div class="stat-card"><div class="label"><i class="fas fa-arrow-down"></i> 今日入库</div><div class="value" style="font-size:22px;">240</div></div>
+                    <div class="stat-card"><div class="label"><i class="fas fa-arrow-up"></i> 今日出库</div><div class="value" style="font-size:22px;">180</div></div>
+                </div>
+                <div class="card">
+                    <div class="card-header"><span class="card-title"><i class="fas fa-list"></i> 库存查询 · 按 SKU</span><span class="status-badge red"><span class="dot"></span> 预警阈值 ≤ 50</span></div>
+                    <div class="card-body no-pad">
+                        <div class="table-wrap"><table>
+                            <thead><tr><th>SKU</th><th>商品</th><th>当前库存</th><th>预警阈值</th><th>状态</th><th>操作</th></tr></thead>
+                            <tbody>
+                                <tr><td>SKU-001</td><td>无线蓝牙耳机 Pro 黑</td><td>840</td><td>50</td><td><span class="status-badge green"><span class="dot"></span> 正常</span></td><td><button class="btn btn-sm btn-outline">调整</button></td></tr>
+                                <tr><td>SKU-005</td><td>智能手表 S8 银</td><td>32</td><td>50</td><td><span class="status-badge red"><span class="dot"></span> 预警</span></td><td><button class="btn btn-sm btn-outline">调整</button></td></tr>
+                                <tr><td>SKU-012</td><td>便携移动电源 白</td><td>18</td><td>30</td><td><span class="status-badge red"><span class="dot"></span> 预警</span></td><td><button class="btn btn-sm btn-outline">调整</button></td></tr>
+                            </tbody>
+                        </table></div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header"><span class="card-title"><i class="fas fa-history"></i> 出入库记录</span></div>
+                    <div class="card-body no-pad">
+                        <div class="table-wrap"><table><thead><tr><th>时间</th><th>SKU</th><th>类型</th><th>数量</th><th>操作人</th></tr></thead><tbody>
+                            <tr><td>2026-06-24 14:32</td><td>SKU-001</td><td><span class="status-badge green"><span class="dot"></span> 入库</span></td><td>+200</td><td>张运营</td></tr>
+                            <tr><td>2026-06-24 11:20</td><td>SKU-005</td><td><span class="status-badge yellow"><span class="dot"></span> 出库</span></td><td>-15</td><td>李店员</td></tr>
+                        </tbody></table></div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // ---------- 门店管理 ----------
+        function storesPage() {
+            return `
+                <div class="flex-between mb-4"><span></span><button class="btn btn-primary"><i class="fas fa-plus"></i> 新增门店</button></div>
+                <div class="stats-grid" style="grid-template-columns:repeat(3,1fr);">
+                    <div class="stat-card"><div class="label"><i class="fas fa-store"></i> 总门店</div><div class="value" style="font-size:22px;">8</div></div>
+                    <div class="stat-card"><div class="label"><i class="fas fa-check-circle"></i> 已启用</div><div class="value" style="font-size:22px;color:#22c55e;">6</div></div>
+                    <div class="stat-card"><div class="label"><i class="fas fa-times-circle"></i> 已禁用</div><div class="value" style="font-size:22px;color:#ef4444;">2</div></div>
+                </div>
+                <div class="card"><div class="card-body">
+                    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:16px;">
+                        <div style="border:1px solid #e2e8f0;border-radius:8px;padding:14px;"><div style="font-weight:600;">北京朝阳店</div><div class="text-muted" style="font-size:13px;">北京市朝阳区建国路88号</div><div class="text-muted" style="font-size:13px;">010-8888-6666</div><div class="mt-2"><span class="status-badge green"><span class="dot"></span> 启用</span> <span class="tag">09:00-21:00</span></div><div class="mt-2"><button class="btn btn-sm btn-outline">编辑</button><button class="btn btn-sm btn-outline">门店订单</button></div></div>
+                        <div style="border:1px solid #e2e8f0;border-radius:8px;padding:14px;"><div style="font-weight:600;">上海浦东店</div><div class="text-muted" style="font-size:13px;">上海市浦东新区世纪大道100号</div><div class="text-muted" style="font-size:13px;">021-8888-6666</div><div class="mt-2"><span class="status-badge green"><span class="dot"></span> 启用</span> <span class="tag">09:00-21:00</span></div><div class="mt-2"><button class="btn btn-sm btn-outline">编辑</button><button class="btn btn-sm btn-outline">门店订单</button></div></div>
+                        <div style="border:1px solid #e2e8f0;border-radius:8px;padding:14px;"><div style="font-weight:600;">深圳南山店</div><div class="text-muted" style="font-size:13px;">深圳市南山区科技园路66号</div><div class="text-muted" style="font-size:13px;">0755-8888-6666</div><div class="mt-2"><span class="status-badge red"><span class="dot"></span> 禁用</span> <span class="tag">暂停营业</span></div><div class="mt-2"><button class="btn btn-sm btn-outline">编辑</button><button class="btn btn-sm btn-outline">门店订单</button></div></div>
+                    </div>
+                </div></div>
+            `;
+        }
+
+        // ---------- 首页管理 ----------
+        function homepagePage() {
+            return `
+                <div class="card"><div class="card-header"><span class="card-title"><i class="fas fa-images"></i> 轮播图 / Banner</span><button class="btn btn-primary btn-sm"><i class="fas fa-plus"></i> 新增</button></div>
+                <div class="card-body no-pad"><div class="table-wrap"><table><thead><tr><th>图片</th><th>跳转链接</th><th>排序</th><th>状态</th><th>操作</th></tr></thead><tbody><tr><td><span style="display:inline-block;width:60px;height:30px;background:linear-gradient(135deg,#4f6ef7,#7c3aed);border-radius:4px;"></span></td><td>/promo/spring</td><td>1</td><td><span class="status-badge green"><span class="dot"></span> 已发布</span></td><td><button class="btn btn-sm btn-outline">编辑</button><button class="btn btn-sm btn-danger">下架</button></td></tr><tr><td><span style="display:inline-block;width:60px;height:30px;background:linear-gradient(135deg,#f59e0b,#fbbf24);border-radius:4px;"></span></td><td>/promo/summer</td><td>2</td><td><span class="status-badge gray"><span class="dot"></span> 草稿</span></td><td><button class="btn btn-sm btn-outline">编辑</button><button class="btn btn-sm btn-success">发布</button></td></tr></tbody></table></div></div></div>
+                <div class="card"><div class="card-header"><span class="card-title"><i class="fas fa-thumbtack"></i> 推荐位管理</span><button class="btn btn-primary btn-sm"><i class="fas fa-plus"></i> 新增推荐</button></div>
+                <div class="card-body no-pad"><div class="table-wrap"><table><thead><tr><th>推荐位</th><th>商品</th><th>排序</th><th>状态</th><th>操作</th></tr></thead><tbody><tr><td>首页-精选</td><td>无线蓝牙耳机 Pro</td><td>1</td><td><span class="status-badge green"><span class="dot"></span> 展示中</span></td><td><button class="btn btn-sm btn-outline">编辑</button></td></tr><tr><td>首页-新品</td><td>智能手表 S8</td><td>2</td><td><span class="status-badge green"><span class="dot"></span> 展示中</span></td><td><button class="btn btn-sm btn-outline">编辑</button></td></tr></tbody></table></div></div></div>
+            `;
+        }
+
+        // ---------- 订单管理 ----------
+        function ordersPage() {
+            return `
+                <div class="flex-between mb-4">
+                    <div class="search-bar">
+                        <input placeholder="订单号 / 用户" />
+                        <select><option>全部状态</option><option>待支付</option><option>已支付</option><option>待自提</option><option>已完成</option><option>已取消</option></select>
+                        <button class="btn btn-primary"><i class="fas fa-search"></i> 搜索</button>
+                    </div>
+                    <button class="btn btn-outline"><i class="fas fa-clock"></i> 订单超时配置</button>
+                </div>
+                <div class="card"><div class="card-body no-pad"><div class="table-wrap"><table>
+                    <thead><tr><th>订单号</th><th>用户</th><th>金额</th><th>门店</th><th>状态</th><th>时间</th><th>操作</th></tr></thead>
+                    <tbody>
+                        <tr><td>ORD-20260624-001</td><td>王*明</td><td>¥599</td><td>北京朝阳店</td><td><span class="status-badge yellow"><span class="dot"></span> 待支付</span></td><td>2026-06-24 10:30</td><td><button class="btn btn-sm btn-outline">详情</button><button class="btn btn-sm btn-danger">取消</button></td></tr>
+                        <tr><td>ORD-20260624-002</td><td>李*华</td><td>¥1,299</td><td>上海浦东店</td><td><span class="status-badge blue"><span class="dot"></span> 已支付</span></td><td>2026-06-24 09:15</td><td><button class="btn btn-sm btn-outline">详情</button><button class="btn btn-sm btn-success">自提核销</button></td></tr>
+                        <tr><td>ORD-20260623-015</td><td>张*婷</td><td>¥159</td><td>深圳南山店</td><td><span class="status-badge green"><span class="dot"></span> 已完成</span></td><td>2026-06-23 16:40</td><td><button class="btn btn-sm btn-outline">详情</button></td></tr>
+                    </tbody>
+                </table></div></div></div>
+            `;
+        }
+
+        // ---------- 退货退款 ----------
+        function returnsPage() {
+            return `
+                <div class="flex-between mb-4">
+                    <div class="search-bar"><input placeholder="订单号 / 商品" /><select><option>全部状态</option><option>待处理</option><option>已同意</option><option>已拒绝</option><option>已退款</option></select><button class="btn btn-primary"><i class="fas fa-search"></i> 搜索</button></div>
+                    <button class="btn btn-outline"><i class="fas fa-list"></i> 退货原因管理</button>
+                </div>
+                <div class="card"><div class="card-body no-pad"><div class="table-wrap"><table>
+                    <thead><tr><th>订单商品行</th><th>用户</th><th>退款金额</th><th>原因</th><th>状态</th><th>操作</th></tr></thead>
+                    <tbody>
+                        <tr><td>无线蓝牙耳机 Pro</td><td>王*明</td><td>¥299</td><td>质量问题</td><td><span class="status-badge yellow"><span class="dot"></span> 待处理</span></td><td><button class="btn btn-sm btn-success">同意</button><button class="btn btn-sm btn-danger">拒绝</button></td></tr>
+                        <tr><td>便携移动电源</td><td>刘*欣</td><td>¥159</td><td>发错货</td><td><span class="status-badge blue"><span class="dot"></span> 已同意</span></td><td><button class="btn btn-sm btn-outline">确认收货退款</button></td></tr>
+                        <tr><td>智能手表 S8</td><td>陈*宇</td><td>¥1,299</td><td>不想要了</td><td><span class="status-badge green"><span class="dot"></span> 已退款</span></td><td><button class="btn btn-sm btn-outline">查看</button></td></tr>
+                    </tbody>
+                </table></div></div></div>
+            `;
+        }
+
+        // ---------- 评价管理 ----------
+        function reviewsPage() {
+            return `
+                <div class="flex-between mb-4">
+                    <div class="search-bar"><input placeholder="商品 / 用户" /><select><option>全部状态</option><option>待审核</option><option>已通过</option><option>已删除</option></select><button class="btn btn-primary"><i class="fas fa-search"></i> 搜索</button></div>
+                    <button class="btn btn-primary"><i class="fas fa-robot"></i> AI 重新生成摘要</button>
+                </div>
+                <div class="card"><div class="card-header"><span class="card-title"><i class="fas fa-star"></i> 评价列表</span><span class="text-muted" style="font-size:13px;">⭐ 4.8 分 · 共 1,284 条评价</span></div>
+                <div class="card-body no-pad"><div class="table-wrap"><table>
+                    <thead><tr><th>商品</th><th>用户</th><th>评分</th><th>评价内容</th><th>状态</th><th>操作</th></tr></thead>
+                    <tbody>
+                        <tr><td>无线蓝牙耳机 Pro</td><td>赵*阳</td><td>⭐⭐⭐⭐⭐</td><td>音质非常好，降噪效果很棒！</td><td><span class="status-badge green"><span class="dot"></span> 已通过</span></td><td><button class="btn btn-sm btn-outline">审核</button></td></tr>
+                        <tr><td>智能手表 S8</td><td>孙*怡</td><td>⭐⭐⭐⭐</td><td>功能丰富，续航还可以提升</td><td><span class="status-badge yellow"><span class="dot"></span> 待审核</span></td><td><button class="btn btn-sm btn-success">通过</button><button class="btn btn-sm btn-danger">删除</button></td></tr>
+                    </tbody>
+                </table></div></div></div>
+                <div class="card"><div class="card-header"><span class="card-title"><i class="fas fa-robot"></i> AI 摘要管理</span><span class="text-muted" style="font-size:13px;">自动汇总评价内容，生成一句话总结</span></div>
+                <div class="card-body" style="background:#f8faff;"><i class="fas fa-quote-left" style="color:#4f6ef7;opacity:0.4;margin-right:8px;"></i> 用户普遍认为产品性价比高，音质和外观设计获得好评，部分用户建议优化续航和软件体验。 <span class="tag primary">AI 生成</span></div></div>
+            `;
+        }
+
+        // ---------- 优惠券管理 ----------
+        function couponsPage() {
+            return `
+                <div class="flex-between mb-4"><span></span><button class="btn btn-primary"><i class="fas fa-plus"></i> 新建优惠券</button></div>
+                <div class="card"><div class="card-body no-pad"><div class="table-wrap"><table>
+                    <thead><tr><th>名称</th><th>类型</th><th>优惠</th><th>有效期</th><th>适用范围</th><th>状态</th><th>操作</th></tr></thead>
+                    <tbody>
+                        <tr><td>新用户专享</td><td>满减</td><td>满100减20</td><td>2026-07-01 ~ 2026-08-31</td><td>全场通用</td><td><span class="status-badge green"><span class="dot"></span> 发放中</span></td><td><button class="btn btn-sm btn-outline">编辑</button><button class="btn btn-sm btn-outline">发放管理</button></td></tr>
+                        <tr><td>数码品类券</td><td>折扣</td><td>8.8折</td><td>2026-06-20 ~ 2026-07-20</td><td>指定分类</td><td><span class="status-badge green"><span class="dot"></span> 发放中</span></td><td><button class="btn btn-sm btn-outline">编辑</button><button class="btn btn-sm btn-outline">发放管理</button></td></tr>
+                        <tr><td>耳机专属券</td><td>代金券</td><td>¥30</td><td>2026-06-15 ~ 2026-07-15</td><td>指定商品</td><td><span class="status-badge gray"><span class="dot"></span> 已过期</span></td><td><button class="btn btn-sm btn-outline">编辑</button></td></tr>
+                    </tbody>
+                </table></div></div></div>
+            `;
+        }
+
+        // ---------- 营销活动 ----------
+        function marketingPage() {
+            return `
+                <div class="flex-between mb-4"><span></span><button class="btn btn-primary"><i class="fas fa-plus"></i> 新建活动</button></div>
+                <div class="card"><div class="card-header"><span class="card-title"><i class="fas fa-bolt"></i> 秒杀活动管理</span></div>
+                <div class="card-body no-pad"><div class="table-wrap"><table><thead><tr><th>活动名称</th><th>商品</th><th>秒杀价</th><th>库存</th><th>活动时间</th><th>状态</th><th>操作</th></tr></thead><tbody><tr><td>618限时秒杀</td><td>无线蓝牙耳机 Pro</td><td>¥199</td><td>500</td><td>2026-06-18 10:00-22:00</td><td><span class="status-badge green"><span class="dot"></span> 进行中</span></td><td><button class="btn btn-sm btn-outline">编辑</button></td></tr></tbody></table></div></div></div>
+                <div class="card"><div class="card-header"><span class="card-title"><i class="fas fa-users"></i> 拼团活动管理</span></div>
+                <div class="card-body no-pad"><div class="table-wrap"><table><thead><tr><th>活动名称</th><th>商品</th><th>拼团价</th><th>成团人数</th><th>有效期</th><th>状态</th><th>操作</th></tr></thead><tbody><tr><td>好友拼团</td><td>便携移动电源</td><td>¥99</td><td>3人</td><td>2026-06-20 ~ 2026-07-20</td><td><span class="status-badge green"><span class="dot"></span> 进行中</span></td><td><button class="btn btn-sm btn-outline">编辑</button><button class="btn btn-sm btn-outline">分享配置</button></td></tr></tbody></table></div></div></div>
+            `;
+        }
+
+        // ---------- 客服消息 ----------
+        function servicePage() {
+            return `
+                <div class="card"><div class="card-body no-pad">
+                    <div class="chat-container">
+                        <div class="chat-sidebar">
+                            <div style="padding:10px 14px;border-bottom:1px solid #e2e8f0;background:#fff;font-weight:600;font-size:14px;">会话列表</div>
+                            <div class="chat-item active"><div class="name">王小明</div><div class="preview">你好，我想咨询一下订单配送</div></div>
+                            <div class="chat-item"><div class="name">李佳琦</div><div class="preview">什么时候可以自提？</div></div>
+                            <div class="chat-item"><div class="name">张雪迎</div><div class="preview">我要退货，怎么操作？</div></div>
+                            <div class="chat-item"><div class="name">刘亦菲</div><div class="preview">好的，谢谢！</div></div>
+                        </div>
+                        <div class="chat-window">
+                            <div class="chat-header">王小明 · <span class="text-muted" style="font-weight:400;font-size:13px;">待回复</span></div>
+                            <div class="chat-messages">
+                                <div class="msg other">您好，很高兴为您服务！</div>
+                                <div class="msg me">你好，我想咨询一下订单配送</div>
+                                <div class="msg other">请问您的订单号是多少？</div>
+                                <div class="msg me">ORD-20260624-001</div>
+                                <div class="msg other">正在查询…… 您的订单已支付成功，预计今天下午可到店自提。</div>
+                            </div>
+                            <div class="chat-input">
+                                <input placeholder="输入消息，回复用户……" />
+                                <button class="btn btn-primary btn-sm"><i class="fas fa-paper-plane"></i> 发送</button>
+                                <button class="btn btn-outline btn-sm"><i class="fas fa-robot"></i> AI 建议</button>
+                                <button class="btn btn-outline btn-sm">关闭对话</button>
+                            </div>
+                        </div>
+                    </div>
+                </div></div>
+                <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:8px;">
+                    <span class="tag">待回复: 2</span>
+                    <span class="tag">已回复: 6</span>
+                    <span class="tag">已关闭: 12</span>
+                </div>
+            `;
+        }
+
+        // ---------- 用户管理 ----------
+        function usersPage() {
+            return `
+                <div class="flex-between mb-4"><div class="search-bar"><input placeholder="昵称 / 手机号" /><button class="btn btn-primary"><i class="fas fa-search"></i> 搜索</button></div></div>
+                <div class="card"><div class="card-body no-pad"><div class="table-wrap"><table>
+                    <thead><tr><th>用户</th><th>手机号</th><th>注册时间</th><th>订单数</th><th>状态</th><th>操作</th></tr></thead>
+                    <tbody>
+                        <tr><td><div class="flex-center"><span style="width:28px;height:28px;border-radius:50%;background:#4f6ef7;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:600;font-size:12px;">王</span> 王小明</div></td><td>138****1234</td><td>2026-06-01</td><td>12</td><td><span class="status-badge green"><span class="dot"></span> 正常</span></td><td><button class="btn btn-sm btn-outline">用户详情</button></td></tr>
+                        <tr><td><div class="flex-center"><span style="width:28px;height:28px;border-radius:50%;background:#4f6ef7;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:600;font-size:12px;">李</span> 李佳琦</div></td><td>139****5678</td><td>2026-05-20</td><td>8</td><td><span class="status-badge green"><span class="dot"></span> 正常</span></td><td><button class="btn btn-sm btn-outline">用户详情</button></td></tr>
+                        <tr><td><div class="flex-center"><span style="width:28px;height:28px;border-radius:50%;background:#4f6ef7;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:600;font-size:12px;">张</span> 张雪迎</div></td><td>137****9012</td><td>2026-05-10</td><td>5</td><td><span class="status-badge gray"><span class="dot"></span> 已冻结</span></td><td><button class="btn btn-sm btn-outline">用户详情</button></td></tr>
+                    </tbody>
+                </table></div></div></div>
+            `;
+        }
+
+        // ---------- 支付管理 ----------
+        function paymentPage() {
+            return `
+                <div class="flex-between mb-4"><div class="search-bar"><input placeholder="订单号 / 交易号" /><select><option>全部支付方式</option><option>支付宝</option><option>微信支付</option></select><button class="btn btn-primary"><i class="fas fa-search"></i> 搜索</button></div></div>
+                <div class="stats-grid" style="grid-template-columns:repeat(3,1fr);">
+                    <div class="stat-card"><div class="label"><i class="fas fa-credit-card"></i> 总支付笔数</div><div class="value" style="font-size:22px;">1,204</div></div>
+                    <div class="stat-card"><div class="label"><i class="fas fa-undo"></i> 总退款笔数</div><div class="value" style="font-size:22px;color:#f59e0b;">32</div></div>
+                    <div class="stat-card"><div class="label"><i class="fas fa-check-circle"></i> 支付成功率</div><div class="value" style="font-size:22px;color:#22c55e;">98.7%</div></div>
+                </div>
+                <div class="card"><div class="card-header"><span class="card-title"><i class="fas fa-list"></i> 支付记录</span></div>
+                <div class="card-body no-pad"><div class="table-wrap"><table><thead><tr><th>交易号</th><th>订单号</th><th>金额</th><th>支付方式</th><th>状态</th><th>时间</th></tr></thead><tbody><tr><td>TXN-20260624-001</td><td>ORD-20260624-001</td><td>¥599</td><td>微信支付</td><td><span class="status-badge green"><span class="dot"></span> 成功</span></td><td>2026-06-24 10:35</td></tr><tr><td>TXN-20260624-002</td><td>ORD-20260624-002</td><td>¥1,299</td><td>支付宝</td><td><span class="status-badge green"><span class="dot"></span> 成功</span></td><td>2026-06-24 09:20</td></tr><tr><td>TXN-20260623-018</td><td>ORD-20260623-015</td><td>¥159</td><td>微信支付</td><td><span class="status-badge red"><span class="dot"></span> 已退款</span></td><td>2026-06-23 16:45</td></tr></tbody></table></div></div></div>
+                <div class="card"><div class="card-header"><span class="card-title"><i class="fas fa-undo-alt"></i> 退款记录</span></div>
+                <div class="card-body no-pad"><div class="table-wrap"><table><thead><tr><th>退款单号</th><th>原交易号</th><th>退款金额</th><th>状态</th><th>时间</th></tr></thead><tbody><tr><td>REF-20260623-001</td><td>TXN-20260623-018</td><td>¥159</td><td><span class="status-badge green"><span class="dot"></span> 已退款</span></td><td>2026-06-23 16:50</td></tr></tbody></table></div></div></div>
+            `;
+        }
+
+        // ---------- 管理员管理 ----------
+        function adminPage() {
+            return `
+                <div class="flex-between mb-4"><span></span><button class="btn btn-primary"><i class="fas fa-plus"></i> 新增管理员</button></div>
+                <div class="card"><div class="card-body no-pad"><div class="table-wrap"><table>
+                    <thead><tr><th>账号</th><th>角色</th><th>状态</th><th>最后登录</th><th>操作</th></tr></thead>
+                    <tbody>
+                        <tr><td>admin</td><td>超级管理员</td><td><span class="status-badge green"><span class="dot"></span> 启用</span></td><td>2026-06-24 14:20</td><td><button class="btn btn-sm btn-outline">编辑</button><button class="btn btn-sm btn-danger">禁用</button></td></tr>
+                        <tr><td>goods_op</td><td>商品运营</td><td><span class="status-badge green"><span class="dot"></span> 启用</span></td><td>2026-06-24 11:10</td><td><button class="btn btn-sm btn-outline">编辑</button></td></tr>
+                        <tr><td>order_cs</td><td>订单客服</td><td><span class="status-badge yellow"><span class="dot"></span> 停用</span></td><td>2026-06-23 08:30</td><td><button class="btn btn-sm btn-outline">编辑</button><button class="btn btn-sm btn-success">启用</button></td></tr>
+                    </tbody>
+                </table></div></div></div>
+                <div class="card"><div class="card-header"><span class="card-title"><i class="fas fa-lock"></i> 角色权限管理 · 菜单管理</span></div>
+                <div class="card-body">
+                    <div class="flex-center gap-4">
+                        <span class="tag primary">超级管理员</span>
+                        <span class="tag">商品运营</span>
+                        <span class="tag">订单客服</span>
+                        <span class="tag">门店店员</span>
+                        <button class="btn btn-sm btn-outline">角色 CRUD</button>
+                        <button class="btn btn-sm btn-outline">分配菜单/接口权限</button>
+                        <button class="btn btn-sm btn-outline">菜单树管理</button>
+                    </div>
+                </div></div>
+            `;
+        }
+
+        // ---------- 系统设置 ----------
+        function settingsPage() {
+            return `
+                <div class="card"><div class="card-header"><span class="card-title"><i class="fas fa-sliders-h"></i> 系统设置</span></div>
+                <div class="card-body">
+                    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px;">
+                        <div style="border:1px solid #e2e8f0;border-radius:8px;padding:14px;"><i class="fas fa-shield-alt" style="color:#4f6ef7;"></i><div style="font-weight:600;margin-top:6px;">验证码配置</div><div class="text-muted" style="font-size:12px;">短信/图形验证码</div><button class="btn btn-sm btn-outline mt-2">配置</button></div>
+                        <div style="border:1px solid #e2e8f0;border-radius:8px;padding:14px;"><i class="fas fa-upload" style="color:#4f6ef7;"></i><div style="font-weight:600;margin-top:6px;">文件上传</div><div class="text-muted" style="font-size:12px;">图片/文件管理</div><button class="btn btn-sm btn-outline mt-2">配置</button></div>
+                        <div style="border:1px solid #e2e8f0;border-radius:8px;padding:14px;"><i class="fas fa-sms" style="color:#4f6ef7;"></i><div style="font-weight:600;margin-top:6px;">短信模板</div><div class="text-muted" style="font-size:12px;">短信通知模板管理</div><button class="btn btn-sm btn-outline mt-2">配置</button></div>
+                        <div style="border:1px solid #e2e8f0;border-radius:8px;padding:14px;"><i class="fas fa-bell" style="color:#4f6ef7;"></i><div style="font-weight:600;margin-top:6px;">订阅消息模板</div><div class="text-muted" style="font-size:12px;">小程序订阅消息</div><button class="btn btn-sm btn-outline mt-2">配置</button></div>
+                        <div style="border:1px solid #e2e8f0;border-radius:8px;padding:14px;"><i class="fas fa-map-marker-alt" style="color:#4f6ef7;"></i><div style="font-weight:600;margin-top:6px;">省市区数据</div><div class="text-muted" style="font-size:12px;">地区数据维护</div><button class="btn btn-sm btn-outline mt-2">配置</button></div>
+                    </div>
+                </div></div>
+            `;
+        }
+
+        // ================================================================
+        // 4. 页面切换
+        // ================================================================
+        function switchPage(id) {
+            document.querySelectorAll('.sidebar-nav .menu-item').forEach(el => {
+                el.classList.toggle('active', el.dataset.id === id);
+            });
+            const menu = MENUS.find(m => m.id === id);
+            if (menu) document.getElementById('pageTitle').textContent = menu.label;
+            document.querySelectorAll('.page-panel').forEach(p => p.classList.remove('active'));
+            const panel = document.getElementById('panel-' + id);
+            if (panel) panel.classList.add('active');
+            document.querySelector('.content').scrollTop = 0;
+        }
+
+        // ================================================================
+        // 5. 初始化
+        // ================================================================
+        renderSidebar();
+        renderAllPages();
+        switchPage(MENUS[0].id);
+    </script>
+</body>
+</html>
