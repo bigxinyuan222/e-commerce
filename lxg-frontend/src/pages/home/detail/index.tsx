@@ -425,10 +425,23 @@ const ProductDetailPage: React.FC = () => {
         const summary = getAiSummary(id);
         setAiSummary(summary);
         
-        const coupons = availableCoupons.filter(c => 
-          c.scope === 'product' && c.productId === id
-        );
-        setProductCoupons(coupons.slice(0, 2));
+        const categoryMap: { [key: string]: string } = {
+          '1': 'digital',
+          '2': 'digital',
+          '3': 'clothing',
+          '4': 'home',
+          '5': 'food',
+          '6': 'beauty',
+          '7': 'baby',
+          '8': 'home'
+        };
+        const coupons = availableCoupons.filter(c => {
+          if (c.scope === 'product') return c.productId === id;
+          if (c.scope === 'category') return c.categoryId === categoryMap[productData.categoryId];
+          if (c.scope === 'all') return true;
+          return false;
+        });
+        setProductCoupons(coupons.slice(0, 4));
       }
     }
   }, []);
@@ -521,7 +534,9 @@ const ProductDetailPage: React.FC = () => {
               {productCoupons.map((coupon) => (
                 <View key={coupon.id} className={styles.couponTag}>
                   <Text className={styles.couponTagValue}>¥{coupon.value}</Text>
-                  <Text className={styles.couponTagDesc}>优惠{coupon.value}无门槛</Text>
+                  <Text className={styles.couponTagDesc}>
+                    {coupon.minAmount > 0 ? `满${coupon.minAmount}减${coupon.value}` : `${coupon.scopeText}`}
+                  </Text>
                   <Text className={styles.couponTagBtn}>领</Text>
                 </View>
               ))}
