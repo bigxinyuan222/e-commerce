@@ -1,0 +1,397 @@
+@use '@/styles/variables.scss' as *;
+
+.checkoutPage {
+  min-height: 100vh;
+  background-color: $color-bg-page;
+  padding-bottom: 140rpx;
+}
+
+// 自提门店
+.storeSection {
+  background-color: $color-bg-card;
+  margin: $page-spacing;
+  border-radius: $radius-lg;
+  padding: 24rpx;
+  box-shadow: $shadow-card;
+  
+  .sectionHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16rpx;
+    
+    .sectionTitle {
+      font-size: $font-size-md;
+      font-weight: $font-weight-semibold;
+      color: $color-text-primary;
+      display: flex;
+      align-items: center;
+      
+      .icon {
+        margin-right: 8rpx;
+      }
+    }
+    
+    .changeBtn {
+      font-size: $font-size-sm;
+      color: $color-primary;
+      
+      &:active {
+        opacity: 0.7;
+      }
+    }
+  }
+  
+  .storeInfo {
+    display: flex;
+    align-items: center;
+    padding: 16rpx;
+    background-color: $color-bg-page;
+    border-radius: $radius-md;
+    
+    .storeAvatar {
+      width: 60rpx;
+      height: 60rpx;
+      background-color: #f5f5f5;
+      border-radius: $radius-sm;
+      margin-right: 16rpx;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 32rpx;
+    }
+    
+    .storeDetails {
+      flex: 1;
+      
+      .storeName {
+        font-size: $font-size-sm;
+        font-weight: $font-weight-medium;
+        color: $color-text-primary;
+        margin-bottom: 4rpx;
+      }
+      
+      .storeAddress {
+        font-size: $font-size-xs;
+        color: $color-text-tertiary;
+        margin-bottom: 4rpx;
+      }
+      
+      .storeHours {
+        font-size: $font-size-xs;
+        color: $color-text-tertiary;
+      }
+    }
+    
+    .storeArrow {
+      color: $color-text-tertiary;
+      font-size: $font-size-sm;
+    }
+  }
+}
+
+// 商品列表
+.goodsSection {
+  background-color: $color-bg-card;
+  margin: $page-spacing;
+  border-radius: $radius-lg;
+  overflow: hidden;
+  box-shadow: $shadow-card;
+  
+  .sectionHeader {
+    padding: 24rpx;
+    border-bottom: 1px solid $color-divider;
+    
+    .sectionTitle {
+      font-size: $font-size-md;
+      font-weight: $font-weight-semibold;
+      color: $color-text-primary;
+    }
+  }
+  
+  .goodsList {
+    .goodsItem {
+      display: flex;
+      padding: 24rpx;
+      border-bottom: 1px solid $color-divider;
+      
+      &:last-child {
+        border-bottom: none;
+      }
+      
+      .goodsImage {
+        width: 160rpx;
+        height: 160rpx;
+        border-radius: $radius-sm;
+        margin-right: 16rpx;
+        background-color: #f5f5f5;
+      }
+      
+      .goodsInfo {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        
+        .goodsName {
+          font-size: $font-size-sm;
+          color: $color-text-primary;
+          line-height: 1.4;
+          display: -webkit-box;
+          -webkit-line-clamp: 2;
+          -webkit-box-orient: vertical;
+          overflow: hidden;
+        }
+        
+        .goodsSpecs {
+          font-size: $font-size-xs;
+          color: $color-text-tertiary;
+          margin: 8rpx 0;
+        }
+        
+        .goodsBottom {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          
+          .goodsPrice {
+            font-size: $font-size-md;
+            font-weight: $font-weight-bold;
+            color: $color-primary;
+          }
+          
+          .goodsQuantity {
+            font-size: $font-size-sm;
+            color: $color-text-tertiary;
+          }
+        }
+      }
+    }
+  }
+}
+
+// 优惠券
+.couponSection {
+  background-color: $color-bg-card;
+  margin: $page-spacing;
+  border-radius: $radius-lg;
+  padding: 24rpx;
+  box-shadow: $shadow-card;
+  
+  .couponRow {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    
+    .couponLabel {
+      font-size: $font-size-md;
+      color: $color-text-primary;
+      display: flex;
+      align-items: center;
+      
+      .icon {
+        margin-right: 8rpx;
+      }
+    }
+    
+    .couponInfo {
+      display: flex;
+      align-items: center;
+      
+      .couponValue {
+        font-size: $font-size-sm;
+        color: $color-primary;
+        margin-right: 8rpx;
+      }
+      
+      .arrow {
+        color: $color-text-tertiary;
+        font-size: $font-size-sm;
+      }
+    }
+  }
+}
+
+// 支付方式
+.paymentSection {
+  background-color: $color-bg-card;
+  margin: $page-spacing;
+  border-radius: $radius-lg;
+  padding: 24rpx;
+  box-shadow: $shadow-card;
+  
+  .sectionTitle {
+    font-size: $font-size-md;
+    font-weight: $font-weight-semibold;
+    color: $color-text-primary;
+    margin-bottom: 20rpx;
+  }
+  
+  .paymentList {
+    .paymentItem {
+      display: flex;
+      align-items: center;
+      padding: 20rpx 0;
+      border-bottom: 1px solid $color-divider;
+      
+      &:last-child {
+        border-bottom: none;
+      }
+      
+      .paymentIcon {
+        width: 48rpx;
+        height: 48rpx;
+        margin-right: 16rpx;
+        font-size: 40rpx;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      
+      .paymentInfo {
+        flex: 1;
+        
+        .paymentName {
+          font-size: $font-size-md;
+          color: $color-text-primary;
+          margin-bottom: 4rpx;
+        }
+        
+        .paymentDesc {
+          font-size: $font-size-xs;
+          color: $color-text-tertiary;
+        }
+      }
+      
+      .paymentRadio {
+        width: 40rpx;
+        height: 40rpx;
+        border-radius: 50%;
+        border: 3rpx solid $color-border;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all $transition-base;
+        
+        &.selected {
+          border-color: $color-primary;
+          background-color: $color-primary;
+          
+          &::after {
+            content: '✓';
+            color: white;
+            font-size: 20rpx;
+            font-weight: bold;
+          }
+        }
+      }
+    }
+  }
+}
+
+// 订单备注
+.remarkSection {
+  background-color: $color-bg-card;
+  margin: $page-spacing;
+  border-radius: $radius-lg;
+  padding: 24rpx;
+  box-shadow: $shadow-card;
+  
+  .remarkHeader {
+    font-size: $font-size-md;
+    color: $color-text-primary;
+    margin-bottom: 16rpx;
+  }
+  
+  .remarkInput {
+    width: 100%;
+    min-height: 80rpx;
+    padding: 16rpx;
+    background-color: $color-bg-page;
+    border-radius: $radius-md;
+    font-size: $font-size-sm;
+    color: $color-text-primary;
+  }
+}
+
+// 订单金额明细
+.amountSection {
+  background-color: $color-bg-card;
+  margin: $page-spacing;
+  border-radius: $radius-lg;
+  padding: 24rpx;
+  box-shadow: $shadow-card;
+  
+  .amountRow {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12rpx 0;
+    
+    .amountLabel {
+      font-size: $font-size-sm;
+      color: $color-text-secondary;
+    }
+    
+    .amountValue {
+      font-size: $font-size-sm;
+      color: $color-text-primary;
+    }
+    
+    &.highlight {
+      .amountValue {
+        color: $color-primary;
+        font-weight: $font-weight-semibold;
+      }
+    }
+  }
+}
+
+// 底部提交栏
+.bottomBar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: $color-bg-card;
+  padding: 20rpx $page-padding;
+  padding-bottom: calc(20rpx + env(safe-area-inset-bottom));
+  display: flex;
+  align-items: center;
+  box-shadow: 0 -4rpx 16rpx rgba(0, 0, 0, 0.08);
+  z-index: 100;
+  
+  .totalAmount {
+    flex: 1;
+    
+    .amountLabel {
+      font-size: $font-size-xs;
+      color: $color-text-tertiary;
+    }
+    
+    .amountValue {
+      font-size: 40rpx;
+      font-weight: $font-weight-bold;
+      color: $color-primary;
+    }
+  }
+  
+  .submitBtn {
+    height: $button-height-lg;
+    padding: 0 64rpx;
+    background: linear-gradient(135deg, $color-primary 0%, $color-primary-light 100%);
+    color: white;
+    border-radius: $radius-button;
+    font-size: $font-size-lg;
+    font-weight: $font-weight-semibold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4rpx 16rpx rgba(226, 35, 26, 0.3);
+    
+    &:active {
+      opacity: 0.9;
+      transform: scale(0.98);
+    }
+  }
+}

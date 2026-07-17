@@ -1,0 +1,365 @@
+@use '@/styles/variables.scss' as *;
+
+.orderListPage {
+  min-height: 100vh;
+  background-color: $color-bg-page;
+}
+
+.tabBar {
+  background-color: #ffffff;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.06);
+}
+
+.tabList {
+  display: flex;
+  padding: 0 24rpx;
+  white-space: nowrap;
+}
+
+.tabItem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 28rpx 32rpx;
+  position: relative;
+  transition: all 0.3s ease;
+  
+  .tabText {
+    font-size: $font-size-md;
+    color: $color-text-secondary;
+    font-weight: 400;
+    transition: all 0.3s ease;
+  }
+  
+  &.active {
+    .tabText {
+      color: $color-primary;
+      font-weight: $font-weight-semibold;
+    }
+  }
+}
+
+.tabIndicator {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 48rpx;
+  height: 6rpx;
+  background-color: $color-primary;
+  border-radius: 3rpx;
+}
+
+.orderList {
+  padding: 24rpx;
+  padding-bottom: 120rpx;
+}
+
+.orderCard {
+  background-color: #ffffff;
+  border-radius: $radius-lg;
+  margin-bottom: 24rpx;
+  overflow: hidden;
+  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.06);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  
+  &:active {
+    transform: scale(0.99);
+    box-shadow: 0 2rpx 10rpx rgba(0, 0, 0, 0.08);
+  }
+}
+
+.orderHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 24rpx 28rpx;
+  border-bottom: 1px solid $color-divider;
+  
+  .orderId {
+    font-size: $font-size-sm;
+    color: $color-text-secondary;
+  }
+  
+  .orderStatus {
+    font-size: $font-size-sm;
+    font-weight: $font-weight-semibold;
+    padding: 6rpx 16rpx;
+    border-radius: 20rpx;
+    background-color: rgba(226, 35, 26, 0.08);
+  }
+}
+
+.storeInfo {
+  display: flex;
+  align-items: center;
+  padding: 16rpx 28rpx;
+  background-color: rgba(0, 0, 0, 0.02);
+  
+  .storeName {
+    font-size: $font-size-sm;
+    color: $color-text-primary;
+    font-weight: 500;
+    margin-right: 12rpx;
+  }
+  
+  .storeAddress {
+    font-size: $font-size-xs;
+    color: $color-text-tertiary;
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}
+
+.orderProducts {
+  padding: 20rpx 28rpx;
+}
+
+.orderProduct {
+  display: flex;
+  padding: 16rpx 0;
+  
+  &:not(:last-child) {
+    border-bottom: 1px dashed $color-divider;
+  }
+  
+  .productImage {
+    width: 160rpx;
+    height: 160rpx;
+    border-radius: $radius-md;
+    margin-right: 20rpx;
+    background-color: $color-bg-page;
+    flex-shrink: 0;
+  }
+  
+  .productInfo {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-width: 0;
+    
+    .productName {
+      font-size: $font-size-md;
+      color: $color-text-primary;
+      line-height: 1.4;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      font-weight: 500;
+    }
+    
+    .productSpecs {
+      font-size: $font-size-xs;
+      color: $color-text-tertiary;
+    }
+    
+    .productBottom {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      
+      .productPrice {
+        font-size: $font-size-lg;
+        font-weight: $font-weight-bold;
+        color: $color-primary;
+        
+        &::before {
+          content: '¥';
+          font-size: $font-size-sm;
+        }
+      }
+      
+      .productQuantity {
+        font-size: $font-size-sm;
+        color: $color-text-tertiary;
+      }
+    }
+  }
+}
+
+.orderFooter {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20rpx 28rpx;
+  border-top: 1px solid $color-divider;
+  background-color: rgba(0, 0, 0, 0.02);
+  
+  .orderTotal {
+    display: flex;
+    align-items: baseline;
+    
+    .totalLabel {
+      font-size: $font-size-sm;
+      color: $color-text-secondary;
+      margin-right: 8rpx;
+    }
+    
+    .totalValue {
+      font-size: $font-size-xl;
+      font-weight: $font-weight-bold;
+      color: $color-primary;
+      
+      &::before {
+        content: '¥';
+        font-size: $font-size-md;
+      }
+    }
+  }
+  
+  .orderActions {
+    display: flex;
+    gap: 16rpx;
+  }
+}
+
+.actionBtn {
+  padding: 16rpx 36rpx;
+  border-radius: $radius-button;
+  font-size: $font-size-sm;
+  font-weight: 500;
+  border: 2rpx solid transparent;
+  transition: all 0.2s ease;
+  
+  &:active {
+    transform: scale(0.96);
+    opacity: 0.85;
+  }
+  
+  &.primary {
+    background: linear-gradient(135deg, $color-primary 0%, #f54a42 100%);
+    color: #ffffff;
+    box-shadow: 0 4rpx 16rpx rgba(226, 35, 26, 0.35);
+  }
+  
+  &.secondary {
+    background-color: #ffffff;
+    border-color: $color-border;
+    color: $color-text-secondary;
+    
+    &:active {
+      background-color: $color-bg-hover;
+    }
+  }
+  
+  &.danger {
+    background-color: #ffffff;
+    border-color: $color-primary;
+    color: $color-primary;
+    
+    &:active {
+      background-color: rgba(226, 35, 26, 0.08);
+    }
+  }
+}
+
+.emptyOrder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 150rpx 40rpx;
+  
+  .emptyIcon {
+    width: 200rpx;
+    height: 200rpx;
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 80rpx;
+    margin-bottom: 40rpx;
+    box-shadow: 0 8rpx 32rpx rgba(0, 0, 0, 0.08);
+  }
+  
+  .emptyText {
+    font-size: $font-size-lg;
+    color: $color-text-tertiary;
+    margin-bottom: 48rpx;
+  }
+  
+  .goShoppingBtn {
+    background: linear-gradient(135deg, $color-primary 0%, #f54a42 100%);
+    color: #ffffff;
+    padding: 24rpx 80rpx;
+    border-radius: $radius-button;
+    font-size: $font-size-md;
+    font-weight: $font-weight-semibold;
+    box-shadow: 0 8rpx 24rpx rgba(226, 35, 26, 0.4);
+    transition: all 0.2s ease;
+    
+    &:active {
+      transform: scale(0.96);
+      box-shadow: 0 4rpx 12rpx rgba(226, 35, 26, 0.3);
+    }
+  }
+}
+
+.loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 100rpx 0;
+  
+  text {
+    font-size: $font-size-md;
+    color: $color-text-tertiary;
+  }
+}
+
+.refundHeader {
+  background-color: #ffffff;
+  padding: 32rpx 28rpx;
+  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.06);
+  
+  .refundTitle {
+    font-size: $font-size-xl;
+    font-weight: $font-weight-bold;
+    color: $color-text-primary;
+  }
+}
+
+.refundStatusActions {
+  display: flex;
+  gap: 20rpx;
+  padding: 24rpx 28rpx;
+  background-color: rgba(0, 0, 0, 0.02);
+  border-top: 1px solid $color-divider;
+}
+
+.refundStatusBtn {
+  flex: 1;
+  padding: 20rpx;
+  border-radius: $radius-md;
+  background-color: #ffffff;
+  border: 2rpx solid $color-border;
+  text-align: center;
+  transition: all 0.2s ease;
+  
+  text {
+    font-size: $font-size-sm;
+    color: $color-text-secondary;
+  }
+  
+  &.active {
+    background-color: rgba(226, 35, 26, 0.08);
+    border-color: $color-primary;
+    
+    text {
+      color: $color-primary;
+      font-weight: $font-weight-semibold;
+    }
+  }
+  
+  &:active {
+    transform: scale(0.98);
+  }
+}
