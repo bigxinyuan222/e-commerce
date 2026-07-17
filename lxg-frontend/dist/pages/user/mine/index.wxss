@@ -1,0 +1,287 @@
+/*!*******************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[1].oneOf[0].use[1]!./node_modules/postcss-loader/dist/cjs.js??ruleSet[1].rules[1].oneOf[0].use[2]!./node_modules/resolve-url-loader/index.js!./node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[1].oneOf[0].use[4]!./src/styles/user/mine.module.scss ***!
+  \*******************************************************************************************************************************************************************************************************************************************************************************************************************************/
+.mine-module__minePage___Ujmqz {
+  min-height: 100vh;
+  background-color: #f5f6f7;
+}
+
+.mine-module__userInfoSection___kw1D2 {
+  background: -webkit-linear-gradient(315deg, #e2231a 0%, #ff4d4d 100%);
+  background: linear-gradient(135deg, #e2231a 0%, #ff4d4d 100%);
+  padding: 60rpx 32rpx 80rpx;
+  position: relative;
+}
+
+.mine-module__userInfoSection___kw1D2 .mine-module__userInfoCard___U1Dci {
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-align-items: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+
+.mine-module__userInfoSection___kw1D2 .mine-module__userInfoCard___U1Dci .mine-module__avatar___G90xx {
+  width: 120rpx;
+  height: 120rpx;
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.2);
+  border: 4rpx solid rgba(255, 255, 255, 0.5);
+  margin-right: 24rpx;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-align-items: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-justify-content: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.1);
+          box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.1);
+}
+
+.mine-module__userInfoSection___kw1D2 .mine-module__userInfoCard___U1Dci .mine-module__avatar___G90xx image {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+}
+
+.mine-module__userInfoSection___kw1D2 .mine-module__userInfoCard___U1Dci .mine-module__avatar___G90xx .mine-module__avatarPlaceholder___W8ml5 {
+  font-size: 60rpx;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.mine-module__userInfoSection___kw1D2 .mine-module__userInfoCard___U1Dci .mine-module__userDetails___S2Tvy {
+  -webkit-flex: 1;
+      -ms-flex: 1;
+          flex: 1;
+}
+
+.mine-module__userInfoSection___kw1D2 .mine-module__userInfoCard___U1Dci .mine-module__userDetails___S2Tvy .mine-module__nickname___lf3w5 {
+  font-size: 40rpx;
+  font-weight: 600;
+  color: #ffffff;
+  margin-bottom: 8rpx;
+}
+
+.mine-module__userInfoSection___kw1D2 .mine-module__userInfoCard___U1Dci .mine-module__userDetails___S2Tvy .mine-module__userPhone___adJVL {
+  font-size: 28rpx;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.mine-module__userInfoSection___kw1D2 .mine-module__userInfoCard___U1Dci .mine-module__editBtn___j1qdz {
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 28rpx;
+  padding: 12rpx 24rpx;
+  background-color: rgba(255, 255, 255, 0.2);
+  border-radius: 48rpx;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-align-items: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+
+.mine-module__userInfoSection___kw1D2 .mine-module__userInfoCard___U1Dci .mine-module__editBtn___j1qdz:active {
+  background-color: rgba(255, 255, 255, 0.3);
+}
+
+.mine-module__orderSection___dq13L {
+  margin: 24rpx 32rpx;
+  background-color: #ffffff;
+  border-radius: 16rpx;
+  padding: 32rpx;
+  -webkit-box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.08);
+          box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.08);
+}
+
+.mine-module__orderSection___dq13L .mine-module__sectionHeader___aWtkQ {
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-justify-content: space-between;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+  -webkit-align-items: center;
+      -ms-flex-align: center;
+          align-items: center;
+  margin-bottom: 28rpx;
+}
+
+.mine-module__orderSection___dq13L .mine-module__sectionHeader___aWtkQ .mine-module__sectionTitle___pTryz {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #1d2129;
+}
+
+.mine-module__orderSection___dq13L .mine-module__sectionHeader___aWtkQ .mine-module__viewAll___axIL4 {
+  font-size: 28rpx;
+  color: #86909c;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-align-items: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+
+.mine-module__orderSection___dq13L .mine-module__sectionHeader___aWtkQ .mine-module__viewAll___axIL4::after {
+  content: " >";
+  font-size: 26rpx;
+}
+
+.mine-module__orderSection___dq13L .mine-module__sectionHeader___aWtkQ .mine-module__viewAll___axIL4:active {
+  color: #e2231a;
+}
+
+.mine-module__orderSection___dq13L .mine-module__orderStatusList___TWq5i {
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-justify-content: space-around;
+      -ms-flex-pack: distribute;
+          justify-content: space-around;
+}
+
+.mine-module__orderSection___dq13L .mine-module__orderStatusList___TWq5i .mine-module__orderStatusItem___tojzj {
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-direction: column;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-align-items: center;
+      -ms-flex-align: center;
+          align-items: center;
+  position: relative;
+}
+
+.mine-module__orderSection___dq13L .mine-module__orderStatusList___TWq5i .mine-module__orderStatusItem___tojzj .mine-module__statusIcon___I0Ai2 {
+  width: 80rpx;
+  height: 80rpx;
+  background-color: #f5f6f7;
+  border-radius: 50%;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-align-items: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-justify-content: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  margin-bottom: 12rpx;
+  font-size: 40rpx;
+  position: relative;
+}
+
+.mine-module__orderSection___dq13L .mine-module__orderStatusList___TWq5i .mine-module__orderStatusItem___tojzj .mine-module__statusIcon___I0Ai2 .mine-module__badge___PydEf {
+  position: absolute;
+  top: -4rpx;
+  right: -4rpx;
+  min-width: 36rpx;
+  height: 36rpx;
+  background-color: #e2231a;
+  color: white;
+  font-size: 26rpx;
+  border-radius: 18rpx;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-align-items: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-justify-content: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  padding: 0 8rpx;
+}
+
+.mine-module__orderSection___dq13L .mine-module__orderStatusList___TWq5i .mine-module__orderStatusItem___tojzj .mine-module__statusLabel___bV7Ba {
+  font-size: 26rpx;
+  color: #4e5969;
+}
+
+.mine-module__orderSection___dq13L .mine-module__orderStatusList___TWq5i .mine-module__orderStatusItem___tojzj:active {
+  opacity: 0.7;
+}
+
+.mine-module__functionSection___QffFa {
+  margin: 24rpx 32rpx;
+  background-color: #ffffff;
+  border-radius: 16rpx;
+  overflow: hidden;
+  -webkit-box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.08);
+          box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.08);
+}
+
+.mine-module__functionSection___QffFa .mine-module__functionItem___TaGe6 {
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-align-items: center;
+      -ms-flex-align: center;
+          align-items: center;
+  padding: 32rpx 32rpx;
+  position: relative;
+}
+
+.mine-module__functionSection___QffFa .mine-module__functionItem___TaGe6:not(:last-child)::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 32rpx;
+  right: 32rpx;
+  height: 2rpx;
+  background-color: #f2f3f5;
+}
+
+.mine-module__functionSection___QffFa .mine-module__functionItem___TaGe6:active {
+  background-color: #f2f3f5;
+}
+
+.mine-module__functionSection___QffFa .mine-module__functionItem___TaGe6 .mine-module__functionIcon___dC1lE {
+  width: 48rpx;
+  height: 48rpx;
+  margin-right: 20rpx;
+  font-size: 40rpx;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-align-items: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-justify-content: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+}
+
+.mine-module__functionSection___QffFa .mine-module__functionItem___TaGe6 .mine-module__functionInfo___FjN1h {
+  -webkit-flex: 1;
+      -ms-flex: 1;
+          flex: 1;
+}
+
+.mine-module__functionSection___QffFa .mine-module__functionItem___TaGe6 .mine-module__functionInfo___FjN1h .mine-module__functionName___OLZz4 {
+  font-size: 32rpx;
+  color: #1d2129;
+  font-weight: 500;
+}
+
+.mine-module__functionSection___QffFa .mine-module__functionItem___TaGe6 .mine-module__functionInfo___FjN1h .mine-module__functionDesc___i_MYt {
+  font-size: 26rpx;
+  color: #86909c;
+  margin-top: 4rpx;
+}
+
+.mine-module__functionSection___QffFa .mine-module__functionItem___TaGe6 .mine-module__functionArrow___RGxf_ {
+  color: #86909c;
+  font-size: 28rpx;
+}
+
+.mine-module__bottomSpace___LlPWU {
+  height: 120rpx;
+}
