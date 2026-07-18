@@ -3,7 +3,7 @@
 .productDetailPage {
   min-height: 100vh;
   background-color: $color-bg-page;
-  padding-bottom: 100rpx;
+  padding-bottom: 120rpx;
 }
 
 // 商品轮播图
@@ -935,8 +935,8 @@
   left: 0;
   right: 0;
   background-color: $color-bg-card;
-  padding: 12rpx $page-padding;
-  padding-bottom: calc(12rpx + env(safe-area-inset-bottom));
+  padding: 16rpx $page-padding;
+  padding-bottom: calc(16rpx + env(safe-area-inset-bottom));
   display: flex;
   align-items: center;
   box-shadow: 0 -4rpx 16rpx rgba(0, 0, 0, 0.08);
@@ -944,10 +944,8 @@
   
   .actionIcons {
     display: flex;
-    gap: 20rpx;
-    margin-right: 16rpx;
-    flex-shrink: 0;
-    width: 290rpx;
+    gap: 32rpx;
+    margin-right: 24rpx;
     
     .actionItem {
       display: flex;
@@ -956,10 +954,9 @@
       color: $color-text-secondary;
       font-size: $font-size-xs;
       position: relative;
-      width: 57rpx;
       
       .icon {
-        font-size: 36rpx;
+        font-size: 40rpx;
         margin-bottom: 4rpx;
       }
       
@@ -973,25 +970,20 @@
   .actionButtons {
     flex: 1;
     display: flex;
-    gap: 12rpx;
-    min-width: 0;
+    gap: 16rpx;
     
     .addCartBtn {
       flex: 1;
-      height: $button-height-sm;
+      height: $button-height-md;
       background-color: $color-warning;
       color: white;
       border-radius: $radius-button;
-      font-size: $font-size-sm;
+      font-size: $font-size-md;
       font-weight: $font-weight-semibold;
       display: flex;
       align-items: center;
       justify-content: center;
       box-shadow: 0 4rpx 16rpx rgba(255, 125, 0, 0.3);
-      min-width: 0;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
       
       &:active {
         opacity: 0.9;
@@ -1001,7 +993,7 @@
     
     .buyNowBtn {
       flex: 1;
-      height: $button-height-sm;
+      height: $button-height-md;
       background: linear-gradient(135deg, $color-primary 0%, $color-primary-light 100%);
       color: white;
       border-radius: $radius-button;
@@ -1011,10 +1003,7 @@
       align-items: center;
       justify-content: center;
       box-shadow: 0 4rpx 16rpx rgba(226, 35, 26, 0.3);
-      min-width: 0;
-      white-space: nowrap;
-      overflow: hidden;
-      padding: 4rpx 6rpx;
+      padding: 4rpx 8rpx;
       box-sizing: border-box;
       
       &:active {
@@ -1023,22 +1012,17 @@
       }
       
       .buyBtnText {
-        font-size: $font-size-sm;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        max-width: 100%;
+        font-size: $font-size-md;
       }
       
       .btnCountdown {
-        font-size: 16rpx;
+        font-size: 18rpx;
         opacity: 0.95;
         font-family: 'Courier New', monospace;
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
         max-width: 100%;
-        margin-top: 2rpx;
       }
     }
   }
