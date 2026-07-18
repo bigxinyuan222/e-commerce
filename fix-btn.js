@@ -1,0 +1,1 @@
+var fs=require('fs');var c=fs.readFileSync('lxg-frontend/src/styles/home/detail.module.scss','utf8');c=c.replace('height: -height-md;','height: 96rpx;');fs.writeFileSync('lxg-frontend/src/styles/home/detail.module.scss',c,'utf8');console.log('Done'); 
