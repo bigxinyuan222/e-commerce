@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { View, Text, Image, ScrollView } from '@tarojs/components';
 import Taro from '@tarojs/taro';
 import { seckillProducts } from '@/data/common/home';
@@ -11,6 +11,7 @@ const SeckillPage: React.FC = () => {
     seconds: 0
   });
   const [activeCategory, setActiveCategory] = useState('推荐');
+  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const categories = ['推荐', '品质家电', '数码', '酒水', '学生专享', '电脑办公'];
 
@@ -27,6 +28,10 @@ const SeckillPage: React.FC = () => {
 
     if (diff <= 0) {
       setTimeLeft({ hours: 0, minutes: 0, seconds: 0 });
+      if (timerRef.current) {
+        clearInterval(timerRef.current);
+        timerRef.current = null;
+      }
       return;
     }
 
@@ -39,8 +44,12 @@ const SeckillPage: React.FC = () => {
 
   useEffect(() => {
     updateCountdown();
-    const timer = setInterval(updateCountdown, 1000);
-    return () => clearInterval(timer);
+    timerRef.current = setInterval(updateCountdown, 1000);
+    return () => {
+      if (timerRef.current) {
+        clearInterval(timerRef.current);
+      }
+    };
   }, [updateCountdown]);
 
   const goToProductDetail = (productId: string) => {

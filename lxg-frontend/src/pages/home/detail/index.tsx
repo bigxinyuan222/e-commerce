@@ -490,22 +490,27 @@ const ProductDetailPage: React.FC = () => {
     <View className={styles.productDetailPage}>
       <ScrollView scrollY style={{ height: 'calc(100vh - 120rpx)' }}>
         {/* 商品轮播图 */}
-        <View className={styles.productBanner}>
-          <Swiper
-            autoplay
-            interval={3000}
-            circular
-            onChange={onBannerChange}
-          >
-            {product.images.map((image, index) => (
-              <SwiperItem key={index}>
-                <Image src={image} mode="aspectFill" lazyLoad />
-              </SwiperItem>
-            ))}
-          </Swiper>
-          <Text className={styles.bannerIndicator}>
-            {currentImage + 1}/{product.images.length}
-          </Text>
+        <View className={styles.bannerWrap}>
+          <View className={styles.shareBtn} onClick={handleShare}>
+            <Text className={styles.shareIcon}>↗</Text>
+          </View>
+          <View className={styles.productBanner}>
+            <Swiper
+              autoplay
+              interval={3000}
+              circular
+              onChange={onBannerChange}
+            >
+              {product.images.map((image, index) => (
+                <SwiperItem key={index}>
+                  <Image src={image} mode="aspectFill" lazyLoad />
+                </SwiperItem>
+              ))}
+            </Swiper>
+            <Text className={styles.bannerIndicator}>
+              {currentImage + 1}/{product.images.length}
+            </Text>
+          </View>
         </View>
 
         {/* 价格信息 */}
@@ -651,10 +656,6 @@ const ProductDetailPage: React.FC = () => {
           <View className={styles.actionItem} onClick={goHome}>
             <Text className={styles.icon}>🏠</Text>
             <Text>首页</Text>
-          </View>
-          <View className={styles.actionItem} onClick={handleShare}>
-            <Text className={styles.icon}>📤</Text>
-            <Text>分享</Text>
           </View>
           <View className={styles.actionItem} onClick={goToCustomerService}>
             <Text className={styles.icon}>💬</Text>

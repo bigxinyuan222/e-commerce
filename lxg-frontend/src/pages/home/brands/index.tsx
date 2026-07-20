@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { View, Text, Image, ScrollView } from '@tarojs/components';
+import { View, Text, Image, ScrollView, Input } from '@tarojs/components';
 import Taro from '@tarojs/taro';
 import { brands, getHotBrands } from '@/data/product/brands';
 import styles from '@/styles/home/brands.module.scss';
@@ -27,12 +27,11 @@ const BrandsPage = function() {
       <View className={styles.searchBar}>
         <View className={styles.searchInputWrap}>
           <Text className={styles.searchIcon}>🔍</Text>
-          <input 
-            type="text" 
+          <Input 
             className={styles.searchInput}
             placeholder="搜索品牌"
             value={searchKeyword}
-            onChange={function(e) { setSearchKeyword(e.target.value); }}
+            onInput={(e: any) => setSearchKeyword(e.detail.value)}
           />
           {searchKeyword && (
             <Text className={styles.clearIcon} onClick={function() { setSearchKeyword(''); }}>✕</Text>
