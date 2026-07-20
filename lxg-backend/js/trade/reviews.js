@@ -1,20 +1,5 @@
-let reviewsData = [
-    { id: 'review-001', goodsId: 'goods-001', goodsName: '无线蓝牙耳机 Pro', userId: 'user-001', userName: '赵*阳', phone: '138****8888', rating: 5, content: '音质非常好，降噪效果很棒！物流也很快，非常满意的一次购物。', images: [], likes: 28, status: 'approved', createTime: '2026-06-24 14:30', reply: null, replies: [{ id: 'r-001', userName: '王*明', content: '确实不错，我也买了一个', time: '2026-06-24 15:00', likes: 5 }] },
-    { id: 'review-002', goodsId: 'goods-002', goodsName: '智能手表 S8', userId: 'user-002', userName: '孙*怡', phone: '139****6666', rating: 4, content: '功能丰富，续航还可以提升。整体体验不错，推荐购买。', images: [], likes: 15, status: 'pending', createTime: '2026-06-24 11:20', reply: null, replies: [] },
-    { id: 'review-003', goodsId: 'goods-003', goodsName: '便携移动电源', userId: 'user-003', userName: '张*婷', phone: '137****9999', rating: 5, content: '容量大，充电速度快，携带方便。性价比很高！', images: [], likes: 42, status: 'approved', createTime: '2026-06-23 16:45', reply: { content: '感谢您的好评！', time: '2026-06-23 17:00' }, replies: [{ id: 'r-002', userName: '李*华', content: '请问支持快充吗？', time: '2026-06-23 18:00', likes: 2 }, { id: 'r-003', userName: '张*婷', content: '支持的，最高支持20W快充', time: '2026-06-23 18:30', likes: 8 }] },
-    { id: 'review-004', goodsId: 'goods-004', goodsName: '智能台灯 Pro', userId: 'user-004', userName: '刘*芳', phone: '135****7777', rating: 3, content: '灯光效果不错，但底座有点不稳，希望改进。', images: [], likes: 8, status: 'pending', createTime: '2026-06-23 14:10', reply: null, replies: [] },
-    { id: 'review-005', goodsId: 'goods-001', goodsName: '无线蓝牙耳机 Pro', userId: 'user-005', userName: '陈*伟', phone: '136****5555', rating: 5, content: '第二次购买了，送给朋友的，质量很好，包装精美。', images: [], likes: 35, status: 'approved', createTime: '2026-06-22 09:30', reply: { content: '感谢您的支持！', time: '2026-06-22 10:00' }, replies: [] },
-    { id: 'review-006', goodsId: 'goods-002', goodsName: '智能手表 S8', userId: 'user-006', userName: '周*杰', phone: '137****3333', rating: 2, content: '续航太差了，一天都撑不到，不推荐购买！', images: [], likes: 5, status: 'approved', createTime: '2026-06-21 16:45', reply: { content: '抱歉给您带来不好的体验，我们会持续优化产品。', time: '2026-06-21 17:00' }, replies: [] },
-    { id: 'review-007', goodsId: 'goods-005', goodsName: '运动蓝牙耳机', userId: 'user-007', userName: '吴*凡', phone: '136****4444', rating: 5, content: '跑步时戴着很稳，音质也不错，值得购买！', images: [], likes: 22, status: 'approved', createTime: '2026-06-20 10:20', reply: null, replies: [{ id: 'r-004', userName: '郑*爽', content: '防水吗？', time: '2026-06-20 11:00', likes: 3 }] },
-    { id: 'review-008', goodsId: 'goods-006', goodsName: '美妆护肤套装', userId: 'user-008', userName: '郑*爽', phone: '135****5555', rating: 4, content: '包装精美，使用效果不错，就是价格有点贵。', images: [], likes: 18, status: 'pending', createTime: '2026-06-19 09:30', reply: null, replies: [] }
-];
-
-let aiSummaryData = [
-    { id: 'summary-001', goodsId: 'goods-001', goodsName: '无线蓝牙耳机 Pro', content: '用户普遍认为产品性价比高，音质和外观设计获得好评，部分用户建议优化续航和软件体验。', reviewCount: 326, status: 'approved', createTime: '2026-06-24 10:00', updateTime: '2026-06-24 10:00' },
-    { id: 'summary-002', goodsId: 'goods-002', goodsName: '智能手表 S8', content: '功能丰富、屏幕显示效果好，是用户的主要好评点；续航能力和价格是主要关注点，部分用户希望价格更亲民。', reviewCount: 185, status: 'pending', createTime: '2026-06-24 09:00', updateTime: '2026-06-24 09:00' },
-    { id: 'summary-003', goodsId: 'goods-003', goodsName: '便携移动电源', content: '容量大、充电速度快是主要优势，用户反馈整体满意，推荐购买。', reviewCount: 245, status: 'approved', createTime: '2026-06-23 16:00', updateTime: '2026-06-23 16:00' },
-    { id: 'summary-004', goodsId: 'goods-004', goodsName: '智能台灯 Pro', content: '灯光效果出色，但底座稳定性有待提升。', reviewCount: 89, status: 'pending', createTime: '2026-06-23 14:00', updateTime: '2026-06-23 14:00' }
-];
+let reviewsData = [];
+let aiSummaryData = [];
 
 let currentReviewSearchKeyword = '';
 let currentReviewStatusFilter = 'all';
@@ -54,6 +39,64 @@ function getRatingStars(rating) {
         }
     }
     return stars;
+}
+
+async function loadReviews() {
+    try {
+        const response = await apiGet(API_CONFIG.reviews.list);
+        const dataList = response && response.list ? response.list : (Array.isArray(response) ? response : []);
+        reviewsData = dataList.map(item => ({
+            id: item.ID || item.id,
+            goodsId: item.productId || item.goodsId || '',
+            goodsName: item.productName || item.goodsName || '',
+            userId: item.userId || '',
+            userName: item.userName || item.name || '',
+            phone: item.phone || '',
+            rating: item.rating || 0,
+            content: item.content || '',
+            images: item.images || [],
+            likes: item.likes || item.likeCount || 0,
+            status: item.status === 1 ? 'approved' : item.status === 0 ? 'pending' : 'hidden',
+            createTime: item.createdAt || item.CreatedAt || '',
+            reply: item.adminReply ? {
+                content: item.adminReply.content || '',
+                time: item.adminReply.time || item.adminReply.createdAt || ''
+            } : null,
+            replies: (item.replies || []).map(r => ({
+                id: r.id || '',
+                userName: r.userName || '',
+                content: r.content || '',
+                time: r.createdAt || r.time || '',
+                likes: r.likes || 0
+            }))
+        }));
+        refreshReviewsPage();
+    } catch (error) {
+        console.error('Failed to load reviews:', error);
+    }
+}
+
+async function loadSummaries() {
+    try {
+        const response = await apiGet(API_CONFIG.reviews.summaries);
+        if (response && response.data) {
+            aiSummaryData = response.data.map(item => ({
+                id: item.ID || item.id,
+                goodsId: item.productId || item.goodsId || '',
+                goodsName: item.productName || item.goodsName || '',
+                content: item.summary || item.content || '',
+                reviewCount: item.reviewCount || 0,
+                status: item.status === 1 ? 'approved' : item.status === 0 ? 'pending' : 'rejected',
+                createTime: item.createdAt || item.CreatedAt || '',
+                updateTime: item.updatedAt || item.updateTime || ''
+            }));
+        } else {
+            aiSummaryData = [];
+        }
+        refreshReviewsPage();
+    } catch (error) {
+        console.error('Failed to load summaries:', error);
+    }
 }
 
 function filterReviews() {
@@ -97,41 +140,50 @@ function switchReviewRating(rating) {
     refreshReviewsPage();
 }
 
-function handleReviewAction(reviewId, action) {
+async function handleReviewAction(reviewId, action) {
     const review = reviewsData.find(r => r.id === reviewId);
     if (!review) return;
     
-    if (action === 'approve') {
-        review.status = 'approved';
-    } else if (action === 'reject') {
-        review.status = 'hidden';
-    } else if (action === 'toggle') {
-        review.status = review.status === 'approved' ? 'hidden' : 'approved';
+    try {
+        if (action === 'approve') {
+            await apiPut(API_CONFIG.reviews.audit, { status: 1 }, { id: reviewId });
+            review.status = 'approved';
+        } else if (action === 'reject') {
+            await apiPut(API_CONFIG.reviews.audit, { status: 2 }, { id: reviewId });
+            review.status = 'hidden';
+        } else if (action === 'toggle') {
+            const newStatus = review.status === 'approved' ? 2 : 1;
+            await apiPut(API_CONFIG.reviews.audit, { status: newStatus }, { id: reviewId });
+            review.status = review.status === 'approved' ? 'hidden' : 'approved';
+        }
+        refreshReviewsPage();
+    } catch (error) {
+        console.error('Failed to handle review action:', error);
+        alert('操作失败，请重试');
     }
-    
-    refreshReviewsPage();
 }
 
-function handleSummaryAction(summaryId, action) {
+async function handleSummaryAction(summaryId, action) {
     const summary = aiSummaryData.find(s => s.id === summaryId);
     if (!summary) return;
     
-    if (action === 'approve') {
-        summary.status = 'approved';
-        summary.updateTime = new Date().toISOString().replace('T', ' ').substring(0, 19);
-        alert('AI评价摘要已发布！');
-    } else if (action === 'reject') {
-        showConfirm('确定拒绝此摘要并重新生成吗？', function() {
-            summary.status = 'rejected';
-            summary.content = 'AI重新生成中...';
-            setTimeout(() => {
-                summary.content = '用户反馈产品质量优秀，性价比高，物流速度快，整体购物体验良好。';
-                summary.status = 'pending';
-                summary.updateTime = new Date().toISOString().replace('T', ' ').substring(0, 19);
-                alert('AI评价摘要已重新生成！');
+    try {
+        if (action === 'approve') {
+            await apiPut(API_CONFIG.reviews.auditSummary, { status: 1 }, { id: summaryId });
+            summary.status = 'approved';
+            summary.updateTime = new Date().toISOString().replace('T', ' ').substring(0, 19);
+            alert('AI评价摘要已发布！');
+        } else if (action === 'reject') {
+            showConfirm('确定拒绝此摘要并重新生成吗？', async function() {
+                await apiPut(API_CONFIG.reviews.auditSummary, { status: 2 }, { id: summaryId });
+                summary.status = 'rejected';
                 refreshReviewsPage();
-            }, 1000);
-        });
+            });
+        }
+        refreshReviewsPage();
+    } catch (error) {
+        console.error('Failed to handle summary action:', error);
+        alert('操作失败，请重试');
     }
 }
 
@@ -140,106 +192,101 @@ function showReviewDetail(reviewId) {
     if (!review) return;
     
     const modalContent = `
-        <div class="modal-overlay" style="position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.5);z-index:1000;display:flex;align-items:center;justify-content:center;" onclick="closeReviewModal()"></div>
-        <div class="modal-content" style="position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:#fff;border-radius:12px;box-shadow:0 25px 50px -12px rgba(0,0,0,0.25);display:flex;flex-direction:column;max-height:80vh;overflow:hidden;z-index:1001;width:900px;">
+        <div class="modal-overlay" onclick="closeReviewModal()"></div>
+        <div class="modal-content" style="width:900px;">
             <div class="modal-header">
                 <h3><i class="fas fa-star"></i> 评价详情</h3>
                 <button onclick="closeReviewModal()" class="modal-close"><i class="fas fa-times"></i></button>
             </div>
             <div class="modal-body" style="max-height:60vh;overflow-y:auto;">
-                <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;">
-                    <div style="grid-column:span 1;">
-                        <div style="font-weight:600;font-size:14px;margin-bottom:12px;">评价原文</div>
-                        <div style="background:#f8fafc;border-radius:8px;padding:16px;">
-                            <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;">
-                                <div style="width:40px;height:40px;background:#4f6ef7;color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:600;">${review.userName.charAt(0)}</div>
-                                <div>
-                                    <div style="font-weight:600;">${review.userName}</div>
-                                    <div style="font-size:12px;color:#94a3b8;">${review.phone}</div>
+                <div class="trade-review-detail-grid">
+                    <div class="trade-review-original">
+                        <div class="trade-review-section-title">评价原文</div>
+                        <div class="trade-review-original-card">
+                            <div class="trade-review-user-header">
+                                <div class="trade-review-user-avatar">${review.userName.charAt(0)}</div>
+                                <div class="trade-review-user-info">
+                                    <div class="name">${review.userName}</div>
+                                    <div class="phone">${review.phone}</div>
                                 </div>
                             </div>
-                            <div style="margin-bottom:8px;">${getRatingStars(review.rating)}</div>
-                            <div style="font-size:13px;line-height:1.6;">${review.content}</div>
-                            <div style="margin-top:12px;display:flex;align-items:center;gap:16px;">
-                                <div style="display:flex;align-items:center;gap:4px;">
-                                    <i class="fas fa-thumbs-up" style="color:#94a3b8;"></i>
-                                    <span style="font-size:12px;">${review.likes}</span>
-                                </div>
-                                <div style="font-size:12px;color:#94a3b8;">${review.createTime}</div>
+                            <div class="trade-review-rating">${getRatingStars(review.rating)}</div>
+                            <div class="trade-review-content">${review.content}</div>
+                            <div class="trade-review-meta">
+                                <div class="trade-review-likes"><i class="fas fa-thumbs-up"></i> ${review.likes}</div>
+                                <div class="trade-review-time">${review.createTime}</div>
                             </div>
                             ${review.images && review.images.length > 0 ? `
-                            <div style="margin-top:12px;">
-                                <div style="font-size:12px;color:#64748b;margin-bottom:8px;">晒图</div>
-                                <div style="display:flex;gap:8px;">
-                                    ${review.images.map((img, i) => `<div style="width:80px;height:80px;background:#e2e8f0;border-radius:6px;cursor:pointer;" onclick="previewImage(${i})"></div>`).join('')}
+                            <div class="trade-review-images">
+                                <div class="trade-review-images-label">晒图</div>
+                                <div class="trade-review-images-list">
+                                    ${review.images.map((img, i) => `<div class="trade-review-image-item" onclick="previewImage(${i})"></div>`).join('')}
                                 </div>
                             </div>` : ''}
                         </div>
                     </div>
                     
-                    <div style="grid-column:span 1;">
-                        <div style="font-weight:600;font-size:14px;margin-bottom:12px;">管理员回复</div>
-                        <div style="background:#f8fafc;border-radius:8px;padding:16px;">
+                    <div class="trade-review-admin-reply">
+                        <div class="trade-review-section-title">管理员回复</div>
+                        <div class="trade-review-admin-reply-card">
                             ${review.reply ? `
-                            <div style="margin-bottom:12px;">
-                                <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
-                                    <div style="width:32px;height:32px;background:#22c55e;color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:600;font-size:12px;">管</div>
-                                    <div>
-                                        <div style="font-weight:600;font-size:13px;">管理员</div>
-                                        <div style="font-size:12px;color:#94a3b8;">${review.reply.time}</div>
+                            <div class="trade-review-admin-reply-content">
+                                <div class="trade-review-admin-reply-header">
+                                    <div class="trade-review-admin-avatar">管</div>
+                                    <div class="trade-review-admin-info">
+                                        <div class="name">管理员</div>
+                                        <div class="time">${review.reply.time}</div>
                                     </div>
                                 </div>
-                                <div style="font-size:13px;line-height:1.6;padding-left:40px;">${review.reply.content}</div>
+                                <div class="trade-review-admin-reply-text">${review.reply.content}</div>
                             </div>
-                            <div style="padding-left:40px;display:flex;gap:8px;">
+                            <div class="trade-review-admin-reply-actions">
                                 <button class="btn btn-sm btn-outline" onclick="editReply('${review.id}')"><i class="fas fa-edit"></i> 编辑</button>
                                 <button class="btn btn-sm btn-danger" onclick="deleteReply('${review.id}')"><i class="fas fa-trash"></i> 删除</button>
                             </div>
                             ` : `
-                            <div style="text-align:center;padding:20px;">
-                                <div style="font-size:32px;color:#cbd5e1;margin-bottom:8px;"><i class="fas fa-comment"></i></div>
-                                <div style="font-size:13px;color:#94a3b8;margin-bottom:12px;">暂无管理员回复</div>
+                            <div class="trade-review-empty-state">
+                                <i class="fas fa-comment"></i>
+                                <div>暂无管理员回复</div>
                                 <button class="btn btn-sm btn-primary" onclick="showReplyInput('${review.id}')"><i class="fas fa-plus"></i> 添加回复</button>
                             </div>
                             `}
                         </div>
-                        <div id="replyInputArea-${review.id}" style="display:none;margin-top:12px;">
-                            <textarea id="replyContent-${review.id}" rows="3" placeholder="请输入回复内容..." style="width:100%;padding:8px 12px;border:1px solid #e2e8f0;border-radius:6px;font-size:13px;outline:none;" onfocus="this.style.borderColor='#4f6ef7'"></textarea>
-                            <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:8px;">
+                        <div id="replyInputArea-${review.id}" class="trade-review-reply-input" style="display:none;">
+                            <textarea id="replyContent-${review.id}" rows="3" placeholder="请输入回复内容..." class="trade-review-reply-textarea"></textarea>
+                            <div class="trade-review-reply-actions">
                                 <button class="btn btn-sm btn-outline" onclick="hideReplyInput('${review.id}')">取消</button>
                                 <button class="btn btn-sm btn-primary" onclick="submitReply('${review.id}')"><i class="fas fa-send"></i> 发送</button>
                             </div>
                         </div>
                     </div>
                     
-                    <div style="grid-column:span 1;">
-                        <div style="font-weight:600;font-size:14px;margin-bottom:12px;">用户回复</div>
-                        <div style="background:#f8fafc;border-radius:8px;padding:16px;max-height:300px;overflow-y:auto;">
+                    <div class="trade-review-user-replies">
+                        <div class="trade-review-section-title">用户回复</div>
+                        <div class="trade-review-user-replies-card">
                             ${review.replies && review.replies.length > 0 ? `
-                            <div style="display:flex;flex-direction:column;gap:12px;">
+                            <div class="trade-review-user-replies-list">
                                 ${review.replies.map(reply => `
-                                    <div>
-                                        <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">
-                                            <div style="width:28px;height:28px;background:#8b5cf6;color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:600;font-size:11px;">${reply.userName.charAt(0)}</div>
-                                            <div>
-                                                <div style="font-weight:600;font-size:13px;">${reply.userName}</div>
-                                                <div style="font-size:12px;color:#94a3b8;">${reply.time}</div>
+                                    <div class="trade-review-user-reply">
+                                        <div class="trade-review-user-reply-header">
+                                            <div class="trade-review-user-reply-avatar">${reply.userName.charAt(0)}</div>
+                                            <div class="trade-review-user-reply-info">
+                                                <div class="name">${reply.userName}</div>
+                                                <div class="time">${reply.time}</div>
                                             </div>
                                         </div>
-                                        <div style="font-size:13px;padding-left:36px;line-height:1.5;">${reply.content}</div>
-                                        <div style="padding-left:36px;display:flex;align-items:center;gap:8px;margin-top:4px;">
-                                            <div style="display:flex;align-items:center;gap:2px;font-size:12px;color:#94a3b8;">
-                                                <i class="fas fa-thumbs-up"></i> ${reply.likes}
-                                            </div>
-                                            <button class="btn btn-sm btn-danger" onclick="deleteUserReply('${review.id}', '${reply.id}')" style="font-size:11px;padding:2px 6px;"><i class="fas fa-trash"></i></button>
+                                        <div class="trade-review-user-reply-content">${reply.content}</div>
+                                        <div class="trade-review-user-reply-meta">
+                                            <div class="trade-review-user-reply-likes"><i class="fas fa-thumbs-up"></i> ${reply.likes}</div>
+                                            <button class="btn btn-sm btn-danger" onclick="deleteUserReply('${review.id}', '${reply.id}')"><i class="fas fa-trash"></i></button>
                                         </div>
                                     </div>
                                 `).join('')}
                             </div>
                             ` : `
-                            <div style="text-align:center;padding:20px;">
-                                <div style="font-size:32px;color:#cbd5e1;margin-bottom:8px;"><i class="fas fa-comments"></i></div>
-                                <div style="font-size:13px;color:#94a3b8;">暂无用户回复</div>
+                            <div class="trade-review-empty-state">
+                                <i class="fas fa-comments"></i>
+                                <div>暂无用户回复</div>
                             </div>
                             `}
                         </div>
@@ -269,22 +316,32 @@ function hideReplyInput(reviewId) {
     document.getElementById(`replyInputArea-${reviewId}`).style.display = 'none';
 }
 
-function submitReply(reviewId) {
+async function submitReply(reviewId) {
     const content = document.getElementById(`replyContent-${reviewId}`).value.trim();
     if (!content) {
         alert('请输入回复内容');
         return;
     }
     
-    const review = reviewsData.find(r => r.id === reviewId);
-    if (review) {
-        review.reply = {
-            content: content,
-            time: new Date().toISOString().replace('T', ' ').substring(0, 19)
-        };
-        alert('回复成功！');
-        closeReviewModal();
-        refreshReviewsPage();
+    try {
+        const response = await apiPut(API_CONFIG.reviews.reply, { content: content }, { id: reviewId });
+        if (response.code === 200) {
+            const review = reviewsData.find(r => r.id === reviewId);
+            if (review) {
+                review.reply = {
+                    content: content,
+                    time: new Date().toISOString().replace('T', ' ').substring(0, 19)
+                };
+            }
+            alert('回复成功！');
+            closeReviewModal();
+            refreshReviewsPage();
+        } else {
+            alert(response.message || '回复失败');
+        }
+    } catch (error) {
+        console.error('Failed to submit reply:', error);
+        alert('回复失败，请重试');
     }
 }
 
@@ -347,21 +404,13 @@ function reviewsPage() {
     const filteredReviews = filterReviews();
     
     return `
-        <style>
-            .modal-overlay { position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.5);z-index:1000;display:flex;align-items:center;justify-content:center; }
-            .modal-content { background:#fff;border-radius:12px;box-shadow:0 25px 50px -12px rgba(0,0,0,0.25);display:flex;flex-direction:column;max-height:80vh;overflow:hidden; }
-            .modal-header { padding:16px 20px;border-bottom:1px solid #e2e8f0;display:flex;align-items:center;justify-content:space-between; }
-            .modal-header h3 { margin:0;font-size:16px;font-weight:600; }
-            .modal-close { background:none;border:none;color:#94a3b8;cursor:pointer;font-size:16px;padding:4px; }
-            .modal-body { padding:16px 20px; }
-            .modal-footer { padding:12px 20px;border-top:1px solid #e2e8f0;display:flex;justify-content:flex-end;gap:8px; }
-        </style>
         
-        <div class="stats-grid" style="grid-template-columns:repeat(4,1fr);">
-            <div class="stat-card"><div class="label"><i class="fas fa-thumbs-up"></i> 好评</div><div class="value" style="font-size:22px;color:#22c55e;">${goodCount}</div></div>
-            <div class="stat-card"><div class="label"><i class="fas fa-thumbs-down"></i> 差评</div><div class="value" style="font-size:22px;color:#ef4444;">${badCount}</div></div>
-            <div class="stat-card"><div class="label"><i class="fas fa-clock"></i> 待审核</div><div class="value" style="font-size:22px;color:#f59e0b;">${pendingCount}</div></div>
-            <div class="stat-card"><div class="label"><i class="fas fa-trash"></i> 已隐藏</div><div class="value" style="font-size:22px;color:#64748b;">${hiddenCount}</div></div>
+        
+        <div class="trade-stat-grid">
+            <div class="stat-card"><div class="label"><i class="fas fa-thumbs-up"></i> 好评</div><div class="value green">${goodCount}</div></div>
+            <div class="stat-card"><div class="label"><i class="fas fa-thumbs-down"></i> 差评</div><div class="value red">${badCount}</div></div>
+            <div class="stat-card"><div class="label"><i class="fas fa-clock"></i> 待审核</div><div class="value yellow">${pendingCount}</div></div>
+            <div class="stat-card"><div class="label"><i class="fas fa-trash"></i> 已隐藏</div><div class="value gray">${hiddenCount}</div></div>
         </div>
 
         <div class="search-bar" style="margin:12px 0;">

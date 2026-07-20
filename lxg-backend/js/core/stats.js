@@ -40,6 +40,80 @@ function getRoleSpecificStats() {
     };
 }
 
+function getStoreSalesRanking() {
+    const storeSales = {};
+    const orders = typeof ordersData !== 'undefined' && Array.isArray(ordersData) ? ordersData : [];
+    
+    orders.forEach(o => {
+        const store = o.storeName || o.storeId || '未知门店';
+        if (!storeSales[store]) {
+            storeSales[store] = 0;
+        }
+        storeSales[store] += (o.payAmount || o.totalAmount || 0);
+    });
+    
+    const sortedStores = Object.entries(storeSales)
+        .sort((a, b) => b[1] - a[1])
+        .slice(0, 6);
+    
+    const total = sortedStores.reduce((sum, s) => sum + s[1], 0);
+    const colors = ['#4f6ef7', '#667eea', '#7c3aed', '#8b5cf6', '#a78bfa', '#c4b5fd'];
+    
+    if (sortedStores.length === 0) {
+        return '<div style="text-align:center;padding:20px;color:#94a3b8;">暂无门店销售数据</div>';
+    }
+    
+    return sortedStores.map(([name, amount], index) => `
+        <div style="display:flex;align-items:center;gap:8px;">
+            <span style="width:24px;height:24px;background:${colors[index]};color:#fff;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;">${index + 1}</span>
+            <div style="flex:1;">
+                <div style="font-weight:600;font-size:13px;">${name}</div>
+                <div style="font-size:12px;color:#94a3b8;">¥${(amount / 10000).toFixed(1)}万</div>
+            </div>
+            <div style="font-weight:700;font-size:15px;color:${colors[index]};">${total > 0 ? ((amount / total) * 100).toFixed(1) : 0}%</div>
+        </div>
+    `).join('');
+}
+
+function getGoodsSalesRanking() {
+    const goodsSales = {};
+    const orders = typeof ordersData !== 'undefined' && Array.isArray(ordersData) ? ordersData : [];
+    
+    orders.forEach(o => {
+        if (o.items && Array.isArray(o.items)) {
+            o.items.forEach(item => {
+                const goodsName = item.goodsName || item.name || '未知商品';
+                if (!goodsSales[goodsName]) {
+                    goodsSales[goodsName] = { sales: 0, amount: 0 };
+                }
+                goodsSales[goodsName].sales += (item.quantity || 1);
+                goodsSales[goodsName].amount += (item.price || item.payAmount || 0) * (item.quantity || 1);
+            });
+        }
+    });
+    
+    const sortedGoods = Object.entries(goodsSales)
+        .sort((a, b) => b[1].sales - a[1].sales)
+        .slice(0, 10);
+    
+    if (sortedGoods.length === 0) {
+        return '<tr><td colspan="8" style="text-align:center;padding:20px;color:#94a3b8;">暂无商品销售数据</td></tr>';
+    }
+    
+    return sortedGoods.map(([name, data], index) => `
+        <tr>
+            <td>${index + 1}</td>
+            <td>${name}</td>
+            <td>-</td>
+            <td>${data.sales.toLocaleString()}</td>
+            <td>¥${(data.amount / 10000).toFixed(1)}万</td>
+            <td>-</td>
+            <td>-</td>
+            <td>-</td>
+        </tr>
+    `).join('');
+}
+
 function getTodoItems() {
     const stats = getRoleSpecificStats();
     const todos = [];
@@ -235,34 +309,34 @@ function statsPage() {
         super_admin: [
             { label: '订单量', value: stats.totalOrders.toLocaleString(), sub: '今日 ' + stats.todayOrderCount, icon: 'fa-shopping-cart', color: '#4f6ef7' },
             { label: '销售额', value: '¥' + (stats.totalSales / 10000).toFixed(1) + '万', sub: '今日 ¥' + stats.todaySales.toLocaleString(), icon: 'fa-yen-sign', color: '#22c55e' },
-            { label: '客单价', value: '¥' + stats.avgOrderValue, sub: '较昨日 ↑ 2.1%', icon: 'fa-user-tag', color: '#f59e0b' },
-            { label: '新增用户', value: stats.newUsers, sub: '本月累计 1,208', icon: 'fa-user-plus', color: '#ec4899' },
+            { label: '客单价', value: '¥' + stats.avgOrderValue, sub: '-', icon: 'fa-user-tag', color: '#f59e0b' },
+            { label: '新增用户', value: stats.newUsers, sub: '-', icon: 'fa-user-plus', color: '#ec4899' },
             { label: '库存预警', value: stats.lowStock, sub: '低于阈值', icon: 'fa-exclamation-triangle', color: '#ef4444', highlight: stats.lowStock > 0, action: 'stock' },
             { label: '待审核评价', value: stats.pendingReviews, sub: '需处理', icon: 'fa-star', color: '#f59e0b', highlight: stats.pendingReviews > 0, action: 'reviews' }
         ],
         goods_op: [
-            { label: '商品总数', value: (typeof goodsData !== 'undefined' ? goodsData.length : 0).toLocaleString(), sub: '上架中 45', icon: 'fa-box', color: '#4f6ef7' },
+            { label: '商品总数', value: (typeof goodsData !== 'undefined' ? goodsData.length : 0).toLocaleString(), sub: '-', icon: 'fa-box', color: '#4f6ef7' },
             { label: '库存预警', value: stats.lowStock, sub: '低于阈值', icon: 'fa-exclamation-triangle', color: '#ef4444', highlight: stats.lowStock > 0, action: 'stock' },
             { label: '待审核评价', value: stats.pendingReviews, sub: '需处理', icon: 'fa-star', color: '#f59e0b', highlight: stats.pendingReviews > 0, action: 'reviews' },
-            { label: '今日销售额', value: '¥' + stats.todaySales.toLocaleString(), sub: '较昨日 ↑ 4.8%', icon: 'fa-chart-line', color: '#22c55e' },
-            { label: '转化率', value: '4.2%', sub: '较上周 ↑ 0.5%', icon: 'fa-percentage', color: '#8b5cf6' },
-            { label: '好评率', value: '96%', sub: '较上周 ↑ 1.2%', icon: 'fa-thumbs-up', color: '#22c55e' }
+            { label: '今日销售额', value: '¥' + stats.todaySales.toLocaleString(), sub: '-', icon: 'fa-chart-line', color: '#22c55e' },
+            { label: '转化率', value: '-', sub: '-', icon: 'fa-percentage', color: '#8b5cf6' },
+            { label: '好评率', value: '-', sub: '-', icon: 'fa-thumbs-up', color: '#22c55e' }
         ],
         order_cs: [
             { label: '待自提', value: stats.pendingPickup, sub: '待确认', icon: 'fa-map-marker-alt', color: '#4f6ef7', action: 'orders' },
-            { label: '今日订单', value: stats.todayOrderCount, sub: '较昨日 ↑ 1.6%', icon: 'fa-shopping-bag', color: '#22c55e' },
-            { label: '客服消息', value: '5', sub: '未回复', icon: 'fa-headset', color: '#8b5cf6' },
-            { label: '退款完成', value: '12', sub: '今日', icon: 'fa-check-circle', color: '#22c55e' },
+            { label: '今日订单', value: stats.todayOrderCount, sub: '-', icon: 'fa-shopping-bag', color: '#22c55e' },
+            { label: '客服消息', value: '-', sub: '-', icon: 'fa-headset', color: '#8b5cf6' },
+            { label: '退款完成', value: '-', sub: '-', icon: 'fa-check-circle', color: '#22c55e' },
             { label: '库存预警', value: stats.lowStock, sub: '低于阈值', icon: 'fa-exclamation-triangle', color: '#ef4444', highlight: stats.lowStock > 0, action: 'stock' },
             { label: '待审核评价', value: stats.pendingReviews, sub: '需处理', icon: 'fa-star', color: '#f59e0b', highlight: stats.pendingReviews > 0, action: 'reviews' }
         ],
         store_staff: [
-            { label: '今日订单', value: stats.todayOrderCount, sub: '较昨日 ↑ 1.6%', icon: 'fa-shopping-bag', color: '#4f6ef7' },
-            { label: '今日销售额', value: '¥' + stats.todaySales.toLocaleString(), sub: '目标完成 78%', icon: 'fa-yen-sign', color: '#22c55e' },
+            { label: '今日订单', value: stats.todayOrderCount, sub: '-', icon: 'fa-shopping-bag', color: '#4f6ef7' },
+            { label: '今日销售额', value: '¥' + stats.todaySales.toLocaleString(), sub: '-', icon: 'fa-yen-sign', color: '#22c55e' },
             { label: '待自提', value: stats.pendingPickup, sub: '待确认', icon: 'fa-map-marker-alt', color: '#f59e0b', highlight: stats.pendingPickup > 0, action: 'orders' },
             { label: '库存预警', value: stats.lowStock, sub: '低于阈值', icon: 'fa-exclamation-triangle', color: '#ef4444', highlight: stats.lowStock > 0, action: 'stock' },
-            { label: '退款完成', value: '12', sub: '今日', icon: 'fa-check-circle', color: '#22c55e' },
-            { label: '新增用户', value: stats.newUsers, sub: '本月累计 156', icon: 'fa-user-plus', color: '#ec4899' }
+            { label: '退款完成', value: '-', sub: '-', icon: 'fa-check-circle', color: '#22c55e' },
+            { label: '新增用户', value: stats.newUsers, sub: '-', icon: 'fa-user-plus', color: '#ec4899' }
         ]
     }[stats.role] || roleCards.super_admin;
     
@@ -313,16 +387,7 @@ function statsPage() {
                         <div class="table-wrap"><table>
                             <thead><tr><th>#</th><th>商品</th><th>分类</th><th>销量</th><th>销售额</th><th>好评率</th><th>库存</th><th>转化率</th></tr></thead>
                             <tbody>
-                                <tr><td>1</td><td>无线蓝牙耳机 Pro</td><td>手机数码</td><td>1,240</td><td>¥37.2万</td><td>98%</td><td>2,350</td><td>4.2%</td></tr>
-                                <tr><td>2</td><td>智能手表 S8</td><td>手机数码</td><td>876</td><td>¥26.3万</td><td>95%</td><td>1,890</td><td>3.8%</td></tr>
-                                <tr><td>3</td><td>便携移动电源 20000mAh</td><td>手机数码</td><td>654</td><td>¥15.7万</td><td>97%</td><td>3,200</td><td>5.1%</td></tr>
-                                <tr><td>4</td><td>真无线降噪耳机</td><td>手机数码</td><td>432</td><td>¥12.9万</td><td>96%</td><td>1,560</td><td>3.5%</td></tr>
-                                <tr><td>5</td><td>智能台灯 Pro</td><td>家用电器</td><td>386</td><td>¥7.7万</td><td>94%</td><td>2,100</td><td>4.8%</td></tr>
-                                <tr><td>6</td><td>运动蓝牙耳机</td><td>运动户外</td><td>320</td><td>¥6.4万</td><td>93%</td><td>1,450</td><td>3.2%</td></tr>
-                                <tr><td>7</td><td>美妆护肤套装</td><td>美妆护肤</td><td>285</td><td>¥8.5万</td><td>97%</td><td>980</td><td>5.5%</td></tr>
-                                <tr><td>8</td><td>纯棉T恤</td><td>服装服饰</td><td>268</td><td>¥5.4万</td><td>95%</td><td>4,200</td><td>6.1%</td></tr>
-                                <tr><td>9</td><td>机械键盘</td><td>电脑办公</td><td>245</td><td>¥7.3万</td><td>96%</td><td>890</td><td>4.0%</td></tr>
-                                <tr><td>10</td><td>无线鼠标</td><td>电脑办公</td><td>218</td><td>¥4.4万</td><td>94%</td><td>2,650</td><td>5.3%</td></tr>
+                                ${getGoodsSalesRanking()}
                             </tbody>
                         </table></div>
                     </div>
@@ -334,12 +399,7 @@ function statsPage() {
                     <div class="card-header"><span class="card-title"><i class="fas fa-store"></i> 门店销售排行</span></div>
                     <div class="card-body">
                         <div style="display:flex;flex-direction:column;gap:8px;">
-                            <div style="display:flex;align-items:center;gap:8px;"><span style="width:24px;height:24px;background:#4f6ef7;color:#fff;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;">1</span><div style="flex:1;"><div style="font-weight:600;font-size:13px;">北京朝阳店</div><div style="font-size:12px;color:#94a3b8;">¥28.5万</div></div><div style="font-weight:700;font-size:15px;color:#4f6ef7;">28.5%</div></div>
-                            <div style="display:flex;align-items:center;gap:8px;"><span style="width:24px;height:24px;background:#667eea;color:#fff;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;">2</span><div style="flex:1;"><div style="font-weight:600;font-size:13px;">上海浦东店</div><div style="font-size:12px;color:#94a3b8;">¥22.3万</div></div><div style="font-weight:700;font-size:15px;color:#667eea;">22.3%</div></div>
-                            <div style="display:flex;align-items:center;gap:8px;"><span style="width:24px;height:24px;background:#7c3aed;color:#fff;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;">3</span><div style="flex:1;"><div style="font-weight:600;font-size:13px;">广州天河店</div><div style="font-size:12px;color:#94a3b8;">¥18.6万</div></div><div style="font-weight:700;font-size:15px;color:#7c3aed;">18.6%</div></div>
-                            <div style="display:flex;align-items:center;gap:8px;"><span style="width:24px;height:24px;background:#8b5cf6;color:#fff;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;">4</span><div style="flex:1;"><div style="font-weight:600;font-size:13px;">深圳南山店</div><div style="font-size:12px;color:#94a3b8;">¥17.0万</div></div><div style="font-weight:700;font-size:15px;color:#8b5cf6;">17.0%</div></div>
-                            <div style="display:flex;align-items:center;gap:8px;"><span style="width:24px;height:24px;background:#a78bfa;color:#fff;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;">5</span><div style="flex:1;"><div style="font-weight:600;font-size:13px;">成都天府店</div><div style="font-size:12px;color:#94a3b8;">¥8.2万</div></div><div style="font-weight:700;font-size:15px;color:#a78bfa;">8.2%</div></div>
-                            <div style="display:flex;align-items:center;gap:8px;"><span style="width:24px;height:24px;background:#c4b5fd;color:#fff;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;">6</span><div style="flex:1;"><div style="font-weight:600;font-size:13px;">杭州西湖店</div><div style="font-size:12px;color:#94a3b8;">¥5.4万</div></div><div style="font-weight:700;font-size:15px;color:#c4b5fd;">5.4%</div></div>
+                            ${getStoreSalesRanking()}
                         </div>
                     </div>
                 </div>
