@@ -11,8 +11,8 @@ export interface ProductData {
   description: string;
   categoryId: string;
   categoryName: string;
-  subCategoryId: string;
-  subCategoryName: string;
+  subCategoryId?: string;
+  subCategoryName?: string;
   brandId: string;
   brandName: string;
   sales: number;

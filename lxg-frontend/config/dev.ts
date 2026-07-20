@@ -7,7 +7,19 @@ export default {
   mini: {},
   h5: {
     devServer: {
-      open: false, //禁止自动打开浏览器
+      open: false,
+      port: 10086,
+      proxy: {
+        '/api': {
+          target: 'http://192.168.10.7:8089',
+          changeOrigin: true,
+          secure: false,
+          onProxyReq(proxyReq) {
+            proxyReq.setHeader('origin', 'http://192.168.10.7:8089');
+            proxyReq.setHeader('referer', 'http://192.168.10.7:8089/');
+          },
+        },
+      },
     },
   },
 } satisfies UserConfigExport<'webpack5'>;

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, Image } from '@tarojs/components';
+import { View, Text, Image, Input } from '@tarojs/components';
 import Taro from '@tarojs/taro';
 import { useAppContext } from '@/store/AppContext';
 import styles from '@/styles/user/personal-info.module.scss';
@@ -157,12 +157,11 @@ const PersonalInfoPage: React.FC = () => {
   };
 
   const handleBack = () => {
-    // 使用原生方式返回，兼容H5环境
-    if (window.history.length > 1) {
-      window.history.back();
-    } else {
-      Taro.switchTab({ url: '/pages/mine/index' });
-    }
+    Taro.navigateBack({
+      fail: () => {
+        Taro.switchTab({ url: '/pages/user/mine/index' });
+      }
+    });
   };
 
   // 监听年份或月份变化，确保日期有效
@@ -180,13 +179,13 @@ const PersonalInfoPage: React.FC = () => {
   return (
     <View className={styles.personalInfoPage}>
       {/* 顶部导航栏 */}
-      <div className={styles.header}>
-        <div className={styles.backBtn} onClick={handleBack}>
-          <span className={styles.backIcon}>‹</span>
-        </div>
-        <span className={styles.headerTitle}>个人信息</span>
-        <div className={styles.headerRight}></div>
-      </div>
+      <View className={styles.header}>
+        <View className={styles.backBtn} onClick={handleBack}>
+          <Text className={styles.backIcon}>‹</Text>
+        </View>
+        <Text className={styles.headerTitle}>个人信息</Text>
+        <View className={styles.headerRight}></View>
+      </View>
 
       {/* 内容区域 */}
       <View className={styles.content}>
@@ -342,13 +341,12 @@ const PersonalInfoPage: React.FC = () => {
               <Text className={styles.nicknameModalTitle}>修改昵称</Text>
             </View>
             <View className={styles.nicknameModalBody}>
-              <input 
-                type="text" 
+              <Input 
                 className={styles.nicknameInput} 
                 value={nicknameInput}
-                onChange={(e) => setNicknameInput(e.target.value)}
+                onInput={(e: any) => setNicknameInput(e.detail.value)}
                 placeholder="请输入新昵称"
-                maxLength={20}
+                maxlength={20}
               />
             </View>
             <View className={styles.nicknameModalFooter}>

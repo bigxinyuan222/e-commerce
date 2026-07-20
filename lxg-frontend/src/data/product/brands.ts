@@ -1,4 +1,14 @@
-export const brands = [
+export interface Brand {
+  id: string;
+  name: string;
+  logo: string;
+  description: string;
+  categoryIds: string[];
+  productsCount: number;
+  isHot?: boolean;
+}
+
+export const brands: Brand[] = [
   { id: 'brand-apple', name: 'Apple', logo: 'https://picsum.photos/id/10/200/200', description: '苹果公司', categoryIds: ['1'], productsCount: 3, isHot: true },
   { id: 'brand-huawei', name: '华为', logo: 'https://picsum.photos/id/11/200/200', description: '华为技术有限公司', categoryIds: ['1', '2'], productsCount: 2, isHot: true },
   { id: 'brand-samsung', name: 'Samsung', logo: 'https://picsum.photos/id/12/200/200', description: '三星电子', categoryIds: ['1', '2'], productsCount: 2, isHot: true },
@@ -17,8 +27,8 @@ export const brands = [
   { id: 'brand-lego', name: '乐高', logo: 'https://picsum.photos/id/25/200/200', description: '乐高', categoryIds: ['6'], productsCount: 1 }
 ];
 
-export function getHotBrands() {
-  var result = [];
+export function getHotBrands(): Brand[] {
+  var result: Brand[] = [];
   for (var i = 0; i < brands.length; i++) {
     if (brands[i].isHot) {
       result.push(brands[i]);
@@ -27,8 +37,8 @@ export function getHotBrands() {
   return result;
 }
 
-export function getBrandsByCategory(categoryId) {
-  var result = [];
+export function getBrandsByCategory(categoryId: string): Brand[] {
+  var result: Brand[] = [];
   for (var i = 0; i < brands.length; i++) {
     if (brands[i].categoryIds.indexOf(categoryId) > -1) {
       result.push(brands[i]);
@@ -37,7 +47,7 @@ export function getBrandsByCategory(categoryId) {
   return result;
 }
 
-export function getBrandById(id) {
+export function getBrandById(id: string): Brand | undefined {
   for (var i = 0; i < brands.length; i++) {
     if (brands[i].id === id) {
       return brands[i];
@@ -46,9 +56,9 @@ export function getBrandById(id) {
   return undefined;
 }
 
-export function searchBrands(keyword) {
+export function searchBrands(keyword: string): Brand[] {
   var lowerKeyword = keyword.toLowerCase();
-  var result = [];
+  var result: Brand[] = [];
   for (var i = 0; i < brands.length; i++) {
     if (brands[i].name.toLowerCase().indexOf(lowerKeyword) > -1 ||
         brands[i].description.toLowerCase().indexOf(lowerKeyword) > -1) {
