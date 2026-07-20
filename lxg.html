@@ -793,11 +793,11 @@
         function statsPage() {
             return `
                 <div class="stats-grid">
-                    <div class="stat-card"><div class="label"><i class="fas fa-shopping-cart"></i> 订单量</div><div class="value">1,284</div><div class="sub">较昨日 ↑ 6.2%</div></div>
-                    <div class="stat-card"><div class="label"><i class="fas fa-yen-sign"></i> 销售额</div><div class="value">¥86.4万</div><div class="sub">较昨日 ↑ 4.8%</div></div>
-                    <div class="stat-card"><div class="label"><i class="fas fa-user"></i> 客单价</div><div class="value">¥673</div><div class="sub">较昨日 ↑ 2.1%</div></div>
-                    <div class="stat-card"><div class="label"><i class="fas fa-user-plus"></i> 新增用户数</div><div class="value">342</div><div class="sub">本月累计 1,208</div></div>
-                    <div class="stat-card"><div class="label"><i class="fas fa-chart-line"></i> 活跃度</div><div class="value">78%</div><div class="sub">较上周 ↑ 5.3%</div></div>
+                    <div class="stat-card"><div class="label"><i class="fas fa-shopping-cart"></i> 订单量</div><div class="value">-</div><div class="sub">-</div></div>
+                    <div class="stat-card"><div class="label"><i class="fas fa-yen-sign"></i> 销售额</div><div class="value">-</div><div class="sub">-</div></div>
+                    <div class="stat-card"><div class="label"><i class="fas fa-user"></i> 客单价</div><div class="value">-</div><div class="sub">-</div></div>
+                    <div class="stat-card"><div class="label"><i class="fas fa-user-plus"></i> 新增用户数</div><div class="value">-</div><div class="sub">-</div></div>
+                    <div class="stat-card"><div class="label"><i class="fas fa-chart-line"></i> 活跃度</div><div class="value">-</div><div class="sub">-</div></div>
                 </div>
 
                 <div style="display:grid;grid-template-columns:2fr 1fr;gap:24px;">
@@ -813,10 +813,7 @@
                         <div class="card-header"><span class="card-title"><i class="fas fa-bell"></i> 最新动态</span></div>
                         <div class="card-body">
                             <ul class="msg-list">
-                                <li><i class="fas fa-circle msg-icon" style="font-size:8px;color:#4f6ef7;"></i><div class="msg-content"><div class="title">新订单 #ORD-20260624-001</div><div class="desc">王小明 支付 ¥599.00</div></div><span class="msg-time">10:32</span></li>
-                                <li><i class="fas fa-circle msg-icon" style="font-size:8px;color:#f59e0b;"></i><div class="msg-content"><div class="title">退货申请待处理</div><div class="desc">无线蓝牙耳机 Pro 质量问题</div></div><span class="msg-time">09:15</span></li>
-                                <li><i class="fas fa-circle msg-icon" style="font-size:8px;color:#22c55e;"></i><div class="msg-content"><div class="title">拼团成团成功</div><div class="desc">好友拼团 · 便携移动电源</div></div><span class="msg-time">昨天</span></li>
-                                <li><i class="fas fa-circle msg-icon" style="font-size:8px;color:#ef4444;"></i><div class="msg-content"><div class="title">库存预警</div><div class="desc">SKU-005 智能手表 S8 银 仅剩32件</div></div><span class="msg-time">昨天</span></li>
+                                <li style="text-align:center;padding:20px;color:#94a3b8;">暂无动态</li>
                             </ul>
                         </div>
                     </div>
@@ -828,10 +825,7 @@
                         <div class="table-wrap"><table>
                             <thead><tr><th>#</th><th>商品</th><th>销量</th><th>销售额</th></tr></thead>
                             <tbody>
-                                <tr><td>1</td><td>无线蓝牙耳机 Pro</td><td>1,240</td><td>¥37.2万</td></tr>
-                                <tr><td>2</td><td>智能手表 S8</td><td>876</td><td>¥26.3万</td></tr>
-                                <tr><td>3</td><td>便携移动电源 20000mAh</td><td>654</td><td>¥15.7万</td></tr>
-                                <tr><td>4</td><td>真无线降噪耳机</td><td>432</td><td>¥12.9万</td></tr>
+                                <tr><td colspan="4" style="text-align:center;padding:20px;color:#94a3b8;">暂无数据</td></tr>
                             </tbody>
                         </table></div>
                     </div>
@@ -855,15 +849,13 @@
                 <div class="card">
                     <div class="card-header">
                         <span class="card-title"><i class="fas fa-list"></i> 商品列表 / 上下架</span>
-                        <span class="text-muted" style="font-size:13px;">共 1,284 件商品</span>
+                        <span class="text-muted" style="font-size:13px;">共 0 件商品</span>
                     </div>
                     <div class="card-body no-pad">
                         <div class="table-wrap"><table>
                             <thead><tr><th>商品</th><th>分类</th><th>价格</th><th>库存</th><th>状态</th><th>操作</th></tr></thead>
                             <tbody>
-                                <tr><td><div class="flex-center"><span style="width:32px;height:32px;background:#e2e8f0;border-radius:4px;display:inline-block;"></span> 无线蓝牙耳机 Pro</div></td><td>手机数码</td><td>¥299</td><td>1,240</td><td><span class="status-badge green"><span class="dot"></span> 上架</span></td><td><button class="btn btn-sm btn-outline">编辑</button><button class="btn btn-sm btn-danger">下架</button></td></tr>
-                                <tr><td><div class="flex-center"><span style="width:32px;height:32px;background:#e2e8f0;border-radius:4px;display:inline-block;"></span> 智能手表 S8</div></td><td>手机数码</td><td>¥1,299</td><td>876</td><td><span class="status-badge green"><span class="dot"></span> 上架</span></td><td><button class="btn btn-sm btn-outline">编辑</button><button class="btn btn-sm btn-danger">下架</button></td></tr>
-                                <tr><td><div class="flex-center"><span style="width:32px;height:32px;background:#e2e8f0;border-radius:4px;display:inline-block;"></span> 便携移动电源 20000mAh</div></td><td>手机数码</td><td>¥159</td><td>2,300</td><td><span class="status-badge yellow"><span class="dot"></span> 待审核</span></td><td><button class="btn btn-sm btn-outline">编辑</button><button class="btn btn-sm btn-success">审核</button></td></tr>
+                                <tr><td colspan="6" style="text-align:center;padding:20px;color:#94a3b8;">暂无数据</td></tr>
                             </tbody>
                         </table></div>
                     </div>
@@ -884,7 +876,7 @@
                     </div>
                     <div class="card">
                         <div class="card-header"><span class="card-title"><i class="fas fa-barcode"></i> SKU 管理</span><button class="btn btn-sm btn-primary">管理SKU</button></div>
-                        <div class="card-body"><span class="text-muted">SKU-001 黑色 · ¥299 · 840件</span><br/><span class="text-muted">SKU-002 白色 · ¥299 · 400件</span></div>
+                        <div class="card-body"><span class="text-muted" style="color:#94a3b8;">暂无SKU数据</span></div>
                     </div>
                     <div class="card">
                         <div class="card-header"><span class="card-title"><i class="fas fa-tags"></i> 商品标签管理</span><button class="btn btn-sm btn-primary">新增标签</button></div>
@@ -920,9 +912,7 @@
                         <div class="table-wrap"><table>
                             <thead><tr><th>SKU</th><th>商品</th><th>当前库存</th><th>预警阈值</th><th>状态</th><th>操作</th></tr></thead>
                             <tbody>
-                                <tr><td>SKU-001</td><td>无线蓝牙耳机 Pro 黑</td><td>840</td><td>50</td><td><span class="status-badge green"><span class="dot"></span> 正常</span></td><td><button class="btn btn-sm btn-outline">调整</button></td></tr>
-                                <tr><td>SKU-005</td><td>智能手表 S8 银</td><td>32</td><td>50</td><td><span class="status-badge red"><span class="dot"></span> 预警</span></td><td><button class="btn btn-sm btn-outline">调整</button></td></tr>
-                                <tr><td>SKU-012</td><td>便携移动电源 白</td><td>18</td><td>30</td><td><span class="status-badge red"><span class="dot"></span> 预警</span></td><td><button class="btn btn-sm btn-outline">调整</button></td></tr>
+                                <tr><td colspan="6" style="text-align:center;padding:20px;color:#94a3b8;">暂无数据</td></tr>
                             </tbody>
                         </table></div>
                     </div>
@@ -931,8 +921,7 @@
                     <div class="card-header"><span class="card-title"><i class="fas fa-history"></i> 出入库记录</span></div>
                     <div class="card-body no-pad">
                         <div class="table-wrap"><table><thead><tr><th>时间</th><th>SKU</th><th>类型</th><th>数量</th><th>操作人</th></tr></thead><tbody>
-                            <tr><td>2026-06-24 14:32</td><td>SKU-001</td><td><span class="status-badge green"><span class="dot"></span> 入库</span></td><td>+200</td><td>张运营</td></tr>
-                            <tr><td>2026-06-24 11:20</td><td>SKU-005</td><td><span class="status-badge yellow"><span class="dot"></span> 出库</span></td><td>-15</td><td>李店员</td></tr>
+                            <tr><td colspan="5" style="text-align:center;padding:20px;color:#94a3b8;">暂无数据</td></tr>
                         </tbody></table></div>
                     </div>
                 </div>
@@ -950,9 +939,7 @@
                 </div>
                 <div class="card"><div class="card-body">
                     <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:16px;">
-                        <div style="border:1px solid #e2e8f0;border-radius:8px;padding:14px;"><div style="font-weight:600;">北京朝阳店</div><div class="text-muted" style="font-size:13px;">北京市朝阳区建国路88号</div><div class="text-muted" style="font-size:13px;">010-8888-6666</div><div class="mt-2"><span class="status-badge green"><span class="dot"></span> 启用</span> <span class="tag">09:00-21:00</span></div><div class="mt-2"><button class="btn btn-sm btn-outline">编辑</button><button class="btn btn-sm btn-outline">门店订单</button></div></div>
-                        <div style="border:1px solid #e2e8f0;border-radius:8px;padding:14px;"><div style="font-weight:600;">上海浦东店</div><div class="text-muted" style="font-size:13px;">上海市浦东新区世纪大道100号</div><div class="text-muted" style="font-size:13px;">021-8888-6666</div><div class="mt-2"><span class="status-badge green"><span class="dot"></span> 启用</span> <span class="tag">09:00-21:00</span></div><div class="mt-2"><button class="btn btn-sm btn-outline">编辑</button><button class="btn btn-sm btn-outline">门店订单</button></div></div>
-                        <div style="border:1px solid #e2e8f0;border-radius:8px;padding:14px;"><div style="font-weight:600;">深圳南山店</div><div class="text-muted" style="font-size:13px;">深圳市南山区科技园路66号</div><div class="text-muted" style="font-size:13px;">0755-8888-6666</div><div class="mt-2"><span class="status-badge red"><span class="dot"></span> 禁用</span> <span class="tag">暂停营业</span></div><div class="mt-2"><button class="btn btn-sm btn-outline">编辑</button><button class="btn btn-sm btn-outline">门店订单</button></div></div>
+                        <div style="border:1px dashed #e2e8f0;border-radius:8px;padding:30px;text-align:center;color:#94a3b8;">暂无门店数据</div>
                     </div>
                 </div></div>
             `;
@@ -962,9 +949,9 @@
         function homepagePage() {
             return `
                 <div class="card"><div class="card-header"><span class="card-title"><i class="fas fa-images"></i> 轮播图 / Banner</span><button class="btn btn-primary btn-sm"><i class="fas fa-plus"></i> 新增</button></div>
-                <div class="card-body no-pad"><div class="table-wrap"><table><thead><tr><th>图片</th><th>跳转链接</th><th>排序</th><th>状态</th><th>操作</th></tr></thead><tbody><tr><td><span style="display:inline-block;width:60px;height:30px;background:linear-gradient(135deg,#4f6ef7,#7c3aed);border-radius:4px;"></span></td><td>/promo/spring</td><td>1</td><td><span class="status-badge green"><span class="dot"></span> 已发布</span></td><td><button class="btn btn-sm btn-outline">编辑</button><button class="btn btn-sm btn-danger">下架</button></td></tr><tr><td><span style="display:inline-block;width:60px;height:30px;background:linear-gradient(135deg,#f59e0b,#fbbf24);border-radius:4px;"></span></td><td>/promo/summer</td><td>2</td><td><span class="status-badge gray"><span class="dot"></span> 草稿</span></td><td><button class="btn btn-sm btn-outline">编辑</button><button class="btn btn-sm btn-success">发布</button></td></tr></tbody></table></div></div></div>
+                <div class="card-body no-pad"><div class="table-wrap"><table><thead><tr><th>图片</th><th>跳转链接</th><th>排序</th><th>状态</th><th>操作</th></tr></thead><tbody><tr><td colspan="5" style="text-align:center;padding:20px;color:#94a3b8;">暂无数据</td></tr></tbody></table></div></div></div>
                 <div class="card"><div class="card-header"><span class="card-title"><i class="fas fa-thumbtack"></i> 推荐位管理</span><button class="btn btn-primary btn-sm"><i class="fas fa-plus"></i> 新增推荐</button></div>
-                <div class="card-body no-pad"><div class="table-wrap"><table><thead><tr><th>推荐位</th><th>商品</th><th>排序</th><th>状态</th><th>操作</th></tr></thead><tbody><tr><td>首页-精选</td><td>无线蓝牙耳机 Pro</td><td>1</td><td><span class="status-badge green"><span class="dot"></span> 展示中</span></td><td><button class="btn btn-sm btn-outline">编辑</button></td></tr><tr><td>首页-新品</td><td>智能手表 S8</td><td>2</td><td><span class="status-badge green"><span class="dot"></span> 展示中</span></td><td><button class="btn btn-sm btn-outline">编辑</button></td></tr></tbody></table></div></div></div>
+                <div class="card-body no-pad"><div class="table-wrap"><table><thead><tr><th>推荐位</th><th>商品</th><th>排序</th><th>状态</th><th>操作</th></tr></thead><tbody><tr><td colspan="5" style="text-align:center;padding:20px;color:#94a3b8;">暂无数据</td></tr></tbody></table></div></div></div>
             `;
         }
 
@@ -982,9 +969,7 @@
                 <div class="card"><div class="card-body no-pad"><div class="table-wrap"><table>
                     <thead><tr><th>订单号</th><th>用户</th><th>金额</th><th>门店</th><th>状态</th><th>时间</th><th>操作</th></tr></thead>
                     <tbody>
-                        <tr><td>ORD-20260624-001</td><td>王*明</td><td>¥599</td><td>北京朝阳店</td><td><span class="status-badge yellow"><span class="dot"></span> 待支付</span></td><td>2026-06-24 10:30</td><td><button class="btn btn-sm btn-outline">详情</button><button class="btn btn-sm btn-danger">取消</button></td></tr>
-                        <tr><td>ORD-20260624-002</td><td>李*华</td><td>¥1,299</td><td>上海浦东店</td><td><span class="status-badge blue"><span class="dot"></span> 已支付</span></td><td>2026-06-24 09:15</td><td><button class="btn btn-sm btn-outline">详情</button><button class="btn btn-sm btn-success">自提核销</button></td></tr>
-                        <tr><td>ORD-20260623-015</td><td>张*婷</td><td>¥159</td><td>深圳南山店</td><td><span class="status-badge green"><span class="dot"></span> 已完成</span></td><td>2026-06-23 16:40</td><td><button class="btn btn-sm btn-outline">详情</button></td></tr>
+                        <tr><td colspan="7" style="text-align:center;padding:20px;color:#94a3b8;">暂无数据</td></tr>
                     </tbody>
                 </table></div></div></div>
             `;
@@ -1000,9 +985,7 @@
                 <div class="card"><div class="card-body no-pad"><div class="table-wrap"><table>
                     <thead><tr><th>订单商品行</th><th>用户</th><th>退款金额</th><th>原因</th><th>状态</th><th>操作</th></tr></thead>
                     <tbody>
-                        <tr><td>无线蓝牙耳机 Pro</td><td>王*明</td><td>¥299</td><td>质量问题</td><td><span class="status-badge yellow"><span class="dot"></span> 待处理</span></td><td><button class="btn btn-sm btn-success">同意</button><button class="btn btn-sm btn-danger">拒绝</button></td></tr>
-                        <tr><td>便携移动电源</td><td>刘*欣</td><td>¥159</td><td>发错货</td><td><span class="status-badge blue"><span class="dot"></span> 已同意</span></td><td><button class="btn btn-sm btn-outline">确认收货退款</button></td></tr>
-                        <tr><td>智能手表 S8</td><td>陈*宇</td><td>¥1,299</td><td>不想要了</td><td><span class="status-badge green"><span class="dot"></span> 已退款</span></td><td><button class="btn btn-sm btn-outline">查看</button></td></tr>
+                        <tr><td colspan="6" style="text-align:center;padding:20px;color:#94a3b8;">暂无数据</td></tr>
                     </tbody>
                 </table></div></div></div>
             `;
@@ -1015,16 +998,15 @@
                     <div class="search-bar"><input placeholder="商品 / 用户" /><select><option>全部状态</option><option>待审核</option><option>已通过</option><option>已删除</option></select><button class="btn btn-primary"><i class="fas fa-search"></i> 搜索</button></div>
                     <button class="btn btn-primary"><i class="fas fa-robot"></i> AI 重新生成摘要</button>
                 </div>
-                <div class="card"><div class="card-header"><span class="card-title"><i class="fas fa-star"></i> 评价列表</span><span class="text-muted" style="font-size:13px;">⭐ 4.8 分 · 共 1,284 条评价</span></div>
+                <div class="card"><div class="card-header"><span class="card-title"><i class="fas fa-star"></i> 评价列表</span><span class="text-muted" style="font-size:13px;">-</span></div>
                 <div class="card-body no-pad"><div class="table-wrap"><table>
                     <thead><tr><th>商品</th><th>用户</th><th>评分</th><th>评价内容</th><th>状态</th><th>操作</th></tr></thead>
                     <tbody>
-                        <tr><td>无线蓝牙耳机 Pro</td><td>赵*阳</td><td>⭐⭐⭐⭐⭐</td><td>音质非常好，降噪效果很棒！</td><td><span class="status-badge green"><span class="dot"></span> 已通过</span></td><td><button class="btn btn-sm btn-outline">审核</button></td></tr>
-                        <tr><td>智能手表 S8</td><td>孙*怡</td><td>⭐⭐⭐⭐</td><td>功能丰富，续航还可以提升</td><td><span class="status-badge yellow"><span class="dot"></span> 待审核</span></td><td><button class="btn btn-sm btn-success">通过</button><button class="btn btn-sm btn-danger">删除</button></td></tr>
+                        <tr><td colspan="6" style="text-align:center;padding:20px;color:#94a3b8;">暂无数据</td></tr>
                     </tbody>
                 </table></div></div></div>
                 <div class="card"><div class="card-header"><span class="card-title"><i class="fas fa-robot"></i> AI 摘要管理</span><span class="text-muted" style="font-size:13px;">自动汇总评价内容，生成一句话总结</span></div>
-                <div class="card-body" style="background:#f8faff;"><i class="fas fa-quote-left" style="color:#4f6ef7;opacity:0.4;margin-right:8px;"></i> 用户普遍认为产品性价比高，音质和外观设计获得好评，部分用户建议优化续航和软件体验。 <span class="tag primary">AI 生成</span></div></div>
+                <div class="card-body" style="background:#f8faff;color:#94a3b8;">暂无数据</div></div>
             `;
         }
 
@@ -1035,9 +1017,7 @@
                 <div class="card"><div class="card-body no-pad"><div class="table-wrap"><table>
                     <thead><tr><th>名称</th><th>类型</th><th>优惠</th><th>有效期</th><th>适用范围</th><th>状态</th><th>操作</th></tr></thead>
                     <tbody>
-                        <tr><td>新用户专享</td><td>满减</td><td>满100减20</td><td>2026-07-01 ~ 2026-08-31</td><td>全场通用</td><td><span class="status-badge green"><span class="dot"></span> 发放中</span></td><td><button class="btn btn-sm btn-outline">编辑</button><button class="btn btn-sm btn-outline">发放管理</button></td></tr>
-                        <tr><td>数码品类券</td><td>折扣</td><td>8.8折</td><td>2026-06-20 ~ 2026-07-20</td><td>指定分类</td><td><span class="status-badge green"><span class="dot"></span> 发放中</span></td><td><button class="btn btn-sm btn-outline">编辑</button><button class="btn btn-sm btn-outline">发放管理</button></td></tr>
-                        <tr><td>耳机专属券</td><td>代金券</td><td>¥30</td><td>2026-06-15 ~ 2026-07-15</td><td>指定商品</td><td><span class="status-badge gray"><span class="dot"></span> 已过期</span></td><td><button class="btn btn-sm btn-outline">编辑</button></td></tr>
+                        <tr><td colspan="7" style="text-align:center;padding:20px;color:#94a3b8;">暂无数据</td></tr>
                     </tbody>
                 </table></div></div></div>
             `;
@@ -1048,9 +1028,9 @@
             return `
                 <div class="flex-between mb-4"><span></span><button class="btn btn-primary"><i class="fas fa-plus"></i> 新建活动</button></div>
                 <div class="card"><div class="card-header"><span class="card-title"><i class="fas fa-bolt"></i> 秒杀活动管理</span></div>
-                <div class="card-body no-pad"><div class="table-wrap"><table><thead><tr><th>活动名称</th><th>商品</th><th>秒杀价</th><th>库存</th><th>活动时间</th><th>状态</th><th>操作</th></tr></thead><tbody><tr><td>618限时秒杀</td><td>无线蓝牙耳机 Pro</td><td>¥199</td><td>500</td><td>2026-06-18 10:00-22:00</td><td><span class="status-badge green"><span class="dot"></span> 进行中</span></td><td><button class="btn btn-sm btn-outline">编辑</button></td></tr></tbody></table></div></div></div>
+                <div class="card-body no-pad"><div class="table-wrap"><table><thead><tr><th>活动名称</th><th>商品</th><th>秒杀价</th><th>库存</th><th>活动时间</th><th>状态</th><th>操作</th></tr></thead><tbody><tr><td colspan="7" style="text-align:center;padding:20px;color:#94a3b8;">暂无数据</td></tr></tbody></table></div></div></div>
                 <div class="card"><div class="card-header"><span class="card-title"><i class="fas fa-users"></i> 拼团活动管理</span></div>
-                <div class="card-body no-pad"><div class="table-wrap"><table><thead><tr><th>活动名称</th><th>商品</th><th>拼团价</th><th>成团人数</th><th>有效期</th><th>状态</th><th>操作</th></tr></thead><tbody><tr><td>好友拼团</td><td>便携移动电源</td><td>¥99</td><td>3人</td><td>2026-06-20 ~ 2026-07-20</td><td><span class="status-badge green"><span class="dot"></span> 进行中</span></td><td><button class="btn btn-sm btn-outline">编辑</button><button class="btn btn-sm btn-outline">分享配置</button></td></tr></tbody></table></div></div></div>
+                <div class="card-body no-pad"><div class="table-wrap"><table><thead><tr><th>活动名称</th><th>商品</th><th>拼团价</th><th>成团人数</th><th>有效期</th><th>状态</th><th>操作</th></tr></thead><tbody><tr><td colspan="7" style="text-align:center;padding:20px;color:#94a3b8;">暂无数据</td></tr></tbody></table></div></div></div>
             `;
         }
 
@@ -1061,33 +1041,24 @@
                     <div class="chat-container">
                         <div class="chat-sidebar">
                             <div style="padding:10px 14px;border-bottom:1px solid #e2e8f0;background:#fff;font-weight:600;font-size:14px;">会话列表</div>
-                            <div class="chat-item active"><div class="name">王小明</div><div class="preview">你好，我想咨询一下订单配送</div></div>
-                            <div class="chat-item"><div class="name">李佳琦</div><div class="preview">什么时候可以自提？</div></div>
-                            <div class="chat-item"><div class="name">张雪迎</div><div class="preview">我要退货，怎么操作？</div></div>
-                            <div class="chat-item"><div class="name">刘亦菲</div><div class="preview">好的，谢谢！</div></div>
+                            <div style="padding:40px;text-align:center;color:#94a3b8;">暂无会话</div>
                         </div>
                         <div class="chat-window">
-                            <div class="chat-header">王小明 · <span class="text-muted" style="font-weight:400;font-size:13px;">待回复</span></div>
-                            <div class="chat-messages">
-                                <div class="msg other">您好，很高兴为您服务！</div>
-                                <div class="msg me">你好，我想咨询一下订单配送</div>
-                                <div class="msg other">请问您的订单号是多少？</div>
-                                <div class="msg me">ORD-20260624-001</div>
-                                <div class="msg other">正在查询…… 您的订单已支付成功，预计今天下午可到店自提。</div>
-                            </div>
+                            <div class="chat-header">请选择一个会话</div>
+                            <div class="chat-messages" style="display:flex;align-items:center;justify-content:center;color:#94a3b8;">暂无消息</div>
                             <div class="chat-input">
-                                <input placeholder="输入消息，回复用户……" />
-                                <button class="btn btn-primary btn-sm"><i class="fas fa-paper-plane"></i> 发送</button>
-                                <button class="btn btn-outline btn-sm"><i class="fas fa-robot"></i> AI 建议</button>
-                                <button class="btn btn-outline btn-sm">关闭对话</button>
+                                <input placeholder="输入消息，回复用户……" disabled />
+                                <button class="btn btn-primary btn-sm" disabled><i class="fas fa-paper-plane"></i> 发送</button>
+                                <button class="btn btn-outline btn-sm" disabled><i class="fas fa-robot"></i> AI 建议</button>
+                                <button class="btn btn-outline btn-sm" disabled>关闭对话</button>
                             </div>
                         </div>
                     </div>
                 </div></div>
                 <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:8px;">
-                    <span class="tag">待回复: 2</span>
-                    <span class="tag">已回复: 6</span>
-                    <span class="tag">已关闭: 12</span>
+                    <span class="tag">待回复: -</span>
+                    <span class="tag">已回复: -</span>
+                    <span class="tag">已关闭: -</span>
                 </div>
             `;
         }
@@ -1099,9 +1070,7 @@
                 <div class="card"><div class="card-body no-pad"><div class="table-wrap"><table>
                     <thead><tr><th>用户</th><th>手机号</th><th>注册时间</th><th>订单数</th><th>状态</th><th>操作</th></tr></thead>
                     <tbody>
-                        <tr><td><div class="flex-center"><span style="width:28px;height:28px;border-radius:50%;background:#4f6ef7;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:600;font-size:12px;">王</span> 王小明</div></td><td>138****1234</td><td>2026-06-01</td><td>12</td><td><span class="status-badge green"><span class="dot"></span> 正常</span></td><td><button class="btn btn-sm btn-outline">用户详情</button></td></tr>
-                        <tr><td><div class="flex-center"><span style="width:28px;height:28px;border-radius:50%;background:#4f6ef7;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:600;font-size:12px;">李</span> 李佳琦</div></td><td>139****5678</td><td>2026-05-20</td><td>8</td><td><span class="status-badge green"><span class="dot"></span> 正常</span></td><td><button class="btn btn-sm btn-outline">用户详情</button></td></tr>
-                        <tr><td><div class="flex-center"><span style="width:28px;height:28px;border-radius:50%;background:#4f6ef7;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:600;font-size:12px;">张</span> 张雪迎</div></td><td>137****9012</td><td>2026-05-10</td><td>5</td><td><span class="status-badge gray"><span class="dot"></span> 已冻结</span></td><td><button class="btn btn-sm btn-outline">用户详情</button></td></tr>
+                        <tr><td colspan="6" style="text-align:center;padding:20px;color:#94a3b8;">暂无数据</td></tr>
                     </tbody>
                 </table></div></div></div>
             `;
@@ -1112,14 +1081,14 @@
             return `
                 <div class="flex-between mb-4"><div class="search-bar"><input placeholder="订单号 / 交易号" /><select><option>全部支付方式</option><option>支付宝</option><option>微信支付</option></select><button class="btn btn-primary"><i class="fas fa-search"></i> 搜索</button></div></div>
                 <div class="stats-grid" style="grid-template-columns:repeat(3,1fr);">
-                    <div class="stat-card"><div class="label"><i class="fas fa-credit-card"></i> 总支付笔数</div><div class="value" style="font-size:22px;">1,204</div></div>
-                    <div class="stat-card"><div class="label"><i class="fas fa-undo"></i> 总退款笔数</div><div class="value" style="font-size:22px;color:#f59e0b;">32</div></div>
-                    <div class="stat-card"><div class="label"><i class="fas fa-check-circle"></i> 支付成功率</div><div class="value" style="font-size:22px;color:#22c55e;">98.7%</div></div>
+                    <div class="stat-card"><div class="label"><i class="fas fa-credit-card"></i> 总支付笔数</div><div class="value" style="font-size:22px;">-</div></div>
+                    <div class="stat-card"><div class="label"><i class="fas fa-undo"></i> 总退款笔数</div><div class="value" style="font-size:22px;color:#f59e0b;">-</div></div>
+                    <div class="stat-card"><div class="label"><i class="fas fa-check-circle"></i> 支付成功率</div><div class="value" style="font-size:22px;color:#22c55e;">-</div></div>
                 </div>
                 <div class="card"><div class="card-header"><span class="card-title"><i class="fas fa-list"></i> 支付记录</span></div>
-                <div class="card-body no-pad"><div class="table-wrap"><table><thead><tr><th>交易号</th><th>订单号</th><th>金额</th><th>支付方式</th><th>状态</th><th>时间</th></tr></thead><tbody><tr><td>TXN-20260624-001</td><td>ORD-20260624-001</td><td>¥599</td><td>微信支付</td><td><span class="status-badge green"><span class="dot"></span> 成功</span></td><td>2026-06-24 10:35</td></tr><tr><td>TXN-20260624-002</td><td>ORD-20260624-002</td><td>¥1,299</td><td>支付宝</td><td><span class="status-badge green"><span class="dot"></span> 成功</span></td><td>2026-06-24 09:20</td></tr><tr><td>TXN-20260623-018</td><td>ORD-20260623-015</td><td>¥159</td><td>微信支付</td><td><span class="status-badge red"><span class="dot"></span> 已退款</span></td><td>2026-06-23 16:45</td></tr></tbody></table></div></div></div>
+                <div class="card-body no-pad"><div class="table-wrap"><table><thead><tr><th>交易号</th><th>订单号</th><th>金额</th><th>支付方式</th><th>状态</th><th>时间</th></tr></thead><tbody><tr><td colspan="6" style="text-align:center;padding:20px;color:#94a3b8;">暂无数据</td></tr></tbody></table></div></div></div>
                 <div class="card"><div class="card-header"><span class="card-title"><i class="fas fa-undo-alt"></i> 退款记录</span></div>
-                <div class="card-body no-pad"><div class="table-wrap"><table><thead><tr><th>退款单号</th><th>原交易号</th><th>退款金额</th><th>状态</th><th>时间</th></tr></thead><tbody><tr><td>REF-20260623-001</td><td>TXN-20260623-018</td><td>¥159</td><td><span class="status-badge green"><span class="dot"></span> 已退款</span></td><td>2026-06-23 16:50</td></tr></tbody></table></div></div></div>
+                <div class="card-body no-pad"><div class="table-wrap"><table><thead><tr><th>退款单号</th><th>原交易号</th><th>退款金额</th><th>状态</th><th>时间</th></tr></thead><tbody><tr><td colspan="5" style="text-align:center;padding:20px;color:#94a3b8;">暂无数据</td></tr></tbody></table></div></div></div>
             `;
         }
 
@@ -1130,9 +1099,7 @@
                 <div class="card"><div class="card-body no-pad"><div class="table-wrap"><table>
                     <thead><tr><th>账号</th><th>角色</th><th>状态</th><th>最后登录</th><th>操作</th></tr></thead>
                     <tbody>
-                        <tr><td>admin</td><td>超级管理员</td><td><span class="status-badge green"><span class="dot"></span> 启用</span></td><td>2026-06-24 14:20</td><td><button class="btn btn-sm btn-outline">编辑</button><button class="btn btn-sm btn-danger">禁用</button></td></tr>
-                        <tr><td>goods_op</td><td>商品运营</td><td><span class="status-badge green"><span class="dot"></span> 启用</span></td><td>2026-06-24 11:10</td><td><button class="btn btn-sm btn-outline">编辑</button></td></tr>
-                        <tr><td>order_cs</td><td>订单客服</td><td><span class="status-badge yellow"><span class="dot"></span> 停用</span></td><td>2026-06-23 08:30</td><td><button class="btn btn-sm btn-outline">编辑</button><button class="btn btn-sm btn-success">启用</button></td></tr>
+                        <tr><td colspan="5" style="text-align:center;padding:20px;color:#94a3b8;">暂无数据</td></tr>
                     </tbody>
                 </table></div></div></div>
                 <div class="card"><div class="card-header"><span class="card-title"><i class="fas fa-lock"></i> 角色权限管理 · 菜单管理</span></div>

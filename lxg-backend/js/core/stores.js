@@ -1,11 +1,28 @@
-let storesData = [
-    { id: 'store-001', name: '北京朝阳店', address: '北京市朝阳区建国路88号', phone: '010-8888-6666', businessHours: '09:00-21:00', status: 'active', createTime: '2026-01-01', clerkCount: 5, orderCount: 1258 },
-    { id: 'store-002', name: '上海浦东店', address: '上海市浦东新区世纪大道100号', phone: '021-8888-6666', businessHours: '09:00-21:00', status: 'active', createTime: '2026-02-15', clerkCount: 4, orderCount: 986 },
-    { id: 'store-003', name: '广州天河店', address: '广州市天河区珠江新城路88号', phone: '020-8888-6666', businessHours: '10:00-22:00', status: 'active', createTime: '2026-03-20', clerkCount: 6, orderCount: 1120 },
-    { id: 'store-004', name: '深圳南山店', address: '深圳市南山区科技园路66号', phone: '0755-8888-6666', businessHours: '09:00-21:00', status: 'disabled', createTime: '2026-04-01', clerkCount: 3, orderCount: 456 },
-    { id: 'store-005', name: '成都天府店', address: '成都市天府新区天府大道100号', phone: '028-8888-6666', businessHours: '09:00-21:00', status: 'active', createTime: '2026-05-10', clerkCount: 4, orderCount: 780 },
-    { id: 'store-006', name: '杭州西湖店', address: '杭州市西湖区延安路88号', phone: '0571-8888-6666', businessHours: '09:00-21:00', status: 'active', createTime: '2026-06-01', clerkCount: 3, orderCount: 560 }
-];
+let storesData = [];
+let storesLoaded = false;
+
+async function loadStores() {
+    try {
+        const response = await apiGet(API_CONFIG.stores.list);
+        const dataList = response && response.list ? response.list : (Array.isArray(response) ? response : []);
+        storesData = dataList.map(store => ({
+            id: store.ID || store.id,
+            name: store.name,
+            address: store.address,
+            phone: store.phone,
+            businessHours: store.businessHours,
+            status: store.status === 1 ? 'active' : 'disabled',
+            createTime: store.CreatedAt || store.createdAt || '',
+            orderCount: store.orderCount || 0,
+            clerkCount: store.clerkCount || 0
+        }));
+    } catch (error) {
+        console.error('Failed to load stores:', error);
+    } finally {
+        storesLoaded = true;
+        refreshStoresPage();
+    }
+}
 
 function getStatusBadge(status) {
     const colors = { active: 'green', disabled: 'red' };
@@ -14,12 +31,25 @@ function getStatusBadge(status) {
     return `<span class="status-badge ${color}"><span class="dot"></span> ${texts[status] || status}</span>`;
 }
 
-function handleStoreAction(storeId, action) {
+async function handleStoreAction(storeId, action) {
     const store = storesData.find(s => s.id === storeId);
     if (!store) return;
     
     if (action === 'toggle') {
-        store.status = store.status === 'active' ? 'disabled' : 'active';
+        try {
+            const newStatus = store.status === 'active' ? 0 : 1;
+            const response = await apiPut(API_CONFIG.stores.toggle, { status: newStatus }, { id: storeId });
+            
+            if (response.code === 200) {
+                store.status = store.status === 'active' ? 'disabled' : 'active';
+                refreshStoresPage();
+            } else {
+                alert(response.message || '操作失败');
+            }
+        } catch (error) {
+            console.error('Failed to toggle store status:', error);
+            alert('操作失败，请重试');
+        }
     }
     
     refreshStoresPage();
@@ -52,31 +82,39 @@ function showAddStoreModal() {
     document.body.insertAdjacentHTML('beforeend', modalContent);
 }
 
-function saveStore() {
+async function saveStore() {
     const name = document.getElementById('storeName').value.trim();
     const phone = document.getElementById('storePhone').value.trim();
     const address = document.getElementById('storeAddress').value.trim();
+    const businessHours = `${document.getElementById('storeStartHour').value}-${document.getElementById('storeEndHour').value}`;
+    const announcement = document.getElementById('storeNotice').value.trim();
     
     if (!name || !phone || !address) {
         alert('请填写必填字段');
         return;
     }
     
-    storesData.unshift({
-        id: 'store-' + Date.now(),
-        name: name,
-        address: address,
-        phone: phone,
-        businessHours: `${document.getElementById('storeStartHour').value}-${document.getElementById('storeEndHour').value}`,
-        status: 'active',
-        createTime: new Date().toISOString().replace('T', ' ').substring(0, 19),
-        clerkCount: 0,
-        orderCount: 0
-    });
-    
-    alert('门店创建成功！');
-    closeStoreModal();
-    refreshStoresPage();
+    try {
+        const response = await apiPost(API_CONFIG.stores.add, {
+            name: name,
+            address: address,
+            phone: phone,
+            businessHours: businessHours,
+            announcement: announcement,
+            status: 1
+        });
+        
+        if (response.code === 200 || response.code === 201) {
+            alert('门店创建成功！');
+            closeStoreModal();
+            await loadStores();
+        } else {
+            alert(response.message || '创建失败');
+        }
+    } catch (error) {
+        console.error('Failed to create store:', error);
+        alert('创建门店失败，请重试');
+    }
 }
 
 function closeStoreModal() {
@@ -327,32 +365,70 @@ function showEditStoreModal(storeId) {
     document.body.insertAdjacentHTML('beforeend', modalContent);
 }
 
-function saveEditStore(storeId) {
+async function saveEditStore(storeId) {
     const store = storesData.find(s => s.id === storeId);
     if (!store) return;
     
     const name = document.getElementById('storeName').value.trim();
     const phone = document.getElementById('storePhone').value.trim();
     const address = document.getElementById('storeAddress').value.trim();
+    const businessHours = `${document.getElementById('storeStartHour').value}-${document.getElementById('storeEndHour').value}`;
     
     if (!name || !phone || !address) {
         alert('请填写必填字段');
         return;
     }
     
-    store.name = name;
-    store.phone = phone;
-    store.address = address;
-    store.businessHours = `${document.getElementById('storeStartHour').value}-${document.getElementById('storeEndHour').value}`;
-    
-    alert('门店信息更新成功！');
-    closeStoreModal();
-    refreshStoresPage();
+    try {
+        const response = await apiPut(API_CONFIG.stores.edit, {
+            name: name,
+            phone: phone,
+            address: address,
+            businessHours: businessHours
+        }, { id: storeId });
+        
+        if (response.code === 200) {
+            store.name = name;
+            store.phone = phone;
+            store.address = address;
+            store.businessHours = businessHours;
+            
+            alert('门店信息更新成功！');
+            closeStoreModal();
+            refreshStoresPage();
+        } else {
+            alert(response.message || '更新失败');
+        }
+    } catch (error) {
+        console.error('Failed to update store:', error);
+        alert('更新门店失败，请重试');
+    }
 }
 
 function storesPage() {
     const isSuperAdmin = currentUser.role === 'super_admin';
     const isStoreStaff = currentUser.role === 'store_staff';
+    
+    if (!storesLoaded) {
+        return `
+            <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;padding:80px 20px;">
+                <div style="width:64px;height:64px;border:4px solid #e2e8f0;border-top-color:#4f6ef7;border-radius:50%;animation:spin 1s linear infinite;margin-bottom:20px;"></div>
+                <div style="font-size:14px;color:#94a3b8;">正在加载门店数据...</div>
+            </div>
+        `;
+    }
+    
+    if (storesData.length === 0) {
+        return `
+            <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;padding:80px 20px;">
+                <div style="width:64px;height:64px;border:2px solid #e2e8f0;border-radius:50%;display:flex;align-items:center;justify-content:center;margin-bottom:16px;">
+                    <i class="fas fa-store" style="font-size:24px;color:#94a3b8;"></i>
+                </div>
+                <div style="font-size:14px;color:#94a3b8;margin-bottom:16px;">暂无门店数据</div>
+                <button class="btn btn-primary" onclick="showAddStoreModal()"><i class="fas fa-plus"></i> 新增门店</button>
+            </div>
+        `;
+    }
     
     if (isStoreStaff && currentUser.storeId) {
         const stats = getStoreStats(currentUser.storeId);

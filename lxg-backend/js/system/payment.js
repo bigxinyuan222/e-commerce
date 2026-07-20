@@ -1,24 +1,52 @@
-let paymentData = [
-    { id: 'TXN-20260624-001', orderId: 'ORD-20260624-001', amount: 599, method: '微信支付', channel: '微信小程序', status: 'success', time: '2026-06-24 10:35' },
-    { id: 'TXN-20260624-002', orderId: 'ORD-20260624-002', amount: 1299, method: '支付宝', channel: '支付宝APP', status: 'success', time: '2026-06-24 09:20' },
-    { id: 'TXN-20260624-003', orderId: 'ORD-20260624-003', amount: 159, method: '微信支付', channel: '微信公众号', status: 'success', time: '2026-06-24 08:45' },
-    { id: 'TXN-20260623-018', orderId: 'ORD-20260623-015', amount: 159, method: '微信支付', channel: '微信小程序', status: 'refunded', time: '2026-06-23 16:45' },
-    { id: 'TXN-20260623-015', orderId: 'ORD-20260623-012', amount: 598, method: '支付宝', channel: '支付宝H5', status: 'refunded', time: '2026-06-23 14:20' },
-    { id: 'TXN-20260623-012', orderId: 'ORD-20260623-009', amount: 199, method: '微信支付', channel: '微信小程序', status: 'success', time: '2026-06-23 11:30' },
-    { id: 'TXN-20260623-010', orderId: 'ORD-20260623-007', amount: 399, method: '支付宝', channel: '支付宝APP', status: 'failed', time: '2026-06-23 10:15' },
-    { id: 'TXN-20260622-008', orderId: 'ORD-20260622-008', amount: 199, method: '微信支付', channel: '微信小程序', status: 'success', time: '2026-06-22 15:00' }
-];
-
-let refundData = [
-    { id: 'REF-20260624-001', txnId: 'TXN-20260624-004', orderId: 'ORD-20260624-004', amount: 299, reason: '质量问题', status: 'refunded', time: '2026-06-24 14:30' },
-    { id: 'REF-20260623-001', txnId: 'TXN-20260623-018', orderId: 'ORD-20260623-015', amount: 159, reason: '发错货', status: 'refunded', time: '2026-06-23 16:50' },
-    { id: 'REF-20260623-002', txnId: 'TXN-20260623-015', orderId: 'ORD-20260623-012', amount: 598, reason: '不想要了', status: 'refunded', time: '2026-06-23 14:30' },
-    { id: 'REF-20260622-001', txnId: 'TXN-20260622-008', orderId: 'ORD-20260622-008', amount: 199, reason: '质量问题', status: 'processing', time: '2026-06-22 10:00' }
-];
+let paymentData = [];
+let refundData = [];
 
 let currentPaymentSearchKeyword = '';
 let currentPaymentMethodFilter = 'all';
 let currentPaymentStatusFilter = 'all';
+
+async function loadPayments() {
+    try {
+        const params = {
+            method: currentPaymentMethodFilter === 'all' ? '' : currentPaymentMethodFilter,
+            status: currentPaymentStatusFilter === 'all' ? '' : currentPaymentStatusFilter,
+            keyword: currentPaymentSearchKeyword
+        };
+        const response = await apiGet(API_CONFIG.payments.list, params);
+        const dataList = response && response.list ? response.list : (Array.isArray(response) ? response : []);
+        paymentData = dataList.map(item => ({
+            id: item.ID || item.id,
+            orderId: item.orderId || '',
+            amount: item.amount || 0,
+            method: item.method === 'wechat' ? '微信支付' : item.method === 'alipay' ? '支付宝' : item.method || '',
+            channel: item.channel || '',
+            status: item.status === 'success' ? 'success' : item.status === 'refunded' ? 'refunded' : item.status === 'failed' ? 'failed' : 'processing',
+            time: item.createdAt || item.time || ''
+        }));
+        refreshPaymentPage();
+    } catch (error) {
+        console.error('Failed to load payments:', error);
+    }
+}
+
+async function loadRefunds() {
+    try {
+        const response = await apiGet(API_CONFIG.payments.refundList);
+        const dataList = response && response.list ? response.list : (Array.isArray(response) ? response : []);
+        refundData = dataList.map(item => ({
+            id: item.ID || item.id,
+            txnId: item.txnId || '',
+            orderId: item.orderId || '',
+            amount: item.amount || 0,
+            reason: item.reason || '',
+            status: item.status === 'refunded' ? 'refunded' : 'processing',
+            time: item.createdAt || item.time || ''
+        }));
+        refreshPaymentPage();
+    } catch (error) {
+        console.error('Failed to load refunds:', error);
+    }
+}
 
 function getPaymentStatusBadge(status) {
     const colors = { success: 'green', failed: 'red', refunded: 'red', processing: 'yellow' };
@@ -75,61 +103,28 @@ function showPaymentDetail(txnId) {
     const refund = refundData.find(r => r.txnId === txnId);
     
     const modalContent = `
-        <div class="modal-overlay" style="position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.5);z-index:1000;display:flex;align-items:center;justify-content:center;" onclick="closePaymentModal()"></div>
-        <div class="modal-content" style="position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:#fff;border-radius:12px;box-shadow:0 25px 50px -12px rgba(0,0,0,0.25);display:flex;flex-direction:column;max-height:80vh;overflow:hidden;z-index:1001;width:500px;">
+        <div class="modal-overlay" onclick="closePaymentModal()"></div>
+        <div class="modal-content" style="width:500px;">
             <div class="modal-header">
                 <h3><i class="fas fa-info-circle"></i> 交易详情</h3>
                 <button onclick="closePaymentModal()" class="modal-close"><i class="fas fa-times"></i></button>
             </div>
             <div class="modal-body" style="max-height:60vh;overflow-y:auto;">
-                <div style="display:flex;flex-direction:column;gap:12px;">
-                    <div style="display:flex;justify-content:space-between;padding:12px;background:#f8fafc;border-radius:8px;">
-                        <span style="font-size:13px;color:#64748b;">交易号</span>
-                        <span style="font-size:13px;font-weight:600;">${payment.id}</span>
-                    </div>
-                    <div style="display:flex;justify-content:space-between;padding:12px;background:#f8fafc;border-radius:8px;">
-                        <span style="font-size:13px;color:#64748b;">订单号</span>
-                        <span style="font-size:13px;font-weight:600;">${payment.orderId}</span>
-                    </div>
-                    <div style="display:flex;justify-content:space-between;padding:12px;background:#f8fafc;border-radius:8px;">
-                        <span style="font-size:13px;color:#64748b;">支付金额</span>
-                        <span style="font-size:16px;font-weight:600;color:#4f6ef7;">¥${payment.amount}</span>
-                    </div>
-                    <div style="display:flex;justify-content:space-between;padding:12px;background:#f8fafc;border-radius:8px;">
-                        <span style="font-size:13px;color:#64748b;">支付方式</span>
-                        <span style="font-size:13px;">${payment.method}</span>
-                    </div>
-                    <div style="display:flex;justify-content:space-between;padding:12px;background:#f8fafc;border-radius:8px;">
-                        <span style="font-size:13px;color:#64748b;">支付渠道</span>
-                        <span style="font-size:13px;">${payment.channel}</span>
-                    </div>
-                    <div style="display:flex;justify-content:space-between;padding:12px;background:#f8fafc;border-radius:8px;">
-                        <span style="font-size:13px;color:#64748b;">交易状态</span>
-                        <span>${getPaymentStatusBadge(payment.status)}</span>
-                    </div>
-                    <div style="display:flex;justify-content:space-between;padding:12px;background:#f8fafc;border-radius:8px;">
-                        <span style="font-size:13px;color:#64748b;">支付时间</span>
-                        <span style="font-size:13px;">${payment.time}</span>
-                    </div>
+                <div class="system-payment-detail-grid">
+                    <div class="system-payment-detail-item"><span class="label">交易号</span><span class="value">${payment.id}</span></div>
+                    <div class="system-payment-detail-item"><span class="label">订单号</span><span class="value">${payment.orderId}</span></div>
+                    <div class="system-payment-detail-item"><span class="label">支付金额</span><span class="value primary">¥${payment.amount}</span></div>
+                    <div class="system-payment-detail-item"><span class="label">支付方式</span><span class="value">${payment.method}</span></div>
+                    <div class="system-payment-detail-item"><span class="label">支付渠道</span><span class="value">${payment.channel}</span></div>
+                    <div class="system-payment-detail-item"><span class="label">交易状态</span><span>${getPaymentStatusBadge(payment.status)}</span></div>
+                    <div class="system-payment-detail-item"><span class="label">支付时间</span><span class="value">${payment.time}</span></div>
                     ${refund ? `
-                        <div style="margin-top:8px;padding-top:12px;border-top:1px solid #e2e8f0;">
-                            <div style="font-weight:600;margin-bottom:8px;color:#ef4444;">退款信息</div>
-                            <div style="display:flex;justify-content:space-between;padding:8px;background:#fef2f2;border-radius:6px;">
-                                <span style="font-size:13px;color:#991b1b;">退款单号</span>
-                                <span style="font-size:13px;">${refund.id}</span>
-                            </div>
-                            <div style="display:flex;justify-content:space-between;padding:8px;background:#fef2f2;border-radius:6px;">
-                                <span style="font-size:13px;color:#991b1b;">退款金额</span>
-                                <span style="font-size:13px;font-weight:600;">¥${refund.amount}</span>
-                            </div>
-                            <div style="display:flex;justify-content:space-between;padding:8px;background:#fef2f2;border-radius:6px;">
-                                <span style="font-size:13px;color:#991b1b;">退款原因</span>
-                                <span style="font-size:13px;">${refund.reason}</span>
-                            </div>
-                            <div style="display:flex;justify-content:space-between;padding:8px;background:#fef2f2;border-radius:6px;">
-                                <span style="font-size:13px;color:#991b1b;">退款时间</span>
-                                <span style="font-size:13px;">${refund.time}</span>
-                            </div>
+                        <div class="system-payment-refund-section">
+                            <div class="refund-title">退款信息</div>
+                            <div class="system-payment-refund-item"><span class="label">退款单号</span><span class="value">${refund.id}</span></div>
+                            <div class="system-payment-refund-item"><span class="label">退款金额</span><span class="value bold">¥${refund.amount}</span></div>
+                            <div class="system-payment-refund-item"><span class="label">退款原因</span><span class="value">${refund.reason}</span></div>
+                            <div class="system-payment-refund-item"><span class="label">退款时间</span><span class="value">${refund.time}</span></div>
                         </div>
                     ` : ''}
                 </div>
@@ -148,15 +143,15 @@ function showRefundModal(txnId) {
     if (!payment) return;
     
     const modalContent = `
-        <div class="modal-overlay" style="position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.5);z-index:1000;display:flex;align-items:center;justify-content:center;" onclick="closePaymentModal()"></div>
-        <div class="modal-content" style="position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:#fff;border-radius:12px;box-shadow:0 25px 50px -12px rgba(0,0,0,0.25);display:flex;flex-direction:column;max-height:80vh;overflow:hidden;z-index:1001;width:450px;">
+        <div class="modal-overlay" onclick="closePaymentModal()"></div>
+        <div class="modal-content" style="width:450px;">
             <div class="modal-header">
                 <h3><i class="fas fa-undo"></i> 申请退款</h3>
                 <button onclick="closePaymentModal()" class="modal-close"><i class="fas fa-times"></i></button>
             </div>
             <div class="modal-body" style="max-height:60vh;overflow-y:auto;">
                 <div style="display:flex;flex-direction:column;gap:12px;">
-                    <div style="padding:12px;background:#fef2f2;border-radius:8px;">
+                    <div class="system-payment-refund-section">
                         <div style="display:flex;justify-content:space-between;margin-bottom:4px;">
                             <span style="font-size:13px;color:#991b1b;">交易号</span>
                             <span style="font-size:12px;">${payment.id}</span>
@@ -167,12 +162,12 @@ function showRefundModal(txnId) {
                         </div>
                     </div>
                     <div>
-                        <label style="display:block;font-size:13px;color:#64748b;margin-bottom:4px;">退款金额</label>
-                        <input type="number" id="refundAmount" value="${payment.amount}" min="0" max="${payment.amount}" style="width:100%;padding:8px 12px;border:1px solid #e2e8f0;border-radius:6px;font-size:13px;outline:none;" onfocus="this.style.borderColor='#4f6ef7'" />
+                        <label class="system-form-label">退款金额</label>
+                        <input type="number" id="refundAmount" value="${payment.amount}" min="0" max="${payment.amount}" class="system-form-input" />
                     </div>
                     <div>
-                        <label style="display:block;font-size:13px;color:#64748b;margin-bottom:4px;">退款原因 <span style="color:#ef4444;">*</span></label>
-                        <select id="refundReason" style="width:100%;padding:8px 12px;border:1px solid #e2e8f0;border-radius:6px;font-size:13px;outline:none;" onfocus="this.style.borderColor='#4f6ef7'">
+                        <label class="system-form-label">退款原因 <span class="system-form-required">*</span></label>
+                        <select id="refundReason" class="system-form-select">
                             <option value="质量问题">质量问题</option>
                             <option value="发错货">发错货</option>
                             <option value="不想要了">不想要了</option>
@@ -180,8 +175,8 @@ function showRefundModal(txnId) {
                         </select>
                     </div>
                     <div>
-                        <label style="display:block;font-size:13px;color:#64748b;margin-bottom:4px;">备注说明</label>
-                        <textarea id="refundRemark" placeholder="请输入备注说明（选填）" rows="3" style="width:100%;padding:8px 12px;border:1px solid #e2e8f0;border-radius:6px;font-size:13px;outline:none;resize:none;" onfocus="this.style.borderColor='#4f6ef7'"></textarea>
+                        <label class="system-form-label">备注说明</label>
+                        <textarea id="refundRemark" placeholder="请输入备注说明（选填）" rows="3" class="system-form-textarea"></textarea>
                     </div>
                 </div>
             </div>
@@ -237,44 +232,23 @@ function showRefundDetail(refundId) {
     const payment = paymentData.find(p => p.id === refund.txnId);
     
     const modalContent = `
-        <div class="modal-overlay" style="position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.5);z-index:1000;display:flex;align-items:center;justify-content:center;" onclick="closePaymentModal()"></div>
-        <div class="modal-content" style="position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:#fff;border-radius:12px;box-shadow:0 25px 50px -12px rgba(0,0,0,0.25);display:flex;flex-direction:column;max-height:80vh;overflow:hidden;z-index:1001;width:500px;">
+        <div class="modal-overlay" onclick="closePaymentModal()"></div>
+        <div class="modal-content" style="width:500px;">
             <div class="modal-header">
                 <h3><i class="fas fa-undo-alt"></i> 退款详情</h3>
                 <button onclick="closePaymentModal()" class="modal-close"><i class="fas fa-times"></i></button>
             </div>
             <div class="modal-body" style="max-height:60vh;overflow-y:auto;">
-                <div style="display:flex;flex-direction:column;gap:12px;">
-                    <div style="display:flex;justify-content:space-between;padding:12px;background:#fef2f2;border-radius:8px;">
-                        <span style="font-size:13px;color:#991b1b;">退款单号</span>
-                        <span style="font-size:13px;font-weight:600;">${refund.id}</span>
-                    </div>
-                    <div style="display:flex;justify-content:space-between;padding:12px;background:#f8fafc;border-radius:8px;">
-                        <span style="font-size:13px;color:#64748b;">原交易号</span>
-                        <span style="font-size:13px;">${refund.txnId}</span>
-                    </div>
-                    <div style="display:flex;justify-content:space-between;padding:12px;background:#f8fafc;border-radius:8px;">
-                        <span style="font-size:13px;color:#64748b;">原订单号</span>
-                        <span style="font-size:13px;">${refund.orderId}</span>
-                    </div>
-                    <div style="display:flex;justify-content:space-between;padding:12px;background:#f8fafc;border-radius:8px;">
-                        <span style="font-size:13px;color:#64748b;">退款金额</span>
-                        <span style="font-size:16px;font-weight:600;color:#ef4444;">¥${refund.amount}</span>
-                    </div>
-                    <div style="display:flex;justify-content:space-between;padding:12px;background:#f8fafc;border-radius:8px;">
-                        <span style="font-size:13px;color:#64748b;">退款原因</span>
-                        <span style="font-size:13px;">${refund.reason}</span>
-                    </div>
-                    <div style="display:flex;justify-content:space-between;padding:12px;background:#f8fafc;border-radius:8px;">
-                        <span style="font-size:13px;color:#64748b;">退款状态</span>
-                        <span>${refund.status === 'refunded' ? '<span class="status-badge green"><span class="dot"></span> 已退款</span>' : '<span class="status-badge blue"><span class="dot"></span> 退款中</span>'}</span>
-                    </div>
-                    <div style="display:flex;justify-content:space-between;padding:12px;background:#f8fafc;border-radius:8px;">
-                        <span style="font-size:13px;color:#64748b;">申请时间</span>
-                        <span style="font-size:13px;">${refund.time}</span>
-                    </div>
+                <div class="system-payment-detail-grid">
+                    <div class="system-payment-detail-item" style="background:#fef2f2;"><span class="label" style="color:#991b1b;">退款单号</span><span class="value">${refund.id}</span></div>
+                    <div class="system-payment-detail-item"><span class="label">原交易号</span><span class="value">${refund.txnId}</span></div>
+                    <div class="system-payment-detail-item"><span class="label">原订单号</span><span class="value">${refund.orderId}</span></div>
+                    <div class="system-payment-detail-item"><span class="label">退款金额</span><span class="value red">¥${refund.amount}</span></div>
+                    <div class="system-payment-detail-item"><span class="label">退款原因</span><span class="value">${refund.reason}</span></div>
+                    <div class="system-payment-detail-item"><span class="label">退款状态</span><span>${refund.status === 'refunded' ? '<span class="status-badge green"><span class="dot"></span> 已退款</span>' : '<span class="status-badge blue"><span class="dot"></span> 退款中</span>'}</span></div>
+                    <div class="system-payment-detail-item"><span class="label">申请时间</span><span class="value">${refund.time}</span></div>
                     ${payment ? `
-                        <div style="margin-top:8px;padding-top:12px;border-top:1px solid #e2e8f0;">
+                        <div class="system-payment-refund-section">
                             <div style="font-weight:600;margin-bottom:8px;color:#4f6ef7;">关联交易信息</div>
                             <div style="display:flex;justify-content:space-between;padding:8px;background:#eef1ff;border-radius:6px;">
                                 <span style="font-size:13px;color:#4f6ef7;">支付方式</span>
@@ -328,11 +302,11 @@ function paymentPage() {
             <button class="btn btn-outline"><i class="fas fa-download"></i> 导出记录</button>
         </div>
         
-        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:12px;">
-            <div class="stat-card"><div class="label"><i class="fas fa-credit-card"></i> 总支付笔数</div><div class="value" style="font-size:22px;">${paymentData.length}</div></div>
-            <div class="stat-card"><div class="label"><i class="fas fa-undo"></i> 总退款笔数</div><div class="value" style="font-size:22px;color:#f59e0b;">${refundData.length}</div></div>
-            <div class="stat-card"><div class="label"><i class="fas fa-check-circle"></i> 支付成功率</div><div class="value" style="font-size:22px;color:#22c55e;">${Math.round((successCount / paymentData.length) * 100)}%</div></div>
-            <div class="stat-card"><div class="label"><i class="fas fa-yen-sign"></i> 总支付金额</div><div class="value" style="font-size:22px;color:#4f6ef7;">¥${(totalAmount / 10000).toFixed(1)}万</div></div>
+        <div class="system-stat-grid">
+            <div class="system-stat-card"><div class="label"><i class="fas fa-credit-card"></i> 总支付笔数</div><div class="value">${paymentData.length}</div></div>
+            <div class="system-stat-card"><div class="label"><i class="fas fa-undo"></i> 总退款笔数</div><div class="value yellow">${refundData.length}</div></div>
+            <div class="system-stat-card"><div class="label"><i class="fas fa-check-circle"></i> 支付成功率</div><div class="value green">${Math.round((successCount / paymentData.length) * 100)}%</div></div>
+            <div class="system-stat-card"><div class="label"><i class="fas fa-yen-sign"></i> 总支付金额</div><div class="value blue">¥${(totalAmount / 10000).toFixed(1)}万</div></div>
         </div>
 
         <div style="display:grid;grid-template-columns:2fr 1fr;gap:12px;margin-bottom:12px;">

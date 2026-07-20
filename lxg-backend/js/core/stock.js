@@ -1,24 +1,28 @@
-let stockData = [
-    { id: 'SKU-001', goodsName: '无线蓝牙耳机 Pro', spec: '黑色', stock: 840, threshold: 50, status: 'normal' },
-    { id: 'SKU-002', goodsName: '无线蓝牙耳机 Pro', spec: '白色', stock: 400, threshold: 50, status: 'normal' },
-    { id: 'SKU-003', goodsName: '无线蓝牙耳机 Pro', spec: '红色', stock: 0, threshold: 50, status: 'warning' },
-    { id: 'SKU-004', goodsName: '无线蓝牙耳机 Pro', spec: '蓝色', stock: 230, threshold: 50, status: 'normal' },
-    { id: 'SKU-005', goodsName: '智能手表 S8', spec: '银色', stock: 32, threshold: 50, status: 'warning' },
-    { id: 'SKU-006', goodsName: '智能手表 S8', spec: '黑色', stock: 156, threshold: 50, status: 'normal' },
-    { id: 'SKU-007', goodsName: '便携移动电源', spec: '白色', stock: 18, threshold: 30, status: 'warning' },
-    { id: 'SKU-008', goodsName: '便携移动电源', spec: '黑色', stock: 450, threshold: 30, status: 'normal' },
-    { id: 'SKU-009', goodsName: '智能台灯 Pro', spec: '白色', stock: 280, threshold: 10, status: 'normal' },
-    { id: 'SKU-010', goodsName: '智能台灯 Pro', spec: '黑色', stock: 60, threshold: 10, status: 'normal' }
-];
+let stockData = [];
+let stockLogData = [];
 
-let stockLogData = [
-    { id: 'log-001', skuId: 'SKU-001', skuName: '无线蓝牙耳机 Pro 黑', type: 'in', typeText: '采购入库', quantity: 200, beforeStock: 640, afterStock: 840, orderId: null, operator: '张运营', createTime: '2026-06-25 14:32' },
-    { id: 'log-002', skuId: 'SKU-005', skuName: '智能手表 S8 银', type: 'out', typeText: '销售出库', quantity: -15, beforeStock: 47, afterStock: 32, orderId: 'ORD-20260625-002', operator: '李店员', createTime: '2026-06-25 11:20' },
-    { id: 'log-003', skuId: 'SKU-003', skuName: '无线蓝牙耳机 Pro 红', type: 'out', typeText: '销售出库', quantity: -2, beforeStock: 2, afterStock: 0, orderId: 'ORD-20260625-001', operator: '王店员', createTime: '2026-06-25 09:15' },
-    { id: 'log-004', skuId: 'SKU-007', skuName: '便携移动电源 白', type: 'loss', typeText: '损耗', quantity: -5, beforeStock: 23, afterStock: 18, orderId: null, operator: '张运营', createTime: '2026-06-24 16:45' },
-    { id: 'log-005', skuId: 'SKU-009', skuName: '智能台灯 Pro 白', type: 'in', typeText: '采购入库', quantity: 100, beforeStock: 180, afterStock: 280, orderId: null, operator: '张运营', createTime: '2026-06-24 10:30' },
-    { id: 'log-006', skuId: 'SKU-008', skuName: '便携移动电源 黑', type: 'adjust', typeText: '盘盈', quantity: 20, beforeStock: 430, afterStock: 450, orderId: null, operator: '李店员', createTime: '2026-06-23 15:20' }
-];
+async function loadStock() {
+    try {
+        const response = await apiGet(API_CONFIG.inventory.logs);
+        const dataList = response && response.list ? response.list : (Array.isArray(response) ? response : []);
+        stockLogData = dataList.map(log => ({
+            id: log.ID || log.id,
+            skuId: log.skuId || '',
+            skuName: log.skuName || '',
+            type: log.type || 'adjust',
+            typeText: log.typeText || '调整',
+            quantity: log.quantity || 0,
+            beforeStock: log.beforeStock || 0,
+            afterStock: log.afterStock || 0,
+            orderId: log.orderId || null,
+            operator: log.operator || '',
+            createTime: log.CreatedAt || log.createdAt || ''
+        }));
+        refreshStockPage();
+    } catch (error) {
+        console.error('Failed to load stock logs:', error);
+    }
+}
 
 let currentStockSearchKeyword = '';
 let currentStockWarehouseFilter = '总仓';

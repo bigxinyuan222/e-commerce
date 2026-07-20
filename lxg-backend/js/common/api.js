@@ -1,4 +1,4 @@
-const API_BASE_URL = '/api/admin/v1';
+const API_BASE_URL = '/api/v1';
 
 const API_CONFIG = {
     auth: {
@@ -25,11 +25,15 @@ const API_CONFIG = {
         toggle: `${API_BASE_URL}/coupons/:id/toggle`,
         records: `${API_BASE_URL}/coupons/:id/records`
     },
-    notification: {
+    notifications: {
         list: `${API_BASE_URL}/notifications`,
         detail: `${API_BASE_URL}/notifications/:id`,
         add: `${API_BASE_URL}/notifications`,
-        delete: `${API_BASE_URL}/notifications/:id`
+        delete: `${API_BASE_URL}/notifications/:id`,
+        templates: `${API_BASE_URL}/notification-templates`,
+        addTemplate: `${API_BASE_URL}/notification-templates`,
+        editTemplate: `${API_BASE_URL}/notification-templates/:id`,
+        deleteTemplate: `${API_BASE_URL}/notification-templates/:id`
     },
     orders: {
         list: `${API_BASE_URL}/orders`,
@@ -66,13 +70,13 @@ const API_CONFIG = {
         generateSummary: `${API_BASE_URL}/review-summaries/generate`
     },
     stores: {
-        list: `${API_BASE_URL}/stores`,
-        detail: `${API_BASE_URL}/stores/:id`,
-        add: `${API_BASE_URL}/stores`,
-        edit: `${API_BASE_URL}/stores/:id`,
-        toggle: `${API_BASE_URL}/stores/:id/toggle`,
-        delete: `${API_BASE_URL}/stores/:id`,
-        dashboard: `${API_BASE_URL}/stores/dashboard`
+        list: `${API_BASE_URL}/admin_stores`,
+        detail: `${API_BASE_URL}/admin_stores/:id`,
+        add: `${API_BASE_URL}/admin_stores`,
+        edit: `${API_BASE_URL}/admin_stores/:id`,
+        toggle: `${API_BASE_URL}/admin_stores/:id/toggle`,
+        delete: `${API_BASE_URL}/admin_stores/:id`,
+        dashboard: `${API_BASE_URL}/admin_stores/dashboard`
     },
     admin: {
         list: `${API_BASE_URL}/admins`,
@@ -197,7 +201,12 @@ async function apiRequest(url, options = {}) {
         }
 
         const data = await response.json();
-        return data;
+        
+        if (data.code !== undefined && data.code !== 0 && data.code !== 200) {
+            throw new Error(data.message || 'API request failed');
+        }
+        
+        return data.data !== undefined ? data.data : data;
     } catch (error) {
         console.error('API Request Error:', error);
         throw error;
