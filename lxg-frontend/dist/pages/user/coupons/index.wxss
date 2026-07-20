@@ -1,0 +1,176 @@
+/*!**********************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[1].oneOf[0].use[1]!./node_modules/postcss-loader/dist/cjs.js??ruleSet[1].rules[1].oneOf[0].use[2]!./node_modules/resolve-url-loader/index.js!./node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[1].oneOf[0].use[4]!./src/styles/user/coupons.module.scss ***!
+  \**********************************************************************************************************************************************************************************************************************************************************************************************************************************/
+.coupons-module__myCouponsPage___PQdbb {
+  min-height: 100vh;
+  background-color: #f5f6f7;
+}
+
+.coupons-module__tabs___J8R1b {
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  background-color: #ffffff;
+  position: -webkit-sticky;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.coupons-module__tabs___J8R1b .coupons-module__tab___BfXX4 {
+  -webkit-flex: 1;
+      -ms-flex: 1;
+          flex: 1;
+  padding: 24rpx 0;
+  text-align: center;
+  font-size: 32rpx;
+  color: #4e5969;
+  position: relative;
+}
+
+.coupons-module__tabs___J8R1b .coupons-module__tab___BfXX4.coupons-module__active___JPDze {
+  color: #e2231a;
+  font-weight: 600;
+}
+
+.coupons-module__tabs___J8R1b .coupons-module__tab___BfXX4.coupons-module__active___JPDze::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  -webkit-transform: translateX(-50%);
+      -ms-transform: translateX(-50%);
+          transform: translateX(-50%);
+  width: 48rpx;
+  height: 4rpx;
+  background-color: #e2231a;
+  border-radius: 2rpx;
+}
+
+.coupons-module__couponList___yhG_R {
+  padding: 32rpx;
+  height: calc(100vh - 100rpx);
+}
+
+.coupons-module__couponList___yhG_R .coupons-module__couponCard___Q_n1g {
+  background: -webkit-linear-gradient(315deg, #e2231a 0%, #ff4d4d 100%);
+  background: linear-gradient(135deg, #e2231a 0%, #ff4d4d 100%);
+  border-radius: 16rpx;
+  margin-bottom: 24rpx;
+  overflow: hidden;
+  opacity: 1;
+}
+
+.coupons-module__couponList___yhG_R .coupons-module__couponCard___Q_n1g.coupons-module__used___GVYzp, .coupons-module__couponList___yhG_R .coupons-module__couponCard___Q_n1g.coupons-module__expired___euRAB {
+  background: -webkit-linear-gradient(315deg, #ccc 0%, #ddd 100%);
+  background: linear-gradient(135deg, #ccc 0%, #ddd 100%);
+  opacity: 0.6;
+}
+
+.coupons-module__couponList___yhG_R .coupons-module__couponCard___Q_n1g .coupons-module__couponContent___IPCMh {
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  padding: 32rpx;
+  color: white;
+}
+
+.coupons-module__couponList___yhG_R .coupons-module__couponCard___Q_n1g .coupons-module__couponContent___IPCMh .coupons-module__couponLeft___zehtU {
+  -webkit-flex: 1;
+      -ms-flex: 1;
+          flex: 1;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-direction: column;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-justify-content: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  border-right: 2rpx dashed rgba(255, 255, 255, 0.5);
+  padding-right: 24rpx;
+  margin-right: 24rpx;
+}
+
+.coupons-module__couponList___yhG_R .coupons-module__couponCard___Q_n1g .coupons-module__couponContent___IPCMh .coupons-module__couponLeft___zehtU .coupons-module__couponValue___JGLdD {
+  font-size: 48rpx;
+  font-weight: 700;
+  margin-bottom: 8rpx;
+}
+
+.coupons-module__couponList___yhG_R .coupons-module__couponCard___Q_n1g .coupons-module__couponContent___IPCMh .coupons-module__couponLeft___zehtU .coupons-module__couponCondition___hpY5X {
+  font-size: 28rpx;
+  opacity: 0.9;
+}
+
+.coupons-module__couponList___yhG_R .coupons-module__couponCard___Q_n1g .coupons-module__couponContent___IPCMh .coupons-module__couponRight___XzB5n {
+  -webkit-flex: 1.5;
+      -ms-flex: 1.5;
+          flex: 1.5;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-direction: column;
+      -ms-flex-direction: column;
+          flex-direction: column;
+}
+
+.coupons-module__couponList___yhG_R .coupons-module__couponCard___Q_n1g .coupons-module__couponContent___IPCMh .coupons-module__couponRight___XzB5n .coupons-module__couponName___T4DtI {
+  font-size: 32rpx;
+  font-weight: 600;
+  margin-bottom: 8rpx;
+}
+
+.coupons-module__couponList___yhG_R .coupons-module__couponCard___Q_n1g .coupons-module__couponContent___IPCMh .coupons-module__couponRight___XzB5n .coupons-module__couponScope___ktD7c {
+  font-size: 26rpx;
+  opacity: 0.9;
+  margin-bottom: 8rpx;
+}
+
+.coupons-module__couponList___yhG_R .coupons-module__couponCard___Q_n1g .coupons-module__couponContent___IPCMh .coupons-module__couponRight___XzB5n .coupons-module__couponTime___Zfpzb {
+  font-size: 26rpx;
+  opacity: 0.8;
+}
+
+.coupons-module__couponList___yhG_R .coupons-module__couponCard___Q_n1g .coupons-module__couponContent___IPCMh .coupons-module__couponUseBtn___GHbaL {
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-align-items: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-justify-content: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  padding: 16rpx 24rpx;
+  background-color: rgba(255, 255, 255, 0.2);
+  border-radius: 32rpx;
+  font-size: 28rpx;
+  font-weight: 500;
+}
+
+.coupons-module__couponList___yhG_R .coupons-module__couponCard___Q_n1g .coupons-module__couponContent___IPCMh .coupons-module__couponUseBtn___GHbaL:active {
+  background-color: rgba(255, 255, 255, 0.3);
+}
+
+.coupons-module__emptyState___An8Pr {
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-direction: column;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-align-items: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-justify-content: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  padding: 200rpx 0;
+}
+
+.coupons-module__emptyState___An8Pr .coupons-module__emptyText___cb3PL {
+  font-size: 32rpx;
+  color: #86909c;
+}

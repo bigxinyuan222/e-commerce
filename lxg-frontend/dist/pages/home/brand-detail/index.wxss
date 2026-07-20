@@ -1,0 +1,234 @@
+/*!***************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[1].oneOf[0].use[1]!./node_modules/postcss-loader/dist/cjs.js??ruleSet[1].rules[1].oneOf[0].use[2]!./node_modules/resolve-url-loader/index.js!./node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[1].oneOf[0].use[4]!./src/styles/home/brand-detail.module.scss ***!
+  \***************************************************************************************************************************************************************************************************************************************************************************************************************************************/
+.brand-detail-module__brandDetailPage___c9jGI {
+  min-height: 100vh;
+  background-color: #f5f6f7;
+}
+
+.brand-detail-module__brandHeader___RbRvJ {
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  padding: 32rpx;
+  background: -webkit-linear-gradient(315deg, #e2231a 0%, #ff4d4d 100%);
+  background: linear-gradient(135deg, #e2231a 0%, #ff4d4d 100%);
+  position: relative;
+}
+
+.brand-detail-module__brandHeader___RbRvJ .brand-detail-module__brandLogo___dO7Ha {
+  width: 160rpx;
+  height: 160rpx;
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.2);
+  border: 4rpx solid rgba(255, 255, 255, 0.3);
+}
+
+.brand-detail-module__brandHeader___RbRvJ .brand-detail-module__brandInfo___tCYUr {
+  -webkit-flex: 1;
+      -ms-flex: 1;
+          flex: 1;
+  margin-left: 24rpx;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-direction: column;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-justify-content: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+}
+
+.brand-detail-module__brandHeader___RbRvJ .brand-detail-module__brandInfo___tCYUr .brand-detail-module__brandName___uY5SG {
+  font-size: 40rpx;
+  font-weight: 700;
+  color: white;
+  margin-bottom: 8rpx;
+}
+
+.brand-detail-module__brandHeader___RbRvJ .brand-detail-module__brandInfo___tCYUr .brand-detail-module__brandDesc___NC7ma {
+  font-size: 28rpx;
+  color: rgba(255, 255, 255, 0.8);
+  margin-bottom: 16rpx;
+}
+
+.brand-detail-module__brandHeader___RbRvJ .brand-detail-module__brandInfo___tCYUr .brand-detail-module__brandStats____lkjE {
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-align-items: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+
+.brand-detail-module__brandHeader___RbRvJ .brand-detail-module__brandInfo___tCYUr .brand-detail-module__brandStats____lkjE .brand-detail-module__statItem___jshVf {
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-align-items: baseline;
+      -ms-flex-align: baseline;
+          align-items: baseline;
+}
+
+.brand-detail-module__brandHeader___RbRvJ .brand-detail-module__brandInfo___tCYUr .brand-detail-module__brandStats____lkjE .brand-detail-module__statItem___jshVf .brand-detail-module__statNum___kyHzl {
+  font-size: 36rpx;
+  font-weight: 700;
+  color: white;
+}
+
+.brand-detail-module__brandHeader___RbRvJ .brand-detail-module__brandInfo___tCYUr .brand-detail-module__brandStats____lkjE .brand-detail-module__statItem___jshVf .brand-detail-module__statLabel___w4T7T {
+  font-size: 26rpx;
+  color: rgba(255, 255, 255, 0.8);
+  margin-left: 4rpx;
+}
+
+.brand-detail-module__brandHeader___RbRvJ .brand-detail-module__brandInfo___tCYUr .brand-detail-module__brandStats____lkjE .brand-detail-module__statDivider___c8haC {
+  width: 2rpx;
+  height: 24rpx;
+  background-color: rgba(255, 255, 255, 0.3);
+  margin: 0 24rpx;
+}
+
+.brand-detail-module__brandHeader___RbRvJ .brand-detail-module__hotBadge___mms7R {
+  position: absolute;
+  top: 32rpx;
+  right: 32rpx;
+  background-color: #ff7d00;
+  padding: 6rpx 16rpx;
+  border-radius: 20rpx;
+}
+
+.brand-detail-module__brandHeader___RbRvJ .brand-detail-module__hotBadge___mms7R .brand-detail-module__hotBadgeText___iDe0Z {
+  font-size: 22rpx;
+  color: white;
+  font-weight: 500;
+}
+
+.brand-detail-module__productSection___YWioX {
+  padding: 32rpx;
+}
+
+.brand-detail-module__productSection___YWioX .brand-detail-module__sectionHeader___Vxvab {
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-justify-content: space-between;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+  -webkit-align-items: center;
+      -ms-flex-align: center;
+          align-items: center;
+  margin-bottom: 16rpx;
+}
+
+.brand-detail-module__productSection___YWioX .brand-detail-module__sectionHeader___Vxvab .brand-detail-module__sectionTitle___HbXyp {
+  font-size: 32rpx;
+  font-weight: 700;
+  color: #1d2129;
+}
+
+.brand-detail-module__productSection___YWioX .brand-detail-module__sectionHeader___Vxvab .brand-detail-module__sectionMore___dObsC {
+  font-size: 26rpx;
+  color: #86909c;
+}
+
+.brand-detail-module__productSection___YWioX .brand-detail-module__productGrid___Qwwiw {
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-wrap: wrap;
+      -ms-flex-wrap: wrap;
+          flex-wrap: wrap;
+  gap: 32rpx;
+}
+
+.brand-detail-module__productSection___YWioX .brand-detail-module__productItem___K9c40 {
+  width: calc(50% - 18rpx);
+  background-color: #ffffff;
+  border-radius: 12rpx;
+  overflow: hidden;
+  -webkit-box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.08);
+          box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.08);
+}
+
+.brand-detail-module__productSection___YWioX .brand-detail-module__productItem___K9c40 .brand-detail-module__productImage___FUCZz {
+  width: 100%;
+  height: 280rpx;
+  background-color: #f5f5f5;
+}
+
+.brand-detail-module__productSection___YWioX .brand-detail-module__productItem___K9c40 .brand-detail-module__productInfo___cU77j {
+  padding: 16rpx;
+}
+
+.brand-detail-module__productSection___YWioX .brand-detail-module__productItem___K9c40 .brand-detail-module__productInfo___cU77j .brand-detail-module__productName___txAB5 {
+  font-size: 28rpx;
+  color: #1d2129;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  margin-bottom: 12rpx;
+}
+
+.brand-detail-module__productSection___YWioX .brand-detail-module__productItem___K9c40 .brand-detail-module__productInfo___cU77j .brand-detail-module__productPriceWrap___SfKgE {
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-align-items: baseline;
+      -ms-flex-align: baseline;
+          align-items: baseline;
+  gap: 8rpx;
+  margin-bottom: 8rpx;
+}
+
+.brand-detail-module__productSection___YWioX .brand-detail-module__productItem___K9c40 .brand-detail-module__productInfo___cU77j .brand-detail-module__productPriceWrap___SfKgE .brand-detail-module__productPrice___wAJmo {
+  font-size: 36rpx;
+  font-weight: 700;
+  color: #e2231a;
+}
+
+.brand-detail-module__productSection___YWioX .brand-detail-module__productItem___K9c40 .brand-detail-module__productInfo___cU77j .brand-detail-module__productPriceWrap___SfKgE .brand-detail-module__productOriginalPrice___IUJoz {
+  font-size: 26rpx;
+  color: #86909c;
+  text-decoration: line-through;
+}
+
+.brand-detail-module__productSection___YWioX .brand-detail-module__productItem___K9c40 .brand-detail-module__productInfo___cU77j .brand-detail-module__productSales___vBlVx {
+  font-size: 26rpx;
+  color: #86909c;
+}
+
+.brand-detail-module__productSection___YWioX .brand-detail-module__emptyProducts___AOSSx {
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-justify-content: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  padding: 60rpx 0;
+}
+
+.brand-detail-module__productSection___YWioX .brand-detail-module__emptyProducts___AOSSx .brand-detail-module__emptyText___BqeqQ {
+  font-size: 32rpx;
+  color: #86909c;
+}
+
+.brand-detail-module__loading___Gp3wa {
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-justify-content: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-align-items: center;
+      -ms-flex-align: center;
+          align-items: center;
+  height: 400rpx;
+}
+
+.brand-detail-module__loading___Gp3wa .brand-detail-module__loadingText___iEy4u {
+  font-size: 32rpx;
+  color: #86909c;
+}

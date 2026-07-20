@@ -1,0 +1,122 @@
+/*!***************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[1].oneOf[0].use[1]!./node_modules/postcss-loader/dist/cjs.js??ruleSet[1].rules[1].oneOf[0].use[2]!./node_modules/resolve-url-loader/index.js!./node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[1].oneOf[0].use[4]!./src/styles/user/account-name.module.scss ***!
+  \***************************************************************************************************************************************************************************************************************************************************************************************************************************************/
+.account-name-module__accountNamePage___x8WJk {
+  min-height: 100vh;
+  background-color: #f5f6f7;
+}
+
+.account-name-module__header___OdViI {
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-align-items: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-justify-content: space-between;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+  height: 88rpx;
+  padding: 0 32rpx;
+  background-color: #ffffff;
+}
+
+.account-name-module__header___OdViI .account-name-module__backBtn___O4KK7 {
+  width: 60rpx;
+  height: 60rpx;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-align-items: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-justify-content: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+}
+
+.account-name-module__header___OdViI .account-name-module__backBtn___O4KK7:active {
+  opacity: 0.7;
+}
+
+.account-name-module__header___OdViI .account-name-module__backIcon___qTRVX {
+  font-size: 48rpx;
+  color: #1d2129;
+  font-weight: bold;
+}
+
+.account-name-module__header___OdViI .account-name-module__headerTitle___tKf3c {
+  font-size: 36rpx;
+  font-weight: 600;
+  color: #1d2129;
+}
+
+.account-name-module__header___OdViI .account-name-module__headerRight___zgQe9 {
+  width: 60rpx;
+}
+
+.account-name-module__content___CKbBQ {
+  padding: 48rpx 32rpx;
+}
+
+.account-name-module__infoBox___iBTG0 {
+  background-color: #ffffff;
+  border-radius: 16rpx;
+  padding: 32rpx;
+  margin-bottom: 32rpx;
+}
+
+.account-name-module__infoBox___iBTG0 .account-name-module__label___UATwJ {
+  font-size: 32rpx;
+  color: #1d2129;
+  margin-bottom: 24rpx;
+  display: block;
+}
+
+.account-name-module__infoBox___iBTG0 .account-name-module__inputRow___pp5p7 {
+  margin-bottom: 16rpx;
+}
+
+.account-name-module__infoBox___iBTG0 .account-name-module__input___Soozn {
+  width: 100%;
+  height: 80rpx;
+  font-size: 36rpx;
+  color: #e2231a;
+  padding: 0 24rpx;
+  border-radius: 12rpx;
+  background-color: #f5f6f7;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+}
+
+.account-name-module__infoBox___iBTG0 .account-name-module__tip___tbQUH {
+  font-size: 28rpx;
+  color: #86909c;
+  line-height: 1.6;
+}
+
+.account-name-module__confirmBtn___Ef_IM {
+  width: 100%;
+  height: 88rpx;
+  background-color: #e2231a;
+  border-radius: 16rpx;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-align-items: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-justify-content: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+}
+
+.account-name-module__confirmBtn___Ef_IM:active {
+  opacity: 0.8;
+}
+
+.account-name-module__confirmBtn___Ef_IM .account-name-module__btnText___OK91z {
+  font-size: 36rpx;
+  color: #fff;
+  font-weight: 500;
+}
