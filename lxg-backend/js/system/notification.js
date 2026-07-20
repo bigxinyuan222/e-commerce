@@ -1,14 +1,6 @@
 let notificationTab = 'send';
-let notificationData = [
-    { id: 'NTF-20260625-008', title: '618大促最后4小时，爆款直降50%', type: 'activity', scope: '全部用户', totalCount: 12580, deliveredCount: 12480, status: 'sent', time: '2026-06-25 20:00' },
-    { id: 'NTF-20260625-007', title: '系统维护通知：凌晨2-4点升级', type: 'system', scope: '全部用户', totalCount: 12580, deliveredCount: 12500, status: 'sent', time: '2026-06-25 18:30' },
-    { id: 'NTF-20260625-006', title: 'VIP专属：新品优先购资格已发放', type: 'activity', scope: 'VIP用户', totalCount: 856, deliveredCount: 850, status: 'sent', time: '2026-06-25 15:00' },
-    { id: 'NTF-20260625-005', title: '您的订单已发货，请注意查收', type: 'order', scope: '指定用户', totalCount: 328, deliveredCount: 328, status: 'sent', time: '2026-06-25 14:20' },
-    { id: 'NTF-20260625-004', title: '限时秒杀即将开始：10点整开抢', type: 'activity', scope: '近30天活跃', totalCount: 8920, deliveredCount: '发送中...', status: 'sending', time: '2026-06-25 09:55' },
-    { id: 'NTF-20260624-012', title: '优惠券即将过期提醒', type: 'order', scope: '指定用户', totalCount: 1256, deliveredCount: 1240, status: 'sent', time: '2026-06-24 10:00' },
-    { id: 'NTF-20260624-008', title: '退货审核通过，退款即将到账', type: 'order', scope: '指定用户', totalCount: 180, deliveredCount: 180, status: 'sent', time: '2026-06-24 11:20' },
-    { id: 'NTF-20260623-005', title: '紧急通知：部分地区物流延迟', type: 'system', scope: '全部用户', totalCount: 12580, deliveredCount: 12300, status: 'cancelled', time: '2026-06-23 09:00' }
-];
+let notificationData = [];
+let templateData = [];
 
 let currentNotifSearchKeyword = '';
 let currentNotifTypeFilter = 'all';
@@ -16,35 +8,62 @@ let currentNotifStatusFilter = 'all';
 let currentNotifPage = 1;
 let notifPageSize = 5;
 
-let mockUsers = [
-    { id: 'user-001', username: '张三', phone: '138****1234', realName: '张三' },
-    { id: 'user-002', username: '李四', phone: '139****5678', realName: '李四' },
-    { id: 'user-003', username: '王五', phone: '137****9012', realName: '王五' },
-    { id: 'user-004', username: '赵六', phone: '136****3456', realName: '赵六' },
-    { id: 'user-005', username: '钱七', phone: '135****7890', realName: '钱七' },
-    { id: 'user-006', username: 'VIP用户A', phone: '133****1111', realName: '刘八' },
-    { id: 'user-007', username: '活跃用户', phone: '132****2222', realName: '孙九' },
-    { id: 'user-008', username: '新用户', phone: '131****3333', realName: '周十' },
-];
-
 let selectedUsers = [];
+let currentTemplate = null;
 
-let templateData = [
-    { id: 'tpl-001', name: '支付成功通知', type: 'order', category: '系统预设', title: '支付成功！您的订单{orderNo}已支付', content: '尊敬的用户，您好！\n您的订单 {orderNo} 已成功支付 ¥{amount}。\n商品：{goodsName}\n我们将尽快为您安排发货，请耐心等待。\n感谢您的支持，祝您购物愉快！', trigger: '自动触发：用户支付成功后立即发送' },
-    
-    { id: 'tpl-004', name: '订单完成通知', type: 'order', category: '系统预设', title: '订单已完成', content: '尊敬的用户，您好！\n您的订单 {orderNo} 已完成。\n感谢您的购买，期待您的下次光临！', trigger: '自动触发：用户确认收货后发送' },
-    { id: 'tpl-005', name: '退款到账通知', type: 'order', category: '系统预设', title: '退款已到账', content: '尊敬的用户，您好！\n您的退款申请已处理完成，退款金额 ¥{amount} 已原路退回。\n请留意账户变动。', trigger: '自动触发：退款完成后发送' },
-    { id: 'tpl-006', name: '活动预告模板', type: 'activity', category: '自定义', title: '{activityName}即将开始！', content: '尊敬的用户，您好！\n{activityName}即将开始，敬请期待！\n活动时间：{activityTime}\n活动链接：{activityUrl}', trigger: '手动触发' },
-    { id: 'tpl-007', name: '限时秒杀模板', type: 'activity', category: '自定义', title: '限时秒杀开始啦！', content: '尊敬的用户，您好！\n限时秒杀活动已开始！\n爆款商品低至{discount}折，数量有限，先到先得！\n点击立即抢购：{activityUrl}', trigger: '手动触发' },
-    { id: 'tpl-008', name: '新品上市模板', type: 'activity', category: '自定义', title: '新品上市，抢先体验！', content: '尊敬的用户，您好！\n{goodsName}新品上市啦！\n首发价：¥{price}\n点击立即购买：{goodsUrl}', trigger: '手动触发' },
-    { id: 'tpl-009', name: '系统维护公告', type: 'system', category: '系统预设', title: '系统维护通知', content: '尊敬的用户，您好！\n为了提供更好的服务，系统将于{maintainTime}进行维护升级。\n维护期间可能会影响部分功能使用，请提前做好准备。\n感谢您的理解与支持！', trigger: '手动触发' },
-    { id: 'tpl-010', name: 'VIP专属活动模板', type: 'activity', category: '自定义', title: 'VIP专属福利', content: '尊敬的VIP用户，您好！\n专属福利活动限时开放！\n活动内容：{activityDesc}\n点击查看详情：{activityUrl}', trigger: '手动触发' },
-];
+async function loadNotifications() {
+    try {
+        const params = {
+            type: currentNotifTypeFilter === 'all' ? '' : currentNotifTypeFilter,
+            status: currentNotifStatusFilter === 'all' ? '' : currentNotifStatusFilter,
+            keyword: currentNotifSearchKeyword,
+            page: currentNotifPage,
+            pageSize: notifPageSize
+        };
+        const response = await apiGet(API_CONFIG.notifications.list, params);
+        const dataList = response && response.list ? response.list : (Array.isArray(response) ? response : []);
+        notificationData = dataList.map(item => ({
+            id: item.ID || item.id,
+            title: item.title || '',
+            type: item.type || 'system',
+            scope: item.scope || '',
+            totalCount: item.totalCount || 0,
+            deliveredCount: item.deliveredCount || 0,
+            status: item.status || 'sent',
+            time: item.createdAt || item.time || ''
+        }));
+        refreshNotificationPage();
+    } catch (error) {
+        console.error('Failed to load notifications:', error);
+    }
+}
 
-let currentTemplate = templateData[0];
+async function loadTemplates() {
+    try {
+        const response = await apiGet(API_CONFIG.notifications.templates);
+        const dataList = response && response.list ? response.list : (Array.isArray(response) ? response : []);
+        templateData = dataList.map(item => ({
+            id: item.ID || item.id,
+            name: item.name || '',
+            type: item.type || 'system',
+            category: item.category || '自定义',
+            title: item.title || '',
+            content: item.content || '',
+            trigger: item.trigger || '手动触发'
+        }));
+        if (templateData.length > 0) {
+            currentTemplate = templateData[0];
+        } else {
+            currentTemplate = null;
+        }
+        refreshNotificationPage();
+    } catch (error) {
+        console.error('Failed to load templates:', error);
+    }
+}
 
-function searchUsers() {
-    const keyword = document.getElementById('userSearchInput').value.trim().toLowerCase();
+async function searchUsers() {
+    const keyword = document.getElementById('userSearchInput').value.trim();
     const container = document.getElementById('userSearchResults');
     
     if (!keyword) {
@@ -52,34 +71,40 @@ function searchUsers() {
         return;
     }
     
-    const filtered = mockUsers.filter(u => 
-        u.username.toLowerCase().includes(keyword) ||
-        u.phone.toLowerCase().includes(keyword) ||
-        u.realName.toLowerCase().includes(keyword)
-    );
-    
-    if (filtered.length === 0) {
-        container.innerHTML = '<div style="padding:12px;text-align:center;color:#94a3b8;font-size:13px;">未找到匹配的用户</div>';
-        return;
+    try {
+        const response = await apiGet(API_CONFIG.users.list, { keyword: keyword, page: 1, pageSize: 10 });
+        if (response && response.data) {
+            const users = response.data.map(item => ({
+                id: item.ID || item.id,
+                username: item.username || '',
+                phone: item.phone ? item.phone.replace(/(\d{3})\d{4}(\d{4})/, '$1****$2') : '',
+                realName: item.realName || item.username || ''
+            }));
+            
+            if (users.length === 0) {
+                container.innerHTML = '<div class="system-empty-message">未找到匹配的用户</div>';
+                return;
+            }
+            
+            container.innerHTML = users.map(user => {
+                const isSelected = selectedUsers.some(s => s.id === user.id);
+                return `
+                    <div class="system-user-search-result" onclick="toggleSelectUser('${user.id}', '${user.username}', '${user.phone}')">
+                        <div class="user-info">
+                            <div class="user-name">${user.username}</div>
+                            <div class="user-phone">${user.phone}</div>
+                        </div>
+                        <div class="user-status ${isSelected ? 'selected' : ''}">
+                            <i class="fas ${isSelected ? 'fa-check-circle' : 'fa-circle'}"></i>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+    } catch (error) {
+        console.error('Failed to search users:', error);
+        container.innerHTML = '<div class="system-empty-message">搜索失败，请重试</div>';
     }
-    
-    container.innerHTML = filtered.map(user => {
-        const isSelected = selectedUsers.some(s => s.id === user.id);
-        return `
-            <div style="padding:10px 12px;border-bottom:1px solid #f1f4f9;display:flex;justify-content:space-between;align-items:center;cursor:pointer;" 
-                 onmouseover="this.style.background='#f8fafc'" 
-                 onmouseout="this.style.background='transparent'"
-                 onclick="toggleSelectUser('${user.id}', '${user.username}', '${user.phone}')">
-                <div>
-                    <div style="font-size:13px;font-weight:500;color:#1e293b;">${user.username}</div>
-                    <div style="font-size:12px;color:#94a3b8;">${user.phone}</div>
-                </div>
-                <div style="color:${isSelected ? '#4f6ef7' : '#cbd5e1'};">
-                    <i class="fas ${isSelected ? 'fa-check-circle' : 'fa-circle'}"></i>
-                </div>
-            </div>
-        `;
-    }).join('');
 }
 
 function toggleSelectUser(userId, username, phone) {
@@ -96,11 +121,11 @@ function toggleSelectUser(userId, username, phone) {
 function renderSelectedUsers() {
     const container = document.getElementById('selectedUsers');
     if (selectedUsers.length === 0) {
-        container.innerHTML = '<span class="tag" style="color:#94a3b8;">请搜索并选择用户</span>';
+        container.innerHTML = '<span class="system-tag" style="color:#94a3b8;">请搜索并选择用户</span>';
         return;
     }
     container.innerHTML = selectedUsers.map(user => `
-        <span class="tag primary" style="cursor:pointer;">${user.username} (${user.phone}) <i class="fas fa-times" style="margin-left:4px;font-size:10px;" onclick="toggleSelectUser('${user.id}', '${user.username}', '${user.phone}')"></i></span>
+        <span class="system-tag primary" style="cursor:pointer;">${user.username} (${user.phone}) <i class="fas fa-times" style="margin-left:4px;font-size:10px;" onclick="toggleSelectUser('${user.id}', '${user.username}', '${user.phone}')"></i></span>
     `).join('');
 }
 
@@ -193,8 +218,8 @@ function previewNotification() {
     }
     
     const modalContent = `
-        <div class="modal-overlay" style="position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.5);z-index:1000;display:flex;align-items:center;justify-content:center;" onclick="document.querySelectorAll('.modal-overlay, .modal-content').forEach(el => el.remove())"></div>
-        <div class="modal-content" style="position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:#fff;border-radius:12px;box-shadow:0 25px 50px -12px rgba(0,0,0,0.25);display:flex;flex-direction:column;max-height:80vh;overflow:hidden;z-index:1001;width:500px;">
+        <div class="modal-overlay" onclick="document.querySelectorAll('.modal-overlay, .modal-content').forEach(el => el.remove())"></div>
+        <div class="modal-content" style="width:500px;">
             <div class="modal-header">
                 <h3><i class="fas fa-eye"></i> 预览通知</h3>
                 <button onclick="document.querySelectorAll('.modal-overlay, .modal-content').forEach(el => el.remove())" class="modal-close"><i class="fas fa-times"></i></button>
@@ -267,19 +292,16 @@ function refreshNotificationPage() {
 function notificationPage() {
     return `
         <div style="margin-bottom:16px;border-bottom:1px solid #e2e8f0;display:flex;gap:0;">
-            <div class="notif-tab ${notificationTab==='send'?'active':''}" onclick="switchNotifTab('send')" style="padding:10px 20px;cursor:pointer;font-size:14px;font-weight:500;color:#64748b;border-bottom:2px solid transparent;transition:0.2s;">
-                <i class="fas fa-paper-plane" style="margin-right:6px;"></i>发送通知
+            <div class="system-notif-tab ${notificationTab==='send'?'active':''}" onclick="switchNotifTab('send')">
+                <i class="fas fa-paper-plane"></i>发送通知
             </div>
-            <div class="notif-tab ${notificationTab==='record'?'active':''}" onclick="switchNotifTab('record')" style="padding:10px 20px;cursor:pointer;font-size:14px;font-weight:500;color:#64748b;border-bottom:2px solid transparent;transition:0.2s;">
-                <i class="fas fa-history" style="margin-right:6px;"></i>通知记录
+            <div class="system-notif-tab ${notificationTab==='record'?'active':''}" onclick="switchNotifTab('record')">
+                <i class="fas fa-history"></i>通知记录
             </div>
-            <div class="notif-tab ${notificationTab==='template'?'active':''}" onclick="switchNotifTab('template')" style="padding:10px 20px;cursor:pointer;font-size:14px;font-weight:500;color:#64748b;border-bottom:2px solid transparent;transition:0.2s;">
-                <i class="fas fa-file-alt" style="margin-right:6px;"></i>通知模板管理
+            <div class="system-notif-tab ${notificationTab==='template'?'active':''}" onclick="switchNotifTab('template')">
+                <i class="fas fa-file-alt"></i>通知模板管理
             </div>
         </div>
-        <style>
-            .notif-tab.active { color:#4f6ef7 !important; border-bottom-color:#4f6ef7 !important; }
-        </style>
         ${notificationTab === 'send' ? sendNotificationPage() : ''}
         ${notificationTab === 'record' ? notificationRecordPage() : ''}
         ${notificationTab === 'template' ? notificationTemplatePage() : ''}
@@ -384,14 +406,13 @@ function notificationRecordPage() {
     const pageNotifications = filteredNotifications.slice(startIndex, startIndex + notifPageSize);
     
     const getTypeBadge = (type) => {
-        const styles = {
-            order: 'background:#dbeafe;color:#1d4ed8;',
-            activity: 'background:#e0e7ff;color:#6366f1;',
-            system: 'background:#fef3c7;color:#d97706;'
+        const classes = {
+            order: 'system-tag blue',
+            activity: 'system-tag primary',
+            system: 'system-tag yellow'
         };
         const texts = { order: '订单通知', activity: '活动通知', system: '系统维护' };
-        const style = styles[type] || '';
-        return `<span class="tag" style="${style}">${texts[type]}</span>`;
+        return `<span class="${classes[type] || 'system-tag'}">${texts[type]}</span>`;
     };
     
     const getStatusBadge = (status) => {

@@ -1,46 +1,94 @@
-let goodsData = [
-    { id: 'goods-001', name: '无线蓝牙耳机 Pro', category: '手机数码', subCategory: '耳机', brand: '华为', originalPrice: 299, status: 'on_shelf', createTime: '2026-06-01', skuCount: 4, image: '', views: 12580, addCartCount: 3250, orderCount: 1860 },
-    { id: 'goods-002', name: '智能手表 S8', category: '手机数码', subCategory: '智能手表', brand: '苹果', originalPrice: 1299, status: 'on_shelf', createTime: '2026-05-20', skuCount: 6, image: '', views: 8920, addCartCount: 1820, orderCount: 654 },
-    { id: 'goods-003', name: '便携移动电源 20000mAh', category: '手机数码', subCategory: '手机', brand: '小米', originalPrice: 159, status: 'on_shelf', createTime: '2026-06-20', skuCount: 3, image: '', views: 5680, addCartCount: 1250, orderCount: 890 },
-    { id: 'goods-004', name: '智能台灯 Pro', category: '家用电器', subCategory: '生活电器', brand: '美的', originalPrice: 199, status: 'off_shelf', createTime: '2026-04-15', skuCount: 2, image: '', views: 3250, addCartCount: 680, orderCount: 420 },
-    { id: 'goods-005', name: '运动蓝牙耳机', category: '运动户外', subCategory: '运动装备', brand: '索尼', originalPrice: 399, status: 'on_shelf', createTime: '2026-03-28', skuCount: 4, image: '', views: 4520, addCartCount: 980, orderCount: 560 },
-    { id: 'goods-006', name: '美妆护肤套装', category: '美妆护肤', subCategory: '护肤', brand: '欧莱雅', originalPrice: 288, status: 'on_shelf', createTime: '2026-05-10', skuCount: 2, image: '', views: 6890, addCartCount: 1560, orderCount: 780 },
-    { id: 'goods-007', name: '纯棉T恤', category: '服装服饰', subCategory: '男装', brand: '优衣库', originalPrice: 99, status: 'on_shelf', createTime: '2026-06-10', skuCount: 8, image: '', views: 15200, addCartCount: 4580, orderCount: 2340 },
-    { id: 'goods-008', name: '真无线降噪耳机', category: '手机数码', subCategory: '耳机', brand: '三星', originalPrice: 499, status: 'on_shelf', createTime: '2026-04-20', skuCount: 3, image: '', views: 7250, addCartCount: 1680, orderCount: 890 }
-];
-
-let categoriesData = [
-    { id: 'cat-001', name: '手机数码', goodsCount: 4, children: [{ id: 'sub-001', name: '手机', goodsCount: 2 }, { id: 'sub-002', name: '耳机', goodsCount: 2 }, { id: 'sub-003', name: '智能手表', goodsCount: 1 }] },
-    { id: 'cat-002', name: '家用电器', goodsCount: 1, children: [{ id: 'sub-004', name: '厨房电器', goodsCount: 0 }, { id: 'sub-005', name: '生活电器', goodsCount: 1 }, { id: 'sub-006', name: '个人护理', goodsCount: 0 }] },
-    { id: 'cat-003', name: '服装服饰', goodsCount: 1, children: [{ id: 'sub-007', name: '男装', goodsCount: 1 }, { id: 'sub-008', name: '女装', goodsCount: 0 }, { id: 'sub-009', name: '童装', goodsCount: 0 }] },
-    { id: 'cat-004', name: '运动户外', goodsCount: 1, children: [{ id: 'sub-010', name: '运动装备', goodsCount: 1 }, { id: 'sub-011', name: '户外用品', goodsCount: 0 }] },
-    { id: 'cat-005', name: '美妆护肤', goodsCount: 1, children: [{ id: 'sub-012', name: '护肤', goodsCount: 1 }, { id: 'sub-013', name: '彩妆', goodsCount: 0 }, { id: 'sub-014', name: '香水', goodsCount: 0 }] }
-];
-
-let brandsData = [
-    { id: 'brand-001', name: '华为', logo: '', goodsCount: 1 },
-    { id: 'brand-002', name: '苹果', logo: '', goodsCount: 1 },
-    { id: 'brand-003', name: '小米', logo: '', goodsCount: 1 },
-    { id: 'brand-004', name: '索尼', logo: '', goodsCount: 1 },
-    { id: 'brand-005', name: '三星', logo: '', goodsCount: 1 },
-    { id: 'brand-006', name: 'OPPO', logo: '', goodsCount: 0 },
-    { id: 'brand-007', name: 'vivo', logo: '', goodsCount: 0 },
-    { id: 'brand-008', name: '美的', logo: '', goodsCount: 1 },
-    { id: 'brand-009', name: '欧莱雅', logo: '', goodsCount: 1 },
-    { id: 'brand-010', name: '优衣库', logo: '', goodsCount: 1 }
-];
-
-let specsData = [
-    { id: 'spec-001', name: '颜色', values: ['黑', '白', '红', '蓝', '绿', '粉'] },
-    { id: 'spec-002', name: '尺码', values: ['S', 'M', 'L', 'XL', 'XXL'] },
-    { id: 'spec-003', name: '存储容量', values: ['64GB', '128GB', '256GB', '512GB'] },
-    { id: 'spec-004', name: '材质', values: ['纯棉', '涤纶', '羊毛', '真皮'] }
-];
+let goodsData = [];
+let categoriesData = [];
+let brandsData = [];
+let specsData = [];
 
 let currentGoodsStatusFilter = 'all';
 let currentGoodsCategoryFilter = 'all';
 let currentGoodsSubCategoryFilter = 'all';
 let currentGoodsSearchKeyword = '';
+
+async function loadGoods() {
+    try {
+        const params = {
+            status: currentGoodsStatusFilter === 'all' ? '' : currentGoodsStatusFilter,
+            category: currentGoodsCategoryFilter === 'all' ? '' : currentGoodsCategoryFilter,
+            subCategory: currentGoodsSubCategoryFilter === 'all' ? '' : currentGoodsSubCategoryFilter,
+            keyword: currentGoodsSearchKeyword
+        };
+        const response = await apiGet(API_CONFIG.goods.list, params);
+        const dataList = response && response.list ? response.list : (Array.isArray(response) ? response : []);
+        goodsData = dataList.map(item => ({
+            id: item.ID || item.id,
+            name: item.name || '',
+            category: item.category || '',
+            subCategory: item.subCategory || '',
+            brand: item.brand || '',
+            originalPrice: item.originalPrice || 0,
+            status: item.status === 1 ? 'on_shelf' : 'off_shelf',
+            createTime: item.createdAt || item.createTime || '',
+            skuCount: item.skuCount || 0,
+            image: item.image || '',
+            views: item.views || 0,
+            addCartCount: item.addCartCount || 0,
+            orderCount: item.orderCount || 0
+        }));
+        refreshGoodsPage();
+    } catch (error) {
+        console.error('Failed to load goods:', error);
+    }
+}
+
+async function loadCategories() {
+    try {
+        const response = await apiGet(API_CONFIG.goods.categories);
+        const dataList = response && response.list ? response.list : (Array.isArray(response) ? response : []);
+        categoriesData = dataList.map(item => ({
+            id: item.ID || item.id,
+            name: item.name || '',
+            goodsCount: item.goodsCount || 0,
+            children: (item.children || []).map(child => ({
+                id: child.ID || child.id,
+                name: child.name || '',
+                goodsCount: child.goodsCount || 0
+            }))
+        }));
+        refreshGoodsPage();
+    } catch (error) {
+        console.error('Failed to load categories:', error);
+    }
+}
+
+async function loadBrands() {
+    try {
+        const response = await apiGet(API_CONFIG.goods.brands);
+        const dataList = response && response.list ? response.list : (Array.isArray(response) ? response : []);
+        brandsData = dataList.map(item => ({
+            id: item.ID || item.id,
+            name: item.name || '',
+            logo: item.logo || '',
+            goodsCount: item.goodsCount || 0
+        }));
+        refreshGoodsPage();
+    } catch (error) {
+        console.error('Failed to load brands:', error);
+    }
+}
+
+async function loadSpecs() {
+    try {
+        const response = await apiGet(API_CONFIG.goods.specs);
+        const dataList = response && response.list ? response.list : (Array.isArray(response) ? response : []);
+        specsData = dataList.map(item => ({
+            id: item.ID || item.id,
+            name: item.name || '',
+            values: item.values || []
+        }));
+        refreshGoodsPage();
+    } catch (error) {
+        console.error('Failed to load specs:', error);
+    }
+}
 
 function setGoodsFilter(type, value) {
     if (type === 'status') {
@@ -300,6 +348,7 @@ function showAddGoodsModal() {
                             <div><label style="display:block;font-size:13px;color:#64748b;margin-bottom:4px;">商品名称 <span style="color:#ef4444;">*</span></label><input type="text" placeholder="请输入商品名称" style="width:100%;padding:8px 12px;border:1px solid #e2e8f0;border-radius:6px;font-size:13px;outline:none;" onfocus="this.style.borderColor='#4f6ef7'" /></div>
                             <div><label style="display:block;font-size:13px;color:#64748b;margin-bottom:4px;">品牌</label><select style="width:100%;padding:8px 12px;border:1px solid #e2e8f0;border-radius:6px;font-size:13px;outline:none;"><option>请选择品牌</option><option>华为</option><option>苹果</option><option>小米</option><option>索尼</option><option>三星</option><option>美的</option></select></div>
                             <div><label style="display:block;font-size:13px;color:#64748b;margin-bottom:4px;">分类 <span style="color:#ef4444;">*</span></label><select style="width:100%;padding:8px 12px;border:1px solid #e2e8f0;border-radius:6px;font-size:13px;outline:none;"><option>请选择分类</option><option>手机数码</option><option>家用电器</option><option>服装服饰</option><option>运动户外</option><option>美妆护肤</option></select></div>
+                            <div><label style="display:block;font-size:13px;color:#64748b;margin-bottom:4px;">原价 <span style="color:#ef4444;">*</span></label><input type="number" placeholder="请输入原价" style="width:100%;padding:8px 12px;border:1px solid #e2e8f0;border-radius:6px;font-size:13px;outline:none;" onfocus="this.style.borderColor='#4f6ef7'" /></div>
                             <div style="grid-column:span 2;"><label style="display:block;font-size:13px;color:#64748b;margin-bottom:4px;">商品描述</label><textarea rows="3" placeholder="请输入商品描述" style="width:100%;padding:8px 12px;border:1px solid #e2e8f0;border-radius:6px;font-size:13px;outline:none;resize:vertical;" onfocus="this.style.borderColor='#4f6ef7'"></textarea></div>
                             <div><label style="display:block;font-size:13px;color:#64748b;margin-bottom:4px;">主图</label><div style="border:1px dashed #e2e8f0;border-radius:8px;padding:24px;text-align:center;"><i class="fas fa-upload" style="color:#94a3b8;font-size:24px;"></i><div style="font-size:13px;color:#94a3b8;margin-top:8px;">点击上传主图</div></div></div>
                             <div><label style="display:block;font-size:13px;color:#64748b;margin-bottom:4px;">轮播图</label><div style="border:1px dashed #e2e8f0;border-radius:8px;padding:24px;text-align:center;"><i class="fas fa-images" style="color:#94a3b8;font-size:24px;"></i><div style="font-size:13px;color:#94a3b8;margin-top:8px;">点击上传轮播图</div></div></div>
@@ -384,7 +433,9 @@ function showAddGoodsModal() {
 
 function nextGoodsStep() {
     if (goodsAddStep === 1) {
-        const nameInput = document.querySelector('#goodsAddForm input[type="text"]');
+        const inputs = document.querySelectorAll('#goodsAddForm input[type="text"], #goodsAddForm input[type="number"]');
+        const nameInput = inputs[0];
+        const priceInput = inputs[1];
         const selects = document.querySelectorAll('#goodsAddForm select');
         const brandInput = selects[0];
         const categoryInput = selects[1];
@@ -392,6 +443,7 @@ function nextGoodsStep() {
         const statusInputs = document.querySelectorAll('input[name="initialStatus"]');
         
         tempGoodsData.name = nameInput?.value || '';
+        tempGoodsData.originalPrice = priceInput?.value ? parseInt(priceInput.value) : 0;
         tempGoodsData.brand = brandInput?.value === '请选择品牌' ? '' : brandInput?.value || '';
         tempGoodsData.category = categoryInput?.value === '请选择分类' ? '' : categoryInput?.value || '';
         tempGoodsData.description = descInput?.value || '';
@@ -403,6 +455,10 @@ function nextGoodsStep() {
         }
         if (!tempGoodsData.category) {
             alert('请选择商品分类');
+            return;
+        }
+        if (!tempGoodsData.originalPrice || isNaN(tempGoodsData.originalPrice)) {
+            alert('请输入正确的原价');
             return;
         }
     } else if (goodsAddStep === 2) {
@@ -531,11 +587,20 @@ function removeGoodsSpec(btn) {
 }
 
 function saveGoods() {
-    const name = document.querySelector('#goodsAddForm input[type="text"]')?.value;
-    const brand = document.querySelector('#goodsAddForm select')?.value;
-    const category = document.querySelectorAll('#goodsAddForm select')[1]?.value;
-    const price = document.querySelector('#goodsAddForm input[type="number"]')?.value;
-    const status = document.querySelector('input[name="initialStatus"]:checked')?.value === '上架' ? 'on_shelf' : 'off_shelf';
+    const name = tempGoodsData.name;
+    const brand = tempGoodsData.brand;
+    const category = tempGoodsData.category;
+    const description = tempGoodsData.description;
+    const status = tempGoodsData.status;
+    
+    const skuRows = document.querySelectorAll('#goodsAddForm #skuList > div');
+    let price = tempGoodsData.originalPrice || 0;
+    if (skuRows.length > 0) {
+        const firstPriceInput = skuRows[0].querySelector('input[type="number"]');
+        if (firstPriceInput && firstPriceInput.value) {
+            price = parseInt(firstPriceInput.value);
+        }
+    }
     
     if (!name) {
         alert('请输入商品名称');
@@ -550,32 +615,31 @@ function saveGoods() {
         return;
     }
     
-    const specs = [];
-    const specRows = document.querySelectorAll('#goodsAddForm #specList > div');
-    specRows.forEach(row => {
-        const selects = row.querySelectorAll('select');
-        if (selects.length >= 2) {
-            const specId = selects[0].value;
-            const selectedOptions = Array.from(selects[1].selectedOptions).map(opt => opt.value);
-            if (specId && selectedOptions.length > 0) {
-                const specDef = specsData.find(s => s.id === specId);
-                specs.push({ name: specDef?.name || '', values: selectedOptions });
-            }
-        }
-    });
+    const specs = tempGoodsData.specs || [];
     
     const skus = [];
-    const skuRows = document.querySelectorAll('#goodsAddForm #skuList > div');
-    skuRows.forEach(row => {
-        const inputs = row.querySelectorAll('input');
-        const code = inputs[0]?.value || '';
-        const specText = row.querySelector('div:nth-child(2)')?.textContent || '';
-        const skuPrice = parseInt(inputs[1]?.value) || parseInt(price);
-        const skuStock = parseInt(inputs[2]?.value) || 100;
-        if (code && specText) {
-            skus.push({ code, spec: specText, price: skuPrice, stock: skuStock });
-        }
-    });
+    if (skuRows.length > 0) {
+        skuRows.forEach((row, index) => {
+            const inputs = row.querySelectorAll('input[type="number"]');
+            const specDiv = row.querySelector('div:first-child');
+            const specText = specDiv?.textContent || (tempGoodsData.skus[index]?.spec || '');
+            const skuPrice = parseInt(inputs[0]?.value) || price;
+            const skuStock = parseInt(inputs[1]?.value) || 100;
+            skus.push({ 
+                code: `SKU-${String(Date.now()).slice(-6)}-${String(index + 1).padStart(2, '0')}`, 
+                spec: specText, 
+                price: skuPrice, 
+                stock: skuStock 
+            });
+        });
+    } else {
+        skus.push({ 
+            code: `SKU-${String(Date.now()).slice(-6)}-01`, 
+            spec: '默认规格', 
+            price: price, 
+            stock: 100 
+        });
+    }
     
     const newGoods = {
         id: 'goods-' + String(goodsData.length + 1).padStart(3, '0'),

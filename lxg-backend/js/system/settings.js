@@ -1,25 +1,4 @@
-let operationLogData = [
-    { id: 'log-001', operator: 'admin', module: 'goods', content: '上架商品：无线蓝牙耳机 Pro', ip: '192.168.1.100', type: 'add', time: '2026-06-24 14:20' },
-    { id: 'log-002', operator: 'goods_op', module: 'stock', content: '调整库存 SKU-001 +200', ip: '192.168.1.101', type: 'edit', time: '2026-06-24 11:10' },
-    { id: 'log-003', operator: 'admin', module: 'order', content: '取消订单 ORD-20260623-005', ip: '192.168.1.100', type: 'delete', time: '2026-06-24 09:30' },
-    { id: 'log-004', operator: 'service_op', module: 'service', content: '回复用户咨询 #1234', ip: '192.168.1.102', type: 'edit', time: '2026-06-24 08:45' },
-    { id: 'log-005', operator: 'admin', module: 'system', content: '更新网站配置', ip: '192.168.1.100', type: 'edit', time: '2026-06-23 16:30' },
-    { id: 'log-006', operator: 'marketing_op', module: 'marketing', content: '创建优惠券活动', ip: '192.168.1.103', type: 'add', time: '2026-06-23 14:00' },
-    { id: 'log-007', operator: 'admin', module: 'goods', content: '编辑商品：iPhone 15 Pro', ip: '192.168.1.100', type: 'edit', time: '2026-06-23 10:20' },
-    { id: 'log-008', operator: 'order_op', module: 'order', content: '确认订单发货 ORD-20260622-008', ip: '192.168.1.104', type: 'edit', time: '2026-06-23 09:15' },
-    { id: 'log-009', operator: 'admin', module: 'user', content: '新增管理员：goods_op', ip: '192.168.1.100', type: 'add', time: '2026-06-22 17:00' },
-    { id: 'log-010', operator: 'marketing_op', module: 'marketing', content: '创建秒杀活动', ip: '192.168.1.103', type: 'add', time: '2026-06-22 15:30' },
-    { id: 'log-011', operator: 'admin', module: 'system', content: '系统备份', ip: '192.168.1.100', type: 'edit', time: '2026-06-22 12:00' },
-    { id: 'log-012', operator: 'service_op', module: 'service', content: '关闭用户工单 #1228', ip: '192.168.1.102', type: 'edit', time: '2026-06-21 16:45' },
-    { id: 'log-013', operator: 'admin', module: 'goods', content: '下架商品：旧款耳机', ip: '192.168.1.100', type: 'delete', time: '2026-06-21 14:20' },
-    { id: 'log-014', operator: 'stock_op', module: 'stock', content: '入库商品 SKU-002 +500', ip: '192.168.1.105', type: 'add', time: '2026-06-21 11:00' },
-    { id: 'log-015', operator: 'admin', module: 'order', content: '处理退款申请 REF-20260620-003', ip: '192.168.1.100', type: 'edit', time: '2026-06-20 15:30' },
-    { id: 'log-016', operator: 'marketing_op', module: 'marketing', content: '编辑优惠券活动', ip: '192.168.1.103', type: 'edit', time: '2026-06-20 10:00' },
-    { id: 'log-017', operator: 'admin', module: 'user', content: '重置用户密码', ip: '192.168.1.100', type: 'edit', time: '2026-06-19 16:20' },
-    { id: 'log-018', operator: 'service_op', module: 'service', content: '创建用户工单 #1200', ip: '192.168.1.102', type: 'add', time: '2026-06-19 09:45' },
-    { id: 'log-019', operator: 'admin', module: 'system', content: '更新支付配置', ip: '192.168.1.100', type: 'edit', time: '2026-06-18 14:30' },
-    { id: 'log-020', operator: 'goods_op', module: 'goods', content: '批量导入商品', ip: '192.168.1.101', type: 'add', time: '2026-06-18 11:00' }
-];
+let operationLogData = [];
 
 const logModuleLabels = {
     goods: '商品管理',
@@ -39,10 +18,10 @@ const logTypeLabels = {
 };
 
 const logTypeStyles = {
-    add: 'background:#dbeafe;color:#1d4ed8;',
-    edit: 'background:#fef3c7;color:#d97706;',
-    delete: 'background:#fee2e2;color:#dc2626;',
-    query: 'background:#e0e7ff;color:#6366f1;'
+    add: 'system-tag blue',
+    edit: 'system-tag yellow',
+    delete: 'system-tag red',
+    query: 'system-tag primary'
 };
 
 let currentLogModuleFilter = 'all';
@@ -51,6 +30,33 @@ let currentLogStartDate = '';
 let currentLogEndDate = '';
 let currentLogPage = 1;
 let logPageSize = 10;
+
+async function loadLogs() {
+    try {
+        const params = {
+            module: currentLogModuleFilter === 'all' ? '' : currentLogModuleFilter,
+            operator: currentLogOperatorFilter,
+            startDate: currentLogStartDate,
+            endDate: currentLogEndDate,
+            page: currentLogPage,
+            pageSize: logPageSize
+        };
+        const response = await apiGet(API_CONFIG.settings.logs, params);
+        const dataList = response && response.list ? response.list : (Array.isArray(response) ? response : []);
+        operationLogData = dataList.map(item => ({
+            id: item.ID || item.id,
+            operator: item.operator || '',
+            module: item.module || '',
+            content: item.content || '',
+            ip: item.ip || '',
+            type: item.type || '',
+            time: item.createdAt || item.time || ''
+        }));
+        refreshSettingsPage();
+    } catch (error) {
+        console.error('Failed to load operation logs:', error);
+    }
+}
 
 function filterLogs() {
     let filtered = [...operationLogData];
@@ -101,12 +107,12 @@ function settingsPage() {
                 <div class="card" style="flex:1;">
                     <div class="card-header"><span class="card-title"><i class="fas fa-globe"></i> 基础配置</span><button class="btn btn-sm btn-primary">保存</button></div>
                     <div class="card-body">
-                        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
-                            <div><label style="display:block;font-size:13px;color:#64748b;margin-bottom:4px;">网站名称</label><input type="text" value="乐享购" style="width:100%;padding:6px 12px;border:1px solid #e2e8f0;border-radius:6px;font-size:13px;" /></div>
-                            <div><label style="display:block;font-size:13px;color:#64748b;margin-bottom:4px;">联系方式</label><input type="text" value="400-888-8888" style="width:100%;padding:6px 12px;border:1px solid #e2e8f0;border-radius:6px;font-size:13px;" /></div>
-                            <div><label style="display:block;font-size:13px;color:#64748b;margin-bottom:4px;">网站Logo</label><div style="border:1px dashed #e2e8f0;border-radius:6px;padding:20px;text-align:center;"><i class="fas fa-upload" style="color:#94a3b8;"></i><div style="font-size:12px;color:#94a3b8;margin-top:4px;">点击上传Logo</div></div></div>
-                            <div><label style="display:block;font-size:13px;color:#64748b;margin-bottom:4px;">备案号</label><input type="text" value="京ICP备12345678号" style="width:100%;padding:6px 12px;border:1px solid #e2e8f0;border-radius:6px;font-size:13px;" /></div>
-                            <div style="grid-column:span 2;"><label style="display:block;font-size:13px;color:#64748b;margin-bottom:4px;">网站描述</label><textarea rows="3" placeholder="请输入网站描述..." style="width:100%;padding:6px 12px;border:1px solid #e2e8f0;border-radius:6px;font-size:13px;">乐享购 - 让购物更快乐</textarea></div>
+                        <div class="system-settings-row">
+                            <div><label class="system-settings-label">网站名称</label><input type="text" value="乐享购" class="system-settings-input" /></div>
+                            <div><label class="system-settings-label">联系方式</label><input type="text" value="400-888-8888" class="system-settings-input" /></div>
+                            <div><label class="system-settings-label">网站Logo</label><div class="system-settings-upload"><i class="fas fa-upload"></i><div class="upload-text">点击上传Logo</div></div></div>
+                            <div><label class="system-settings-label">备案号</label><input type="text" value="京ICP备12345678号" class="system-settings-input" /></div>
+                            <div class="system-settings-row-full"><label class="system-settings-label">网站描述</label><textarea rows="3" placeholder="请输入网站描述..." class="system-settings-textarea">乐享购 - 让购物更快乐</textarea></div>
                         </div>
                     </div>
                 </div>
@@ -115,11 +121,11 @@ function settingsPage() {
                 <div class="card" style="flex:1;">
                     <div class="card-header"><span class="card-title"><i class="fas fa-robot"></i> AI 配置</span><button class="btn btn-sm btn-primary">保存</button></div>
                     <div class="card-body">
-                        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
-                            <div><label style="display:block;font-size:13px;color:#64748b;margin-bottom:4px;">Coze API Key</label><input type="password" placeholder="请输入扣子Coze API Key" style="width:100%;padding:6px 12px;border:1px solid #e2e8f0;border-radius:6px;font-size:13px;" /></div>
-                            <div><label style="display:block;font-size:13px;color:#64748b;margin-bottom:4px;">AI自动回复超时</label><div style="display:flex;align-items:center;gap:8px;"><input type="number" value="5" style="width:60px;padding:4px 8px;border:1px solid #e2e8f0;border-radius:4px;text-align:center;" /><span>分钟</span><label style="display:flex;align-items:center;gap:4px;font-size:13px;color:#64748b;"><input type="checkbox" checked /> 开启自动回复</label></div></div>
+                        <div class="system-settings-row">
+                            <div><label class="system-settings-label">Coze API Key</label><input type="password" placeholder="请输入扣子Coze API Key" class="system-settings-input" /></div>
+                            <div><label class="system-settings-label">AI自动回复超时</label><div class="system-settings-number-group"><input type="number" value="5" class="system-settings-number-input small" /><span>分钟</span><label style="display:flex;align-items:center;gap:4px;font-size:13px;color:#64748b;"><input type="checkbox" checked /> 开启自动回复</label></div></div>
                         </div>
-                        <div style="margin-top:12px;padding:10px 14px;background:#fef3c7;border-radius:6px;font-size:12px;color:#92400e;"><i class="fas fa-info-circle"></i> AI配置用于客服自动回复、商品描述生成、评价摘要生成三个智能体功能</div>
+                        <div class="system-settings-help"><i class="fas fa-info-circle"></i> AI配置用于客服自动回复、商品描述生成、评价摘要生成三个智能体功能</div>
                     </div>
                 </div>
             </div>
@@ -130,10 +136,10 @@ function settingsPage() {
                 <div class="card" style="flex:1;">
                     <div class="card-header"><span class="card-title"><i class="fas fa-clock"></i> 订单超时配置</span><button class="btn btn-sm btn-primary">保存</button></div>
                     <div class="card-body">
-                        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
-                            <div><label style="display:block;font-size:13px;color:#64748b;margin-bottom:4px;">待支付订单自动取消时间</label><div style="display:flex;align-items:center;gap:8px;"><input type="number" value="30" style="width:80px;padding:4px 8px;border:1px solid #e2e8f0;border-radius:4px;text-align:center;" /><span>分钟</span></div></div>
-                            <div><label style="display:block;font-size:13px;color:#64748b;margin-bottom:4px;">确认收货自动完成时间</label><div style="display:flex;align-items:center;gap:8px;"><input type="number" value="15" style="width:80px;padding:4px 8px;border:1px solid #e2e8f0;border-radius:4px;text-align:center;" /><span>天</span></div></div>
-                            <div><label style="display:block;font-size:13px;color:#64748b;margin-bottom:4px;">售后申请有效期</label><div style="display:flex;align-items:center;gap:8px;"><input type="number" value="7" style="width:80px;padding:4px 8px;border:1px solid #e2e8f0;border-radius:4px;text-align:center;" /><span>天</span></div></div>
+                        <div class="system-settings-row">
+                            <div><label class="system-settings-label">待支付订单自动取消时间</label><div class="system-settings-number-group"><input type="number" value="30" class="system-settings-number-input" /><span>分钟</span></div></div>
+                            <div><label class="system-settings-label">确认收货自动完成时间</label><div class="system-settings-number-group"><input type="number" value="15" class="system-settings-number-input" /><span>天</span></div></div>
+                            <div><label class="system-settings-label">售后申请有效期</label><div class="system-settings-number-group"><input type="number" value="7" class="system-settings-number-input" /><span>天</span></div></div>
                         </div>
                     </div>
                 </div>
@@ -142,9 +148,9 @@ function settingsPage() {
                 <div class="card" style="flex:1;">
                     <div class="card-header"><span class="card-title"><i class="fas fa-exclamation-triangle"></i> 库存预警配置</span><button class="btn btn-sm btn-primary">保存</button></div>
                     <div class="card-body">
-                        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
-                            <div><label style="display:block;font-size:13px;color:#64748b;margin-bottom:4px;">库存预警阈值</label><div style="display:flex;align-items:center;gap:8px;"><input type="number" value="10" style="width:80px;padding:4px 8px;border:1px solid #e2e8f0;border-radius:4px;text-align:center;" /><span>件</span></div></div>
-                            <div style="grid-column:span 2;"><label style="display:flex;align-items:center;gap:4px;font-size:13px;color:#64748b;"><input type="checkbox" checked /> 启用库存预警通知</label></div>
+                        <div class="system-settings-row">
+                            <div><label class="system-settings-label">库存预警阈值</label><div class="system-settings-number-group"><input type="number" value="10" class="system-settings-number-input" /><span>件</span></div></div>
+                            <div class="system-settings-row-full"><label style="display:flex;align-items:center;gap:4px;font-size:13px;color:#64748b;"><input type="checkbox" checked /> 启用库存预警通知</label></div>
                         </div>
                     </div>
                 </div>
@@ -154,15 +160,15 @@ function settingsPage() {
         <div class="card">
             <div class="card-header">
                 <span class="card-title"><i class="fas fa-file-alt"></i> 操作日志</span>
-                <div class="search-bar">
-                    <select id="logModuleSelect" style="padding:6px 10px;border:1px solid #e2e8f0;border-radius:4px;font-size:13px;">
+                <div class="system-settings-search-bar">
+                    <select id="logModuleSelect">
                         <option value="all" ${currentLogModuleFilter === 'all' ? 'selected' : ''}>全部模块</option>
                         ${Object.entries(logModuleLabels).map(([key, label]) => `<option value="${key}" ${currentLogModuleFilter === key ? 'selected' : ''}>${label}</option>`).join('')}
                     </select>
-                    <input id="logOperatorInput" placeholder="操作人" value="${currentLogOperatorFilter}" style="padding:6px 10px;border:1px solid #e2e8f0;border-radius:4px;font-size:13px;" />
-                    <input type="date" id="logStartDate" value="${currentLogStartDate}" style="padding:6px 10px;border:1px solid #e2e8f0;border-radius:4px;font-size:13px;" />
-                    <span style="color:#94a3b8;">~</span>
-                    <input type="date" id="logEndDate" value="${currentLogEndDate}" style="padding:6px 10px;border:1px solid #e2e8f0;border-radius:4px;font-size:13px;" />
+                    <input id="logOperatorInput" placeholder="操作人" value="${currentLogOperatorFilter}" />
+                    <input type="date" id="logStartDate" value="${currentLogStartDate}" />
+                    <span class="separator">~</span>
+                    <input type="date" id="logEndDate" value="${currentLogEndDate}" />
                     <button class="btn btn-sm btn-primary" onclick="searchLogs()"><i class="fas fa-search"></i> 筛选</button>
                 </div>
             </div>
@@ -175,7 +181,7 @@ function settingsPage() {
                             <td>${logModuleLabels[log.module] || log.module}</td>
                             <td>${log.content}</td>
                             <td>${log.ip}</td>
-                            <td><span class="tag" style="${logTypeStyles[log.type] || ''}">${logTypeLabels[log.type] || log.type}</span></td>
+                            <td><span class="${logTypeStyles[log.type] || 'system-tag'}">${logTypeLabels[log.type] || log.type}</span></td>
                             <td>${log.time}</td>
                         </tr>
                     `).join('') : `<tr><td colspan="6" style="text-align:center;color:#94a3b8;padding:20px;">暂无日志记录</td></tr>`}
