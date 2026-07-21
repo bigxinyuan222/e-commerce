@@ -92,7 +92,7 @@ async function handleLogin(event) {
             }
             currentUser.role = role;
             currentUser.name = adminData.name || adminData.username || '管理员';
-            currentUser.storeId = adminData.storeId || adminData.store_id || null;
+            currentUser.storeId = adminData.storeId || adminData.store_id ? String(adminData.storeId || adminData.store_id) : null;
             currentUser.storeName = adminData.storeName || adminData.store_name || null;
             currentUser.token = token;
             

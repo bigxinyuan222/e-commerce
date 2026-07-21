@@ -204,7 +204,11 @@ async function apiRequest(url, options = {}) {
         const data = await response.json();
         
         if (data.code !== undefined && data.code !== 0 && data.code !== 200) {
-            throw new Error(data.message || 'API request failed');
+            console.log('API response error:', data);
+            const errorData = data.data || {};
+            const detailMsg = errorData.message || errorData.detail || '';
+            const fullMsg = detailMsg ? `${data.message}：${detailMsg}` : data.message;
+            throw new Error(fullMsg || 'API request failed');
         }
         
         return data.data !== undefined ? data.data : data;
@@ -239,8 +243,9 @@ async function apiPut(url, data = {}, pathParams = {}) {
 
 async function apiDelete(url, data = {}, pathParams = {}) {
     const resolvedUrl = replaceUrlParams(url, pathParams);
-    return apiRequest(resolvedUrl, {
-        method: 'DELETE',
-        body: JSON.stringify(data)
-    });
+    const options = { method: 'DELETE' };
+    if (Object.keys(data).length > 0) {
+        options.body = JSON.stringify(data);
+    }
+    return apiRequest(resolvedUrl, options);
 }

@@ -2,11 +2,16 @@ let storesData = [];
 let storesLoaded = false;
 
 async function loadStores() {
+    const token = getAuthToken();
+    console.log('Loading stores with token:', token ? 'Token exists' : 'No token');
+    
     try {
         const response = await apiGet(API_CONFIG.stores.list);
+        console.log('Store API Response:', response);
         const dataList = response && response.list ? response.list : (Array.isArray(response) ? response : []);
+        console.log('Parsed store list:', dataList);
         storesData = dataList.map(store => ({
-            id: store.ID || store.id,
+            id: String(store.ID || store.id),
             name: store.name,
             address: store.address,
             phone: store.phone,
@@ -16,8 +21,15 @@ async function loadStores() {
             orderCount: store.orderCount || 0,
             clerkCount: store.clerkCount || 0
         }));
+        console.log('Processed storesData:', storesData);
     } catch (error) {
         console.error('Failed to load stores:', error);
+        if (error.message.includes('401') || error.message.includes('token')) {
+            alert('登录已失效，请重新登录');
+            localStorage.removeItem('lexiangou_admin_user');
+            window.location.href = '/login.html';
+            return;
+        }
     } finally {
         storesLoaded = true;
         refreshStoresPage();
@@ -38,17 +50,33 @@ async function handleStoreAction(storeId, action) {
     if (action === 'toggle') {
         try {
             const newStatus = store.status === 'active' ? 0 : 1;
-            const response = await apiPut(API_CONFIG.stores.toggle, { status: newStatus }, { id: storeId });
+            await apiPut(API_CONFIG.stores.toggle, { status: newStatus }, { id: storeId });
             
-            if (response.code === 200) {
-                store.status = store.status === 'active' ? 'disabled' : 'active';
-                refreshStoresPage();
-            } else {
-                alert(response.message || '操作失败');
-            }
+            store.status = store.status === 'active' ? 'disabled' : 'active';
+            refreshStoresPage();
+            alert('操作成功！');
         } catch (error) {
             console.error('Failed to toggle store status:', error);
             alert('操作失败，请重试');
+        }
+    } else if (action === 'delete') {
+        if (!confirm('确定要删除该门店吗？删除后无法恢复！')) {
+            return;
+        }
+        
+        try {
+            console.log('Deleting store with id:', storeId);
+            const result = await apiDelete(API_CONFIG.stores.delete, {}, { id: storeId });
+            console.log('Delete result:', result);
+            alert('门店删除成功！');
+            await loadStores();
+            refreshStoresPage();
+        } catch (error) {
+            console.error('Failed to delete store:', error);
+            console.error('Error message:', error.message);
+            console.error('Error stack:', error.stack);
+            const errorMsg = error.message || '该门店可能存在关联数据，请先删除关联数据后再试';
+            alert(errorMsg);
         }
     }
     
@@ -104,13 +132,9 @@ async function saveStore() {
             status: 1
         });
         
-        if (response.code === 200 || response.code === 201) {
-            alert('门店创建成功！');
-            closeStoreModal();
-            await loadStores();
-        } else {
-            alert(response.message || '创建失败');
-        }
+        alert('门店创建成功！');
+        closeStoreModal();
+        await loadStores();
     } catch (error) {
         console.error('Failed to create store:', error);
         alert('创建门店失败，请重试');
@@ -148,9 +172,30 @@ function getStoreStats(storeId) {
     };
 }
 
-function showStoreDetail(storeId) {
-    const store = storesData.find(s => s.id === storeId);
-    if (!store) return;
+async function showStoreDetail(storeId) {
+    let store = storesData.find(s => s.id === storeId);
+    
+    try {
+        const response = await apiGet(API_CONFIG.stores.detail, {}, { id: storeId });
+        store = {
+            id: String(response.ID || response.id),
+            name: response.name,
+            address: response.address,
+            phone: response.phone,
+            businessHours: response.businessHours,
+            status: response.status === 1 ? 'active' : 'disabled',
+            createTime: response.CreatedAt || response.createdAt || '',
+            orderCount: response.orderCount || 0,
+            clerkCount: response.clerkCount || 0,
+            announcement: response.announcement || ''
+        };
+    } catch (error) {
+        console.error('Failed to load store detail:', error);
+        if (!store) {
+            alert('获取门店详情失败');
+            return;
+        }
+    }
     
     const stats = getStoreStats(storeId);
     const storeOrders = Array.isArray(ordersData) ? ordersData.filter(o => o && o.storeId === storeId) : [];
@@ -373,6 +418,8 @@ async function saveEditStore(storeId) {
     const phone = document.getElementById('storePhone').value.trim();
     const address = document.getElementById('storeAddress').value.trim();
     const businessHours = `${document.getElementById('storeStartHour').value}-${document.getElementById('storeEndHour').value}`;
+    const announcement = store.announcement || '';
+    const status = store.status === 'active' ? 1 : 0;
     
     if (!name || !phone || !address) {
         alert('请填写必填字段');
@@ -380,25 +427,23 @@ async function saveEditStore(storeId) {
     }
     
     try {
-        const response = await apiPut(API_CONFIG.stores.edit, {
+        await apiPut(API_CONFIG.stores.edit, {
             name: name,
             phone: phone,
             address: address,
-            businessHours: businessHours
+            businessHours: businessHours,
+            announcement: announcement,
+            status: status
         }, { id: storeId });
         
-        if (response.code === 200) {
-            store.name = name;
-            store.phone = phone;
-            store.address = address;
-            store.businessHours = businessHours;
-            
-            alert('门店信息更新成功！');
-            closeStoreModal();
-            refreshStoresPage();
-        } else {
-            alert(response.message || '更新失败');
-        }
+        store.name = name;
+        store.phone = phone;
+        store.address = address;
+        store.businessHours = businessHours;
+        
+        alert('门店信息更新成功！');
+        closeStoreModal();
+        refreshStoresPage();
     } catch (error) {
         console.error('Failed to update store:', error);
         alert('更新门店失败，请重试');
@@ -636,6 +681,7 @@ function storesPage() {
                                     ` : `
                                     <button class="btn btn-sm btn-success" onclick="handleStoreAction('${store.id}', 'toggle')"><i class="fas fa-play"></i> 启用</button>
                                     `}
+                                    <button class="btn btn-sm btn-danger-outline" onclick="handleStoreAction('${store.id}', 'delete')"><i class="fas fa-trash"></i> 删除</button>
                                 </td>
                             </tr>
                         `).join('')}
