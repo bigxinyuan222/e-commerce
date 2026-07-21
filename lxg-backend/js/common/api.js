@@ -2,7 +2,7 @@ const API_BASE_URL = '/api/v1';
 
 const API_CONFIG = {
     auth: {
-        login: `${API_BASE_URL}/auth/login`,
+        login: `${API_BASE_URL}/admin/login`,
         logout: `${API_BASE_URL}/auth/logout`,
         info: `${API_BASE_URL}/auth/info`
     },
@@ -70,13 +70,13 @@ const API_CONFIG = {
         generateSummary: `${API_BASE_URL}/review-summaries/generate`
     },
     stores: {
-        list: `${API_BASE_URL}/admin_stores`,
-        detail: `${API_BASE_URL}/admin_stores/:id`,
-        add: `${API_BASE_URL}/admin_stores`,
-        edit: `${API_BASE_URL}/admin_stores/:id`,
-        toggle: `${API_BASE_URL}/admin_stores/:id/toggle`,
-        delete: `${API_BASE_URL}/admin_stores/:id`,
-        dashboard: `${API_BASE_URL}/admin_stores/dashboard`
+        list: `${API_BASE_URL}/admin/stores`,
+        detail: `${API_BASE_URL}/admin/stores/:id`,
+        add: `${API_BASE_URL}/admin/stores`,
+        edit: `${API_BASE_URL}/admin/stores/:id`,
+        toggle: `${API_BASE_URL}/admin/stores/:id/toggle`,
+        delete: `${API_BASE_URL}/admin/stores/:id`,
+        dashboard: `${API_BASE_URL}/admin/stores/dashboard`
     },
     admin: {
         list: `${API_BASE_URL}/admins`,
@@ -171,10 +171,11 @@ function replaceUrlParams(url, params) {
 }
 
 async function apiRequest(url, options = {}) {
+    const token = getAuthToken();
     const defaultOptions = {
         headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${getAuthToken()}`
+            ...(token ? { 'Authorization': `Bearer ${token}` } : {})
         },
         credentials: 'include'
     };

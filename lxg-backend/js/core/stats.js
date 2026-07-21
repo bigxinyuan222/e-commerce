@@ -338,7 +338,8 @@ function statsPage() {
             { label: '退款完成', value: '-', sub: '-', icon: 'fa-check-circle', color: '#22c55e' },
             { label: '新增用户', value: stats.newUsers, sub: '-', icon: 'fa-user-plus', color: '#ec4899' }
         ]
-    }[stats.role] || roleCards.super_admin;
+    };
+    const currentCards = roleCards[stats.role] || roleCards.super_admin;
     
     return `
         <div style="margin-bottom:20px;">
@@ -347,7 +348,7 @@ function statsPage() {
         </div>
 
         <div class="stats-grid" style="grid-template-columns:repeat(6,1fr);gap:12px;margin-bottom:20px;">
-            ${roleCards.map(card => `
+            ${currentCards.map(card => `
                 <div class="stat-card" style="${card.highlight ? 'border-color:' + card.color + ';border-width:2px;' : ''}${card.action ? 'cursor:pointer;' : ''}" ${card.action ? `onclick="handleStatCardClick('${card.action}')"` : ''}>
                     <div class="label"><i class="fas ${card.icon}" style="color:${card.color};"></i> ${card.label}</div>
                     <div class="value" style="${card.highlight ? 'color:' + card.color + ';' : ''}">${card.value}</div>

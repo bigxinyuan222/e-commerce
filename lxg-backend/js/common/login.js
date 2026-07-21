@@ -79,12 +79,22 @@ async function handleLogin(event) {
         });
         
         if (userData) {
-            const adminData = userData.admin || userData;
-            currentUser.role = adminData.role || adminData.role_id || 'super_admin';
+            const adminData = userData.admin_info || userData.admin || userData;
+            const token = userData.token || adminData.token || '';
+            let role = 'super_admin';
+            if (token) {
+                try {
+                    const payload = JSON.parse(atob(token.split('.')[1]));
+                    role = payload.role || 'super_admin';
+                } catch (e) {
+                    role = 'super_admin';
+                }
+            }
+            currentUser.role = role;
             currentUser.name = adminData.name || adminData.username || '管理员';
             currentUser.storeId = adminData.storeId || adminData.store_id || null;
             currentUser.storeName = adminData.storeName || adminData.store_name || null;
-            currentUser.token = userData.token || adminData.token || '';
+            currentUser.token = token;
             
             saveUserToStorage(currentUser);
             

@@ -239,7 +239,7 @@ if (loginContainer) {
     loginContainer.innerHTML = loginPage();
 }
 
-if (savedUser) {
+if (savedUser && savedUser.token) {
     if (loginContainer) loginContainer.style.display = 'none';
     if (mainContainer) mainContainer.style.display = 'flex';
     if (document.body) document.body.classList.add('show-main');
