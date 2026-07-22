@@ -79,12 +79,22 @@ async function handleLogin(event) {
         });
         
         if (userData) {
-            const adminData = userData.admin || userData;
-            currentUser.role = adminData.role || adminData.role_id || 'super_admin';
+            const adminData = userData.admin_info || userData.admin || userData;
+            const token = userData.token || adminData.token || '';
+            let role = 'super_admin';
+            if (token) {
+                try {
+                    const payload = JSON.parse(atob(token.split('.')[1]));
+                    role = payload.role || 'super_admin';
+                } catch (e) {
+                    role = 'super_admin';
+                }
+            }
+            currentUser.role = role;
             currentUser.name = adminData.name || adminData.username || '管理员';
-            currentUser.storeId = adminData.storeId || adminData.store_id || null;
+            currentUser.storeId = adminData.storeId || adminData.store_id ? String(adminData.storeId || adminData.store_id) : null;
             currentUser.storeName = adminData.storeName || adminData.store_name || null;
-            currentUser.token = userData.token || adminData.token || '';
+            currentUser.token = token;
             
             saveUserToStorage(currentUser);
             
@@ -121,11 +131,11 @@ async function handleLogin(event) {
                 if (typeof loadRoles === 'function') loadRoles();
             }, 500);
         } else {
-            alert('登录失败，请重试');
+            showToast('登录失败，请重试', 'error');
         }
     } catch (error) {
         console.error('Login failed:', error);
-        alert('登录失败，请检查网络连接或账号密码');
+        showToast('登录失败，请检查网络连接或账号密码', 'error');
     }
 }
 

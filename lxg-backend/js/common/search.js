@@ -144,6 +144,30 @@ function getTypeColor(type) {
     return colors[type] || '#64748b';
 }
 
+function getTypeClass(type) {
+    const classes = {
+        goods: 'type-color-goods type-bg-goods',
+        orders: 'type-color-orders type-bg-orders',
+        users: 'type-color-users type-bg-users',
+        stores: 'type-color-stores type-bg-stores',
+        coupons: 'type-color-coupons type-bg-coupons',
+        reviews: 'type-color-reviews type-bg-reviews'
+    };
+    return classes[type] || '';
+}
+
+function getTypeIconClass(type) {
+    const classes = {
+        goods: 'type-color-goods',
+        orders: 'type-color-orders',
+        users: 'type-color-users',
+        stores: 'type-color-stores',
+        coupons: 'type-color-coupons',
+        reviews: 'type-color-reviews'
+    };
+    return classes[type] || '';
+}
+
 function openSearchPanel() {
     if (document.getElementById('searchPanel')) {
         return;
@@ -222,7 +246,7 @@ function renderSearchDefault() {
             </div>` : ''}
             
             ${searchHistory.length > 0 ? `
-            <div style="margin-bottom:16px;">
+            <div class="search-section">
                 <div class="search-section-header">
                     <div class="search-section-title">搜索历史</div>
                     <button class="search-section-clear" onclick="clearSearchHistory()">清空</button>
@@ -263,15 +287,15 @@ function renderSearchResults(results, query) {
     return results.map(group => `
         <div class="search-result-group">
             <div class="search-result-group-header">
-                <i class="${getTypeIcon(group.type)}" style="color:${getTypeColor(group.type)};"></i>
+                <i class="${getTypeIcon(group.type)} ${getTypeIconClass(group.type)}"></i>
                 <span class="search-result-group-label">${getTypeLabel(group.type)}</span>
                 <span class="search-result-group-count">(${group.items.length}条)</span>
             </div>
             <div class="search-result-list">
                 ${group.items.map(item => `
                     <div class="search-result-item" onclick="handleSearchResultClick('${group.type}', '${item.id}', '${query}')">
-                        <div class="search-result-item-icon" style="background:${getTypeColor(group.type)}15;">
-                            <i class="${getTypeIcon(group.type)}" style="color:${getTypeColor(group.type)};"></i>
+                        <div class="search-result-item-icon ${getTypeClass(group.type)}">
+                            <i class="${getTypeIcon(group.type)}"></i>
                         </div>
                         <div class="search-result-item-info">
                             <div class="search-result-item-name">${highlightText(item.name, query)}</div>

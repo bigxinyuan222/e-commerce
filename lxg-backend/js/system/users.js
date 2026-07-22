@@ -76,14 +76,14 @@ async function handleUserAction(userId, action) {
                 const response = await apiPut(API_CONFIG.users.toggle, { status: 0 }, { id: userId });
                 if (response.code === 200) {
                     user.status = 'frozen';
-                    alert(`用户 ${user.userName} 已冻结！`);
+                    showToast(`用户 ${user.userName} 已冻结！`, 'success');
                     refreshUsersPage();
                 } else {
-                    alert(response.message || '操作失败');
+                    showToast(response.message || '操作失败', 'error');
                 }
             } catch (error) {
                 console.error('Failed to freeze user:', error);
-                alert('操作失败，请重试');
+                showToast('操作失败，请重试', 'error');
             }
         });
     } else if (action === 'unfreeze') {
@@ -92,14 +92,14 @@ async function handleUserAction(userId, action) {
                 const response = await apiPut(API_CONFIG.users.toggle, { status: 1 }, { id: userId });
                 if (response.code === 200) {
                     user.status = 'active';
-                    alert(`用户 ${user.userName} 已解冻！`);
+                    showToast(`用户 ${user.userName} 已解冻！`, 'success');
                     refreshUsersPage();
                 } else {
-                    alert(response.message || '操作失败');
+                    showToast(response.message || '操作失败', 'error');
                 }
             } catch (error) {
                 console.error('Failed to unfreeze user:', error);
-                alert('操作失败，请重试');
+                showToast('操作失败，请重试', 'error');
             }
         });
     }

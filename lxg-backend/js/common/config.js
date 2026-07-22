@@ -26,6 +26,8 @@ const MENU_GROUPS = [
 
 const ROLES = {
     super_admin: { name: '超级管理员', menus: ['stats', 'goods', 'stock', 'reviews', 'coupons', 'marketing', 'orders', 'service', 'stores', 'returns', 'users', 'admin', 'homepage', 'payment', 'notification', 'settings'] },
+    admin: { name: '超级管理员', menus: ['stats', 'goods', 'stock', 'reviews', 'coupons', 'marketing', 'orders', 'service', 'stores', 'returns', 'users', 'admin', 'homepage', 'payment', 'notification', 'settings'] },
+    user: { name: '普通用户', menus: ['stats', 'orders', 'service'] },
     goods_op: { name: '商品运营', menus: ['stats', 'goods', 'stock', 'reviews', 'coupons', 'marketing'] },
     order_cs: { name: '订单客服', menus: ['orders', 'service'] },
     store_staff: { name: '门店店员', menus: ['stores', 'returns'] }
@@ -60,7 +62,8 @@ let currentUser = savedUser || {
     name: '超级管理员',
     role: 'super_admin',
     storeId: null,
-    storeName: null
+    storeName: null,
+    token: ''
 };
 
 function hasPermission(menuId) {

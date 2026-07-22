@@ -338,7 +338,8 @@ function statsPage() {
             { label: '退款完成', value: '-', sub: '-', icon: 'fa-check-circle', color: '#22c55e' },
             { label: '新增用户', value: stats.newUsers, sub: '-', icon: 'fa-user-plus', color: '#ec4899' }
         ]
-    }[stats.role] || roleCards.super_admin;
+    };
+    const currentCards = roleCards[stats.role] || roleCards.super_admin;
     
     return `
         <div style="margin-bottom:20px;">
@@ -347,7 +348,7 @@ function statsPage() {
         </div>
 
         <div class="stats-grid" style="grid-template-columns:repeat(6,1fr);gap:12px;margin-bottom:20px;">
-            ${roleCards.map(card => `
+            ${currentCards.map(card => `
                 <div class="stat-card" style="${card.highlight ? 'border-color:' + card.color + ';border-width:2px;' : ''}${card.action ? 'cursor:pointer;' : ''}" ${card.action ? `onclick="handleStatCardClick('${card.action}')"` : ''}>
                     <div class="label"><i class="fas ${card.icon}" style="color:${card.color};"></i> ${card.label}</div>
                     <div class="value" style="${card.highlight ? 'color:' + card.color + ';' : ''}">${card.value}</div>
@@ -492,7 +493,7 @@ function createAddGoodsModal() {
             </div>
             <div style="padding:16px 20px;border-top:1px solid #e2e8f0;display:flex;justify-content:flex-end;gap:10px;">
                 <button style="padding:8px 16px;border:1px solid #e2e8f0;border-radius:6px;background:#fff;color:#64748b;cursor:pointer;font-size:13px;" onclick="closeGoodsDetail()">取消</button>
-                <button style="padding:8px 16px;border:none;border-radius:6px;background:#4f6ef7;color:#fff;cursor:pointer;font-size:13px;" onclick="closeGoodsDetail();alert('商品保存成功！');refreshGoodsPage();"><i class="fas fa-arrow-right"></i> 下一步</button>
+                <button style="padding:8px 16px;border:none;border-radius:6px;background:#4f6ef7;color:#fff;cursor:pointer;font-size:13px;" onclick="closeGoodsDetail();showToast('商品保存成功！', 'success');refreshGoodsPage();"><i class="fas fa-arrow-right"></i> 下一步</button>
             </div>
         </div>
     `;

@@ -92,20 +92,20 @@ async function handleChatAction(chatId, action) {
             await apiPut(API_CONFIG.service.accept, {}, { id: chatId });
             chat.status = 'active';
             chat.unread = 0;
-            alert('已接入会话！');
+            showToast('已接入会话！', 'success');
         } catch (error) {
             console.error('Failed to accept conversation:', error);
-            alert('操作失败，请重试');
+            showToast('操作失败，请重试', 'error');
         }
     } else if (action === 'close') {
         showConfirm('确定关闭此会话吗？', async function() {
             try {
                 await apiPut(API_CONFIG.service.close, {}, { id: chatId });
                 chat.status = 'closed';
-                alert('会话已关闭！');
+                showToast('会话已关闭！', 'success');
             } catch (error) {
                 console.error('Failed to close conversation:', error);
-                alert('操作失败，请重试');
+                showToast('操作失败，请重试', 'error');
             }
             refreshServicePage();
         });
@@ -114,10 +114,10 @@ async function handleChatAction(chatId, action) {
         if (target) {
             try {
                 await apiPut(API_CONFIG.service.transfer, { targetAdmin: target }, { id: chatId });
-                alert(`已转接给 ${target}`);
+                showToast(`已转接给 ${target}`, 'success');
             } catch (error) {
                 console.error('Failed to transfer conversation:', error);
-                alert('操作失败，请重试');
+                showToast('操作失败，请重试', 'error');
             }
         }
     }
@@ -151,7 +151,7 @@ async function sendMessage() {
         refreshServicePage();
     } catch (error) {
         console.error('Failed to send message:', error);
-        alert('发送失败，请重试');
+        showToast('发送失败，请重试', 'error');
     }
 }
 
@@ -185,7 +185,7 @@ function triggerAIReply() {
         refreshServicePage();
     }, 1500);
     
-    alert('AI助手正在生成回复...');
+    showToast('AI助手正在生成回复...', 'success');
 }
 
 async function selectChat(chatId) {

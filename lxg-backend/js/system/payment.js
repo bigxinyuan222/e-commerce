@@ -198,12 +198,12 @@ function applyRefund(txnId) {
     const reason = document.getElementById('refundReason').value;
     
     if (!amount || amount <= 0) {
-        alert('请输入有效的退款金额');
+        showToast('请输入有效的退款金额', 'error');
         return;
     }
     
     if (amount > payment.amount) {
-        alert('退款金额不能超过支付金额');
+        showToast('退款金额不能超过支付金额', 'error');
         return;
     }
     
@@ -219,7 +219,7 @@ function applyRefund(txnId) {
             time: new Date().toISOString().replace('T', ' ').substring(0, 19)
         });
     
-        alert('退款申请已提交！');
+        showToast('退款申请已提交！', 'success');
         closePaymentModal();
         refreshPaymentPage();
     });

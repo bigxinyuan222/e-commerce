@@ -165,12 +165,12 @@ function sendNotification() {
     const content = contentInput ? contentInput.value.trim() : '';
     
     if (!title) {
-        alert('请输入通知标题');
+        showToast('请输入通知标题', 'error');
         return;
     }
     
     if (!content) {
-        alert('请输入通知内容');
+        showToast('请输入通知内容', 'error');
         return;
     }
     
@@ -184,11 +184,11 @@ function sendNotification() {
     }
     
     if (scope === '指定用户' && selectedUsers.length === 0) {
-        alert('请选择接收通知的用户');
+        showToast('请选择接收通知的用户', 'error');
         return;
     }
     
-    alert('通知发送成功！');
+    showToast('通知发送成功！', 'success');
     refreshNotificationPage();
 }
 
@@ -199,11 +199,11 @@ function saveDraft() {
     const content = contentInput ? contentInput.value.trim() : '';
     
     if (!title) {
-        alert('请输入通知标题');
+        showToast('请输入通知标题', 'error');
         return;
     }
     
-    alert('通知草稿已保存！');
+    showToast('通知草稿已保存！', 'success');
 }
 
 function previewNotification() {
@@ -213,7 +213,7 @@ function previewNotification() {
     const content = contentInput ? contentInput.value.trim() : '';
     
     if (!title) {
-        alert('请输入通知标题');
+        showToast('请输入通知标题', 'error');
         return;
     }
     
@@ -745,7 +745,7 @@ function useTemplate() {
 
 function saveTemplate() {
     if (currentTemplate.category === '系统预设') {
-        alert('系统预设模板不可修改');
+        showToast('系统预设模板不可修改', 'error');
         return;
     }
     
@@ -754,12 +754,12 @@ function saveTemplate() {
     const content = document.getElementById('tplContent').value.trim();
     
     if (!name) {
-        alert('请输入模板名称');
+        showToast('请输入模板名称', 'error');
         return;
     }
     
     if (!title) {
-        alert('请输入通知标题');
+        showToast('请输入通知标题', 'error');
         return;
     }
     
@@ -769,7 +769,7 @@ function saveTemplate() {
         tpl.title = title;
         tpl.content = content;
         currentTemplate = tpl;
-        alert('模板保存成功！');
+        showToast('模板保存成功！', 'success');
         refreshNotificationPage();
     }
 }
