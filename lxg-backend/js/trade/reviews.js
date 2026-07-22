@@ -159,7 +159,7 @@ async function handleReviewAction(reviewId, action) {
         refreshReviewsPage();
     } catch (error) {
         console.error('Failed to handle review action:', error);
-        alert('操作失败，请重试');
+        showToast('操作失败，请重试', 'error');
     }
 }
 
@@ -172,7 +172,7 @@ async function handleSummaryAction(summaryId, action) {
             await apiPut(API_CONFIG.reviews.auditSummary, { status: 1 }, { id: summaryId });
             summary.status = 'approved';
             summary.updateTime = new Date().toISOString().replace('T', ' ').substring(0, 19);
-            alert('AI评价摘要已发布！');
+            showToast('AI评价摘要已发布！', 'success');
         } else if (action === 'reject') {
             showConfirm('确定拒绝此摘要并重新生成吗？', async function() {
                 await apiPut(API_CONFIG.reviews.auditSummary, { status: 2 }, { id: summaryId });
@@ -183,7 +183,7 @@ async function handleSummaryAction(summaryId, action) {
         refreshReviewsPage();
     } catch (error) {
         console.error('Failed to handle summary action:', error);
-        alert('操作失败，请重试');
+        showToast('操作失败，请重试', 'error');
     }
 }
 
@@ -319,7 +319,7 @@ function hideReplyInput(reviewId) {
 async function submitReply(reviewId) {
     const content = document.getElementById(`replyContent-${reviewId}`).value.trim();
     if (!content) {
-        alert('请输入回复内容');
+        showToast('请输入回复内容', 'error');
         return;
     }
     
@@ -333,15 +333,15 @@ async function submitReply(reviewId) {
                     time: new Date().toISOString().replace('T', ' ').substring(0, 19)
                 };
             }
-            alert('回复成功！');
+            showToast('回复成功！', 'success');
             closeReviewModal();
             refreshReviewsPage();
         } else {
-            alert(response.message || '回复失败');
+            showToast(response.message || '回复失败', 'error');
         }
     } catch (error) {
         console.error('Failed to submit reply:', error);
-        alert('回复失败，请重试');
+        showToast('回复失败，请重试', 'error');
     }
 }
 
@@ -353,7 +353,7 @@ function editReply(reviewId) {
     if (content !== null) {
         review.reply.content = content;
         review.reply.time = new Date().toISOString().replace('T', ' ').substring(0, 19);
-        alert('回复已更新！');
+        showToast('回复已更新！', 'success');
         closeReviewModal();
         refreshReviewsPage();
     }
@@ -364,7 +364,7 @@ function deleteReply(reviewId) {
         const review = reviewsData.find(r => r.id === reviewId);
         if (review) {
             review.reply = null;
-            alert('回复已删除！');
+            showToast('回复已删除！', 'success');
             closeReviewModal();
             refreshReviewsPage();
         }
@@ -378,7 +378,7 @@ function deleteUserReply(reviewId, replyId) {
             const reply = review.replies.find(r => r.id === replyId);
             if (reply) {
                 reply.content = '该回复已被删除';
-                alert('回复已处理！');
+                showToast('回复已处理！', 'success');
                 closeReviewModal();
                 refreshReviewsPage();
             }

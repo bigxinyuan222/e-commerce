@@ -1026,24 +1026,27 @@ body.show-main {
 
 .toast {
     position: fixed;
-    top: 80px;
-    right: 24px;
+    top: 50%;
+    left: 50%;
+    width: 20vw;
+    height: 20vh;
     padding: 12px 20px;
     border-radius: 8px;
     font-size: 14px;
     display: flex;
     align-items: center;
+    justify-content: center;
     gap: 8px;
     z-index: 99999;
     opacity: 0;
-    transform: translateX(120%);
+    transform: translate(-50%, -50%) translateY(-20px);
     transition: all 0.3s ease;
     box-shadow: 0 4px 20px rgba(0,0,0,0.15);
 }
 
 .toast.fade-in {
     opacity: 1;
-    transform: translateX(0);
+    transform: translate(-50%, -50%) translateY(0);
 }
 
 .toast.success {

@@ -131,11 +131,11 @@ async function handleLogin(event) {
                 if (typeof loadRoles === 'function') loadRoles();
             }, 500);
         } else {
-            alert('登录失败，请重试');
+            showToast('登录失败，请重试', 'error');
         }
     } catch (error) {
         console.error('Login failed:', error);
-        alert('登录失败，请检查网络连接或账号密码');
+        showToast('登录失败，请检查网络连接或账号密码', 'error');
     }
 }
 

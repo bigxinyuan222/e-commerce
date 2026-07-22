@@ -165,11 +165,11 @@ async function handleReturnAction(returnId, action) {
             ret.status = 'approved';
             ret.statusText = '已通过';
             ret.auditTime = new Date().toISOString().replace('T', ' ').substring(0, 19);
-            alert('审核通过！请通知用户寄回商品，门店收货确认后财务将执行打款。');
+            showToast('审核通过！请通知用户寄回商品，门店收货确认后财务将执行打款。', 'success');
             refreshReturnsPage();
         } catch (error) {
             console.error('审核通过失败:', error);
-            alert('操作失败，请重试');
+            showToast('操作失败，请重试', 'error');
         }
     } else if (action === 'reject') {
         const opinion = prompt('请输入拒绝原因：');
@@ -181,11 +181,11 @@ async function handleReturnAction(returnId, action) {
             ret.statusText = '已拒绝';
             ret.auditOpinion = opinion;
             ret.auditTime = new Date().toISOString().replace('T', ' ').substring(0, 19);
-            alert('审核已拒绝，系统将通知用户。');
+            showToast('审核已拒绝，系统将通知用户。', 'success');
             refreshReturnsPage();
         } catch (error) {
             console.error('审核拒绝失败:', error);
-            alert('操作失败，请重试');
+            showToast('操作失败，请重试', 'error');
         }
     } else if (action === 'refund') {
         showConfirm('确定执行退款吗？此操作不可撤销。', async function() {
@@ -194,11 +194,11 @@ async function handleReturnAction(returnId, action) {
                 ret.status = 'refunded';
                 ret.statusText = '已完成';
                 ret.refundTime = new Date().toISOString().replace('T', ' ').substring(0, 19);
-                alert('退款已执行！');
+                showToast('退款已执行！', 'success');
                 refreshReturnsPage();
             } catch (error) {
                 console.error('执行退款失败:', error);
-                alert('操作失败，请重试');
+                showToast('操作失败，请重试', 'error');
             }
         });
     }
@@ -695,7 +695,7 @@ async function addReturnReason() {
     const sort = parseInt(sortInput?.value) || returnReasonsData.length + 1;
     
     if (!name) {
-        alert('请输入原因名称');
+        showToast('请输入原因名称', 'error');
         return;
     }
     
@@ -703,14 +703,14 @@ async function addReturnReason() {
         const response = await apiPost(API_CONFIG.returns.reasonAdd, { content: name, sort });
         if (response.code === 200) {
             loadReturnReasons();
-            alert('添加成功');
+            showToast('添加成功', 'success');
             closeReturnReasonConfig();
         } else {
-            alert(response.message || '添加失败');
+            showToast(response.message || '添加失败', 'error');
         }
     } catch (error) {
         console.error('添加退货原因失败:', error);
-        alert('添加失败，请重试');
+        showToast('添加失败，请重试', 'error');
     }
 }
 
@@ -726,7 +726,7 @@ async function editReturnReason(reasonId) {
     const status = Array.from(statusInputs).find(i => i.checked) ? 'active' : 'inactive';
     
     if (!name) {
-        alert('请输入原因名称');
+        showToast('请输入原因名称', 'error');
         return;
     }
     
@@ -734,14 +734,14 @@ async function editReturnReason(reasonId) {
         const response = await apiPut(API_CONFIG.returns.reasonEdit, { content: name, sort }, { id: reasonId });
         if (response.code === 200) {
             loadReturnReasons();
-            alert('修改成功');
+            showToast('修改成功', 'success');
             closeReturnReasonConfig();
         } else {
-            alert(response.message || '修改失败');
+            showToast(response.message || '修改失败', 'error');
         }
     } catch (error) {
         console.error('编辑退货原因失败:', error);
-        alert('修改失败，请重试');
+        showToast('修改失败，请重试', 'error');
     }
 }
 
@@ -753,7 +753,7 @@ async function toggleReturnReason(reasonId) {
             loadReturnReasons();
         } catch (error) {
             console.error('删除退货原因失败:', error);
-            alert('操作失败，请重试');
+            showToast('操作失败，请重试', 'error');
         }
     }
 }

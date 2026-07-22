@@ -493,7 +493,7 @@ function createAddGoodsModal() {
             </div>
             <div style="padding:16px 20px;border-top:1px solid #e2e8f0;display:flex;justify-content:flex-end;gap:10px;">
                 <button style="padding:8px 16px;border:1px solid #e2e8f0;border-radius:6px;background:#fff;color:#64748b;cursor:pointer;font-size:13px;" onclick="closeGoodsDetail()">取消</button>
-                <button style="padding:8px 16px;border:none;border-radius:6px;background:#4f6ef7;color:#fff;cursor:pointer;font-size:13px;" onclick="closeGoodsDetail();alert('商品保存成功！');refreshGoodsPage();"><i class="fas fa-arrow-right"></i> 下一步</button>
+                <button style="padding:8px 16px;border:none;border-radius:6px;background:#4f6ef7;color:#fff;cursor:pointer;font-size:13px;" onclick="closeGoodsDetail();showToast('商品保存成功！', 'success');refreshGoodsPage();"><i class="fas fa-arrow-right"></i> 下一步</button>
             </div>
         </div>
     `;

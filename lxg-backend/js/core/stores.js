@@ -25,9 +25,9 @@ async function loadStores() {
     } catch (error) {
         console.error('Failed to load stores:', error);
         if (error.message.includes('401') || error.message.includes('token')) {
-            alert('登录已失效，请重新登录');
+            showToast('登录已失效，请重新登录', 'error');
             localStorage.removeItem('lexiangou_admin_user');
-            window.location.href = '/login.html';
+            setTimeout(() => window.location.href = '/login.html', 1500);
             return;
         }
     } finally {
@@ -54,10 +54,10 @@ async function handleStoreAction(storeId, action) {
             
             store.status = store.status === 'active' ? 'disabled' : 'active';
             refreshStoresPage();
-            alert('操作成功！');
+            showToast('操作成功！', 'success');
         } catch (error) {
             console.error('Failed to toggle store status:', error);
-            alert('操作失败，请重试');
+            showToast('操作失败，请重试', 'error');
         }
     } else if (action === 'delete') {
         if (!confirm('确定要删除该门店吗？删除后无法恢复！')) {
@@ -68,7 +68,7 @@ async function handleStoreAction(storeId, action) {
             console.log('Deleting store with id:', storeId);
             const result = await apiDelete(API_CONFIG.stores.delete, {}, { id: storeId });
             console.log('Delete result:', result);
-            alert('门店删除成功！');
+            showToast('门店删除成功！', 'success');
             await loadStores();
             refreshStoresPage();
         } catch (error) {
@@ -76,7 +76,7 @@ async function handleStoreAction(storeId, action) {
             console.error('Error message:', error.message);
             console.error('Error stack:', error.stack);
             const errorMsg = error.message || '该门店可能存在关联数据，请先删除关联数据后再试';
-            alert(errorMsg);
+            showToast(errorMsg, 'error');
         }
     }
     
@@ -118,7 +118,7 @@ async function saveStore() {
     const announcement = document.getElementById('storeNotice').value.trim();
     
     if (!name || !phone || !address) {
-        alert('请填写必填字段');
+        showToast('请填写必填字段', 'error');
         return;
     }
     
@@ -132,12 +132,12 @@ async function saveStore() {
             status: 1
         });
         
-        alert('门店创建成功！');
+        showToast('门店创建成功！', 'success');
         closeStoreModal();
         await loadStores();
     } catch (error) {
         console.error('Failed to create store:', error);
-        alert('创建门店失败，请重试');
+        showToast('创建门店失败，请重试', 'error');
     }
 }
 
@@ -154,8 +154,8 @@ function getStoreStats(storeId) {
     const orders = Array.isArray(ordersData) ? ordersData : [];
     const returns = Array.isArray(returnsData) ? returnsData : [];
     
-    const storeOrders = storeId ? orders.filter(o => o && o.storeId === storeId) : [];
-    const storeReturns = storeId ? returns.filter(r => r && r.storeId === storeId) : [];
+    const storeOrders = storeId ? orders.filter(o => o && String(o.storeId) === String(storeId)) : [];
+    const storeReturns = storeId ? returns.filter(r => r && String(r.storeId) === String(storeId)) : [];
     
     const today = new Date().toISOString().split('T')[0];
     const todayOrders = storeOrders.filter(o => o.createTime && o.createTime.startsWith(today));
@@ -192,13 +192,17 @@ async function showStoreDetail(storeId) {
     } catch (error) {
         console.error('Failed to load store detail:', error);
         if (!store) {
-            alert('获取门店详情失败');
+            showToast('获取门店详情失败', 'error');
             return;
         }
     }
     
+    if (typeof loadOrders === 'function' && (!Array.isArray(ordersData) || ordersData.length === 0)) {
+        await loadOrders();
+    }
+    
     const stats = getStoreStats(storeId);
-    const storeOrders = Array.isArray(ordersData) ? ordersData.filter(o => o && o.storeId === storeId) : [];
+    const storeOrders = Array.isArray(ordersData) ? ordersData.filter(o => o && String(o.storeId) === String(storeId)) : [];
     
     const modalContent = `
         <div class="modal-overlay" onclick="closeStoreDetail()"></div>
@@ -422,7 +426,7 @@ async function saveEditStore(storeId) {
     const status = store.status === 'active' ? 1 : 0;
     
     if (!name || !phone || !address) {
-        alert('请填写必填字段');
+        showToast('请填写必填字段', 'error');
         return;
     }
     
@@ -441,12 +445,12 @@ async function saveEditStore(storeId) {
         store.address = address;
         store.businessHours = businessHours;
         
-        alert('门店信息更新成功！');
+        showToast('门店信息更新成功！', 'success');
         closeStoreModal();
         refreshStoresPage();
     } catch (error) {
         console.error('Failed to update store:', error);
-        alert('更新门店失败，请重试');
+        showToast('更新门店失败，请重试', 'error');
     }
 }
 

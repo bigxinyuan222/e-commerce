@@ -27,27 +27,28 @@ let currentAdminStatusFilter = 'all';
 async function loadAdmins() {
     try {
         const params = {
-            role: currentAdminRoleFilter === 'all' ? '' : currentAdminRoleFilter,
-            status: currentAdminStatusFilter === 'all' ? '' : currentAdminStatusFilter,
-            keyword: currentAdminSearchKeyword
+            page: 1,
+            size: 100
         };
         const response = await apiGet(API_CONFIG.admin.list, params);
         const dataList = response && response.list ? response.list : (Array.isArray(response) ? response : []);
         adminData = dataList.map(item => ({
             id: item.ID || item.id,
             username: item.username || '',
-            realName: item.realName || '',
+            realName: item.name || '',
             phone: item.phone ? item.phone.replace(/(\d{3})\d{4}(\d{4})/, '$1****$2') : '',
-            role: item.role || '',
-            storeId: item.storeId || null,
-            storeName: item.storeName || null,
+            role: item.role && item.role.id ? item.role.id : (item.role || ''),
+            roleName: item.role && item.role.name ? item.role.name : '',
+            storeId: item.store && item.store.id ? item.store.id : null,
+            storeName: item.store && item.store.name ? item.store.name : null,
             status: item.status === 1 ? 'active' : 'inactive',
-            createTime: item.createdAt || item.createTime || '',
-            lastLogin: item.lastLogin || ''
+            createTime: item.created_at || item.createdAt || item.createTime || '',
+            lastLogin: item.last_login || item.lastLogin || ''
         }));
         refreshAdminPage();
     } catch (error) {
         console.error('Failed to load admins:', error);
+        showToast('加载管理员列表失败', 'error');
     }
 }
 
@@ -90,12 +91,12 @@ function getStatusBadge(status) {
 
 function getRoleBadge(role) {
     const classes = {
-        super_admin: 'system-tag primary',
-        goods_op: 'system-tag green',
-        order_cs: 'system-tag blue',
-        store_staff: 'system-tag orange'
+        1: 'system-tag primary',
+        2: 'system-tag green',
+        3: 'system-tag blue',
+        4: 'system-tag orange'
     };
-    const roleInfo = roleData.find(r => r.id === role);
+    const roleInfo = roleData.find(r => r.id == role);
     const text = roleInfo ? roleInfo.name : role;
     return `<span class="${classes[role] || 'system-tag'}">${text}</span>`;
 }
@@ -137,32 +138,48 @@ function switchAdminStatus(status) {
     refreshAdminPage();
 }
 
-function handleAdminAction(adminId, action) {
-    const admin = adminData.find(a => a.id === adminId);
-    if (!admin) return;
+async function handleAdminAction(adminId, action) {
+    console.log('handleAdminAction called:', adminId, action);
+    console.log('adminData:', adminData);
     
-    if (admin.role === 'super_admin') {
-        alert('超级管理员不可操作！');
+    const admin = adminData.find(a => String(a.id) === String(adminId));
+    console.log('Found admin:', admin);
+    
+    if (!admin) {
+        showToast('未找到管理员', 'error');
+        return;
+    }
+    
+    if (admin.role == 1) {
+        showToast('超级管理员不可操作！', 'error');
         return;
     }
     
     if (action === 'toggle') {
-        showConfirm(`确定要${admin.status === 'active' ? '停用' : '启用'}管理员 ${admin.name} 吗？`, function() {
-            admin.status = admin.status === 'active' ? 'inactive' : 'active';
-            alert(`管理员 ${admin.name} 已${admin.status === 'active' ? '启用' : '停用'}！`);
-            refreshAdminPage();
+        showConfirm(`确定要${admin.status === 'active' ? '停用' : '启用'}管理员 ${admin.realName} 吗？`, async function() {
+            try {
+                await apiPostWithQuery(API_CONFIG.admin.toggle, { id: adminId });
+                admin.status = admin.status === 'active' ? 'inactive' : 'active';
+                showToast(`管理员 ${admin.realName} 已${admin.status === 'active' ? '启用' : '停用'}！`, 'success');
+                refreshAdminPage();
+            } catch (error) {
+                showToast('操作失败', 'error');
+            }
         });
     } else if (action === 'edit') {
         showEditAdminModal(admin);
     } else if (action === 'delete') {
-        showConfirm(`确定要删除管理员 ${admin.name} 吗？此操作不可撤销！`, function() {
-            adminData = adminData.filter(a => a.id !== adminId);
-            alert('管理员已删除！');
-            refreshAdminPage();
+        showConfirm(`确定要删除管理员 ${admin.realName} 吗？此操作不可撤销！`, async function() {
+            try {
+                await apiPostWithQuery(API_CONFIG.admin.delete, { id: adminId });
+                adminData = adminData.filter(a => String(a.id) !== String(adminId));
+                showToast('管理员已删除！', 'success');
+                refreshAdminPage();
+            } catch (error) {
+                showToast('删除失败', 'error');
+            }
         });
     }
-    
-    refreshAdminPage();
 }
 
 function showAddAdminModal() {
@@ -181,10 +198,10 @@ function showAddAdminModal() {
                     <div><label class="system-form-label">真实姓名 <span class="system-form-required">*</span></label><input type="text" id="adminRealName" placeholder="请输入真实姓名" class="system-form-input" /></div>
                     <div>
                         <label class="system-form-label">角色 <span class="system-form-required">*</span></label>
-                        <select id="adminRole" class="system-form-select" onchange="toggleStoreSelect()">
-                            <option value="goods_op">商品运营</option>
-                            <option value="order_cs">订单客服</option>
-                            <option value="store_staff">门店店员</option>
+                        <select id="adminRoleSelect" class="system-form-select">
+                            <option value="2">客服管理员</option>
+                            <option value="3">运营管理员</option>
+                            <option value="4">门店管理员</option>
                         </select>
                     </div>
                     <div id="adminStoreContainer">
@@ -211,7 +228,7 @@ function showEditAdminModal(admin) {
         <div class="modal-overlay" onclick="closeAdminModal()"></div>
         <div class="modal-content" style="width:640px;">
             <div class="modal-header">
-                <h3><i class="fas fa-edit"></i> 编辑管理员 · ${admin.name}</h3>
+                <h3><i class="fas fa-edit"></i> 编辑管理员 · ${admin.realName}</h3>
                 <button onclick="closeAdminModal()" class="modal-close"><i class="fas fa-times"></i></button>
             </div>
             <div class="modal-body" style="max-height:60vh;overflow-y:auto;">
@@ -222,10 +239,10 @@ function showEditAdminModal(admin) {
                     <div><label class="system-form-label">重置密码</label><input type="password" id="adminPassword" placeholder="不填则不修改" class="system-form-input" /></div>
                     <div>
                         <label class="system-form-label">角色</label>
-                        <select id="adminRole" disabled class="system-form-select disabled">
-                            <option value="goods_op" ${admin.role === 'goods_op' ? 'selected' : ''}>商品运营</option>
-                            <option value="order_cs" ${admin.role === 'order_cs' ? 'selected' : ''}>订单客服</option>
-                            <option value="store_staff" ${admin.role === 'store_staff' ? 'selected' : ''}>门店店员</option>
+                        <select id="adminRoleSelect" disabled class="system-form-select disabled">
+                            <option value="2" ${admin.role == 2 ? 'selected' : ''}>客服管理员</option>
+                            <option value="3" ${admin.role == 3 ? 'selected' : ''}>运营管理员</option>
+                            <option value="4" ${admin.role == 4 ? 'selected' : ''}>门店管理员</option>
                         </select>
                     </div>
                     <div>
@@ -247,83 +264,101 @@ function showEditAdminModal(admin) {
     document.body.insertAdjacentHTML('beforeend', modalContent);
 }
 
-function toggleStoreSelect() {
-    const role = document.getElementById('adminRole').value;
-    const container = document.getElementById('adminStoreContainer');
-    if (container) {
-        container.style.display = 'block';
-    }
-}
-
-function saveAdmin(adminId = null) {
+async function saveAdmin(adminId = null) {
     const phone = document.getElementById('adminPhone').value.trim();
     const username = document.getElementById('adminUsername').value.trim();
     const realName = document.getElementById('adminRealName').value.trim();
-    const password = document.getElementById('adminPassword').value;
-    const role = document.getElementById('adminRole').value;
-    const storeId = document.getElementById('adminStore') ? document.getElementById('adminStore').value : null;
-    const store = storesList.find(s => s.id === storeId);
+    const password = document.getElementById('adminPassword').value.trim();
+    const role = document.getElementById('adminRoleSelect').value;
+    const storeSelect = document.getElementById('adminStore');
+    const storeId = storeSelect ? storeSelect.value : null;
+    const store = storesList.find(s => String(s.id) === String(storeId));
     
     if (!phone) {
-        alert('请输入手机号');
+        showToast('请输入手机号', 'error');
         return;
     }
     
     if (!username) {
-        alert('请输入用户名');
+        showToast('请输入用户名', 'error');
         return;
     }
     
     if (!realName) {
-        alert('请输入真实姓名');
+        showToast('请输入真实姓名', 'error');
         return;
     }
     
     if (!adminId && !password) {
-        alert('请输入密码');
+        showToast('请输入密码', 'error');
         return;
     }
     
-    const exists = adminData.find(a => a.phone === phone && a.id !== adminId);
+    const exists = adminData.find(a => a.phone === phone && String(a.id) !== String(adminId));
     if (exists) {
-        alert('该手机号已被使用');
+        showToast('该手机号已被使用', 'error');
         return;
     }
     
-    if (adminId) {
-        const admin = adminData.find(a => a.id === adminId);
-        if (admin) {
-            admin.username = username;
-            admin.realName = realName;
-            if (password) admin.password = password;
-            if (store) {
-                admin.storeId = storeId;
-                admin.storeName = store.name;
-            } else {
-                admin.storeId = null;
-                admin.storeName = null;
+    try {
+        if (adminId) {
+            const data = {
+                username,
+                name: realName,
+                phone,
+                store_id: storeId ? parseInt(storeId) : null
+            };
+            if (password) data.password = password;
+            await apiPut(API_CONFIG.admin.edit, data, { id: adminId });
+            
+            const admin = adminData.find(a => String(a.id) === String(adminId));
+            if (admin) {
+                admin.username = username;
+                admin.realName = realName;
+                if (store) {
+                    admin.storeId = storeId;
+                    admin.storeName = store.name;
+                } else {
+                    admin.storeId = null;
+                    admin.storeName = null;
+                }
             }
-            alert('管理员信息已更新！');
+            showToast('管理员信息已更新！', 'success');
+        } else {
+            const params = {
+                username,
+                password,
+                name: realName,
+                phone,
+                role_id: parseInt(role)
+            };
+            const roleId = parseInt(role);
+            if (roleId === 4 && storeId && storeId !== '0') {
+                params.store_id = parseInt(storeId);
+            }
+            const result = await apiPostWithQuery(API_CONFIG.admin.add, params);
+            
+            adminData.unshift({
+                id: result.id || 'admin-' + Date.now(),
+                username: username,
+                realName: realName,
+                phone: phone.replace(/(\d{3})\d{4}(\d{4})/, '$1****$2'),
+                role: role,
+                storeId: storeId,
+                storeName: store ? store.name : null,
+                status: 'active',
+                createTime: new Date().toISOString().replace('T', ' ').substring(0, 19),
+                lastLogin: null
+            });
+            showToast('管理员创建成功！', 'success');
         }
-    } else {
-        adminData.unshift({
-            id: 'admin-' + Date.now(),
-            username: username,
-            realName: realName,
-            phone: phone,
-            password: password,
-            role: role,
-            storeId: storeId,
-            storeName: store ? store.name : null,
-            status: 'active',
-            createTime: new Date().toISOString().replace('T', ' ').substring(0, 19),
-            lastLogin: null
-        });
-        alert('管理员创建成功！');
+        
+        closeAdminModal();
+        refreshAdminPage();
+    } catch (error) {
+        console.error('操作失败:', error);
+        showToast(error.message || '操作失败', 'error');
     }
-    
-    closeAdminModal();
-    refreshAdminPage();
 }
 
 function closeAdminModal() {
@@ -378,18 +413,18 @@ function saveRole() {
     const permissions = Array.from(checkboxes).map(cb => cb.value);
     
     if (!name) {
-        alert('请输入角色名称');
+        showToast('请输入角色名称', 'error');
         return;
     }
     
     if (permissions.length === 0) {
-        alert('请至少选择一个权限模块');
+        showToast('请至少选择一个权限模块', 'error');
         return;
     }
     
     const exists = roleData.find(r => r.name === name);
     if (exists) {
-        alert('该角色名称已存在');
+        showToast('该角色名称已存在', 'error');
         return;
     }
     
@@ -401,7 +436,7 @@ function saveRole() {
         description: desc || '暂无描述'
     });
     
-    alert('角色创建成功！');
+    showToast('角色创建成功！', 'success');
     closeAdminModal();
     refreshAdminPage();
 }
@@ -414,10 +449,10 @@ function refreshAdminPage() {
 function adminPage() {
     const activeCount = adminData.filter(a => a.status === 'active').length;
     const inactiveCount = adminData.filter(a => a.status === 'inactive').length;
-    const staffCount = adminData.filter(a => a.role === 'store_staff').length;
+    const staffCount = adminData.filter(a => a.role == 4).length;
     
     const filteredAdmins = filterAdmins();
-    const subAdmins = filteredAdmins.filter(a => a.role !== 'super_admin');
+    const subAdmins = filteredAdmins.filter(a => a.role != 1);
     
     return `
         <div class="flex-between mb-4">
@@ -425,9 +460,9 @@ function adminPage() {
                 <input id="adminSearchInput" placeholder="用户名 / 手机号 / 姓名" onkeypress="if(event.key==='Enter') searchAdmins()" />
                 <select onchange="switchAdminRole(this.value)">
                     <option value="all" ${currentAdminRoleFilter === 'all' ? 'selected' : ''}>全部角色</option>
-                    <option value="goods_op" ${currentAdminRoleFilter === 'goods_op' ? 'selected' : ''}>商品运营</option>
-                    <option value="order_cs" ${currentAdminRoleFilter === 'order_cs' ? 'selected' : ''}>订单客服</option>
-                    <option value="store_staff" ${currentAdminRoleFilter === 'store_staff' ? 'selected' : ''}>门店店员</option>
+                    <option value="2" ${currentAdminRoleFilter == 2 ? 'selected' : ''}>客服管理员</option>
+                    <option value="3" ${currentAdminRoleFilter == 3 ? 'selected' : ''}>运营管理员</option>
+                    <option value="4" ${currentAdminRoleFilter == 4 ? 'selected' : ''}>门店管理员</option>
                 </select>
                 <select onchange="switchAdminStatus(this.value)">
                     <option value="all" ${currentAdminStatusFilter === 'all' ? 'selected' : ''}>全部状态</option>
@@ -443,7 +478,7 @@ function adminPage() {
             <div class="system-stat-card"><div class="label"><i class="fas fa-user-shield"></i> 总管理员</div><div class="value">${adminData.length}</div></div>
             <div class="system-stat-card"><div class="label"><i class="fas fa-check-circle"></i> 已启用</div><div class="value green">${activeCount}</div></div>
             <div class="system-stat-card"><div class="label"><i class="fas fa-lock"></i> 已停用</div><div class="value yellow">${inactiveCount}</div></div>
-            <div class="system-stat-card"><div class="label"><i class="fas fa-store-alt"></i> 门店店员</div><div class="value orange">${staffCount}</div></div>
+            <div class="system-stat-card"><div class="label"><i class="fas fa-store-alt"></i> 门店管理员</div><div class="value orange">${staffCount}</div></div>
         </div>
 
         <div class="card">

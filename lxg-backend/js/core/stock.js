@@ -103,7 +103,7 @@ function handleStockAdjust(skuId, type, quantity, reason) {
     let newStock = beforeStock + quantity;
     
     if (newStock < 0) {
-        alert('调整后库存不能为负数！');
+        showToast('调整后库存不能为负数！', 'error');
         return;
     }
     
@@ -126,7 +126,7 @@ function handleStockAdjust(skuId, type, quantity, reason) {
         createTime: new Date().toISOString().replace('T', ' ').substring(0, 19)
     });
     
-    alert(`库存调整成功！\n调整前：${beforeStock}件\n调整后：${newStock}件`);
+    showToast(`库存调整成功！调整前：${beforeStock}件，调整后：${newStock}件`, 'success');
     refreshStockPage();
 }
 
@@ -257,7 +257,7 @@ function adjustQuantity(delta) {
 
 function submitStockAdjust() {
     if (!selectedSku) {
-        alert('请选择要调整的SKU');
+        showToast('请选择要调整的SKU', 'error');
         return;
     }
     
@@ -266,12 +266,12 @@ function submitStockAdjust() {
     const reason = document.getElementById('stockReason').value.trim();
     
     if (quantity <= 0) {
-        alert('调整数量必须大于0');
+        showToast('调整数量必须大于0', 'error');
         return;
     }
     
     if (!reason) {
-        alert('请填写调整原因');
+        showToast('请填写调整原因', 'error');
         return;
     }
     

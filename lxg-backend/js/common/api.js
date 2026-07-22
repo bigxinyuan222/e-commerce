@@ -36,10 +36,12 @@ const API_CONFIG = {
         deleteTemplate: `${API_BASE_URL}/notification-templates/:id`
     },
     orders: {
-        list: `${API_BASE_URL}/orders`,
-        detail: `${API_BASE_URL}/orders/:id`,
-        cancel: `${API_BASE_URL}/orders/:id/cancel`,
-        ship: `${API_BASE_URL}/orders/:id/ship`
+        list: `${API_BASE_URL}/admin/orders`,
+        detail: `${API_BASE_URL}/admin/orders/:id`,
+        stats: `${API_BASE_URL}/admin/orders/stats`,
+        cancel: `${API_BASE_URL}/admin/orders/:id/cancel`,
+        ship: `${API_BASE_URL}/admin/orders/:id/ship`,
+        confirm: `${API_BASE_URL}/admin/orders/:id/confirm`
     },
     goods: {
         list: `${API_BASE_URL}/products`,
@@ -79,13 +81,13 @@ const API_CONFIG = {
         dashboard: `${API_BASE_URL}/admin/stores/dashboard`
     },
     admin: {
-        list: `${API_BASE_URL}/admins`,
+        list: `${API_BASE_URL}/admin/list`,
         detail: `${API_BASE_URL}/admins/:id`,
-        add: `${API_BASE_URL}/admins`,
+        add: `${API_BASE_URL}/create/admin`,
         edit: `${API_BASE_URL}/admins/:id`,
-        toggle: `${API_BASE_URL}/admins/:id/toggle`,
+        toggle: `${API_BASE_URL}/enable/admin`,
         resetPassword: `${API_BASE_URL}/admins/:id/reset-password`,
-        delete: `${API_BASE_URL}/admins/:id`,
+        delete: `${API_BASE_URL}/delete/admin`,
         roles: `${API_BASE_URL}/roles`
     },
     settings: {
@@ -231,6 +233,38 @@ async function apiPost(url, data = {}, pathParams = {}) {
         method: 'POST',
         body: JSON.stringify(data)
     });
+}
+
+async function apiPostWithQuery(url, queryParams = {}, pathParams = {}) {
+    const resolvedUrl = replaceUrlParams(url, pathParams);
+    const queryParts = [];
+    for (const key in queryParams) {
+        if (queryParams[key] !== undefined && queryParams[key] !== null) {
+            queryParts.push(`${encodeURIComponent(key)}=${encodeURIComponent(queryParams[key])}`);
+        }
+    }
+    const queryString = queryParts.join('&');
+    const fullUrl = resolvedUrl + (queryString ? '?' + queryString : '');
+    console.log('apiPostWithQuery URL:', fullUrl);
+    console.log('apiPostWithQuery params:', queryParams);
+    console.log('apiPostWithQuery queryString:', queryString);
+    
+    const token = getAuthToken();
+    const response = await fetch(fullUrl, {
+        method: 'POST',
+        headers: {
+            ...(token ? { 'Authorization': `Bearer ${token}` } : {})
+        },
+        credentials: 'include'
+    });
+    
+    const responseData = await response.json();
+    console.log('apiPostWithQuery response:', responseData);
+    
+    if (responseData.code !== undefined && responseData.code !== 0 && responseData.code !== 200) {
+        throw new Error(responseData.message || '请求失败');
+    }
+    return responseData.data !== undefined ? responseData.data : responseData;
 }
 
 async function apiPut(url, data = {}, pathParams = {}) {

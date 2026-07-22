@@ -174,7 +174,7 @@ function toggleSelectAllGoods(checked) {
 function batchShelfGoods(status) {
     const checked = document.querySelectorAll('.goods-checkbox:checked');
     if (checked.length === 0) {
-        alert('请先选择要操作的商品');
+        showToast('请先选择要操作的商品', 'error');
         return;
     }
     const ids = Array.from(checked).map(cb => cb.value);
@@ -184,20 +184,20 @@ function batchShelfGoods(status) {
             goods.status = status;
         }
     });
-    alert(`已${status === 'off_shelf' ? '下架' : '上架'} ${ids.length} 件商品`);
+    showToast(`已${status === 'off_shelf' ? '下架' : '上架'} ${ids.length} 件商品`, 'success');
     refreshGoodsPage();
 }
 
 function batchDeleteGoods() {
     const checked = document.querySelectorAll('.goods-checkbox:checked');
     if (checked.length === 0) {
-        alert('请先选择要操作的商品');
+        showToast('请先选择要操作的商品', 'error');
         return;
     }
     const ids = Array.from(checked).map(cb => cb.value);
     showConfirm(`确定删除选中的 ${checked.length} 件商品吗？此操作不可恢复。`, function() {
         goodsData = goodsData.filter(g => !ids.includes(g.id));
-        alert(`已删除 ${ids.length} 件商品`);
+        showToast(`已删除 ${ids.length} 件商品`, 'success');
         refreshGoodsPage();
     });
 }
@@ -450,15 +450,15 @@ function nextGoodsStep() {
         tempGoodsData.status = Array.from(statusInputs).find(i => i.checked)?.nextElementSibling?.textContent?.includes('上架') ? 'on_shelf' : 'off_shelf';
         
         if (!tempGoodsData.name) {
-            alert('请输入商品名称');
+            showToast('请输入商品名称', 'error');
             return;
         }
         if (!tempGoodsData.category) {
-            alert('请选择商品分类');
+            showToast('请选择商品分类', 'error');
             return;
         }
         if (!tempGoodsData.originalPrice || isNaN(tempGoodsData.originalPrice)) {
-            alert('请输入正确的原价');
+            showToast('请输入正确的原价', 'error');
             return;
         }
     } else if (goodsAddStep === 2) {
@@ -603,15 +603,15 @@ function saveGoods() {
     }
     
     if (!name) {
-        alert('请输入商品名称');
+        showToast('请输入商品名称', 'error');
         return;
     }
     if (!category) {
-        alert('请选择商品分类');
+        showToast('请选择商品分类', 'error');
         return;
     }
     if (!price || isNaN(price)) {
-        alert('请输入正确的原价');
+        showToast('请输入正确的原价', 'error');
         return;
     }
     
@@ -660,7 +660,7 @@ function saveGoods() {
     
     goodsData.push(newGoods);
     
-    alert('商品保存成功！');
+    showToast('商品保存成功！', 'success');
     closeGoodsDetail();
     refreshGoodsPage();
 }
@@ -808,15 +808,15 @@ function saveEditGoods(goodsId) {
     const status = document.querySelector('input[name="editGoodsStatus"]:checked')?.value;
     
     if (!name) {
-        alert('请输入商品名称');
+        showToast('请输入商品名称', 'error');
         return;
     }
     if (!category) {
-        alert('请选择商品分类');
+        showToast('请选择商品分类', 'error');
         return;
     }
     if (!price || isNaN(price)) {
-        alert('请输入正确的原价');
+        showToast('请输入正确的原价', 'error');
         return;
     }
     
@@ -826,7 +826,7 @@ function saveEditGoods(goodsId) {
     goods.originalPrice = parseInt(price);
     goods.status = status || goods.status;
     
-    alert('商品修改成功！');
+    showToast('商品修改成功！', 'success');
     closeGoodsDetail();
     refreshGoodsPage();
 }
@@ -881,13 +881,13 @@ function saveCategory() {
     const name = document.getElementById('newCategoryName')?.value?.trim();
     
     if (!name) {
-        alert('请输入分类名称');
+        showToast('请输入分类名称', 'error');
         return;
     }
     
     const exists = categoriesData.find(c => c.name === name);
     if (exists) {
-        alert('该分类名称已存在');
+        showToast('该分类名称已存在', 'error');
         return;
     }
     
@@ -898,7 +898,7 @@ function saveCategory() {
         children: []
     });
     
-    alert('分类添加成功！');
+    showToast('分类添加成功！', 'success');
     closeGoodsDetail();
     refreshGoodsPage();
 }
@@ -976,7 +976,7 @@ function showAddSubCategoryModal(parentId) {
 function saveSubCategory(parentId) {
     const name = document.getElementById('newSubCategoryName')?.value?.trim();
     if (!name) {
-        alert('请输入子类名称');
+        showToast('请输入子类名称', 'error');
         return;
     }
     
@@ -985,7 +985,7 @@ function saveSubCategory(parentId) {
     
     const exists = parent.children.find(c => c.name === name);
     if (exists) {
-        alert('该子类名称已存在');
+        showToast('该子类名称已存在', 'error');
         return;
     }
     
@@ -996,7 +996,7 @@ function saveSubCategory(parentId) {
         goodsCount: 0
     });
     
-    alert('子分类添加成功！');
+    showToast('子分类添加成功！', 'success');
     closeGoodsDetail();
     refreshGoodsPage();
 }
@@ -1054,13 +1054,13 @@ function saveBrand() {
     const name = document.getElementById('newBrandName')?.value?.trim();
     
     if (!name) {
-        alert('请输入品牌名称');
+        showToast('请输入品牌名称', 'error');
         return;
     }
     
     const exists = brandsData.find(b => b.name === name);
     if (exists) {
-        alert('该品牌名称已存在');
+        showToast('该品牌名称已存在', 'error');
         return;
     }
     
@@ -1071,7 +1071,7 @@ function saveBrand() {
         goodsCount: 0
     });
     
-    alert('品牌添加成功！');
+    showToast('品牌添加成功！', 'success');
     closeGoodsDetail();
     refreshGoodsPage();
 }
@@ -1132,23 +1132,23 @@ function saveSpec() {
     const valuesInput = document.getElementById('newSpecValues')?.value?.trim();
     
     if (!name) {
-        alert('请输入规格名称');
+        showToast('请输入规格名称', 'error');
         return;
     }
     if (!valuesInput) {
-        alert('请输入规格值');
+        showToast('请输入规格值', 'error');
         return;
     }
     
     const values = valuesInput.split(',').map(v => v.trim()).filter(v => v);
     if (values.length === 0) {
-        alert('请输入有效的规格值');
+        showToast('请输入有效的规格值', 'error');
         return;
     }
     
     const exists = specsData.find(s => s.name === name);
     if (exists) {
-        alert('该规格名称已存在');
+        showToast('该规格名称已存在', 'error');
         return;
     }
     
@@ -1158,7 +1158,7 @@ function saveSpec() {
         values: values
     });
     
-    alert('规格添加成功！');
+    showToast('规格添加成功！', 'success');
     closeGoodsDetail();
     refreshGoodsPage();
 }
@@ -1168,7 +1168,7 @@ function deleteCategory(catId) {
     if (!cat) return;
     
     if (cat.goodsCount > 0) {
-        alert(`该分类下还有 ${cat.goodsCount} 件商品，无法删除！`);
+        showToast(`该分类下还有 ${cat.goodsCount} 件商品，无法删除！`, 'error');
         return;
     }
     
@@ -1230,20 +1230,20 @@ function saveEditCategory(catId) {
     
     const name = document.getElementById('editCatName')?.value?.trim();
     if (!name) {
-        alert('请输入分类名称');
+        showToast('请输入分类名称', 'error');
         return;
     }
     
     if (parent) {
         const exists = parent.children.find(c => c.id !== catId && c.name === name);
         if (exists) {
-            alert('该子分类名称已存在');
+            showToast('该子分类名称已存在', 'error');
             return;
         }
     } else {
         const exists = categoriesData.find(c => c.id !== catId && c.name === name);
         if (exists) {
-            alert('该分类名称已存在');
+            showToast('该分类名称已存在', 'error');
             return;
         }
     }
@@ -1263,7 +1263,7 @@ function saveEditCategory(catId) {
         }
     });
     
-    alert('分类修改成功！');
+    showToast('分类修改成功！', 'success');
     closeGoodsDetail();
     refreshGoodsPage();
 }
@@ -1273,7 +1273,7 @@ function deleteBrand(brandId) {
     if (!brand) return;
     
     if (brand.goodsCount > 0) {
-        alert(`该品牌下还有 ${brand.goodsCount} 件商品，无法删除！`);
+        showToast(`该品牌下还有 ${brand.goodsCount} 件商品，无法删除！`, 'error');
         return;
     }
     
@@ -1316,13 +1316,13 @@ function saveEditBrand(brandId) {
     
     const name = document.getElementById('editBrandName')?.value?.trim();
     if (!name) {
-        alert('请输入品牌名称');
+        showToast('请输入品牌名称', 'error');
         return;
     }
     
     const exists = brandsData.find(b => b.id !== brandId && b.name === name);
     if (exists) {
-        alert('该品牌名称已存在');
+        showToast('该品牌名称已存在', 'error');
         return;
     }
     
@@ -1335,7 +1335,7 @@ function saveEditBrand(brandId) {
         }
     });
     
-    alert('品牌修改成功！');
+    showToast('品牌修改成功！', 'success');
     closeGoodsDetail();
     refreshGoodsPage();
 }
@@ -1391,30 +1391,30 @@ function saveEditSpec(specId) {
     const valuesInput = document.getElementById('editSpecValues')?.value?.trim();
     
     if (!name) {
-        alert('请输入规格名称');
+        showToast('请输入规格名称', 'error');
         return;
     }
     if (!valuesInput) {
-        alert('请输入规格值');
+        showToast('请输入规格值', 'error');
         return;
     }
     
     const values = valuesInput.split(',').map(v => v.trim()).filter(v => v);
     if (values.length === 0) {
-        alert('请输入有效的规格值');
+        showToast('请输入有效的规格值', 'error');
         return;
     }
     
     const exists = specsData.find(s => s.id !== specId && s.name === name);
     if (exists) {
-        alert('该规格名称已存在');
+        showToast('该规格名称已存在', 'error');
         return;
     }
     
     spec.name = name;
     spec.values = values;
     
-    alert('规格修改成功！');
+    showToast('规格修改成功！', 'success');
     closeGoodsDetail();
     refreshGoodsPage();
 }
