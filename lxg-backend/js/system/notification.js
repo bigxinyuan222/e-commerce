@@ -1,16 +1,23 @@
+// 当前通知标签页（send/template/log）
 let notificationTab = 'send';
+// 通知列表数据缓存
 let notificationData = [];
+// 通知模板数据缓存
 let templateData = [];
 
+// 通知筛选条件
 let currentNotifSearchKeyword = '';
 let currentNotifTypeFilter = 'all';
 let currentNotifStatusFilter = 'all';
 let currentNotifPage = 1;
 let notifPageSize = 5;
 
+// 发送通知时选中的用户列表
 let selectedUsers = [];
+// 当前选中的模板
 let currentTemplate = null;
 
+// 加载通知列表
 async function loadNotifications() {
     try {
         const params = {
@@ -38,6 +45,7 @@ async function loadNotifications() {
     }
 }
 
+// 加载通知模板列表
 async function loadTemplates() {
     try {
         const response = await apiGet(API_CONFIG.notifications.templates);
@@ -51,6 +59,7 @@ async function loadTemplates() {
             content: item.content || '',
             trigger: item.trigger || '手动触发'
         }));
+        // 默认选中第一个模板
         if (templateData.length > 0) {
             currentTemplate = templateData[0];
         } else {

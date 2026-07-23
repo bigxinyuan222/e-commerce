@@ -1,9 +1,12 @@
+// 订单数据缓存
 let ordersData = [];
 
-let currentOrderStatusFilter = 'all';
-let currentStoreFilter = 'all';
-let currentOrderSearchKeyword = '';
+// 订单筛选条件
+let currentOrderStatusFilter = 'all';    // 状态筛选
+let currentStoreFilter = 'all';          // 门店筛选
+let currentOrderSearchKeyword = '';      // 搜索关键词
 
+// 获取门店选项HTML（用于筛选下拉框）
 function getStoreOptions() {
     const stores = typeof storesData !== 'undefined' && Array.isArray(storesData) ? storesData : [];
     return stores.map(store => `
@@ -11,6 +14,7 @@ function getStoreOptions() {
     `).join('');
 }
 
+// 获取订单状态标签HTML
 function getStatusBadge(status) {
     const colors = {
         pending_payment: 'yellow',
@@ -25,6 +29,7 @@ function getStatusBadge(status) {
     return `<span class="status-badge ${color}"><span class="dot"></span> ${getStatusText(status)}</span>`;
 }
 
+// 获取订单状态中文文本
 function getStatusText(status) {
     const texts = {
         pending_payment: '待支付',
@@ -38,6 +43,7 @@ function getStatusText(status) {
     return texts[status] || status;
 }
 
+// 加载订单列表（支持分页自动拼接）
 async function loadOrders() {
     try {
         const pageSize = 50;
@@ -45,17 +51,19 @@ async function loadOrders() {
             pageSize: pageSize,
             keyword: currentOrderSearchKeyword,
             status: currentOrderStatusFilter === 'all' ? '' : getStatusCode(currentOrderStatusFilter),
-            store_id: currentUser.role === 'store_staff' ? currentUser.storeId : ''
+            store_id: currentUser.role === 'store_staff' ? currentUser.storeId : ''  // 门店用户只看自己门店订单
         };
         
         let dataList = [];
         let currentPage = 1;
         let totalCount = 0;
         
+        // 循环分页获取所有数据
         while (true) {
             const params = { ...baseParams, page: currentPage };
             const response = await apiGet(API_CONFIG.orders.list, params);
             
+            // 兼容多种返回格式
             let pageList = [];
             if (Array.isArray(response)) {
                 pageList = response;
@@ -69,11 +77,12 @@ async function loadOrders() {
             if (pageList.length === 0) break;
             dataList = dataList.concat(pageList);
             
+            // 停止条件：达到总数或当前页数据不足一页
             if (totalCount > 0 && dataList.length >= totalCount) break;
             if (pageList.length < pageSize) break;
             
             currentPage++;
-            if (currentPage > 100) break;
+            if (currentPage > 100) break;  // 最多100页，防止无限循环
         }
         
         ordersData = dataList.map(item => {

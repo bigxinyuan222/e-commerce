@@ -1,6 +1,9 @@
+// 优惠券数据缓存
 let couponsData = [];
+// 优惠券领取记录数据缓存
 let couponReceivedData = [];
 
+// 加载优惠券列表
 async function loadCoupons() {
     try {
         const response = await apiGet(API_CONFIG.coupons.list);
@@ -8,19 +11,19 @@ async function loadCoupons() {
         couponsData = dataList.map(coupon => ({
             id: coupon.ID || coupon.id,
             name: coupon.name || '',
-            type: coupon.type || 'discount',
-            value: coupon.value || 0,
-            threshold: coupon.threshold || 0,
-            totalQuantity: coupon.totalQuantity || 0,
-            receivedQuantity: coupon.receivedQuantity || 0,
-            usedQuantity: coupon.usedQuantity || 0,
+            type: coupon.type || 'discount',              // 类型：discount(满减)/voucher(代金券)/discount_rate(折扣)
+            value: coupon.value || 0,                     // 优惠金额/折扣率
+            threshold: coupon.threshold || 0,             // 使用门槛
+            totalQuantity: coupon.totalQuantity || 0,     // 总数量
+            receivedQuantity: coupon.receivedQuantity || 0, // 已领取数量
+            usedQuantity: coupon.usedQuantity || 0,       // 已使用数量
             status: coupon.status === 1 ? 'active' : coupon.status === 0 ? 'expired' : 'pending',
-            validType: coupon.validType || 'fixed',
+            validType: coupon.validType || 'fixed',        // 有效期类型
             startDate: coupon.startDate || '',
             endDate: coupon.endDate || '',
-            rangeType: coupon.rangeType || 'goods',
-            applicableItems: coupon.applicableItems || [],
-            perUserLimit: coupon.perUserLimit || 1,
+            rangeType: coupon.rangeType || 'goods',       // 使用范围
+            applicableItems: coupon.applicableItems || [], // 适用商品
+            perUserLimit: coupon.perUserLimit || 1,       // 每人限领数量
             createTime: coupon.CreatedAt || coupon.createdAt || ''
         }));
         refreshCouponsPage();
@@ -29,6 +32,7 @@ async function loadCoupons() {
     }
 }
 
+// 获取优惠券状态标签HTML
 function getStatusBadge(status) {
     const colors = { active: 'green', pending: 'yellow', expired: 'gray' };
     const texts = { active: '发放中', pending: '待发放', expired: '已过期' };
@@ -36,18 +40,21 @@ function getStatusBadge(status) {
     return `<span class="status-badge ${color}"><span class="dot"></span> ${texts[status] || status}</span>`;
 }
 
+// 优惠券筛选条件
 let currentCouponSearchKeyword = '';
 let currentCouponStatusFilter = 'all';
 let currentCouponTypeFilter = 'all';
 let currentCouponPage = 1;
 let couponPageSize = 5;
 
+// 获取优惠券类型标签HTML
 function getTypeBadge(type) {
     const classes = { discount: 'tag primary', voucher: 'tag trade-tag-voucher', discount_rate: 'tag' };
     const texts = { discount: '满减', voucher: '代金券', discount_rate: '折扣' };
     return `<span class="${classes[type] || 'tag'}">${texts[type] || type}</span>`;
 }
 
+// 根据筛选条件过滤优惠券列表
 function filterCoupons() {
     let filtered = couponsData;
     if (currentCouponStatusFilter !== 'all') {
@@ -66,6 +73,7 @@ function filterCoupons() {
     return filtered;
 }
 
+// 执行优惠券搜索
 function searchCoupons() {
     const input = document.getElementById('couponSearchInput');
     if (input) {
@@ -75,6 +83,7 @@ function searchCoupons() {
     }
 }
 
+// 切换优惠券状态筛选
 function switchCouponStatus(status) {
     currentCouponStatusFilter = status;
     currentCouponPage = 1;

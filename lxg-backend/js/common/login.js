@@ -1,3 +1,4 @@
+// 渲染登录页面HTML结构
 function loginPage() {
     return `
         <div class="login-page">
@@ -67,45 +68,56 @@ function loginPage() {
     `;
 }
 
+// 处理登录请求
 async function handleLogin(event) {
-    event.preventDefault();
+    event.preventDefault();  // 阻止表单默认提交
     const username = document.getElementById('username').value.trim();
     const password = document.getElementById('password').value.trim();
     
     try {
+        // 调用登录API
         const userData = await apiPost(API_CONFIG.auth.login, {
             username: username,
             password: password
         });
         
         if (userData) {
+            // 提取管理员信息（兼容不同API返回格式）
             const adminData = userData.admin_info || userData.admin || userData;
             const token = userData.token || adminData.token || '';
             let role = 'super_admin';
+            
+            // 从token中解析用户角色
             if (token) {
                 try {
                     const payload = JSON.parse(atob(token.split('.')[1]));
                     role = payload.role || 'super_admin';
                 } catch (e) {
-                    role = 'super_admin';
+                    role = 'super_admin';  // 解析失败默认超级管理员
                 }
             }
+            
+            // 更新当前用户信息
             currentUser.role = role;
             currentUser.name = adminData.name || adminData.username || '管理员';
             currentUser.storeId = adminData.storeId || adminData.store_id ? String(adminData.storeId || adminData.store_id) : null;
             currentUser.storeName = adminData.storeName || adminData.store_name || null;
             currentUser.token = token;
             
+            // 保存用户信息到本地存储
             saveUserToStorage(currentUser);
             
+            // 切换到主界面
             document.getElementById('loginContainer').style.display = 'none';
             document.getElementById('mainContainer').style.display = 'flex';
             document.body.classList.add('show-main');
             
+            // 渲染侧边栏、页面和用户信息
             renderSidebar();
             renderAllPages();
             updateUserProfile();
             
+            // 延迟加载各模块数据
             setTimeout(() => {
                 if (typeof loadStores === 'function') loadStores();
                 if (typeof loadUsers === 'function') loadUsers();
@@ -139,6 +151,7 @@ async function handleLogin(event) {
     }
 }
 
+// 切换管理员菜单显示/隐藏
 function toggleAdminMenu() {
     const dropdown = document.getElementById('adminDropdown');
     const arrow = document.getElementById('adminArrow');
@@ -153,6 +166,7 @@ function toggleAdminMenu() {
     }
 }
 
+// 切换待办菜单显示/隐藏
 function toggleTodoMenu() {
     const dropdown = document.getElementById('todoDropdown');
     if (dropdown.style.display === 'none') {
@@ -165,6 +179,7 @@ function toggleTodoMenu() {
     }
 }
 
+// 点击待办菜单外部关闭菜单
 function closeTodoMenuOutside(e) {
     const dropdown = document.getElementById('todoDropdown');
     const todoBtn = document.getElementById('todoBtn');
@@ -174,15 +189,18 @@ function closeTodoMenuOutside(e) {
     }
 }
 
+// 渲染待办事项菜单
 function renderTodoMenu() {
     const todos = getTodoItems();
     const countEl = document.getElementById('todoCount');
     const bodyEl = document.getElementById('todoDropdownBody');
     const dotEl = document.getElementById('todoDot');
     
+    // 更新待办数量和红点显示
     if (countEl) countEl.textContent = todos.length;
     if (dotEl) dotEl.style.display = todos.length > 0 ? 'block' : 'none';
     
+    // 渲染待办列表或空状态
     if (bodyEl) {
         if (todos.length > 0) {
             bodyEl.innerHTML = todos.map(todo => `
@@ -204,6 +222,7 @@ function renderTodoMenu() {
     }
 }
 
+// 点击管理员菜单外部关闭菜单
 function closeAdminMenuOutside(e) {
     const dropdown = document.getElementById('adminDropdown');
     const profile = document.getElementById('adminProfile');
@@ -214,15 +233,19 @@ function closeAdminMenuOutside(e) {
     }
 }
 
+// 显示管理员个人信息弹窗
 function showAdminInfo() {
     const dropdown = document.getElementById('adminDropdown');
     const arrow = document.getElementById('adminArrow');
+    // 先关闭管理员菜单
     dropdown.style.display = 'none';
     arrow.style.transform = 'rotate(0deg)';
     document.removeEventListener('click', closeAdminMenuOutside);
     
+    // 门店信息（如果有）
     const storeInfo = currentUser.storeName ? `<div class="admin-info-store"><div class="admin-info-detail">所属门店</div><div class="admin-info-value">${currentUser.storeName}</div></div>` : '';
     
+    // 渲染个人信息弹窗
     const modalContent = `
         <div class="modal-overlay" onclick="closeAdminInfoModal()"></div>
         <div class="modal-content admin-info-modal">
@@ -259,13 +282,17 @@ function showAdminInfo() {
     document.body.insertAdjacentHTML('beforeend', modalContent);
 }
 
+// 关闭管理员信息弹窗
 function closeAdminInfoModal() {
     document.querySelectorAll('.modal-overlay, .modal-content').forEach(el => el.remove());
 }
 
+// 处理登出操作
 function handleLogout() {
+    // 清除本地存储中的用户信息
     clearUserFromStorage();
     
+    // 重置当前用户为默认状态
     currentUser = {
         name: '超级管理员',
         role: 'super_admin',
@@ -273,6 +300,7 @@ function handleLogout() {
         storeName: null
     };
     
+    // 切换回登录页面
     document.getElementById('mainContainer').style.display = 'none';
     document.getElementById('loginContainer').style.display = 'block';
     document.getElementById('loginForm').reset();

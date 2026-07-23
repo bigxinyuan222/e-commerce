@@ -1,8 +1,13 @@
+// 客服会话数据缓存
 let chatData = [];
+// 当前选中的会话ID
 let currentChatId = '';
+// 会话状态筛选
 let filterStatus = 'all';
+// 会话搜索关键词
 let currentChatSearchKeyword = '';
 
+// 加载客服会话列表
 async function loadChats() {
     try {
         const params = {
@@ -16,13 +21,14 @@ async function loadChats() {
             userId: item.userId || '',
             userName: item.userName || '',
             phone: item.phone || '',
-            avatar: (item.userName || '').charAt(0) || '用',
+            avatar: (item.userName || '').charAt(0) || '用',  // 用户名首字作为头像
             status: item.status === 0 ? 'pending' : item.status === 1 ? 'active' : 'closed',
             lastMessage: item.lastMessage || '',
             lastTime: item.updatedAt || item.lastTime || '',
             unread: item.unreadCount || 0,
             messages: []
         }));
+        // 默认选中第一个会话并加载消息
         if (chatData.length > 0 && !currentChatId) {
             currentChatId = chatData[0].id;
             await loadChatMessages(currentChatId);
@@ -33,6 +39,7 @@ async function loadChats() {
     }
 }
 
+// 加载会话消息
 async function loadChatMessages(chatId) {
     try {
         const response = await apiGet(API_CONFIG.service.messages, {}, { id: chatId });
@@ -41,7 +48,7 @@ async function loadChatMessages(chatId) {
         if (chat) {
             chat.messages = dataList.map(item => ({
                 id: item.ID || item.id,
-                from: item.from === 'admin' ? 'other' : 'me',
+                from: item.from === 'admin' ? 'other' : 'me',  // admin发送的是other，用户发送的是me
                 content: item.content || '',
                 time: item.createdAt || item.time || '',
                 isAI: item.isAI || false
@@ -52,6 +59,7 @@ async function loadChatMessages(chatId) {
     }
 }
 
+// 获取会话状态标签HTML
 function getStatusBadge(status) {
     const colors = { pending: 'yellow', active: 'green', closed: 'gray' };
     const texts = { pending: '待接入', active: '进行中', closed: '已关闭' };
@@ -59,6 +67,7 @@ function getStatusBadge(status) {
     return `<span class="status-badge ${color}" style="font-size:11px;"><span class="dot"></span> ${texts[status] || status}</span>`;
 }
 
+// 根据筛选条件过滤会话列表
 function filterChats() {
     let filtered = chatData;
     if (filterStatus !== 'all') {
@@ -75,6 +84,7 @@ function filterChats() {
     return filtered;
 }
 
+// 执行会话搜索
 function searchChats() {
     const input = document.getElementById('chatSearchInput');
     if (input) {
@@ -83,6 +93,7 @@ function searchChats() {
     }
 }
 
+// 处理会话操作（接入/关闭）
 async function handleChatAction(chatId, action) {
     const chat = chatData.find(c => c.id === chatId);
     if (!chat) return;

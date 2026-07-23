@@ -1,10 +1,14 @@
+// 支付记录数据缓存
 let paymentData = [];
+// 退款记录数据缓存
 let refundData = [];
 
+// 支付筛选条件
 let currentPaymentSearchKeyword = '';
 let currentPaymentMethodFilter = 'all';
 let currentPaymentStatusFilter = 'all';
 
+// 加载支付记录列表
 async function loadPayments() {
     try {
         const params = {
@@ -29,6 +33,7 @@ async function loadPayments() {
     }
 }
 
+// 加载退款记录列表
 async function loadRefunds() {
     try {
         const response = await apiGet(API_CONFIG.payments.refundList);
@@ -48,6 +53,7 @@ async function loadRefunds() {
     }
 }
 
+// 获取支付状态标签HTML
 function getPaymentStatusBadge(status) {
     const colors = { success: 'green', failed: 'red', refunded: 'red', processing: 'yellow' };
     const texts = { success: '成功', failed: '失败', refunded: '已退款', processing: '处理中' };
@@ -55,6 +61,7 @@ function getPaymentStatusBadge(status) {
     return `<span class="status-badge ${color}"><span class="dot"></span> ${texts[status] || status}</span>`;
 }
 
+// 根据筛选条件过滤支付记录
 function filterPayments() {
     let filtered = paymentData;
     if (currentPaymentMethodFilter !== 'all') {
@@ -73,6 +80,7 @@ function filterPayments() {
     return filtered;
 }
 
+// 执行支付记录搜索
 function searchPayments() {
     const input = document.getElementById('paymentSearchInput');
     if (input) {

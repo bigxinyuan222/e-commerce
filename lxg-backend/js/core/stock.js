@@ -1,6 +1,9 @@
+// 库存数据缓存
 let stockData = [];
+// 库存日志数据缓存
 let stockLogData = [];
 
+// 加载库存日志数据
 async function loadStock() {
     try {
         const response = await apiGet(API_CONFIG.inventory.logs);
@@ -9,13 +12,13 @@ async function loadStock() {
             id: log.ID || log.id,
             skuId: log.skuId || '',
             skuName: log.skuName || '',
-            type: log.type || 'adjust',
+            type: log.type || 'adjust',           // 操作类型：in/out/loss/adjust
             typeText: log.typeText || '调整',
-            quantity: log.quantity || 0,
-            beforeStock: log.beforeStock || 0,
-            afterStock: log.afterStock || 0,
-            orderId: log.orderId || null,
-            operator: log.operator || '',
+            quantity: log.quantity || 0,          // 变动数量
+            beforeStock: log.beforeStock || 0,    // 变动前库存
+            afterStock: log.afterStock || 0,      // 变动后库存
+            orderId: log.orderId || null,         // 关联订单ID（销售出库时）
+            operator: log.operator || '',         // 操作人
             createTime: log.CreatedAt || log.createdAt || ''
         }));
         refreshStockPage();
@@ -24,16 +27,19 @@ async function loadStock() {
     }
 }
 
-let currentStockSearchKeyword = '';
-let currentStockWarehouseFilter = '总仓';
-let currentStockLogTimeFilter = '';
-let currentStockLogSkuFilter = '';
+// 库存筛选条件
+let currentStockSearchKeyword = '';        // 库存搜索关键词
+let currentStockWarehouseFilter = '总仓';   // 仓库筛选
+let currentStockLogTimeFilter = '';         // 日志时间筛选
+let currentStockLogSkuFilter = '';          // 日志SKU筛选
 
+// 获取库存状态标签HTML（预警/正常）
 function getStatusBadge(status) {
     if (status === 'warning') return '<span class="status-badge red"><span class="dot"></span> 预警</span>';
     return '<span class="status-badge green"><span class="dot"></span> 正常</span>';
 }
 
+// 根据当前条件筛选库存列表
 function filterStock() {
     let filtered = stockData;
     if (currentStockSearchKeyword) {
@@ -47,6 +53,7 @@ function filterStock() {
     return filtered;
 }
 
+// 执行库存搜索（从搜索框获取关键词）
 function searchStock() {
     const input = document.getElementById('stockSearchInput');
     if (input) {
@@ -55,11 +62,13 @@ function searchStock() {
     }
 }
 
+// 切换仓库筛选
 function switchStockWarehouse(warehouse) {
     currentStockWarehouseFilter = warehouse;
     refreshStockPage();
 }
 
+// 根据当前条件筛选库存日志
 function filterStockLog() {
     let filtered = stockLogData;
     if (currentStockLogTimeFilter) {
@@ -75,6 +84,7 @@ function filterStockLog() {
     return filtered;
 }
 
+// 设置库存日志筛选条件
 function setStockLogFilter(type, value) {
     if (type === 'time') {
         currentStockLogTimeFilter = value;
@@ -84,6 +94,7 @@ function setStockLogFilter(type, value) {
     refreshStockPage();
 }
 
+// 获取库存操作类型标签HTML
 function getTypeBadge(type) {
     const colors = { in: 'green', out: 'yellow', loss: 'red', adjust: 'blue' };
     const texts = { in: '采购入库', out: '销售出库', loss: '损耗', adjust: '盘盈/盘亏' };
@@ -91,10 +102,12 @@ function getTypeBadge(type) {
     return `<span class="status-badge ${color}"><span class="dot"></span> ${texts[type] || type}</span>`;
 }
 
+// 获取库存预警列表（库存低于阈值）
 function getWarningList() {
     return stockData.filter(s => s.stock <= s.threshold);
 }
 
+// 处理库存调整操作
 function handleStockAdjust(skuId, type, quantity, reason) {
     const sku = stockData.find(s => s.id === skuId);
     if (!sku) return;

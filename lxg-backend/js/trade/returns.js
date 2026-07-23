@@ -1,5 +1,7 @@
+// 退货退款数据缓存
 let returnsData = [];
 
+// 获取门店选项HTML（用于退货筛选下拉框）
 function getReturnStoreOptions() {
     const stores = typeof storesData !== 'undefined' && Array.isArray(storesData) ? storesData : [];
     return stores.map(store => `
@@ -7,6 +9,7 @@ function getReturnStoreOptions() {
     `).join('');
 }
 
+// 获取退货状态标签HTML
 function getStatusBadge(status) {
     const colors = { pending: 'yellow', approved: 'blue', rejected: 'red', refunded: 'green' };
     const texts = { pending: '待审核', approved: '已通过', rejected: '已拒绝', refunded: '已完成' };
@@ -14,6 +17,7 @@ function getStatusBadge(status) {
     return `<span class="status-badge ${color}"><span class="dot"></span> ${texts[status] || status}</span>`;
 }
 
+// 获取退货原因标签HTML
 function getReasonBadge(reasonType) {
     const classes = {
         quality: 'tag trade-reason-tag-quality',
@@ -26,16 +30,20 @@ function getReasonBadge(reasonType) {
     return `<span class="${classes[reasonType] || 'tag'}">${texts[reasonType] || texts.other}</span>`;
 }
 
+// 退货筛选条件
 let currentReturnSearchKeyword = '';
 let currentReturnStatusFilter = 'all';
 let currentReturnStoreFilter = 'all';
 let currentReturnPage = 1;
 let returnPageSize = 5;
 
+// 退货原因配置数据
 let returnReasonsData = [];
 
+// 当前退货原因标签页
 let returnReasonTab = null;
 
+// 加载退货退款列表
 async function loadReturns() {
     try {
         const params = {
@@ -48,6 +56,7 @@ async function loadReturns() {
         };
         const result = await apiGet(API_CONFIG.returns.list, params);
         const dataList = result && result.list ? result.list : (Array.isArray(result) ? result : []);
+        // 标准化退货数据格式
         returnsData = dataList.map(item => ({
             id: item.ID || item.id,
             orderId: item.orderId || '',
@@ -76,6 +85,7 @@ async function loadReturns() {
     }
 }
 
+// 加载退货原因配置列表
 async function loadReturnReasons() {
     try {
         const result = await apiGet(API_CONFIG.returns.reasonList);
