@@ -1,6 +1,9 @@
+// 门店数据缓存
 let storesData = [];
+// 门店数据是否已加载完成
 let storesLoaded = false;
 
+// 加载门店列表数据
 async function loadStores() {
     const token = getAuthToken();
     console.log('Loading stores with token:', token ? 'Token exists' : 'No token');
@@ -10,20 +13,22 @@ async function loadStores() {
         console.log('Store API Response:', response);
         const dataList = response && response.list ? response.list : (Array.isArray(response) ? response : []);
         console.log('Parsed store list:', dataList);
+        // 标准化门店数据格式
         storesData = dataList.map(store => ({
             id: String(store.ID || store.id),
             name: store.name,
             address: store.address,
             phone: store.phone,
             businessHours: store.businessHours,
-            status: store.status === 1 ? 'active' : 'disabled',
+            status: store.status === 1 ? 'active' : 'disabled',  // active:营业中, disabled:已停用
             createTime: store.CreatedAt || store.createdAt || '',
-            orderCount: store.orderCount || 0,
-            clerkCount: store.clerkCount || 0
+            orderCount: store.orderCount || 0,    // 订单数量
+            clerkCount: store.clerkCount || 0     // 店员数量
         }));
         console.log('Processed storesData:', storesData);
     } catch (error) {
         console.error('Failed to load stores:', error);
+        // 处理登录失效
         if (error.message.includes('401') || error.message.includes('token')) {
             showToast('登录已失效，请重新登录', 'error');
             localStorage.removeItem('lexiangou_admin_user');
@@ -36,6 +41,7 @@ async function loadStores() {
     }
 }
 
+// 获取门店状态标签HTML
 function getStatusBadge(status) {
     const colors = { active: 'green', disabled: 'red' };
     const texts = { active: '营业中', disabled: '已停用' };
@@ -43,6 +49,7 @@ function getStatusBadge(status) {
     return `<span class="status-badge ${color}"><span class="dot"></span> ${texts[status] || status}</span>`;
 }
 
+// 处理门店操作（启用/停用/删除）
 async function handleStoreAction(storeId, action) {
     const store = storesData.find(s => s.id === storeId);
     if (!store) return;

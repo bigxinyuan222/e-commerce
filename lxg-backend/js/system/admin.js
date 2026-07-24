@@ -1,7 +1,11 @@
+// 管理员数据缓存
 let adminData = [];
+// 门店列表缓存（用于选择门店）
 let storesList = [];
+// 角色数据缓存
 let roleData = [];
 
+// 权限模块定义（用于角色权限配置）
 const permissionModules = [
     { id: 'stats', name: '数据统计' },
     { id: 'goods', name: '商品管理' },
@@ -20,10 +24,12 @@ const permissionModules = [
     { id: 'system', name: '系统设置' }
 ];
 
-let currentAdminSearchKeyword = '';
-let currentAdminRoleFilter = 'all';
-let currentAdminStatusFilter = 'all';
+// 管理员筛选条件
+let currentAdminSearchKeyword = '';    // 搜索关键词
+let currentAdminRoleFilter = 'all';    // 角色筛选
+let currentAdminStatusFilter = 'all';  // 状态筛选
 
+// 加载管理员列表
 async function loadAdmins() {
     try {
         const params = {
@@ -32,12 +38,13 @@ async function loadAdmins() {
         };
         const response = await apiGet(API_CONFIG.admin.list, params);
         const dataList = response && response.list ? response.list : (Array.isArray(response) ? response : []);
+        // 标准化管理员数据（手机号脱敏处理）
         adminData = dataList.map(item => ({
             id: item.ID || item.id,
             username: item.username || '',
             realName: item.name || '',
-            phone: item.phone ? item.phone.replace(/(\d{3})\d{4}(\d{4})/, '$1****$2') : '',
-            role: item.role && item.role.id ? item.role.id : (item.role || ''),
+            phone: item.phone ? item.phone.replace(/(\d{3})\d{4}(\d{4})/, '$1****$2') : '',  // 手机号脱敏
+            role: item.role && (item.role.id || item.role.ID) ? (item.role.id || item.role.ID) : (item.role || ''),
             roleName: item.role && item.role.name ? item.role.name : '',
             storeId: item.store && item.store.id ? item.store.id : null,
             storeName: item.store && item.store.name ? item.store.name : null,
@@ -45,6 +52,21 @@ async function loadAdmins() {
             createTime: item.created_at || item.createdAt || item.createTime || '',
             lastLogin: item.last_login || item.lastLogin || ''
         }));
+        // The current backend embeds roles in the admin list and does not expose GET /roles.
+        if (!roleData.length) {
+            const rolesById = new Map();
+            dataList.forEach(item => {
+                if (!item.role) return;
+                const id = item.role.id || item.role.ID;
+                if (id) rolesById.set(id, {
+                    id,
+                    name: item.role.name || '',
+                    permissions: item.role.permissions || [],
+                    description: item.role.description || ''
+                });
+            });
+            roleData = Array.from(rolesById.values());
+        }
         refreshAdminPage();
     } catch (error) {
         console.error('Failed to load admins:', error);
@@ -52,6 +74,7 @@ async function loadAdmins() {
     }
 }
 
+// 加载门店列表（用于管理员分配门店）
 async function loadAdminStores() {
     try {
         const response = await apiGet(API_CONFIG.stores.list);
@@ -66,6 +89,7 @@ async function loadAdminStores() {
     }
 }
 
+// 加载角色列表（用于管理员分配角色）
 async function loadRoles() {
     try {
         const response = await apiGet(API_CONFIG.admin.roles);
@@ -82,6 +106,7 @@ async function loadRoles() {
     }
 }
 
+// 获取管理员状态标签HTML
 function getStatusBadge(status) {
     const colors = { active: 'green', inactive: 'gray' };
     const texts = { active: '启用', inactive: '停用' };
@@ -89,6 +114,7 @@ function getStatusBadge(status) {
     return `<span class="status-badge ${color}"><span class="dot"></span> ${texts[status] || status}</span>`;
 }
 
+// 获取角色标签HTML
 function getRoleBadge(role) {
     const classes = {
         1: 'system-tag primary',
@@ -101,14 +127,18 @@ function getRoleBadge(role) {
     return `<span class="${classes[role] || 'system-tag'}">${text}</span>`;
 }
 
+// 根据筛选条件过滤管理员列表
 function filterAdmins() {
     let filtered = adminData;
+    // 角色筛选
     if (currentAdminRoleFilter !== 'all') {
         filtered = filtered.filter(a => a.role === currentAdminRoleFilter);
     }
+    // 状态筛选
     if (currentAdminStatusFilter !== 'all') {
         filtered = filtered.filter(a => a.status === currentAdminStatusFilter);
     }
+    // 关键词搜索（用户名、姓名、手机号）
     if (currentAdminSearchKeyword) {
         const keyword = currentAdminSearchKeyword.toLowerCase();
         filtered = filtered.filter(a => 
@@ -120,6 +150,7 @@ function filterAdmins() {
     return filtered;
 }
 
+// 执行管理员搜索
 function searchAdmins() {
     const input = document.getElementById('adminSearchInput');
     if (input) {
@@ -128,16 +159,19 @@ function searchAdmins() {
     }
 }
 
+// 切换角色筛选
 function switchAdminRole(role) {
     currentAdminRoleFilter = role;
     refreshAdminPage();
 }
 
+// 切换状态筛选
 function switchAdminStatus(status) {
     currentAdminStatusFilter = status;
     refreshAdminPage();
 }
 
+// 处理管理员操作（启用/停用/编辑/删除）
 async function handleAdminAction(adminId, action) {
     console.log('handleAdminAction called:', adminId, action);
     console.log('adminData:', adminData);
@@ -150,6 +184,7 @@ async function handleAdminAction(adminId, action) {
         return;
     }
     
+    // 超级管理员不可操作
     if (admin.role == 1) {
         showToast('超级管理员不可操作！', 'error');
         return;

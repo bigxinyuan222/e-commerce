@@ -1,10 +1,14 @@
+// 评价数据缓存
 let reviewsData = [];
+// AI总结数据缓存
 let aiSummaryData = [];
 
+// 评价筛选条件
 let currentReviewSearchKeyword = '';
 let currentReviewStatusFilter = 'all';
 let currentReviewRatingFilter = 'all';
 
+// 获取评价状态标签HTML
 function getStatusBadge(status) {
     const colors = { approved: 'green', pending: 'yellow', hidden: 'gray' };
     const texts = { approved: '显示', pending: '待审核', hidden: '隐藏' };
@@ -12,6 +16,7 @@ function getStatusBadge(status) {
     return `<span class="status-badge ${color}"><span class="dot"></span> ${texts[status] || status}</span>`;
 }
 
+// 获取AI总结状态标签HTML
 function getSummaryStatusBadge(status) {
     const colors = { approved: 'green', pending: 'yellow', rejected: 'red' };
     const texts = { approved: '已发布', pending: '待审核', rejected: '已拒绝' };
@@ -19,6 +24,7 @@ function getSummaryStatusBadge(status) {
     return `<span class="status-badge ${color}"><span class="dot"></span> ${texts[status] || status}</span>`;
 }
 
+// 根据评分获取评价等级标签
 function getRatingText(rating) {
     if (rating >= 4) {
         return `<span class="status-badge green"><span class="dot"></span> 好评</span>`;
@@ -29,6 +35,7 @@ function getRatingText(rating) {
     }
 }
 
+// 生成星级HTML
 function getRatingStars(rating) {
     let stars = '';
     for (let i = 1; i <= 5; i++) {
@@ -41,6 +48,7 @@ function getRatingStars(rating) {
     return stars;
 }
 
+// 加载评价列表
 async function loadReviews() {
     try {
         const response = await apiGet(API_CONFIG.reviews.list);
@@ -76,6 +84,7 @@ async function loadReviews() {
     }
 }
 
+// 加载AI评价总结列表
 async function loadSummaries() {
     try {
         const response = await apiGet(API_CONFIG.reviews.summaries);

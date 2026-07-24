@@ -1,5 +1,7 @@
+// 秒杀活动数据缓存
 let seckillData = [];
 
+// 获取秒杀活动状态标签HTML
 function getSeckillStatusBadge(status) {
     const colors = { active: 'green', pending: 'yellow', ended: 'gray', closed: 'red' };
     const texts = { active: '进行中', pending: '即将开始', ended: '已结束', closed: '已关闭' };
@@ -7,32 +9,38 @@ function getSeckillStatusBadge(status) {
     return `<span class="status-badge ${color}"><span class="dot"></span> ${texts[status] || status}</span>`;
 }
 
+// 获取秒杀活动总销售额
 function getSeckillSalesAmount() {
     const orders = typeof ordersData !== 'undefined' && Array.isArray(ordersData) ? ordersData : [];
     const total = orders.reduce((sum, o) => sum + (o.payAmount || o.totalAmount || 0), 0);
     return total > 0 ? `¥${(total / 10000).toFixed(1)}万` : '-';
 }
 
+// 获取秒杀活动订单数
 function getSeckillOrderCount() {
     const orders = typeof ordersData !== 'undefined' && Array.isArray(ordersData) ? ordersData : [];
     return orders.length > 0 ? orders.length : '-';
 }
 
+// 获取秒杀活动销售完成率
 function getSeckillSalesPercent() {
     return seckillData.length > 0 ? 75 : 0;
 }
 
+// 获取秒杀活动转化率文本
 function getSeckillConversionRate() {
     const orders = typeof ordersData !== 'undefined' && Array.isArray(ordersData) ? ordersData : [];
     const activeSeckill = seckillData.filter(s => s.status === 'active').length;
     return activeSeckill > 0 && orders.length > 0 ? '68.5%' : '-';
 }
 
+// 获取秒杀活动转化率数值
 function getSeckillConversionRatePercent() {
     const activeSeckill = seckillData.filter(s => s.status === 'active').length;
     return activeSeckill > 0 ? 68.5 : 0;
 }
 
+// 加载秒杀活动列表
 async function loadSeckill() {
     try {
         const response = await apiGet(API_CONFIG.seckill.activities);
@@ -58,6 +66,7 @@ async function loadSeckill() {
     }
 }
 
+// 处理秒杀活动操作（关闭/编辑/查看商品）
 async function handleSeckillAction(seckillId, action) {
     const seckill = seckillData.find(s => s.id === seckillId);
     if (!seckill) return;

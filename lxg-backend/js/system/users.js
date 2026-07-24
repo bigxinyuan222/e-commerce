@@ -1,7 +1,10 @@
+// 用户数据缓存
 let usersData = [];
+// 用户筛选条件
 let currentUserSearchKeyword = '';
 let currentUserStatusFilter = 'all';
 
+// 获取用户状态标签HTML
 function getStatusBadge(status) {
     const colors = { active: 'green', frozen: 'yellow', deleted: 'gray' };
     const texts = { active: '正常', frozen: '已冻结', deleted: '已注销' };
@@ -9,6 +12,7 @@ function getStatusBadge(status) {
     return `<span class="status-badge ${color}"><span class="dot"></span> ${texts[status] || status}</span>`;
 }
 
+// 根据筛选条件过滤用户列表
 function filterUsers() {
     let filtered = usersData;
     if (currentUserStatusFilter !== 'all') {
@@ -24,6 +28,7 @@ function filterUsers() {
     return filtered;
 }
 
+// 执行用户搜索
 function searchUsers() {
     const input = document.getElementById('userSearchInput');
     if (input) {
@@ -32,16 +37,19 @@ function searchUsers() {
     }
 }
 
+// 切换用户状态筛选
 function switchUserStatus(status) {
     currentUserStatusFilter = status;
     refreshUsersPage();
 }
 
+// 获取性别文本
 function getGenderText(gender) {
     const texts = { male: '男', female: '女', other: '其他' };
     return texts[gender] || gender;
 }
 
+// 加载用户列表
 async function loadUsers() {
     try {
         const response = await apiGet(API_CONFIG.users.list);
@@ -50,7 +58,7 @@ async function loadUsers() {
             id: user.ID || user.id,
             userName: user.userName || user.name || '',
             phone: user.phone || '',
-            avatar: (user.userName || user.name || '用').charAt(0),
+            avatar: (user.userName || user.name || '用').charAt(0),  // 使用用户名首字作为头像
             gender: user.gender || 'male',
             status: user.status === 1 ? 'active' : user.status === 0 ? 'frozen' : 'deleted',
             registerTime: user.CreatedAt || user.createdAt || '',
@@ -66,6 +74,7 @@ async function loadUsers() {
     }
 }
 
+// 处理用户操作（冻结/解冻/查看详情）
 async function handleUserAction(userId, action) {
     const user = usersData.find(u => u.id === userId);
     if (!user) return;

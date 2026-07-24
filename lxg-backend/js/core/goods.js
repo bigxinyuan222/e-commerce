@@ -1,15 +1,22 @@
+// 商品数据缓存
 let goodsData = [];
+// 分类数据缓存
 let categoriesData = [];
+// 品牌数据缓存
 let brandsData = [];
+// 规格数据缓存
 let specsData = [];
 
-let currentGoodsStatusFilter = 'all';
-let currentGoodsCategoryFilter = 'all';
-let currentGoodsSubCategoryFilter = 'all';
-let currentGoodsSearchKeyword = '';
+// 当前商品筛选条件
+let currentGoodsStatusFilter = 'all';      // 状态筛选：all/on_shelf/off_shelf
+let currentGoodsCategoryFilter = 'all';    // 分类筛选
+let currentGoodsSubCategoryFilter = 'all'; // 子分类筛选
+let currentGoodsSearchKeyword = '';        // 搜索关键词
 
+// 加载商品列表数据
 async function loadGoods() {
     try {
+        // 构建请求参数（空值不传）
         const params = {
             status: currentGoodsStatusFilter === 'all' ? '' : currentGoodsStatusFilter,
             category: currentGoodsCategoryFilter === 'all' ? '' : currentGoodsCategoryFilter,
@@ -17,7 +24,9 @@ async function loadGoods() {
             keyword: currentGoodsSearchKeyword
         };
         const response = await apiGet(API_CONFIG.goods.list, params);
+        // 兼容两种返回格式：{list: []} 或 []
         const dataList = response && response.list ? response.list : (Array.isArray(response) ? response : []);
+        // 标准化数据格式
         goodsData = dataList.map(item => ({
             id: item.ID || item.id,
             name: item.name || '',
@@ -33,16 +42,18 @@ async function loadGoods() {
             addCartCount: item.addCartCount || 0,
             orderCount: item.orderCount || 0
         }));
-        refreshGoodsPage();
+        refreshGoodsPage();  // 刷新页面展示
     } catch (error) {
         console.error('Failed to load goods:', error);
     }
 }
 
+// 加载商品分类数据
 async function loadCategories() {
     try {
         const response = await apiGet(API_CONFIG.goods.categories);
         const dataList = response && response.list ? response.list : (Array.isArray(response) ? response : []);
+        // 标准化分类数据（支持二级分类）
         categoriesData = dataList.map(item => ({
             id: item.ID || item.id,
             name: item.name || '',
@@ -59,6 +70,7 @@ async function loadCategories() {
     }
 }
 
+// 加载品牌数据
 async function loadBrands() {
     try {
         const response = await apiGet(API_CONFIG.goods.brands);
@@ -75,6 +87,7 @@ async function loadBrands() {
     }
 }
 
+// 加载商品规格数据
 async function loadSpecs() {
     try {
         const response = await apiGet(API_CONFIG.goods.specs);
@@ -90,12 +103,13 @@ async function loadSpecs() {
     }
 }
 
+// 设置商品筛选条件
 function setGoodsFilter(type, value) {
     if (type === 'status') {
         currentGoodsStatusFilter = value;
     } else if (type === 'category') {
         currentGoodsCategoryFilter = value;
-        currentGoodsSubCategoryFilter = 'all';
+        currentGoodsSubCategoryFilter = 'all';  // 切换分类时重置子分类
     } else if (type === 'subcategory') {
         currentGoodsSubCategoryFilter = value;
     } else if (type === 'keyword') {
@@ -103,6 +117,8 @@ function setGoodsFilter(type, value) {
     }
     refreshGoodsPage();
 }
+
+// 新增/编辑商品的临时数据缓存（用于表单草稿）
 let tempGoodsData = {
     name: '',
     brand: '',
@@ -114,6 +130,7 @@ let tempGoodsData = {
     skus: []
 };
 
+// 获取商品状态标签HTML
 function getStatusBadge(status) {
     const colors = { on_shelf: 'green', off_shelf: 'gray' };
     const texts = { on_shelf: '上架', off_shelf: '下架' };
@@ -121,17 +138,22 @@ function getStatusBadge(status) {
     return `<span class="status-badge ${color}"><span class="dot"></span> ${texts[status] || status}</span>`;
 }
 
+// 根据当前筛选条件过滤商品列表
 function filterGoods() {
     let filtered = goodsData;
+    // 状态筛选
     if (currentGoodsStatusFilter !== 'all') {
         filtered = filtered.filter(g => g.status === currentGoodsStatusFilter);
     }
+    // 分类筛选
     if (currentGoodsCategoryFilter !== 'all') {
         filtered = filtered.filter(g => g.category === currentGoodsCategoryFilter);
     }
+    // 子分类筛选
     if (currentGoodsSubCategoryFilter !== 'all') {
         filtered = filtered.filter(g => g.subCategory === currentGoodsSubCategoryFilter);
     }
+    // 关键词搜索（支持商品名、ID、分类、品牌）
     if (currentGoodsSearchKeyword) {
         const keyword = currentGoodsSearchKeyword.toLowerCase();
         filtered = filtered.filter(g => 
@@ -144,6 +166,7 @@ function filterGoods() {
     return filtered;
 }
 
+// 执行商品搜索（从搜索框获取关键词）
 function searchGoods() {
     const input = document.getElementById('goodsSearchInput');
     if (input) {
@@ -152,14 +175,17 @@ function searchGoods() {
     }
 }
 
+// 处理商品操作（上架/下架/删除）
 function handleGoodsAction(goodsId, action) {
     const goods = goodsData.find(g => g.id === goodsId);
     if (!goods) return;
     
     if (action === 'toggle_shelf') {
+        // 切换上下架状态
         goods.status = goods.status === 'on_shelf' ? 'off_shelf' : 'on_shelf';
         refreshGoodsPage();
     } else if (action === 'delete') {
+        // 删除商品（需确认）
         showConfirm(`确定删除商品 ${goods.name} 吗？`, function() {
             goodsData = goodsData.filter(g => g.id !== goodsId);
             refreshGoodsPage();
@@ -167,10 +193,12 @@ function handleGoodsAction(goodsId, action) {
     }
 }
 
+// 全选/取消全选商品列表
 function toggleSelectAllGoods(checked) {
     document.querySelectorAll('.goods-checkbox').forEach(cb => cb.checked = checked);
 }
 
+// 批量上下架商品
 function batchShelfGoods(status) {
     const checked = document.querySelectorAll('.goods-checkbox:checked');
     if (checked.length === 0) {
@@ -178,6 +206,7 @@ function batchShelfGoods(status) {
         return;
     }
     const ids = Array.from(checked).map(cb => cb.value);
+    // 更新选中商品的状态
     ids.forEach(id => {
         const goods = goodsData.find(g => g.id === id);
         if (goods) {
@@ -188,6 +217,7 @@ function batchShelfGoods(status) {
     refreshGoodsPage();
 }
 
+// 批量删除商品（需确认）
 function batchDeleteGoods() {
     const checked = document.querySelectorAll('.goods-checkbox:checked');
     if (checked.length === 0) {
@@ -202,10 +232,12 @@ function batchDeleteGoods() {
     });
 }
 
+// 显示商品详情弹窗
 function showGoodsDetail(goodsId) {
     const goods = goodsData.find(g => g.id === goodsId);
     if (!goods) return;
     
+    // 计算转化率（订单数/浏览量）
     const conversionRate = goods.views > 0 ? ((goods.orderCount / goods.views) * 100).toFixed(2) : '0.00';
     
     const modalContent = `

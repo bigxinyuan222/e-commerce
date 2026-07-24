@@ -1,7 +1,11 @@
+// 轮播图数据缓存
 let bannerData = [];
+// 推荐位数据缓存
 let recommendData = [];
+// 首页商品数据缓存（用于选择关联商品）
 let homepageGoodsData = [];
 
+// 加载首页可用商品列表（用于轮播图和推荐位关联商品）
 async function loadHomepageGoods() {
     try {
         const response = await apiGet(API_CONFIG.goods.list);
@@ -18,6 +22,7 @@ async function loadHomepageGoods() {
     }
 }
 
+// 加载轮播图数据
 async function loadBanners() {
     try {
         const response = await apiGet(API_CONFIG.homepage.banners);
@@ -26,12 +31,13 @@ async function loadBanners() {
             id: item.ID || item.id,
             image: item.image || '',
             title: item.title || '',
-            linkType: item.linkType || 'none',
-            link: item.link || '',
-            sort: item.sort || 0,
+            linkType: item.linkType || 'none',  // 跳转类型
+            link: item.link || '',               // 跳转链接
+            sort: item.sort || 0,                // 排序值
             status: item.status === 1 ? 'active' : item.status === 0 ? 'draft' : 'pending',
             createTime: item.createdAt || item.createTime || ''
         }));
+        // 按排序值升序排列
         bannerData.sort((a, b) => (a.sort || 0) - (b.sort || 0));
         refreshHomepagePage();
     } catch (error) {
@@ -39,6 +45,7 @@ async function loadBanners() {
     }
 }
 
+// 加载推荐位数据
 async function loadRecommendations() {
     try {
         const response = await apiGet(API_CONFIG.homepage.recommendations);
@@ -47,7 +54,7 @@ async function loadRecommendations() {
             id: item.ID || item.id,
             name: item.name || '',
             status: item.status === 1 ? 'active' : 'inactive',
-            goods: (item.products || item.goods || []).map(g => g.productId || g.goodsId || g.id || ''),
+            goods: (item.products || item.goods || []).map(g => g.productId || g.goodsId || g.id || ''),  // 关联商品ID列表
             createTime: item.createdAt || item.createTime || ''
         }));
         refreshHomepagePage();
@@ -56,6 +63,7 @@ async function loadRecommendations() {
     }
 }
 
+// 获取状态标签HTML（首页模块专用）
 function getStatusBadge(status) {
     const colors = { active: 'green', draft: 'gray', pending: 'yellow', inactive: 'gray' };
     const texts = { active: '已发布', draft: '草稿', pending: '待审核', inactive: '已下架' };
@@ -63,16 +71,19 @@ function getStatusBadge(status) {
     return `<span class="status-badge ${color}"><span class="dot"></span> ${texts[status] || status}</span>`;
 }
 
+// 获取跳转类型文本
 function getLinkTypeText(type) {
     const texts = { none: '无跳转', goods: '商品详情', activity: '活动页', category: '分类页', external: '外部链接' };
     return texts[type] || type;
 }
 
+// 处理轮播图操作（上移/下移/发布/删除）
 async function handleBannerAction(bannerId, action) {
     const index = bannerData.findIndex(b => b.id === bannerId);
     if (index === -1) return;
     
     if (action === 'up') {
+        // 上移轮播图（调整排序）
         if (index === 0) {
             showToast('已经是第一个了', 'error');
             return;
@@ -84,6 +95,7 @@ async function handleBannerAction(bannerId, action) {
         bannerData[index - 1].sort = index;
         refreshHomepagePage();
     } else if (action === 'down') {
+        // 下移轮播图（调整排序）
         if (index === bannerData.length - 1) {
             showToast('已经是最后一个了', 'error');
             return;

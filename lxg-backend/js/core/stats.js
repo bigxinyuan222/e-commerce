@@ -1,10 +1,13 @@
+// 当前统计时间范围（7天/30天）
 let currentStatsRange = '7d';
 
+// 获取角色特定的统计数据
 function getRoleSpecificStats() {
     const role = currentUser ? currentUser.role : 'super_admin';
     const now = new Date();
-    const todayStr = now.toISOString().split('T')[0];
+    const todayStr = now.toISOString().split('T')[0];  // 获取今日日期字符串
     
+    // 收集各模块数据（处理未定义情况）
     let stats = {
         orders: (typeof ordersData !== 'undefined' && Array.isArray(ordersData)) ? ordersData : [],
         returns: (typeof returnsData !== 'undefined' && Array.isArray(returnsData)) ? returnsData : [],
@@ -14,36 +17,40 @@ function getRoleSpecificStats() {
         coupons: (typeof couponsData !== 'undefined' && Array.isArray(couponsData)) ? couponsData : []
     };
     
+    // 门店用户只看自己门店的数据
     if (currentUser && currentUser.storeId) {
         stats.orders = stats.orders.filter(o => o.storeId === currentUser.storeId);
         stats.returns = stats.returns.filter(r => r.storeId === currentUser.storeId);
     }
     
+    // 计算今日订单和已支付订单
     const todayOrders = stats.orders.filter(o => o.createTime.startsWith(todayStr));
     const paidOrders = stats.orders.filter(o => o.status !== 'pending_payment');
     
     return {
         orders: stats.orders,
-        todayOrderCount: todayOrders.length,
-        todaySales: todayOrders.reduce((sum, o) => sum + (o.payAmount || o.totalAmount), 0),
-        pendingPayment: stats.orders.filter(o => o.status === 'pending_payment').length,
-        pendingDelivery: stats.orders.filter(o => o.status === 'pending_delivery').length,
-        pendingPickup: stats.orders.filter(o => o.status === 'pending_pickup').length,
-        pendingRefunds: stats.returns.filter(r => r.status === 'pending').length,
-        pendingReviews: stats.reviews.filter(r => r.status === 'pending').length,
-        lowStock: stats.stock.filter(s => s.stock <= s.threshold).length,
-        newUsers: stats.users.filter(u => u.registerTime.startsWith(todayStr)).length,
-        avgOrderValue: paidOrders.length > 0 ? Math.round(paidOrders.reduce((sum, o) => sum + (o.payAmount || o.totalAmount), 0) / paidOrders.length) : 0,
-        totalOrders: stats.orders.length,
-        totalSales: paidOrders.reduce((sum, o) => sum + (o.payAmount || o.totalAmount), 0),
+        todayOrderCount: todayOrders.length,                    // 今日订单数
+        todaySales: todayOrders.reduce((sum, o) => sum + (o.payAmount || o.totalAmount), 0),  // 今日销售额
+        pendingPayment: stats.orders.filter(o => o.status === 'pending_payment').length,  // 待支付
+        pendingDelivery: stats.orders.filter(o => o.status === 'pending_delivery').length,  // 待发货
+        pendingPickup: stats.orders.filter(o => o.status === 'pending_pickup').length,      // 待自提
+        pendingRefunds: stats.returns.filter(r => r.status === 'pending').length,           // 待退款
+        pendingReviews: stats.reviews.filter(r => r.status === 'pending').length,           // 待审核评价
+        lowStock: stats.stock.filter(s => s.stock <= s.threshold).length,                   // 库存预警
+        newUsers: stats.users.filter(u => u.registerTime.startsWith(todayStr)).length,     // 今日新用户
+        avgOrderValue: paidOrders.length > 0 ? Math.round(paidOrders.reduce((sum, o) => sum + (o.payAmount || o.totalAmount), 0) / paidOrders.length) : 0,  // 客单价
+        totalOrders: stats.orders.length,                     // 总订单数
+        totalSales: paidOrders.reduce((sum, o) => sum + (o.payAmount || o.totalAmount), 0), // 总销售额
         role: role
     };
 }
 
+// 获取门店销售排行榜（TOP6）
 function getStoreSalesRanking() {
     const storeSales = {};
     const orders = typeof ordersData !== 'undefined' && Array.isArray(ordersData) ? ordersData : [];
     
+    // 按门店汇总销售额
     orders.forEach(o => {
         const store = o.storeName || o.storeId || '未知门店';
         if (!storeSales[store]) {
@@ -52,6 +59,7 @@ function getStoreSalesRanking() {
         storeSales[store] += (o.payAmount || o.totalAmount || 0);
     });
     
+    // 排序并取前6名
     const sortedStores = Object.entries(storeSales)
         .sort((a, b) => b[1] - a[1])
         .slice(0, 6);
@@ -63,6 +71,7 @@ function getStoreSalesRanking() {
         return '<div style="text-align:center;padding:20px;color:#94a3b8;">暂无门店销售数据</div>';
     }
     
+    // 渲染排行榜HTML
     return sortedStores.map(([name, amount], index) => `
         <div style="display:flex;align-items:center;gap:8px;">
             <span style="width:24px;height:24px;background:${colors[index]};color:#fff;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;">${index + 1}</span>
@@ -75,10 +84,12 @@ function getStoreSalesRanking() {
     `).join('');
 }
 
+// 获取商品销量排行榜（TOP10）
 function getGoodsSalesRanking() {
     const goodsSales = {};
     const orders = typeof ordersData !== 'undefined' && Array.isArray(ordersData) ? ordersData : [];
     
+    // 按商品汇总销量和销售额
     orders.forEach(o => {
         if (o.items && Array.isArray(o.items)) {
             o.items.forEach(item => {
@@ -92,6 +103,7 @@ function getGoodsSalesRanking() {
         }
     });
     
+    // 按销量排序取前10名
     const sortedGoods = Object.entries(goodsSales)
         .sort((a, b) => b[1].sales - a[1].sales)
         .slice(0, 10);
@@ -100,6 +112,7 @@ function getGoodsSalesRanking() {
         return '<tr><td colspan="8" style="text-align:center;padding:20px;color:#94a3b8;">暂无商品销售数据</td></tr>';
     }
     
+    // 渲染表格行
     return sortedGoods.map(([name, data], index) => `
         <tr>
             <td>${index + 1}</td>
@@ -114,10 +127,12 @@ function getGoodsSalesRanking() {
     `).join('');
 }
 
+// 获取待办事项列表（带权限控制）
 function getTodoItems() {
     const stats = getRoleSpecificStats();
     const todos = [];
     
+    // 高优先级：待发货订单
     if (stats.pendingDelivery > 0 && hasPermission('orders')) {
         todos.push({
             id: 'delivery',
@@ -128,6 +143,7 @@ function getTodoItems() {
         });
     }
     
+    // 高优先级：待自提订单
     if (stats.pendingPickup > 0 && hasPermission('orders')) {
         todos.push({
             id: 'pickup',
@@ -138,6 +154,7 @@ function getTodoItems() {
         });
     }
     
+    // 高优先级：待审核退款
     if (stats.pendingRefunds > 0 && hasPermission('returns')) {
         todos.push({
             id: 'refunds',
@@ -148,6 +165,7 @@ function getTodoItems() {
         });
     }
     
+    // 中优先级：库存预警
     if (stats.lowStock > 0 && hasPermission('stock')) {
         todos.push({
             id: 'stock',
@@ -158,6 +176,7 @@ function getTodoItems() {
         });
     }
     
+    // 中优先级：待审核评价
     if (stats.pendingReviews > 0 && hasPermission('reviews')) {
         todos.push({
             id: 'reviews',
@@ -168,6 +187,7 @@ function getTodoItems() {
         });
     }
     
+    // 低优先级：待支付订单
     if (stats.pendingPayment > 0 && hasPermission('orders')) {
         todos.push({
             id: 'payment',
@@ -178,9 +198,10 @@ function getTodoItems() {
         });
     }
     
-    return todos.slice(0, 6);
+    return todos.slice(0, 6);  // 最多显示6条待办
 }
 
+// 处理统计卡片点击事件，跳转到对应页面
 function handleStatCardClick(action) {
     if (action === 'stock') {
         switchPage('stock');
@@ -191,22 +212,26 @@ function handleStatCardClick(action) {
     }
 }
 
+// 生成图表数据（按日期统计销售额）
 function generateChartData(range) {
-    const days = range === '7d' ? 7 : 30;
+    const days = range === '7d' ? 7 : 30;  // 根据范围确定天数
     const now = new Date();
     const data = [];
     const labels = [];
     
+    // 从过去倒数生成日期标签和数据
     for (let i = days - 1; i >= 0; i--) {
         const date = new Date(now);
         date.setDate(date.getDate() - i);
         
+        // 7天显示星期，30天显示日期
         if (range === '7d') {
             labels.push(['日', '一', '二', '三', '四', '五', '六'][date.getDay()]);
         } else {
             labels.push(`${date.getMonth() + 1}/${date.getDate()}`);
         }
         
+        // 统计当日销售额
         const dateStr = date.toISOString().split('T')[0];
         const stats = getRoleSpecificStats();
         const dayOrders = stats.orders.filter(o => o.createTime && o.createTime.startsWith(dateStr));
@@ -215,15 +240,18 @@ function generateChartData(range) {
         data.push(daySales);
     }
     
+    // 计算柱状图高度（归一化到160px）
     const maxVal = Math.max(...data, 1);
     const bars = data.map(v => Math.round((v / maxVal) * 160) || 10);
     
     return { labels, bars, data };
 }
 
+// 获取快捷操作列表（根据用户权限动态生成）
 function getQuickActions() {
     const actions = [];
     
+    // 商品管理权限：新增商品
     if (hasPermission('goods')) {
         actions.push({
             id: 'addGoods',
@@ -235,6 +263,7 @@ function getQuickActions() {
         });
     }
     
+    // 订单管理权限：批量发货
     if (hasPermission('orders')) {
         actions.push({
             id: 'batchDelivery',
@@ -246,6 +275,7 @@ function getQuickActions() {
         });
     }
     
+    // 退款管理权限：退款审核
     if (hasPermission('returns')) {
         actions.push({
             id: 'reviewRefunds',
@@ -257,6 +287,7 @@ function getQuickActions() {
         });
     }
     
+    // 营销管理权限：创建秒杀
     if (hasPermission('marketing')) {
         actions.push({
             id: 'createSeckill',
@@ -268,6 +299,7 @@ function getQuickActions() {
         });
     }
     
+    // 优惠券权限：创建优惠券
     if (hasPermission('coupons')) {
         actions.push({
             id: 'createCoupon',
@@ -279,6 +311,7 @@ function getQuickActions() {
         });
     }
     
+    // 库存管理权限：库存调整
     if (hasPermission('stock')) {
         actions.push({
             id: 'adjustStock',
@@ -293,11 +326,13 @@ function getQuickActions() {
     return actions;
 }
 
+// 渲染统计页面（仪表盘）
 function statsPage() {
     const stats = getRoleSpecificStats();
     const todos = getTodoItems();
     const chartData = generateChartData(currentStatsRange);
     
+    // 根据角色确定页面标题
     const roleTitle = {
         super_admin: '超级管理员工作台',
         goods_op: '商品运营工作台',
@@ -427,22 +462,25 @@ function statsPage() {
     `;
 }
 
+// 处理待办事项点击事件，跳转到对应页面
 function handleTodoClick(action) {
     switchPage(action);
 }
 
+// 处理快捷操作点击事件
 function handleQuickAction(action, subAction) {
     switchPage(action);
+    // 延迟300ms后执行子操作（等待页面切换完成）
     setTimeout(() => {
         if (action === 'goods' && subAction === 'add') {
             try { 
-                showAddGoodsModal();
+                showAddGoodsModal();  // 尝试调用商品模块的添加弹窗
             } catch(e) { 
                 console.error('showAddGoodsModal error:', e);
-                createAddGoodsModal();
+                createAddGoodsModal();  // 降级创建简易弹窗
             }
         } else if (action === 'coupons' && subAction === 'add') {
-            try { showAddCouponModal(); } catch(e) {}
+            if (typeof window.openCouponCreate === 'function') window.openCouponCreate();
         } else if (action === 'stock' && subAction === 'adjust') {
             try { showStockAdjustModal(); } catch(e) {}
         } else if (action === 'marketing' && subAction === 'seckill') {

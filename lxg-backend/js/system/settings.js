@@ -1,5 +1,7 @@
+// 操作日志数据缓存
 let operationLogData = [];
 
+// 日志模块名称映射
 const logModuleLabels = {
     goods: '商品管理',
     stock: '库存管理',
@@ -10,6 +12,7 @@ const logModuleLabels = {
     user: '用户管理'
 };
 
+// 日志操作类型名称映射
 const logTypeLabels = {
     add: '新增',
     edit: '修改',
@@ -17,6 +20,7 @@ const logTypeLabels = {
     query: '查询'
 };
 
+// 日志操作类型样式映射
 const logTypeStyles = {
     add: 'system-tag blue',
     edit: 'system-tag yellow',
@@ -24,6 +28,7 @@ const logTypeStyles = {
     query: 'system-tag primary'
 };
 
+// 日志筛选条件
 let currentLogModuleFilter = 'all';
 let currentLogOperatorFilter = '';
 let currentLogStartDate = '';
@@ -31,6 +36,7 @@ let currentLogEndDate = '';
 let currentLogPage = 1;
 let logPageSize = 10;
 
+// 加载操作日志列表
 async function loadLogs() {
     try {
         const params = {
@@ -58,20 +64,26 @@ async function loadLogs() {
     }
 }
 
+// 根据筛选条件过滤日志列表
 function filterLogs() {
     let filtered = [...operationLogData];
+    // 模块筛选
     if (currentLogModuleFilter !== 'all') {
         filtered = filtered.filter(l => l.module === currentLogModuleFilter);
     }
+    // 操作人筛选
     if (currentLogOperatorFilter) {
         filtered = filtered.filter(l => l.operator.toLowerCase().includes(currentLogOperatorFilter.toLowerCase()));
     }
+    // 开始日期筛选
     if (currentLogStartDate) {
         filtered = filtered.filter(l => l.time >= currentLogStartDate);
     }
+    // 结束日期筛选
     if (currentLogEndDate) {
         filtered = filtered.filter(l => l.time <= currentLogEndDate + ' 23:59:59');
     }
+    // 按时间倒序排列
     return filtered.sort((a, b) => new Date(b.time) - new Date(a.time));
 }
 
