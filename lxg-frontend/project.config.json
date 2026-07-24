@@ -2,7 +2,7 @@
   "miniprogramRoot": "dist/",
   "projectname": "taro_template",
   "description": "taro_template",
-  "appid": "wxe343fd8e2e99956e",
+  "appid": "touristappid",
   "setting": {
     "urlCheck": true,
     "es6": false,
@@ -44,5 +44,6 @@
     "ignore": [],
     "include": []
   },
-  "editorSetting": {}
+  "editorSetting": {},
+  "libVersion": "3.16.2"
 }

@@ -26,6 +26,8 @@ const MENU_GROUPS = [
 
 const ROLES = {
     super_admin: { name: '超级管理员', menus: ['stats', 'goods', 'stock', 'reviews', 'coupons', 'marketing', 'orders', 'service', 'stores', 'returns', 'users', 'admin', 'homepage', 'payment', 'notification', 'settings'] },
+    admin: { name: '超级管理员', menus: ['stats', 'goods', 'stock', 'reviews', 'coupons', 'marketing', 'orders', 'service', 'stores', 'returns', 'users', 'admin', 'homepage', 'payment', 'notification', 'settings'] },
+    user: { name: '普通用户', menus: ['stats', 'orders', 'service'] },
     goods_op: { name: '商品运营', menus: ['stats', 'goods', 'stock', 'reviews', 'coupons', 'marketing'] },
     order_cs: { name: '订单客服', menus: ['orders', 'service'] },
     store_staff: { name: '门店店员', menus: ['stores', 'returns'] }
@@ -33,12 +35,7 @@ const ROLES = {
 
 const SYSTEM_MENUS = ['users', 'admin', 'homepage', 'payment', 'notification', 'settings'];
 
-const ACCOUNTS = [
-    { username: 'admin', password: 'admin123', name: '超级管理员', role: 'super_admin' },
-    { username: 'goods_op', password: 'goods123', name: '商品运营', role: 'goods_op' },
-    { username: 'order_cs', password: 'order123', name: '订单客服', role: 'order_cs' },
-    { username: 'store_staff', password: 'store123', name: '门店店员', role: 'store_staff', storeId: 'store-001', storeName: '北京朝阳店' }
-];
+
 
 function loadUserFromStorage() {
     const saved = localStorage.getItem('lexiangou_admin_user');
@@ -65,7 +62,8 @@ let currentUser = savedUser || {
     name: '超级管理员',
     role: 'super_admin',
     storeId: null,
-    storeName: null
+    storeName: null,
+    token: ''
 };
 
 function hasPermission(menuId) {
@@ -75,16 +73,16 @@ function hasPermission(menuId) {
 
 function showConfirm(message, onConfirm, onCancel) {
     const modalContent = `
-        <div class="modal-overlay" style="position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.5);z-index:2000;display:flex;align-items:center;justify-content:center;" onclick="closeConfirm()"></div>
-        <div class="modal-content" style="position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:#fff;border-radius:12px;box-shadow:0 25px 50px -12px rgba(0,0,0,0.25);display:flex;flex-direction:column;z-index:2001;width:420px;overflow:hidden;">
-            <div class="modal-header" style="padding:20px 24px;border-bottom:1px solid #e2e8f0;display:flex;justify-content:space-between;align-items:center;">
-                <h3 style="font-size:16px;font-weight:600;color:#1e293b;margin:0;"><i class="fas fa-exclamation-circle" style="color:#f59e0b;margin-right:8px;"></i> 确认操作</h3>
-                <button onclick="closeConfirm()" class="modal-close" style="background:none;border:none;color:#94a3b8;cursor:pointer;font-size:16px;padding:4px;"><i class="fas fa-times"></i></button>
+        <div class="modal-overlay" onclick="closeConfirm()"></div>
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-exclamation-circle"></i> 确认操作</h3>
+                <button onclick="closeConfirm()" class="modal-close"><i class="fas fa-times"></i></button>
             </div>
-            <div class="modal-body" style="padding:24px;">
-                <p style="font-size:14px;color:#475569;line-height:1.6;margin:0;">${message}</p>
+            <div class="modal-body">
+                <p>${message}</p>
             </div>
-            <div class="modal-footer" style="padding:16px 24px;border-top:1px solid #e2e8f0;display:flex;justify-content:flex-end;gap:10px;">
+            <div class="modal-footer">
                 <button class="btn btn-outline" onclick="closeConfirm()">取消</button>
                 <button class="btn btn-primary" onclick="confirmCallback(true);closeConfirm();"><i class="fas fa-check"></i> 确认</button>
             </div>

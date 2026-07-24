@@ -144,6 +144,30 @@ function getTypeColor(type) {
     return colors[type] || '#64748b';
 }
 
+function getTypeClass(type) {
+    const classes = {
+        goods: 'type-color-goods type-bg-goods',
+        orders: 'type-color-orders type-bg-orders',
+        users: 'type-color-users type-bg-users',
+        stores: 'type-color-stores type-bg-stores',
+        coupons: 'type-color-coupons type-bg-coupons',
+        reviews: 'type-color-reviews type-bg-reviews'
+    };
+    return classes[type] || '';
+}
+
+function getTypeIconClass(type) {
+    const classes = {
+        goods: 'type-color-goods',
+        orders: 'type-color-orders',
+        users: 'type-color-users',
+        stores: 'type-color-stores',
+        coupons: 'type-color-coupons',
+        reviews: 'type-color-reviews'
+    };
+    return classes[type] || '';
+}
+
 function openSearchPanel() {
     if (document.getElementById('searchPanel')) {
         return;
@@ -152,24 +176,24 @@ function openSearchPanel() {
     loadSearchSettings();
     
     const panel = `
-        <div id="searchPanel" style="position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.5);z-index:9999;display:flex;align-items:flex-start;justify-content:center;padding-top:15vh;">
-            <div style="background:#fff;border-radius:16px;box-shadow:0 50px 100px -25px rgba(0,0,0,0.3);width:100%;max-width:720px;overflow:hidden;">
-                <div style="padding:20px 24px;border-bottom:1px solid #e2e8f0;">
-                    <div style="display:flex;align-items:center;gap:12px;">
-                        <i class="fas fa-search" style="color:#64748b;font-size:20px;"></i>
-                        <input id="searchInput" type="text" placeholder="搜索订单号、商品名称、手机号..." style="flex:1;border:none;font-size:18px;outline:none;color:#1e293b;" autofocus />
-                        <div style="display:flex;gap:8px;">
-                            <button style="padding:6px 12px;border:1px solid #e2e8f0;border-radius:6px;font-size:13px;color:#64748b;cursor:pointer;" onclick="closeSearchPanel()">取消</button>
+        <div id="searchPanel" class="search-panel">
+            <div class="search-panel-content">
+                <div class="search-panel-header">
+                    <div class="search-panel-input-row">
+                        <i class="fas fa-search"></i>
+                        <input id="searchInput" class="search-panel-input" type="text" placeholder="搜索订单号、商品名称、手机号..." autofocus />
+                        <div class="search-panel-actions">
+                            <button class="search-panel-cancel" onclick="closeSearchPanel()">取消</button>
                         </div>
                     </div>
-                    <div style="display:flex;gap:16px;margin-top:8px;font-size:12px;color:#94a3b8;">
+                    <div class="search-panel-hints">
                         <span><i class="fas fa-keyboard"></i> Enter 选择</span>
                         <span><i class="fas fa-arrow-up-down"></i> 上下导航</span>
                         <span><i class="fas fa-star"></i> Ctrl+S 收藏</span>
                     </div>
                 </div>
                 
-                <div id="searchContent" style="max-height:50vh;overflow-y:auto;">
+                <div id="searchContent" class="search-panel-body">
                     ${renderSearchDefault()}
                 </div>
             </div>
@@ -210,11 +234,11 @@ function handleSearchKeydown(e) {
 
 function renderSearchDefault() {
     return `
-        <div style="padding:16px;">
+        <div class="search-section">
             ${searchFavorites.length > 0 ? `
-            <div style="margin-bottom:16px;">
-                <div style="font-size:12px;font-weight:600;color:#94a3b8;margin-bottom:8px;">收藏的搜索</div>
-                <div style="display:flex;flex-wrap:wrap;gap:6px;">
+            <div>
+                <div class="search-section-title">收藏的搜索</div>
+                <div class="search-tags">
                     ${searchFavorites.map(q => `
                         <button class="search-tag" onclick="doSearch('${q}')">${q}</button>
                     `).join('')}
@@ -222,12 +246,12 @@ function renderSearchDefault() {
             </div>` : ''}
             
             ${searchHistory.length > 0 ? `
-            <div style="margin-bottom:16px;">
-                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
-                    <div style="font-size:12px;font-weight:600;color:#94a3b8;">搜索历史</div>
-                    <button style="font-size:12px;color:#4f6ef7;cursor:pointer;" onclick="clearSearchHistory()">清空</button>
+            <div class="search-section">
+                <div class="search-section-header">
+                    <div class="search-section-title">搜索历史</div>
+                    <button class="search-section-clear" onclick="clearSearchHistory()">清空</button>
                 </div>
-                <div style="display:flex;flex-wrap:wrap;gap:6px;">
+                <div class="search-tags">
                     ${searchHistory.map(q => `
                         <button class="search-tag" onclick="doSearch('${q}')">${q}</button>
                     `).join('')}
@@ -235,8 +259,8 @@ function renderSearchDefault() {
             </div>` : ''}
             
             <div>
-                <div style="font-size:12px;font-weight:600;color:#94a3b8;margin-bottom:8px;">快捷搜索</div>
-                <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;">
+                <div class="search-section-title">快捷搜索</div>
+                <div class="search-quick-grid">
                     <button class="quick-search-btn" onclick="doSearch('待发货')"><i class="fas fa-truck"></i> 待发货订单</button>
                     <button class="quick-search-btn" onclick="doSearch('退款')"><i class="fas fa-undo"></i> 退款申请</button>
                     <button class="quick-search-btn" onclick="doSearch('库存预警')"><i class="fas fa-exclamation-triangle"></i> 库存预警</button>
@@ -252,32 +276,32 @@ function renderSearchDefault() {
 function renderSearchResults(results, query) {
     if (results.length === 0) {
         return `
-            <div style="padding:40px;text-align:center;">
-                <i class="fas fa-search" style="font-size:48px;color:#e2e8f0;margin-bottom:12px;"></i>
-                <div style="font-size:14px;color:#64748b;">未找到相关结果</div>
-                <div style="font-size:12px;color:#94a3b8;margin-top:4px;">试试其他关键词</div>
+            <div class="search-empty">
+                <i class="fas fa-search"></i>
+                <div class="search-empty-title">未找到相关结果</div>
+                <div class="search-empty-desc">试试其他关键词</div>
             </div>
         `;
     }
     
     return results.map(group => `
-        <div style="padding:12px 20px;border-bottom:1px solid #f1f4f9;">
-            <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
-                <i class="${getTypeIcon(group.type)}" style="color:${getTypeColor(group.type)};"></i>
-                <span style="font-size:13px;font-weight:600;color:#334155;">${getTypeLabel(group.type)}</span>
-                <span style="font-size:12px;color:#94a3b8;">(${group.items.length}条)</span>
+        <div class="search-result-group">
+            <div class="search-result-group-header">
+                <i class="${getTypeIcon(group.type)} ${getTypeIconClass(group.type)}"></i>
+                <span class="search-result-group-label">${getTypeLabel(group.type)}</span>
+                <span class="search-result-group-count">(${group.items.length}条)</span>
             </div>
-            <div style="display:flex;flex-direction:column;gap:4px;">
+            <div class="search-result-list">
                 ${group.items.map(item => `
-                    <div class="search-result-item" style="display:flex;align-items:center;gap:12px;padding:8px;border-radius:8px;cursor:pointer;transition:background 0.15s;" onmouseover="this.style.background='#f8fafc'" onmouseout="this.style.background='transparent'" onclick="handleSearchResultClick('${group.type}', '${item.id}', '${query}')">
-                        <div style="width:36px;height:36px;background:${getTypeColor(group.type)}15;border-radius:8px;display:flex;align-items:center;justify-content:center;">
-                            <i class="${getTypeIcon(group.type)}" style="color:${getTypeColor(group.type)};"></i>
+                    <div class="search-result-item" onclick="handleSearchResultClick('${group.type}', '${item.id}', '${query}')">
+                        <div class="search-result-item-icon ${getTypeClass(group.type)}">
+                            <i class="${getTypeIcon(group.type)}"></i>
                         </div>
-                        <div style="flex:1;min-width:0;">
-                            <div style="font-size:13px;font-weight:500;color:#1e293b;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${highlightText(item.name, query)}</div>
-                            <div style="font-size:12px;color:#94a3b8;">${item.id}</div>
+                        <div class="search-result-item-info">
+                            <div class="search-result-item-name">${highlightText(item.name, query)}</div>
+                            <div class="search-result-item-id">${item.id}</div>
                         </div>
-                        <div style="font-size:12px;color:#64748b;">${getTypeLabel(group.type)}</div>
+                        <div class="search-result-item-type">${getTypeLabel(group.type)}</div>
                     </div>
                 `).join('')}
             </div>
@@ -287,7 +311,7 @@ function renderSearchResults(results, query) {
 
 function highlightText(text, query) {
     const regex = new RegExp(`(${query})`, 'gi');
-    return text.replace(regex, '<span style="background:#fef3c7;color:#d97706;">$1</span>');
+    return text.replace(regex, '<span class="search-highlight">$1</span>');
 }
 
 function handleSearchResultClick(type, id, query) {

@@ -1,20 +1,60 @@
-let bannerData = [
-    { id: 'banner-001', image: 'https://via.placeholder.com/800x300', title: '春季新品首发', linkType: 'activity', link: '/promo/spring', sort: 1, status: 'active', createTime: '2026-06-20' },
-    { id: 'banner-002', image: 'https://via.placeholder.com/800x300', title: '夏日清凉特惠', linkType: 'activity', link: '/promo/summer', sort: 2, status: 'draft', createTime: '2026-06-22' },
-    { id: 'banner-003', image: 'https://via.placeholder.com/800x300', title: '618大促狂欢', linkType: 'activity', link: '/promo/618', sort: 3, status: 'active', createTime: '2026-06-18' },
-    { id: 'banner-004', image: 'https://via.placeholder.com/800x300', title: '会员专享福利', linkType: 'activity', link: '/promo/member', sort: 4, status: 'pending', createTime: '2026-06-24' },
-    { id: 'banner-005', image: 'https://via.placeholder.com/800x300', title: '秋季新品预售', linkType: 'goods', link: 'goods-001', sort: 5, status: 'active', createTime: '2026-06-25' },
-    { id: 'banner-006', image: 'https://via.placeholder.com/800x300', title: '数码好物推荐', linkType: 'category', link: '手机数码', sort: 6, status: 'draft', createTime: '2026-06-25' }
-];
+let bannerData = [];
+let recommendData = [];
+let homepageGoodsData = [];
 
-let recommendData = [
-    { id: 'rec-001', name: '首页-精选', status: 'active', goods: ['goods-001', 'goods-002', 'goods-003'], createTime: '2026-06-01' },
-    { id: 'rec-002', name: '首页-新品', status: 'active', goods: ['goods-002', 'goods-005'], createTime: '2026-06-05' },
-    { id: 'rec-003', name: '首页-特惠', status: 'active', goods: ['goods-003', 'goods-004'], createTime: '2026-06-10' },
-    { id: 'rec-004', name: '首页-数码', status: 'inactive', goods: ['goods-001', 'goods-005'], createTime: '2026-06-15' },
-    { id: 'rec-005', name: '首页-服饰', status: 'inactive', goods: [], createTime: '2026-06-18' },
-    { id: 'rec-006', name: '首页-运动', status: 'inactive', goods: [], createTime: '2026-06-20' }
-];
+async function loadHomepageGoods() {
+    try {
+        const response = await apiGet(API_CONFIG.goods.list);
+        const dataList = response && response.list ? response.list : (Array.isArray(response) ? response : []);
+        homepageGoodsData = dataList.map(item => ({
+            id: item.ID || item.id,
+            name: item.name || '',
+            price: item.originalPrice || item.price || 0,
+            image: item.image || 'https://via.placeholder.com/100x100'
+        }));
+    } catch (error) {
+        console.error('Failed to load goods for homepage:', error);
+        homepageGoodsData = [];
+    }
+}
+
+async function loadBanners() {
+    try {
+        const response = await apiGet(API_CONFIG.homepage.banners);
+        const dataList = response && response.list ? response.list : (Array.isArray(response) ? response : []);
+        bannerData = dataList.map(item => ({
+            id: item.ID || item.id,
+            image: item.image || '',
+            title: item.title || '',
+            linkType: item.linkType || 'none',
+            link: item.link || '',
+            sort: item.sort || 0,
+            status: item.status === 1 ? 'active' : item.status === 0 ? 'draft' : 'pending',
+            createTime: item.createdAt || item.createTime || ''
+        }));
+        bannerData.sort((a, b) => (a.sort || 0) - (b.sort || 0));
+        refreshHomepagePage();
+    } catch (error) {
+        console.error('Failed to load banners:', error);
+    }
+}
+
+async function loadRecommendations() {
+    try {
+        const response = await apiGet(API_CONFIG.homepage.recommendations);
+        const dataList = response && response.list ? response.list : (Array.isArray(response) ? response : []);
+        recommendData = dataList.map(item => ({
+            id: item.ID || item.id,
+            name: item.name || '',
+            status: item.status === 1 ? 'active' : 'inactive',
+            goods: (item.products || item.goods || []).map(g => g.productId || g.goodsId || g.id || ''),
+            createTime: item.createdAt || item.createTime || ''
+        }));
+        refreshHomepagePage();
+    } catch (error) {
+        console.error('Failed to load recommendations:', error);
+    }
+}
 
 function getStatusBadge(status) {
     const colors = { active: 'green', draft: 'gray', pending: 'yellow', inactive: 'gray' };
@@ -28,13 +68,13 @@ function getLinkTypeText(type) {
     return texts[type] || type;
 }
 
-function handleBannerAction(bannerId, action) {
+async function handleBannerAction(bannerId, action) {
     const index = bannerData.findIndex(b => b.id === bannerId);
     if (index === -1) return;
     
     if (action === 'up') {
         if (index === 0) {
-            alert('已经是第一个了');
+            showToast('已经是第一个了', 'error');
             return;
         }
         const temp = bannerData[index];
@@ -45,7 +85,7 @@ function handleBannerAction(bannerId, action) {
         refreshHomepagePage();
     } else if (action === 'down') {
         if (index === bannerData.length - 1) {
-            alert('已经是最后一个了');
+            showToast('已经是最后一个了', 'error');
             return;
         }
         const temp = bannerData[index];
@@ -55,16 +95,36 @@ function handleBannerAction(bannerId, action) {
         bannerData[index + 1].sort = index + 2;
         refreshHomepagePage();
     } else if (action === 'publish') {
-        bannerData[index].status = 'active';
-        alert('轮播图已发布！');
+        try {
+            await apiPut(API_CONFIG.homepage.toggleBanner, { status: 1 }, { id: bannerId });
+            bannerData[index].status = 'active';
+            showToast('轮播图已发布！', 'success');
+            refreshHomepagePage();
+        } catch (error) {
+            console.error('Failed to publish banner:', error);
+            showToast('操作失败，请重试', 'error');
+        }
     } else if (action === 'unpublish') {
-        bannerData[index].status = 'draft';
-        alert('轮播图已下架！');
+        try {
+            await apiPut(API_CONFIG.homepage.toggleBanner, { status: 0 }, { id: bannerId });
+            bannerData[index].status = 'draft';
+            showToast('轮播图已下架！', 'success');
+            refreshHomepagePage();
+        } catch (error) {
+            console.error('Failed to unpublish banner:', error);
+            showToast('操作失败，请重试', 'error');
+        }
     } else if (action === 'delete') {
-        showConfirm('确定删除此轮播图吗？', function() {
-            bannerData.splice(index, 1);
-            bannerData.forEach((b, i) => b.sort = i + 1);
-            alert('轮播图已删除！');
+        showConfirm('确定删除此轮播图吗？', async function() {
+            try {
+                await apiDelete(API_CONFIG.homepage.deleteBanner, {}, { id: bannerId });
+                bannerData.splice(index, 1);
+                bannerData.forEach((b, i) => b.sort = i + 1);
+                showToast('轮播图已删除！', 'success');
+            } catch (error) {
+                console.error('Failed to delete banner:', error);
+                showToast('操作失败，请重试', 'error');
+            }
             refreshHomepagePage();
         });
     } else {
@@ -72,18 +132,31 @@ function handleBannerAction(bannerId, action) {
     }
 }
 
-function handleRecommendAction(recId, action) {
+async function handleRecommendAction(recId, action) {
     const rec = recommendData.find(r => r.id === recId);
     if (!rec) return;
     
     if (action === 'toggle') {
-        rec.status = rec.status === 'active' ? 'inactive' : 'active';
-        alert(`${rec.name}已${rec.status === 'active' ? '启用' : '禁用'}！`);
+        try {
+            const newStatus = rec.status === 'active' ? 0 : 1;
+            await apiPut(API_CONFIG.homepage.editRecommendation, { status: newStatus }, { id: recId });
+            rec.status = rec.status === 'active' ? 'inactive' : 'active';
+            showToast(`${rec.name}已${rec.status === 'active' ? '启用' : '禁用'}！`, 'success');
+        } catch (error) {
+            console.error('Failed to toggle recommendation:', error);
+            showToast('操作失败，请重试', 'error');
+        }
         refreshHomepagePage();
     } else if (action === 'delete') {
-        showConfirm(`确定删除推荐位 ${rec.name} 吗？`, function() {
-            recommendData = recommendData.filter(r => r.id !== recId);
-            alert('推荐位已删除！');
+        showConfirm(`确定删除推荐位 ${rec.name} 吗？`, async function() {
+            try {
+                await apiDelete(API_CONFIG.homepage.deleteRecommendation, {}, { id: recId });
+                recommendData = recommendData.filter(r => r.id !== recId);
+                showToast('推荐位已删除！', 'success');
+            } catch (error) {
+                console.error('Failed to delete recommendation:', error);
+                showToast('操作失败，请重试', 'error');
+            }
             refreshHomepagePage();
         });
     }
@@ -204,7 +277,7 @@ function showAddBannerModal() {
     document.body.insertAdjacentHTML('beforeend', modalContent);
 }
 
-function saveBanner(bannerId = null) {
+async function saveBanner(bannerId = null) {
     const title = document.getElementById('bannerTitle').value.trim();
     const image = document.getElementById('bannerImage').value.trim();
     const linkType = document.getElementById('bannerLinkType').value;
@@ -213,40 +286,58 @@ function saveBanner(bannerId = null) {
     const status = document.getElementById('bannerStatus').value;
     
     if (!title) {
-        alert('请输入标题');
+        showToast('请输入标题', 'error');
         return;
     }
     
-    if (bannerId) {
-        const banner = bannerData.find(b => b.id === bannerId);
-        if (banner) {
-            banner.title = title;
-            banner.image = image || 'https://via.placeholder.com/800x300';
-            banner.linkType = linkType;
-            banner.link = link;
-            banner.sort = sort;
-            banner.status = status;
-            alert('轮播图已更新！');
+    const data = {
+        title: title,
+        image: image,
+        linkType: linkType,
+        link: link,
+        sort: sort,
+        status: status === 'active' ? 1 : 0
+    };
+    
+    try {
+        if (bannerId) {
+            await apiPut(API_CONFIG.homepage.editBanner, data, { id: bannerId });
+            const banner = bannerData.find(b => b.id === bannerId);
+            if (banner) {
+                banner.title = title;
+                banner.image = image;
+                banner.linkType = linkType;
+                banner.link = link;
+                banner.sort = sort;
+                banner.status = status;
+            }
+            showToast('轮播图已更新！', 'success');
+        } else {
+            const response = await apiPost(API_CONFIG.homepage.addBanner, data);
+            if (response && response.data) {
+                bannerData.push({
+                    id: response.data.ID || response.data.id,
+                    image: image,
+                    title: title,
+                    linkType: linkType,
+                    link: link,
+                    sort: sort,
+                    status: status,
+                    createTime: new Date().toISOString().replace('T', ' ').substring(0, 19)
+                });
+            }
+            showToast('轮播图创建成功！', 'success');
         }
-    } else {
-        bannerData.push({
-            id: 'banner-' + Date.now(),
-            image: image || 'https://via.placeholder.com/800x300',
-            title: title,
-            linkType: linkType,
-            link: link,
-            sort: sort,
-            status: status,
-            createTime: new Date().toISOString().replace('T', ' ').substring(0, 19)
-        });
-        alert('轮播图创建成功！');
+        
+        bannerData.sort((a, b) => a.sort - b.sort);
+        bannerData.forEach((b, i) => b.sort = i + 1);
+        
+        closeHomepageModal();
+        refreshHomepagePage();
+    } catch (error) {
+        console.error('Failed to save banner:', error);
+        showToast('保存失败，请重试', 'error');
     }
-    
-    bannerData.sort((a, b) => a.sort - b.sort);
-    bannerData.forEach((b, i) => b.sort = i + 1);
-    
-    closeHomepageModal();
-    refreshHomepagePage();
 }
 
 function closeHomepageModal() {
@@ -257,19 +348,8 @@ function showEditRecommendModal(recId) {
     const rec = recommendData.find(r => r.id === recId);
     if (!rec) return;
     
-    const mockGoods = [
-        { id: 'goods-001', name: 'iPhone 15 Pro Max', price: 9999, image: 'https://via.placeholder.com/100x100' },
-        { id: 'goods-002', name: '华为 Mate 60 Pro', price: 6999, image: 'https://via.placeholder.com/100x100' },
-        { id: 'goods-003', name: 'AirPods Pro 2代', price: 1899, image: 'https://via.placeholder.com/100x100' },
-        { id: 'goods-004', name: '小米手环 8 Pro', price: 399, image: 'https://via.placeholder.com/100x100' },
-        { id: 'goods-005', name: 'MacBook Pro 14寸', price: 16999, image: 'https://via.placeholder.com/100x100' },
-        { id: 'goods-006', name: '戴森吹风机', price: 2999, image: 'https://via.placeholder.com/100x100' },
-        { id: 'goods-007', name: 'SK-II神仙水', price: 1540, image: 'https://via.placeholder.com/100x100' },
-        { id: 'goods-008', name: '飞利浦电动牙刷', price: 1299, image: 'https://via.placeholder.com/100x100' },
-    ];
-    
-    const selectedGoods = mockGoods.filter(g => rec.goods.includes(g.id));
-    const availableGoods = mockGoods.filter(g => !rec.goods.includes(g.id));
+    const selectedGoods = homepageGoodsData.filter(g => rec.goods.includes(g.id));
+    const availableGoods = homepageGoodsData.filter(g => !rec.goods.includes(g.id));
     
     const modalContent = `
         <div class="modal-overlay" style="position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.5);z-index:1000;display:flex;align-items:center;justify-content:center;" onclick="closeHomepageModal()"></div>
@@ -345,7 +425,7 @@ function removeRecommendGood(recId, goodsId) {
 function saveRecommendGoods(recId) {
     const rec = recommendData.find(r => r.id === recId);
     if (rec) {
-        alert(`推荐位 ${rec.name} 商品已更新！`);
+        showToast(`推荐位 ${rec.name} 商品已更新！`, 'success');
         closeHomepageModal();
         refreshHomepagePage();
     }
@@ -389,13 +469,13 @@ function saveRecommend() {
     const status = document.getElementById('recommendStatus').value;
     
     if (!name) {
-        alert('请输入推荐位名称');
+        showToast('请输入推荐位名称', 'error');
         return;
     }
     
     const exists = recommendData.find(r => r.name === name);
     if (exists) {
-        alert('该推荐位名称已存在');
+        showToast('该推荐位名称已存在', 'error');
         return;
     }
     
@@ -407,7 +487,7 @@ function saveRecommend() {
         createTime: new Date().toISOString().substring(0, 10)
     });
     
-    alert('推荐位创建成功！');
+    showToast('推荐位创建成功！', 'success');
     closeHomepageModal();
     refreshHomepagePage();
 }

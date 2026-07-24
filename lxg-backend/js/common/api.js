@@ -1,8 +1,8 @@
-const API_BASE_URL = '/api/admin/v1';
+const API_BASE_URL = '/api/v1';
 
 const API_CONFIG = {
     auth: {
-        login: `${API_BASE_URL}/auth/login`,
+        login: `${API_BASE_URL}/admin/login`,
         logout: `${API_BASE_URL}/auth/logout`,
         info: `${API_BASE_URL}/auth/info`
     },
@@ -25,17 +25,23 @@ const API_CONFIG = {
         toggle: `${API_BASE_URL}/coupons/:id/toggle`,
         records: `${API_BASE_URL}/coupons/:id/records`
     },
-    notification: {
+    notifications: {
         list: `${API_BASE_URL}/notifications`,
         detail: `${API_BASE_URL}/notifications/:id`,
         add: `${API_BASE_URL}/notifications`,
-        delete: `${API_BASE_URL}/notifications/:id`
+        delete: `${API_BASE_URL}/notifications/:id`,
+        templates: `${API_BASE_URL}/notification-templates`,
+        addTemplate: `${API_BASE_URL}/notification-templates`,
+        editTemplate: `${API_BASE_URL}/notification-templates/:id`,
+        deleteTemplate: `${API_BASE_URL}/notification-templates/:id`
     },
     orders: {
-        list: `${API_BASE_URL}/orders`,
-        detail: `${API_BASE_URL}/orders/:id`,
-        cancel: `${API_BASE_URL}/orders/:id/cancel`,
-        ship: `${API_BASE_URL}/orders/:id/ship`
+        list: `${API_BASE_URL}/admin/orders`,
+        detail: `${API_BASE_URL}/admin/orders/:id`,
+        stats: `${API_BASE_URL}/admin/orders/stats`,
+        cancel: `${API_BASE_URL}/admin/orders/:id/cancel`,
+        ship: `${API_BASE_URL}/admin/orders/:id/ship`,
+        confirm: `${API_BASE_URL}/admin/orders/:id/confirm`
     },
     goods: {
         list: `${API_BASE_URL}/products`,
@@ -66,22 +72,22 @@ const API_CONFIG = {
         generateSummary: `${API_BASE_URL}/review-summaries/generate`
     },
     stores: {
-        list: `${API_BASE_URL}/stores`,
-        detail: `${API_BASE_URL}/stores/:id`,
-        add: `${API_BASE_URL}/stores`,
-        edit: `${API_BASE_URL}/stores/:id`,
-        toggle: `${API_BASE_URL}/stores/:id/toggle`,
-        delete: `${API_BASE_URL}/stores/:id`,
-        dashboard: `${API_BASE_URL}/stores/dashboard`
+        list: `${API_BASE_URL}/admin/stores`,
+        detail: `${API_BASE_URL}/admin/stores/:id`,
+        add: `${API_BASE_URL}/admin/stores`,
+        edit: `${API_BASE_URL}/admin/stores/:id`,
+        toggle: `${API_BASE_URL}/admin/stores/:id/toggle`,
+        delete: `${API_BASE_URL}/admin/stores/:id`,
+        dashboard: `${API_BASE_URL}/admin/stores/dashboard`
     },
     admin: {
-        list: `${API_BASE_URL}/admins`,
+        list: `${API_BASE_URL}/admin/list`,
         detail: `${API_BASE_URL}/admins/:id`,
-        add: `${API_BASE_URL}/admins`,
+        add: `${API_BASE_URL}/create/admin`,
         edit: `${API_BASE_URL}/admins/:id`,
-        toggle: `${API_BASE_URL}/admins/:id/toggle`,
+        toggle: `${API_BASE_URL}/enable/admin`,
         resetPassword: `${API_BASE_URL}/admins/:id/reset-password`,
-        delete: `${API_BASE_URL}/admins/:id`,
+        delete: `${API_BASE_URL}/delete/admin`,
         roles: `${API_BASE_URL}/roles`
     },
     settings: {
@@ -167,10 +173,11 @@ function replaceUrlParams(url, params) {
 }
 
 async function apiRequest(url, options = {}) {
+    const token = getAuthToken();
     const defaultOptions = {
         headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${getAuthToken()}`
+            ...(token ? { 'Authorization': `Bearer ${token}` } : {})
         },
         credentials: 'include'
     };
@@ -197,7 +204,16 @@ async function apiRequest(url, options = {}) {
         }
 
         const data = await response.json();
-        return data;
+        
+        if (data.code !== undefined && data.code !== 0 && data.code !== 200) {
+            console.log('API response error:', data);
+            const errorData = data.data || {};
+            const detailMsg = errorData.message || errorData.detail || '';
+            const fullMsg = detailMsg ? `${data.message}：${detailMsg}` : data.message;
+            throw new Error(fullMsg || 'API request failed');
+        }
+        
+        return data.data !== undefined ? data.data : data;
     } catch (error) {
         console.error('API Request Error:', error);
         throw error;
@@ -219,6 +235,38 @@ async function apiPost(url, data = {}, pathParams = {}) {
     });
 }
 
+async function apiPostWithQuery(url, queryParams = {}, pathParams = {}) {
+    const resolvedUrl = replaceUrlParams(url, pathParams);
+    const queryParts = [];
+    for (const key in queryParams) {
+        if (queryParams[key] !== undefined && queryParams[key] !== null) {
+            queryParts.push(`${encodeURIComponent(key)}=${encodeURIComponent(queryParams[key])}`);
+        }
+    }
+    const queryString = queryParts.join('&');
+    const fullUrl = resolvedUrl + (queryString ? '?' + queryString : '');
+    console.log('apiPostWithQuery URL:', fullUrl);
+    console.log('apiPostWithQuery params:', queryParams);
+    console.log('apiPostWithQuery queryString:', queryString);
+    
+    const token = getAuthToken();
+    const response = await fetch(fullUrl, {
+        method: 'POST',
+        headers: {
+            ...(token ? { 'Authorization': `Bearer ${token}` } : {})
+        },
+        credentials: 'include'
+    });
+    
+    const responseData = await response.json();
+    console.log('apiPostWithQuery response:', responseData);
+    
+    if (responseData.code !== undefined && responseData.code !== 0 && responseData.code !== 200) {
+        throw new Error(responseData.message || '请求失败');
+    }
+    return responseData.data !== undefined ? responseData.data : responseData;
+}
+
 async function apiPut(url, data = {}, pathParams = {}) {
     const resolvedUrl = replaceUrlParams(url, pathParams);
     return apiRequest(resolvedUrl, {
@@ -229,8 +277,9 @@ async function apiPut(url, data = {}, pathParams = {}) {
 
 async function apiDelete(url, data = {}, pathParams = {}) {
     const resolvedUrl = replaceUrlParams(url, pathParams);
-    return apiRequest(resolvedUrl, {
-        method: 'DELETE',
-        body: JSON.stringify(data)
-    });
+    const options = { method: 'DELETE' };
+    if (Object.keys(data).length > 0) {
+        options.body = JSON.stringify(data);
+    }
+    return apiRequest(resolvedUrl, options);
 }

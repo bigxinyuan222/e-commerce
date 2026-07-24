@@ -1,1 +1,7 @@
-*.zip filter=lfs diff=lfs merge=lfs -text
+# 告诉 Git：所有文件都按原样存储，不要自作聪明转换换行符
+* -text
+
+# 如果你希望源码还是保持 LF（推荐），可以单独指定
+*.js text eol=lf
+*.css text eol=lf  
+*.html text eol=lf

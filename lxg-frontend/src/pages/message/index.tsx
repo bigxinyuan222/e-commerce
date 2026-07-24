@@ -20,8 +20,10 @@ const MessagePage: React.FC = () => {
   };
 
   const handleMessageClick = (message: typeof messages[0]) => {
-    if (message.isOfficial || message.title.includes('客服')) {
-      Taro.navigateTo({ url: '/pages/customer-service/index' });
+    if (message.title.includes('客服')) {
+      Taro.navigateTo({ url: '/pages/message/customer-service/index' });
+    } else if (message.title.includes('推送')) {
+      Taro.navigateTo({ url: '/pages/user/coupons/index' });
     } else {
       Taro.showToast({
         title: '功能开发中',

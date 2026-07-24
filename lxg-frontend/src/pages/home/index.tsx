@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import { View, Text, Image, Swiper, SwiperItem, ScrollView } from '@tarojs/components';
 import Taro from '@tarojs/taro';
 import { banners, categories, seckillActivity } from '@/data/common/home';
@@ -113,6 +113,7 @@ const HomePage: React.FC = () => {
   const [activeTab, setActiveTab] = useState('recommend');
   const [countdown, setCountdown] = useState({ hours: '00', minutes: '00', seconds: '00' });
   const hotBrands = useMemo(() => getHotBrands(), []) as any[];
+  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   
   const recommendedProducts = useMemo(() => {
     if (activeTab === 'recommend') {
@@ -172,13 +173,22 @@ const HomePage: React.FC = () => {
           minutes: minutes.toString().padStart(2, '0'),
           seconds: seconds.toString().padStart(2, '0')
         });
+      } else {
+        if (timerRef.current) {
+          clearInterval(timerRef.current);
+          timerRef.current = null;
+        }
       }
     };
 
     calculateCountdown();
-    const timer = setInterval(calculateCountdown, 1000);
+    timerRef.current = setInterval(calculateCountdown, 1000);
 
-    return () => clearInterval(timer);
+    return () => {
+      if (timerRef.current) {
+        clearInterval(timerRef.current);
+      }
+    };
   }, [endTime]);
 
   // 缓存分类数据，只取前8个
@@ -220,14 +230,18 @@ const HomePage: React.FC = () => {
         </View>
 
         {/* 分类导航 */}
-        <View className={styles.categoryNav}>
-          {displayCategories.map((category) => (
-            <CategoryNavItem 
-              key={category.id} 
-              category={category}
-              onClick={goToCategory}
-            />
-          ))}
+        <View className={styles.categoryNavWrap}>
+          <ScrollView scrollX className={styles.categoryNav} showScrollbar={false}>
+            <View className={styles.categoryNavInner}>
+              {displayCategories.map((category) => (
+                <CategoryNavItem 
+                  key={category.id} 
+                  category={category}
+                  onClick={goToCategory}
+                />
+              ))}
+            </View>
+          </ScrollView>
         </View>
 
         {/* 品牌馆入口 */}

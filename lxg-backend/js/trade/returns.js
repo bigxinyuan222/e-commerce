@@ -1,13 +1,11 @@
-let returnsData = [
-    { id: 'RET-20260625-001', orderId: 'ORD-20260624-008', goodsName: '无线蓝牙耳机 Pro', spec: '黑色', price: 299, refundAmount: 299, userId: 'user-001', userName: '王*明', phone: '138****8888', storeId: 'store-001', storeName: '北京朝阳店', reason: '质量问题', reasonType: 'quality', images: [], status: 'pending', statusText: '待审核', auditOpinion: null, createTime: '2026-06-25 14:30', auditTime: null, refundTime: null },
-    { id: 'RET-20260625-002', orderId: 'ORD-20260624-005', goodsName: '便携移动电源', spec: '白色', price: 159, refundAmount: 159, userId: 'user-002', userName: '刘*欣', phone: '139****6666', storeId: 'store-002', storeName: '上海浦东店', reason: '发错货', reasonType: 'wrong_item', images: [], status: 'approved', statusText: '已通过', auditOpinion: '同意退款，请用户寄回商品', createTime: '2026-06-25 11:20', auditTime: '2026-06-25 12:00', refundTime: null },
-    { id: 'RET-20260624-003', orderId: 'ORD-20260623-012', goodsName: '智能手表 S8', spec: '银色', price: 1299, refundAmount: 1299, userId: 'user-003', userName: '陈*宇', phone: '137****9999', storeId: 'store-003', storeName: '广州天河店', reason: '不想要了', reasonType: 'no_need', images: [], status: 'refunded', statusText: '已完成', auditOpinion: '同意退款', createTime: '2026-06-24 16:45', auditTime: '2026-06-24 17:30', refundTime: '2026-06-24 18:00' },
-    { id: 'RET-20260624-004', orderId: 'ORD-20260623-008', goodsName: '智能台灯 Pro', spec: '白色', price: 199, refundAmount: 199, userId: 'user-004', userName: '张*婷', phone: '136****5555', storeId: 'store-001', storeName: '北京朝阳店', reason: '质量问题', reasonType: 'quality', images: [], status: 'pending', statusText: '待审核', auditOpinion: null, createTime: '2026-06-24 14:10', auditTime: null, refundTime: null },
-    { id: 'RET-20260623-005', orderId: 'ORD-20260622-015', goodsName: '无线蓝牙耳机 Pro', spec: '黑色', price: 299, refundAmount: 299, userId: 'user-005', userName: '李*华', phone: '135****7777', storeId: 'store-001', storeName: '北京朝阳店', reason: '不想要了', reasonType: 'no_need', images: [], status: 'rejected', statusText: '已拒绝', auditOpinion: '商品已发货，暂不支持退货', createTime: '2026-06-23 09:30', auditTime: '2026-06-23 10:00', refundTime: null },
-    { id: 'RET-20260623-006', orderId: 'ORD-20260622-009', goodsName: '便携移动电源', spec: '黑色', price: 159, refundAmount: 159, userId: 'user-006', userName: '赵*阳', phone: '138****8888', storeId: 'store-004', storeName: '深圳南山店', reason: '发错货', reasonType: 'wrong_item', images: [], status: 'refunded', statusText: '已完成', auditOpinion: '同意退款', createTime: '2026-06-23 08:45', auditTime: '2026-06-23 09:15', refundTime: '2026-06-23 10:00' },
-    { id: 'RET-20260625-007', orderId: 'ORD-20260625-003', goodsName: '便携移动电源', spec: '白色', price: 159, refundAmount: 159, userId: 'user-007', userName: '孙*怡', phone: '139****2222', storeId: 'store-001', storeName: '北京朝阳店', reason: '商品损坏', reasonType: 'damaged', images: [], status: 'pending', statusText: '待审核', auditOpinion: null, createTime: '2026-06-25 16:00', auditTime: null, refundTime: null },
-    { id: 'RET-20260625-008', orderId: 'ORD-20260625-005', goodsName: '便携移动电源', spec: '蓝色', price: 99, refundAmount: 99, userId: 'user-008', userName: '周*杰', phone: '137****3333', storeId: 'store-004', storeName: '深圳南山店', reason: '不想要了', reasonType: 'no_need', images: [], status: 'approved', statusText: '已通过', auditOpinion: '同意退款', createTime: '2026-06-25 10:00', auditTime: '2026-06-25 11:00', refundTime: null }
-];
+let returnsData = [];
+
+function getReturnStoreOptions() {
+    const stores = typeof storesData !== 'undefined' && Array.isArray(storesData) ? storesData : [];
+    return stores.map(store => `
+        <option value="${store.name}" ${currentReturnStoreFilter === store.name ? 'selected' : ''}>${store.name}</option>
+    `).join('');
+}
 
 function getStatusBadge(status) {
     const colors = { pending: 'yellow', approved: 'blue', rejected: 'red', refunded: 'green' };
@@ -17,16 +15,15 @@ function getStatusBadge(status) {
 }
 
 function getReasonBadge(reasonType) {
-    const styles = {
-        quality: 'background:#fee2e2;color:#dc2626;',
-        wrong_item: 'background:#fff3e0;color:#e65100;',
-        no_need: 'background:#f3e5f5;color:#7b1fa2;',
-        damaged: 'background:#ffebee;color:#c62828;',
-        other: 'background:#e2e8f0;color:#64748b;'
+    const classes = {
+        quality: 'tag trade-reason-tag-quality',
+        wrong_item: 'tag trade-reason-tag-wrong',
+        no_need: 'tag trade-reason-tag-noneed',
+        damaged: 'tag trade-reason-tag-damaged',
+        other: 'tag'
     };
     const texts = { quality: '质量问题', wrong_item: '发错货', no_need: '不想要了', damaged: '商品损坏', other: '其他' };
-    const style = styles[reasonType] || styles.other;
-    return `<span class="tag" style="${style}">${texts[reasonType] || texts.other}</span>`;
+    return `<span class="${classes[reasonType] || 'tag'}">${texts[reasonType] || texts.other}</span>`;
 }
 
 let currentReturnSearchKeyword = '';
@@ -35,23 +32,11 @@ let currentReturnStoreFilter = 'all';
 let currentReturnPage = 1;
 let returnPageSize = 5;
 
-let returnReasonsData = [
-    { id: 'quality', name: '质量问题', type: 'quality', color: '#dc2626', bgColor: '#fee2e2', sort: 1, status: 'active' },
-    { id: 'wrong_item', name: '发错货', type: 'wrong_item', color: '#e65100', bgColor: '#fff3e0', sort: 2, status: 'active' },
-    { id: 'no_need', name: '不想要了', type: 'no_need', color: '#7b1fa2', bgColor: '#f3e5f5', sort: 3, status: 'active' },
-    { id: 'damaged', name: '商品损坏', type: 'damaged', color: '#c62828', bgColor: '#ffebee', sort: 4, status: 'active' },
-    { id: 'other', name: '其他', type: 'other', color: '#64748b', bgColor: '#e2e8f0', sort: 5, status: 'active' }
-];
+let returnReasonsData = [];
 
 let returnReasonTab = null;
 
-let useMockData = true;
-
-async function fetchReturnsData() {
-    if (useMockData) {
-        return returnsData;
-    }
-    
+async function loadReturns() {
     try {
         const params = {
             page: currentReturnPage,
@@ -62,24 +47,54 @@ async function fetchReturnsData() {
             storeId: currentUser.storeId || ''
         };
         const result = await apiGet(API_CONFIG.returns.list, params);
-        return result.data || [];
+        const dataList = result && result.list ? result.list : (Array.isArray(result) ? result : []);
+        returnsData = dataList.map(item => ({
+            id: item.ID || item.id,
+            orderId: item.orderId || '',
+            goodsName: item.productName || item.goodsName || '',
+            spec: item.spec || '',
+            price: item.price || 0,
+            refundAmount: item.refundAmount || 0,
+            userId: item.userId || '',
+            userName: item.userName || '',
+            phone: item.phone || '',
+            storeId: item.storeId || '',
+            storeName: item.storeName || '',
+            reason: item.reason || '',
+            reasonType: item.reasonType || 'other',
+            images: item.images || [],
+            status: item.status === 0 ? 'pending' : item.status === 1 ? 'approved' : item.status === 2 ? 'rejected' : 'refunded',
+            statusText: item.status === 0 ? '待审核' : item.status === 1 ? '已通过' : item.status === 2 ? '已拒绝' : '已完成',
+            auditOpinion: item.auditRemark || item.auditOpinion || '',
+            createTime: item.createdAt || item.CreatedAt || '',
+            auditTime: item.auditTime || '',
+            refundTime: item.refundTime || ''
+        }));
+        refreshReturnsPage();
     } catch (error) {
         console.error('获取退款列表失败:', error);
-        return returnsData;
     }
 }
 
-async function fetchReturnReasons() {
-    if (useMockData) {
-        return returnReasonsData;
-    }
-    
+async function loadReturnReasons() {
     try {
         const result = await apiGet(API_CONFIG.returns.reasonList);
-        return result.data || [];
+        if (result && result.data) {
+            returnReasonsData = result.data.map(item => ({
+                id: item.ID || item.id,
+                name: item.content || item.name || '',
+                type: item.type || '',
+                color: item.color || '#64748b',
+                bgColor: item.bgColor || '#e2e8f0',
+                sort: item.sort || 0,
+                status: item.status === 1 ? 'active' : 'inactive'
+            }));
+        } else {
+            returnReasonsData = [];
+        }
+        refreshReturnsPage();
     } catch (error) {
         console.error('获取退货原因失败:', error);
-        return returnReasonsData;
     }
 }
 
@@ -145,52 +160,46 @@ async function handleReturnAction(returnId, action) {
     if (!ret) return;
     
     if (action === 'approve') {
-        if (!useMockData) {
-            try {
-                await apiPut(API_CONFIG.returns.approve, { status: 1 }, { id: returnId });
-            } catch (error) {
-                console.error('审核通过失败:', error);
-                return;
-            }
+        try {
+            await apiPut(API_CONFIG.returns.approve, { status: 1 }, { id: returnId });
+            ret.status = 'approved';
+            ret.statusText = '已通过';
+            ret.auditTime = new Date().toISOString().replace('T', ' ').substring(0, 19);
+            showToast('审核通过！请通知用户寄回商品，门店收货确认后财务将执行打款。', 'success');
+            refreshReturnsPage();
+        } catch (error) {
+            console.error('审核通过失败:', error);
+            showToast('操作失败，请重试', 'error');
         }
-        ret.status = 'approved';
-        ret.statusText = '已通过';
-        ret.auditTime = new Date().toISOString().replace('T', ' ').substring(0, 19);
-        alert('审核通过！请通知用户寄回商品，门店收货确认后财务将执行打款。');
-        refreshReturnsPage();
     } else if (action === 'reject') {
         const opinion = prompt('请输入拒绝原因：');
         if (!opinion) return;
         
-        if (!useMockData) {
-            try {
-                await apiPut(API_CONFIG.returns.reject, { status: 2, audit_remark: opinion }, { id: returnId });
-            } catch (error) {
-                console.error('审核拒绝失败:', error);
-                return;
-            }
+        try {
+            await apiPut(API_CONFIG.returns.reject, { status: 2, audit_remark: opinion }, { id: returnId });
+            ret.status = 'rejected';
+            ret.statusText = '已拒绝';
+            ret.auditOpinion = opinion;
+            ret.auditTime = new Date().toISOString().replace('T', ' ').substring(0, 19);
+            showToast('审核已拒绝，系统将通知用户。', 'success');
+            refreshReturnsPage();
+        } catch (error) {
+            console.error('审核拒绝失败:', error);
+            showToast('操作失败，请重试', 'error');
         }
-        ret.status = 'rejected';
-        ret.statusText = '已拒绝';
-        ret.auditOpinion = opinion;
-        ret.auditTime = new Date().toISOString().replace('T', ' ').substring(0, 19);
-        alert('审核已拒绝，系统将通知用户。');
-        refreshReturnsPage();
     } else if (action === 'refund') {
         showConfirm('确定执行退款吗？此操作不可撤销。', async function() {
-            if (!useMockData) {
-                try {
-                    await apiPut(API_CONFIG.returns.confirmRefund, {}, { id: returnId });
-                } catch (error) {
-                    console.error('执行退款失败:', error);
-                    return;
-                }
+            try {
+                await apiPut(API_CONFIG.returns.confirmRefund, {}, { id: returnId });
+                ret.status = 'refunded';
+                ret.statusText = '已完成';
+                ret.refundTime = new Date().toISOString().replace('T', ' ').substring(0, 19);
+                showToast('退款已执行！', 'success');
+                refreshReturnsPage();
+            } catch (error) {
+                console.error('执行退款失败:', error);
+                showToast('操作失败，请重试', 'error');
             }
-            ret.status = 'refunded';
-            ret.statusText = '已完成';
-            ret.refundTime = new Date().toISOString().replace('T', ' ').substring(0, 19);
-            alert('退款已执行！');
-            refreshReturnsPage();
         });
     }
 }
@@ -200,112 +209,82 @@ function showReturnDetail(returnId) {
     if (!ret) return;
     
     const modalContent = `
-        <div class="modal-overlay" style="position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.5);z-index:1000;display:flex;align-items:center;justify-content:center;" onclick="closeReturnModal()"></div>
-        <div class="modal-content" style="position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:#fff;border-radius:12px;box-shadow:0 25px 50px -12px rgba(0,0,0,0.25);display:flex;flex-direction:column;max-height:80vh;overflow:hidden;z-index:1001;width:800px;">
+        <div class="modal-overlay" onclick="closeReturnModal()"></div>
+        <div class="modal-content" style="width:800px;">
             <div class="modal-header">
                 <h3><i class="fas fa-undo"></i> 退款详情 · ${ret.id}</h3>
                 <button onclick="closeReturnModal()" class="modal-close"><i class="fas fa-times"></i></button>
             </div>
             <div class="modal-body" style="max-height:60vh;overflow-y:auto;">
-                <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;">
-                    <div style="background:#f8fafc;border-radius:8px;padding:12px;">
-                        <div style="font-size:12px;color:#94a3b8;margin-bottom:4px;">退款单号</div>
-                        <div style="font-weight:600;">${ret.id}</div>
-                    </div>
-                    <div style="background:#f8fafc;border-radius:8px;padding:12px;">
-                        <div style="font-size:12px;color:#94a3b8;margin-bottom:4px;">关联订单</div>
-                        <div style="font-weight:600;">${ret.orderId}</div>
-                    </div>
-                    <div style="background:#f8fafc;border-radius:8px;padding:12px;">
-                        <div style="font-size:12px;color:#94a3b8;margin-bottom:4px;">退款状态</div>
-                        <div>${getStatusBadge(ret.status)}</div>
-                    </div>
-                    <div style="background:#f8fafc;border-radius:8px;padding:12px;">
-                        <div style="font-size:12px;color:#94a3b8;margin-bottom:4px;">门店</div>
-                        <div>${ret.storeName}</div>
-                    </div>
+                <div class="trade-return-detail-grid">
+                    <div class="trade-return-detail-card"><div class="label">退款单号</div><div class="value">${ret.id}</div></div>
+                    <div class="trade-return-detail-card"><div class="label">关联订单</div><div class="value">${ret.orderId}</div></div>
+                    <div class="trade-return-detail-card"><div class="label">退款状态</div><div>${getStatusBadge(ret.status)}</div></div>
+                    <div class="trade-return-detail-card"><div class="label">门店</div><div>${ret.storeName}</div></div>
                 </div>
                 
-                <div style="margin-bottom:16px;">
-                    <div style="font-weight:600;font-size:14px;margin-bottom:8px;">用户信息</div>
-                    <div style="background:#f8fafc;border-radius:8px;padding:16px;">
-                        <div style="display:flex;align-items:center;gap:12px;">
-                            <div style="width:48px;height:48px;background:#4f6ef7;color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:600;font-size:18px;">${ret.userName.charAt(0)}</div>
-                            <div>
-                                <div style="font-weight:600;font-size:14px;">${ret.userName}</div>
-                                <div style="font-size:13px;color:#64748b;">${ret.phone}</div>
-                            </div>
+                <div class="trade-return-user-section">
+                    <div class="trade-return-section-title">用户信息</div>
+                    <div class="trade-return-user-card">
+                        <div class="trade-return-user-avatar">${ret.userName.charAt(0)}</div>
+                        <div class="trade-return-user-info">
+                            <div class="name">${ret.userName}</div>
+                            <div class="phone">${ret.phone}</div>
                         </div>
                     </div>
                 </div>
                 
-                <div style="margin-bottom:16px;">
-                    <div style="font-weight:600;font-size:14px;margin-bottom:8px;">商品信息</div>
-                    <div style="border:1px solid #e2e8f0;border-radius:8px;overflow:hidden;">
-                        <div style="display:flex;padding:12px;border-bottom:1px solid #f1f4f9;">
-                            <span style="width:60px;height:60px;background:#e2e8f0;border-radius:6px;display:inline-block;margin-right:12px;"></span>
-                            <div style="flex:1;">
-                                <div style="font-weight:500;">${ret.goodsName}</div>
-                                <div style="font-size:12px;color:#94a3b8;">规格：${ret.spec}</div>
-                            </div>
-                            <div style="font-weight:600;color:#ef4444;">¥${ret.price}</div>
+                <div class="trade-return-goods-section">
+                    <div class="trade-return-section-title">商品信息</div>
+                    <div class="trade-return-goods-card">
+                        <span class="trade-return-goods-image"></span>
+                        <div class="trade-return-goods-info">
+                            <div class="name">${ret.goodsName}</div>
+                            <div class="spec">规格：${ret.spec}</div>
                         </div>
+                        <div class="trade-return-goods-price">¥${ret.price}</div>
                     </div>
                 </div>
                 
-                <div style="margin-bottom:16px;">
-                    <div style="font-weight:600;font-size:14px;margin-bottom:8px;">退款原因</div>
-                    <div style="background:#f8fafc;border-radius:8px;padding:16px;">
-                        <div style="display:flex;align-items:center;gap:12px;margin-bottom:8px;">
+                <div class="trade-return-reason-section">
+                    <div class="trade-return-section-title">退款原因</div>
+                    <div class="trade-return-reason-card">
+                        <div class="trade-return-reason-header">
                             ${getReasonBadge(ret.reasonType)}
-                            <span style="font-weight:600;">${ret.reason}</span>
+                            <span>${ret.reason}</span>
                         </div>
-                        <div style="font-size:13px;color:#64748b;">退款金额：<span style="font-weight:600;color:#ef4444;">¥${ret.refundAmount}</span></div>
+                        <div class="trade-return-refund-amount">退款金额：<span>¥${ret.refundAmount}</span></div>
                         ${ret.images && ret.images.length > 0 ? `
-                        <div style="margin-top:12px;">
-                            <div style="font-size:12px;color:#64748b;margin-bottom:8px;">凭证图片</div>
-                            <div style="display:flex;gap:8px;">
-                                ${ret.images.map((img, i) => `<div style="width:80px;height:80px;background:#e2e8f0;border-radius:6px;cursor:pointer;" onclick="previewImage(${i})"></div>`).join('')}
+                        <div class="trade-return-images">
+                            <div class="trade-return-images-label">凭证图片</div>
+                            <div class="trade-return-images-list">
+                                ${ret.images.map((img, i) => `<div class="trade-return-image-item" onclick="previewImage(${i})"></div>`).join('')}
                             </div>
                         </div>` : ''}
                     </div>
                 </div>
                 
                 ${ret.auditOpinion ? `
-                <div style="margin-bottom:16px;">
-                    <div style="font-weight:600;font-size:14px;margin-bottom:8px;">审核意见</div>
-                    <div style="background:#f8fafc;border-radius:8px;padding:16px;">
-                        <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
-                            <div style="width:32px;height:32px;background:#22c55e;color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:600;font-size:12px;">管</div>
-                            <div>
-                                <div style="font-weight:600;font-size:13px;">管理员</div>
-                                <div style="font-size:12px;color:#94a3b8;">${ret.auditTime || '-'}</div>
+                <div class="trade-return-audit-section">
+                    <div class="trade-return-section-title">审核意见</div>
+                    <div class="trade-return-audit-card">
+                        <div class="trade-return-audit-header">
+                            <div class="trade-return-audit-avatar">管</div>
+                            <div class="trade-return-audit-info">
+                                <div class="name">管理员</div>
+                                <div class="time">${ret.auditTime || '-'}</div>
                             </div>
                         </div>
-                        <div style="font-size:13px;line-height:1.6;padding-left:40px;">${ret.auditOpinion}</div>
+                        <div class="trade-return-audit-content">${ret.auditOpinion}</div>
                     </div>
                 </div>` : ''}
                 
-                <div>
-                    <div style="font-weight:600;font-size:14px;margin-bottom:8px;">时间节点</div>
-                    <div style="padding-left:20px;border-left:2px solid #e2e8f0;">
-                        <div style="position:relative;margin-bottom:12px;">
-                            <div style="width:10px;height:10px;background:#4f6ef7;border-radius:50%;position:absolute;left:-25px;top:4px;"></div>
-                            <div style="font-size:13px;">申请时间</div>
-                            <div style="font-size:12px;color:#94a3b8;">${ret.createTime}</div>
-                        </div>
-                        ${ret.auditTime ? `
-                        <div style="position:relative;margin-bottom:12px;">
-                            <div style="width:10px;height:10px;background:#3b82f6;border-radius:50%;position:absolute;left:-25px;top:4px;"></div>
-                            <div style="font-size:13px;">审核时间</div>
-                            <div style="font-size:12px;color:#94a3b8;">${ret.auditTime}</div>
-                        </div>` : ''}
-                        ${ret.refundTime ? `
-                        <div style="position:relative;">
-                            <div style="width:10px;height:10px;background:#22c55e;border-radius:50%;position:absolute;left:-25px;top:4px;"></div>
-                            <div style="font-size:13px;">退款时间</div>
-                            <div style="font-size:12px;color:#94a3b8;">${ret.refundTime}</div>
-                        </div>` : ''}
+                <div class="trade-return-timeline-section">
+                    <div class="trade-return-section-title">时间节点</div>
+                    <div class="trade-return-timeline">
+                        <div class="trade-return-timeline-item"><div class="dot blue"></div><div class="label">申请时间</div><div class="value">${ret.createTime}</div></div>
+                        ${ret.auditTime ? `<div class="trade-return-timeline-item"><div class="dot blue-light"></div><div class="label">审核时间</div><div class="value">${ret.auditTime}</div></div>` : ''}
+                        ${ret.refundTime ? `<div class="trade-return-timeline-item"><div class="dot green"></div><div class="label">退款时间</div><div class="value">${ret.refundTime}</div></div>` : ''}
                     </div>
                 </div>
             </div>
@@ -329,8 +308,8 @@ function showRefundRecordsModal() {
     const refundedRecords = returnsData.filter(r => r.status === 'refunded');
     
     const modalContent = `
-        <div class="modal-overlay" style="position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.5);z-index:1000;display:flex;align-items:center;justify-content:center;" onclick="closeReturnModal()"></div>
-        <div class="modal-content" style="position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:#fff;border-radius:12px;box-shadow:0 25px 50px -12px rgba(0,0,0,0.25);display:flex;flex-direction:column;max-height:80vh;overflow:hidden;z-index:1001;width:800px;">
+        <div class="modal-overlay" onclick="closeReturnModal()"></div>
+        <div class="modal-content" style="width:800px;">
             <div class="modal-header">
                 <h3><i class="fas fa-history"></i> 退款记录查询</h3>
                 <button onclick="closeReturnModal()" class="modal-close"><i class="fas fa-times"></i></button>
@@ -400,15 +379,7 @@ function returnsPage() {
     const auditPassRate = (stats.approved + stats.rejected) > 0 ? Math.round((stats.approved / (stats.approved + stats.rejected)) * 100) : 0;
     
     return `
-        <style>
-            .modal-overlay { position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.5);z-index:1000;display:flex;align-items:center;justify-content:center; }
-            .modal-content { background:#fff;border-radius:12px;box-shadow:0 25px 50px -12px rgba(0,0,0,0.25);display:flex;flex-direction:column;max-height:80vh;overflow:hidden; }
-            .modal-header { padding:16px 20px;border-bottom:1px solid #e2e8f0;display:flex;align-items:center;justify-content:space-between; }
-            .modal-header h3 { margin:0;font-size:16px;font-weight:600; }
-            .modal-close { background:none;border:none;color:#94a3b8;cursor:pointer;font-size:16px;padding:4px; }
-            .modal-body { padding:16px 20px; }
-            .modal-footer { padding:12px 20px;border-top:1px solid #e2e8f0;display:flex;justify-content:flex-end;gap:8px; }
-        </style>
+        
         
         <div class="flex-between mb-4">
             <div class="search-bar">
@@ -422,22 +393,19 @@ function returnsPage() {
                 </select>
                 ${!isStoreStaff ? `<select onchange="switchReturnStore(this.value)">
                     <option value="all" ${currentReturnStoreFilter === 'all' ? 'selected' : ''}>全部门店</option>
-                    <option value="北京朝阳店" ${currentReturnStoreFilter === '北京朝阳店' ? 'selected' : ''}>北京朝阳店</option>
-                    <option value="上海浦东店" ${currentReturnStoreFilter === '上海浦东店' ? 'selected' : ''}>上海浦东店</option>
-                    <option value="广州天河店" ${currentReturnStoreFilter === '广州天河店' ? 'selected' : ''}>广州天河店</option>
-                    <option value="深圳南山店" ${currentReturnStoreFilter === '深圳南山店' ? 'selected' : ''}>深圳南山店</option>
+                    ${getReturnStoreOptions()}
                 </select>` : ''}
                 <button class="btn btn-primary" onclick="searchReturns()"><i class="fas fa-search"></i> 搜索</button>
             </div>
             <button class="btn btn-outline" onclick="showRefundRecordsModal()"><i class="fas fa-history"></i> 退款记录</button>
         </div>
 
-        <div class="stats-grid" style="grid-template-columns:repeat(${isStoreStaff ? 3 : 4},1fr);">
-            <div class="stat-card"><div class="label"><i class="fas fa-clock"></i> 待审核</div><div class="value" style="font-size:22px;color:#f59e0b;">${stats.pending}</div></div>
-            <div class="stat-card"><div class="label"><i class="fas fa-check-circle"></i> 已通过</div><div class="value" style="font-size:22px;color:#3b82f6;">${stats.approved}</div></div>
-            <div class="stat-card"><div class="label"><i class="fas fa-times-circle"></i> 已拒绝</div><div class="value" style="font-size:22px;color:#ef4444;">${stats.rejected}</div></div>
+        <div class="trade-stat-grid" style="grid-template-columns:repeat(${isStoreStaff ? 3 : 4},1fr);">
+            <div class="stat-card"><div class="label"><i class="fas fa-clock"></i> 待审核</div><div class="value yellow">${stats.pending}</div></div>
+            <div class="stat-card"><div class="label"><i class="fas fa-check-circle"></i> 已通过</div><div class="value blue">${stats.approved}</div></div>
+            <div class="stat-card"><div class="label"><i class="fas fa-times-circle"></i> 已拒绝</div><div class="value red">${stats.rejected}</div></div>
             ${!isStoreStaff ? `
-            <div class="stat-card"><div class="label"><i class="fas fa-percentage"></i> 退款金额</div><div class="value" style="font-size:22px;color:#8b5cf6;">¥${stats.totalAmount}</div></div>
+            <div class="stat-card"><div class="label"><i class="fas fa-percentage"></i> 退款金额</div><div class="value purple">¥${stats.totalAmount}</div></div>
             ` : ''}
         </div>
 
@@ -546,10 +514,10 @@ function returnsPage() {
                         <div style="display:flex;flex-direction:column;gap:12px;">
                             <div>
                                 <div style="font-size:13px;color:#64748b;margin-bottom:4px;">平均处理时间</div>
-                                <div style="font-size:28px;font-weight:600;color:#4f6ef7;">2.5小时</div>
+                                <div style="font-size:28px;font-weight:600;color:#4f6ef7;">-</div>
                             </div>
                             <div style="padding:10px 12px;background:#e8f5e9;border-radius:6px;font-size:12px;color:#2e7d32;">
-                                <i class="fas fa-check-circle"></i> 今日已处理 8 笔退款申请
+                                <i class="fas fa-check-circle"></i> 今日已处理 ${stats.processed} 笔退款申请
                             </div>
                             <div style="padding:10px 12px;background:#fff3e0;border-radius:6px;font-size:12px;color:#e65100;">
                                 <i class="fas fa-clock"></i> 有 ${stats.pending} 笔申请待审核
@@ -727,33 +695,23 @@ async function addReturnReason() {
     const sort = parseInt(sortInput?.value) || returnReasonsData.length + 1;
     
     if (!name) {
-        alert('请输入原因名称');
+        showToast('请输入原因名称', 'error');
         return;
     }
     
-    const bgColor = hexToRgba(color, 0.1);
-    
-    if (!useMockData) {
-        try {
-            await apiPost(API_CONFIG.returns.reasonAdd, { content: name, sort });
-        } catch (error) {
-            console.error('添加退货原因失败:', error);
-            return;
+    try {
+        const response = await apiPost(API_CONFIG.returns.reasonAdd, { content: name, sort });
+        if (response.code === 200) {
+            loadReturnReasons();
+            showToast('添加成功', 'success');
+            closeReturnReasonConfig();
+        } else {
+            showToast(response.message || '添加失败', 'error');
         }
+    } catch (error) {
+        console.error('添加退货原因失败:', error);
+        showToast('添加失败，请重试', 'error');
     }
-    
-    returnReasonsData.push({
-        id: `reason_${Date.now()}`,
-        name,
-        type: `reason_${Date.now()}`,
-        color,
-        bgColor,
-        sort,
-        status: 'active'
-    });
-    
-    alert('添加成功');
-    closeReturnReasonConfig();
 }
 
 async function editReturnReason(reasonId) {
@@ -768,48 +726,35 @@ async function editReturnReason(reasonId) {
     const status = Array.from(statusInputs).find(i => i.checked) ? 'active' : 'inactive';
     
     if (!name) {
-        alert('请输入原因名称');
+        showToast('请输入原因名称', 'error');
         return;
     }
     
-    if (!useMockData) {
-        try {
-            await apiPut(API_CONFIG.returns.reasonEdit, { content: name, sort }, { id: reasonId });
-        } catch (error) {
-            console.error('编辑退货原因失败:', error);
-            return;
+    try {
+        const response = await apiPut(API_CONFIG.returns.reasonEdit, { content: name, sort }, { id: reasonId });
+        if (response.code === 200) {
+            loadReturnReasons();
+            showToast('修改成功', 'success');
+            closeReturnReasonConfig();
+        } else {
+            showToast(response.message || '修改失败', 'error');
         }
+    } catch (error) {
+        console.error('编辑退货原因失败:', error);
+        showToast('修改失败，请重试', 'error');
     }
-    
-    const reason = returnReasonsData.find(r => r.id === reasonId);
-    if (reason) {
-        reason.name = name;
-        reason.color = color;
-        reason.bgColor = hexToRgba(color, 0.1);
-        reason.sort = sort;
-        reason.status = status;
-        alert('修改成功');
-    }
-    
-    closeReturnReasonConfig();
 }
 
 async function toggleReturnReason(reasonId) {
     const reason = returnReasonsData.find(r => r.id === reasonId);
     if (reason) {
-        const newStatus = reason.status === 'active' ? 'inactive' : 'active';
-        
-        if (!useMockData) {
-            try {
-                await apiDelete(API_CONFIG.returns.reasonDelete, {}, { id: reasonId });
-            } catch (error) {
-                console.error('删除退货原因失败:', error);
-                return;
-            }
+        try {
+            await apiDelete(API_CONFIG.returns.reasonDelete, {}, { id: reasonId });
+            loadReturnReasons();
+        } catch (error) {
+            console.error('删除退货原因失败:', error);
+            showToast('操作失败，请重试', 'error');
         }
-        
-        reason.status = newStatus;
-        refreshReturnsPage();
     }
 }
 

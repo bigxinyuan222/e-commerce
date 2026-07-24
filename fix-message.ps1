@@ -1,0 +1,1 @@
+﻿ = @();  += 'import React from " react\;'; [System.IO.File]::WriteAllLines(\d:\e-commerce\ecommerce\ecommerce\lxg-frontend\src\pages\message\index.tsx\, , [System.Text.Encoding]::UTF8)

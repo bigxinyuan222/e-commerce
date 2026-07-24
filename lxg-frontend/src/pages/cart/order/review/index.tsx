@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, Image, ScrollView } from '@tarojs/components';
+import { View, Text, Image, ScrollView, Textarea } from '@tarojs/components';
 import Taro from '@tarojs/taro';
 import { getOrderById, updateOrderStatus } from '@/data/order/orders';
 import styles from '@/styles/cart/order-review.module.scss';
@@ -140,12 +140,12 @@ const OrderReviewPage: React.FC = () => {
 
         <View className={styles.contentSection}>
           <Text className={styles.contentLabel}>评价内容</Text>
-          <textarea 
+          <Textarea 
             className={styles.contentInput}
             value={reviewContent}
-            onChange={(e: any) => setReviewContent(e.target.value)}
+            onInput={(e: any) => setReviewContent(e.detail.value)}
             placeholder="请输入您对商品的评价..."
-            maxLength={500}
+            maxlength={500}
           />
           <Text className={styles.contentHint}>{reviewContent.length}/500</Text>
         </View>
