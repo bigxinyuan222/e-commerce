@@ -1,0 +1,23 @@
+{
+  "name": "lxg-admin",
+  "version": "2.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host 0.0.0.0",
+    "build": "vue-tsc -b && vite build && node scripts/copy-legacy.mjs",
+    "preview": "vite preview --host 0.0.0.0",
+    "test:login": "node scripts/smoke-login.mjs"
+  },
+  "dependencies": {
+    "taro_template": "file:..",
+    "vue": "^3.5.18"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^6.0.1",
+    "playwright-core": "^1.61.1",
+    "typescript": "^5.8.3",
+    "vite": "^7.0.6",
+    "vue-tsc": "^3.0.4"
+  }
+}

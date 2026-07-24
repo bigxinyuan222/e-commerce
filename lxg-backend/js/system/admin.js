@@ -44,7 +44,7 @@ async function loadAdmins() {
             username: item.username || '',
             realName: item.name || '',
             phone: item.phone ? item.phone.replace(/(\d{3})\d{4}(\d{4})/, '$1****$2') : '',  // 手机号脱敏
-            role: item.role && item.role.id ? item.role.id : (item.role || ''),
+            role: item.role && (item.role.id || item.role.ID) ? (item.role.id || item.role.ID) : (item.role || ''),
             roleName: item.role && item.role.name ? item.role.name : '',
             storeId: item.store && item.store.id ? item.store.id : null,
             storeName: item.store && item.store.name ? item.store.name : null,
@@ -52,6 +52,21 @@ async function loadAdmins() {
             createTime: item.created_at || item.createdAt || item.createTime || '',
             lastLogin: item.last_login || item.lastLogin || ''
         }));
+        // The current backend embeds roles in the admin list and does not expose GET /roles.
+        if (!roleData.length) {
+            const rolesById = new Map();
+            dataList.forEach(item => {
+                if (!item.role) return;
+                const id = item.role.id || item.role.ID;
+                if (id) rolesById.set(id, {
+                    id,
+                    name: item.role.name || '',
+                    permissions: item.role.permissions || [],
+                    description: item.role.description || ''
+                });
+            });
+            roleData = Array.from(rolesById.values());
+        }
         refreshAdminPage();
     } catch (error) {
         console.error('Failed to load admins:', error);

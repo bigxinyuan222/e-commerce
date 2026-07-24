@@ -480,7 +480,7 @@ function handleQuickAction(action, subAction) {
                 createAddGoodsModal();  // 降级创建简易弹窗
             }
         } else if (action === 'coupons' && subAction === 'add') {
-            try { showAddCouponModal(); } catch(e) {}
+            if (typeof window.openCouponCreate === 'function') window.openCouponCreate();
         } else if (action === 'stock' && subAction === 'adjust') {
             try { showStockAdjustModal(); } catch(e) {}
         } else if (action === 'marketing' && subAction === 'seckill') {

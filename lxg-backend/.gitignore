@@ -1,0 +1,8 @@
+node_modules/
+dist/
+.npm-cache/
+.chrome-check/
+.chrome-mobile-check/
+.vite-*.log
+*-check.png
+*.tsbuildinfo
