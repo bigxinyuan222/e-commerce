@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, Image, ScrollView } from '@tarojs/components';
+import { View, Text, Image, ScrollView, Textarea } from '@tarojs/components';
 import Taro from '@tarojs/taro';
 import { getOrderById, applyRefund } from '@/data/order/orders';
 import styles from '@/styles/cart/order-refund.module.scss';
@@ -177,16 +177,16 @@ const RefundApplyPage: React.FC = () => {
             <Text className={styles.remarkCount}>您还可以输入{maxRemarkLength - remark.length}字</Text>
           </View>
           <View className={styles.remarkInputWrapper}>
-            <textarea
+            <Textarea
               className={styles.remarkInput}
               value={remark}
-              onChange={(e: any) => {
-                if (e.target.value.length <= maxRemarkLength) {
-                  setRemark(e.target.value);
+              onInput={(e: any) => {
+                if (e.detail.value.length <= maxRemarkLength) {
+                  setRemark(e.detail.value);
                 }
               }}
               placeholder="请您详细填写申请说明"
-              maxLength={maxRemarkLength}
+              maxlength={maxRemarkLength}
             />
             <View className={styles.remarkImageUpload} onClick={handleImageSelect}>
               <Text className={styles.remarkImageIcon}>📷</Text>

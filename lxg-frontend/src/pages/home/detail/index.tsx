@@ -425,10 +425,23 @@ const ProductDetailPage: React.FC = () => {
         const summary = getAiSummary(id);
         setAiSummary(summary);
         
-        const coupons = availableCoupons.filter(c => 
-          c.scope === 'product' && c.productId === id
-        );
-        setProductCoupons(coupons.slice(0, 2));
+        const categoryMap: { [key: string]: string } = {
+          '1': 'digital',
+          '2': 'digital',
+          '3': 'clothing',
+          '4': 'home',
+          '5': 'food',
+          '6': 'beauty',
+          '7': 'baby',
+          '8': 'home'
+        };
+        const coupons = availableCoupons.filter(c => {
+          if (c.scope === 'product') return c.productId === id;
+          if (c.scope === 'category') return c.categoryId === categoryMap[productData.categoryId];
+          if (c.scope === 'all') return true;
+          return false;
+        });
+        setProductCoupons(coupons.slice(0, 4));
       }
     }
   }, []);
@@ -477,22 +490,27 @@ const ProductDetailPage: React.FC = () => {
     <View className={styles.productDetailPage}>
       <ScrollView scrollY style={{ height: 'calc(100vh - 120rpx)' }}>
         {/* 商品轮播图 */}
-        <View className={styles.productBanner}>
-          <Swiper
-            autoplay
-            interval={3000}
-            circular
-            onChange={onBannerChange}
-          >
-            {product.images.map((image, index) => (
-              <SwiperItem key={index}>
-                <Image src={image} mode="aspectFill" lazyLoad />
-              </SwiperItem>
-            ))}
-          </Swiper>
-          <Text className={styles.bannerIndicator}>
-            {currentImage + 1}/{product.images.length}
-          </Text>
+        <View className={styles.bannerWrap}>
+          <View className={styles.shareBtn} onClick={handleShare}>
+            <Text className={styles.shareIcon}>↗</Text>
+          </View>
+          <View className={styles.productBanner}>
+            <Swiper
+              autoplay
+              interval={3000}
+              circular
+              onChange={onBannerChange}
+            >
+              {product.images.map((image, index) => (
+                <SwiperItem key={index}>
+                  <Image src={image} mode="aspectFill" lazyLoad />
+                </SwiperItem>
+              ))}
+            </Swiper>
+            <Text className={styles.bannerIndicator}>
+              {currentImage + 1}/{product.images.length}
+            </Text>
+          </View>
         </View>
 
         {/* 价格信息 */}
@@ -521,7 +539,9 @@ const ProductDetailPage: React.FC = () => {
               {productCoupons.map((coupon) => (
                 <View key={coupon.id} className={styles.couponTag}>
                   <Text className={styles.couponTagValue}>¥{coupon.value}</Text>
-                  <Text className={styles.couponTagDesc}>优惠{coupon.value}无门槛</Text>
+                  <Text className={styles.couponTagDesc}>
+                    {coupon.minAmount > 0 ? `满${coupon.minAmount}减${coupon.value}` : `${coupon.scopeText}`}
+                  </Text>
                   <Text className={styles.couponTagBtn}>领</Text>
                 </View>
               ))}
@@ -636,10 +656,6 @@ const ProductDetailPage: React.FC = () => {
           <View className={styles.actionItem} onClick={goHome}>
             <Text className={styles.icon}>🏠</Text>
             <Text>首页</Text>
-          </View>
-          <View className={styles.actionItem} onClick={handleShare}>
-            <Text className={styles.icon}>📤</Text>
-            <Text>分享</Text>
           </View>
           <View className={styles.actionItem} onClick={goToCustomerService}>
             <Text className={styles.icon}>💬</Text>

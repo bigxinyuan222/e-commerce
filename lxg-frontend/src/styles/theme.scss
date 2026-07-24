@@ -2,39 +2,63 @@
 // 主题配色变量（B2C电商平台 - 乐享购风格）
 // ============================================
 
-// 品牌主题色：乐享购红，体现电商促销氛围
-$color-primary: #e2231a;
-$color-primary-light: #ff4d4d;
-$color-primary-dark: #c41e16;
+// 品牌主题色：乐享购红，体现电商促销氛围，稍暗更稳重
+$color-primary: #d91e18;
+$color-primary-light: #ff5252;
+$color-primary-dark: #b91510;
+$color-primary-gradient-start: #d91e18;
+$color-primary-gradient-end: #ff5252;
 
-// 功能色
-$color-success: #00b42a;
-$color-warning: #ff7d00;
-$color-error: #f53f3f;
-$color-info: #165dff;
+// 功能色（优化对比度）
+$color-success: #07c160;
+$color-success-light: #91d5a8;
+$color-success-bg: #f0fff4;
+$color-warning: #fa8c16;
+$color-warning-light: #ffc53d;
+$color-warning-bg: #fffbe6;
+$color-error: #ff4d4f;
+$color-error-light: #ffa39e;
+$color-error-bg: #fff1f0;
+$color-info: #1890ff;
+$color-info-light: #91caff;
+$color-info-bg: #e6f7ff;
 
-// 背景色
-$color-bg-page: #f5f6f7;
+// 背景色（更柔和的灰色）
+$color-bg-page: #f7f8fa;
 $color-bg-card: #ffffff;
-$color-bg-hover: #f2f3f5;
+$color-bg-hover: #f5f6f7;
+$color-bg-active: #ebecef;
+$color-bg-input: #f5f6f7;
+$color-bg-mask: rgba(0, 0, 0, 0.5);
 
-// 文本色
-$color-text-primary: #1d2129;
-$color-text-secondary: #4e5969;
-$color-text-tertiary: #86909c;
-$color-text-disabled: #c9cdd4;
+// 文本色（优化对比度层级）
+$color-text-primary: #1a1a1a;
+$color-text-secondary: #4a4a4a;
+$color-text-tertiary: #8a8a8a;
+$color-text-disabled: #cccccc;
+$color-text-placeholder: #bfbfbf;
 $color-text-white: #ffffff;
+$color-text-white-secondary: rgba(255, 255, 255, 0.8);
+$color-text-white-tertiary: rgba(255, 255, 255, 0.6);
 
-// 边框色
-$color-border: #e5e6eb;
-$color-divider: #f2f3f5;
+// 边框色（更柔和）
+$color-border: #e8e8e8;
+$color-border-light: #f0f0f0;
+$color-divider: #f5f6f7;
 
 // 业务相关色
-$color-price: #e2231a; // 价格色
-$color-tag-bg: #fff2f0; // 标签背景
-$color-tag-text: #e2231a; // 标签文字
+$color-price: #d91e18; // 价格色
+$color-price-secondary: #ff5252; // 次要价格色
+$color-tag-bg: #fff0ef; // 标签背景
+$color-tag-text: #d91e18; // 标签文字
 $color-seckill: #ff4d4d; // 秒杀色
+$color-seckill-bg: linear-gradient(135deg, #ff4d4d 0%, #ff7d00 100%);
 
 // 危险操作色
-$color-danger: #f53f3f; // 危险操作文字颜色
+$color-danger: #ff4d4f; // 危险操作文字颜色
 $color-danger-bg: #fff1f0; // 危险操作背景颜色
+
+// 辅助色
+$color-gold: #d4a853;
+$color-silver: #999999;
+$color-bronze: #c27e5c;

@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { View, Text, Input } from '@tarojs/components';
 import Taro from '@tarojs/taro';
 import { useAppContext } from '@/store/AppContext';
-import { userInfo } from '@/data/user/user';
+import { apiPost } from '@/api/common';
+import { authApi } from '@/api/user';
 import styles from '@/styles/user/login.module.scss';
 
 const LoginPage: React.FC = () => {
@@ -10,12 +11,20 @@ const LoginPage: React.FC = () => {
   const [isRegister, setIsRegister] = useState(false);
   const [loginMethod, setLoginMethod] = useState<'account' | 'phone'>('account');
   const [isForgotPassword, setIsForgotPassword] = useState(false);
-  const [username, setUsername] = useState('');
+  const [phone, setPhone] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  const [phone, setPhone] = useState('');
   const [code, setCode] = useState('');
   const [countdown, setCountdown] = useState(0);
+  const countdownRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
+  useEffect(() => {
+    return () => {
+      if (countdownRef.current) {
+        clearInterval(countdownRef.current);
+      }
+    };
+  }, []);
 
   const getCurrentDate = () => {
     const now = new Date();
@@ -25,79 +34,135 @@ const LoginPage: React.FC = () => {
     return `${year}-${month}-${day}`;
   };
 
-  const sendCode = () => {
+  // 统一保存登录态：token 供后续接口使用，userInfo 供全局状态使用
+  const saveUserSession = (result: any) => {
+    const payload = result?.data ?? result ?? {};
+    const token = payload.token ?? payload.accessToken ?? '';
+    const user = payload.user_login ?? payload.user ?? payload.userInfo ?? payload;
+
+    Taro.setStorageSync('lxg_user', JSON.stringify({ token, user }));
+
+    const loggedInUser = {
+      id: String(user.id || user.userId || ''),
+      nickname: user.nickname || user.phone || phone,
+      avatar: user.avatar || '',
+      phone: user.phone || phone,
+      accountName: user.accountName || user.phone || phone,
+      gender: user.gender || '保密',
+      birthday: user.birthday || '请填写您的生日',
+      registerDate: user.registerDate || user.created_at || getCurrentDate(),
+      email: user.email || '',
+      isLoggedIn: true
+    };
+
+    setUserInfo(loggedInUser);
+
+    return loggedInUser;
+  };
+
+  const startCountdown = () => {
+    if (countdownRef.current) {
+      clearInterval(countdownRef.current);
+    }
+    setCountdown(60);
+    let timer = 60;
+    countdownRef.current = setInterval(() => {
+      timer--;
+      setCountdown(timer);
+      if (timer <= 0 && countdownRef.current) {
+        clearInterval(countdownRef.current);
+        countdownRef.current = null;
+      }
+    }, 1000);
+  };
+
+  const sendCode = async () => {
     if (!phone || phone.length !== 11) {
       Taro.showToast({ title: '请输入正确的手机号', icon: 'none' });
       return;
     }
 
-    setCountdown(60);
-    let timer = 60;
-    const interval = setInterval(() => {
-      timer--;
-      setCountdown(timer);
-      if (timer <= 0) {
-        clearInterval(interval);
-      }
-    }, 1000);
+    Taro.showLoading({ title: '发送中...' });
+    try {
+      await apiPost(authApi.registerSendCode, { phone }, {}, {}, true);
+      Taro.hideLoading();
+      startCountdown();
+      Taro.showToast({ title: '验证码已发送', icon: 'success' });
+    } catch (error: any) {
+      Taro.hideLoading();
+      Taro.showToast({ title: error.message || '验证码发送失败', icon: 'none' });
+    }
+  };
 
-    Taro.showToast({ title: '验证码已发送', icon: 'success' });
+  const doLogin = async () => {
+    if (!phone || phone.length !== 11) {
+      Taro.showToast({ title: '请输入正确的手机号', icon: 'none' });
+      return;
+    }
+    if (!password || password.length < 6) {
+      Taro.showToast({ title: '密码至少6位', icon: 'none' });
+      return;
+    }
+
+    Taro.showLoading({ title: '登录中...' });
+    try {
+      const result = await apiPost(authApi.login, {}, {}, { phone, password }, true);
+      Taro.hideLoading();
+      saveUserSession(result);
+      Taro.showToast({ title: '登录成功', icon: 'success' });
+      setTimeout(() => {
+        Taro.navigateBack();
+      }, 1500);
+    } catch (error: any) {
+      Taro.hideLoading();
+      Taro.showToast({ title: error.message || '登录失败', icon: 'none' });
+    }
+  };
+
+  const doRegister = async () => {
+    if (!phone || phone.length !== 11) {
+      Taro.showToast({ title: '请输入正确的手机号', icon: 'none' });
+      return;
+    }
+    if (!code || code.length !== 6) {
+      Taro.showToast({ title: '请输入6位验证码', icon: 'none' });
+      return;
+    }
+    if (!password || password.length < 6) {
+      Taro.showToast({ title: '密码至少6位', icon: 'none' });
+      return;
+    }
+
+    Taro.showLoading({ title: '注册中...' });
+    try {
+      const result = await apiPost(authApi.register, { phone, code, password }, {}, {}, true);
+      Taro.hideLoading();
+      saveUserSession(result);
+      Taro.showToast({ title: '注册成功', icon: 'success' });
+      setTimeout(() => {
+        Taro.navigateBack();
+      }, 1500);
+    } catch (error: any) {
+      Taro.hideLoading();
+      Taro.showToast({ title: error.message || '注册失败', icon: 'none' });
+    }
   };
 
   const handleAccountLogin = () => {
     if (isRegister) {
-      if (!phone || phone.length !== 11) {
-        Taro.showToast({ title: '请输入正确的手机号', icon: 'none' });
-        return;
-      }
-
-      if (!code || code.length !== 6) {
-        Taro.showToast({ title: '请输入6位验证码', icon: 'none' });
-        return;
-      }
-
-      if (!password || password.length < 6) {
-        Taro.showToast({ title: '密码至少6位', icon: 'none' });
-        return;
-      }
+      doRegister();
     } else {
-      if (!username || username.length < 3) {
-        Taro.showToast({ title: '账号至少3个字符', icon: 'none' });
-        return;
-      }
-
-      if (!password || password.length < 6) {
-        Taro.showToast({ title: '密码至少6位', icon: 'none' });
-        return;
-      }
+      doLogin();
     }
+  };
 
-    Taro.showLoading({ title: isRegister ? '注册中...' : '登录中...' });
-
-    setTimeout(() => {
-      Taro.hideLoading();
-      
-      const loggedInUser = {
-        ...userInfo,
-        id: `user-${Date.now()}`,
-        phone: isRegister ? phone : userInfo.phone,
-        accountName: isRegister ? phone : username,
-        isLoggedIn: true,
-        registerDate: isRegister ? getCurrentDate() : userInfo.registerDate
-      };
-
-      setUserInfo(loggedInUser);
-      Taro.setStorageSync('userInfo', loggedInUser);
-
-      Taro.showToast({ 
-        title: isRegister ? '注册成功' : '登录成功', 
-        icon: 'success' 
-      });
-      
-      setTimeout(() => {
-        Taro.navigateBack();
-      }, 1500);
-    }, 1500);
+  const handlePhoneLogin = () => {
+    // 当前服务端仅提供手机号密码登录，手机号登录 Tab 同样走密码登录
+    if (isRegister) {
+      doRegister();
+    } else {
+      doLogin();
+    }
   };
 
   const handleForgotPassword = () => {
@@ -126,52 +191,13 @@ const LoginPage: React.FC = () => {
     setTimeout(() => {
       Taro.hideLoading();
       Taro.showToast({ title: '密码重置成功', icon: 'success' });
-      
+
       setTimeout(() => {
         setIsForgotPassword(false);
         setPhone('');
         setCode('');
         setPassword('');
         setConfirmPassword('');
-      }, 1500);
-    }, 1500);
-  };
-
-  const handlePhoneLogin = () => {
-    if (!phone || phone.length !== 11) {
-      Taro.showToast({ title: '请输入正确的手机号', icon: 'none' });
-      return;
-    }
-
-    if (!code || code.length !== 6) {
-      Taro.showToast({ title: '请输入6位验证码', icon: 'none' });
-      return;
-    }
-
-    Taro.showLoading({ title: isRegister ? '注册中...' : '登录中...' });
-
-    setTimeout(() => {
-      Taro.hideLoading();
-      
-      const loggedInUser = {
-        ...userInfo,
-        id: `user-${Date.now()}`,
-        phone: phone,
-        accountName: isRegister ? `user_${Date.now()}` : (userInfo.accountName || ''),
-        isLoggedIn: true,
-        registerDate: isRegister ? getCurrentDate() : userInfo.registerDate
-      };
-
-      setUserInfo(loggedInUser);
-      Taro.setStorageSync('userInfo', loggedInUser);
-
-      Taro.showToast({ 
-        title: isRegister ? '注册成功' : '登录成功', 
-        icon: 'success' 
-      });
-      
-      setTimeout(() => {
-        Taro.navigateBack();
       }, 1500);
     }, 1500);
   };
@@ -185,14 +211,12 @@ const LoginPage: React.FC = () => {
 
   const switchToPhoneLogin = () => {
     setLoginMethod('phone');
-    setUsername('');
     setPassword('');
     setConfirmPassword('');
   };
 
   const switchToAccountLogin = () => {
     setLoginMethod('account');
-    setPhone('');
     setCode('');
   };
 
@@ -207,7 +231,7 @@ const LoginPage: React.FC = () => {
         {isForgotPassword ? (
           <>
             <Text className={styles.formTitle}>忘记密码</Text>
-            
+
             <View className={styles.inputGroup}>
               <Text className={styles.inputLabel}>手机号</Text>
               <View className={styles.inputRow}>
@@ -235,7 +259,7 @@ const LoginPage: React.FC = () => {
                   value={code}
                   onInput={(e) => setCode(e.detail.value)}
                 />
-                <View 
+                <View
                   className={`${styles.codeBtn} ${countdown > 0 ? styles.disabled : ''}`}
                   onClick={countdown === 0 ? sendCode : undefined}
                 >
@@ -272,8 +296,8 @@ const LoginPage: React.FC = () => {
               </View>
             </View>
 
-            <View 
-              className={styles.loginBtn} 
+            <View
+              className={styles.loginBtn}
               onClick={handleForgotPassword}
             >
               重置密码
@@ -294,20 +318,20 @@ const LoginPage: React.FC = () => {
         ) : loginMethod === 'account' ? (
           <>
             <Text className={styles.formTitle}>
-              {isRegister ? '手机号注册' : '账号登录'}
+              {isRegister ? '手机号注册' : '手机号登录'}
             </Text>
-            
+
             <View className={styles.inputGroup}>
-              <Text className={styles.inputLabel}>{isRegister ? '手机号' : '账号'}</Text>
+              <Text className={styles.inputLabel}>手机号</Text>
               <View className={styles.inputRow}>
-                <Text className={styles.inputIcon}>{isRegister ? '📱' : '👤'}</Text>
+                <Text className={styles.inputIcon}>📱</Text>
                 <Input
                   className={styles.input}
-                  type={isRegister ? 'number' : 'text'}
-                  maxlength={isRegister ? 11 : undefined}
-                  placeholder={isRegister ? '请输入手机号' : '请输入账号'}
-                  value={isRegister ? phone : username}
-                  onInput={(e) => isRegister ? setPhone(e.detail.value) : setUsername(e.detail.value)}
+                  type="number"
+                  maxlength={11}
+                  placeholder="请输入手机号"
+                  value={phone}
+                  onInput={(e) => setPhone(e.detail.value)}
                 />
               </View>
             </View>
@@ -326,7 +350,7 @@ const LoginPage: React.FC = () => {
                   onInput={(e) => isRegister ? setCode(e.detail.value) : setPassword(e.detail.value)}
                 />
                 {isRegister && (
-                  <View 
+                  <View
                     className={`${styles.codeBtn} ${countdown > 0 ? styles.disabled : ''}`}
                     onClick={countdown === 0 ? sendCode : undefined}
                   >
@@ -352,8 +376,8 @@ const LoginPage: React.FC = () => {
               </View>
             )}
 
-            <View 
-              className={styles.loginBtn} 
+            <View
+              className={styles.loginBtn}
               onClick={handleAccountLogin}
             >
               {isRegister ? '注册' : '登录'}
@@ -371,7 +395,6 @@ const LoginPage: React.FC = () => {
                 <>
                   <Text className={styles.toggleLink} onClick={() => {
                     setIsForgotPassword(true);
-                    setUsername('');
                     setPassword('');
                   }}>
                     忘记密码
@@ -389,7 +412,7 @@ const LoginPage: React.FC = () => {
             <Text className={styles.formTitle}>
               {isRegister ? '手机号注册' : '手机号登录'}
             </Text>
-            
+
             <View className={styles.inputGroup}>
               <Text className={styles.inputLabel}>手机号</Text>
               <View className={styles.inputRow}>
@@ -406,28 +429,47 @@ const LoginPage: React.FC = () => {
             </View>
 
             <View className={styles.inputGroup}>
-              <Text className={styles.inputLabel}>验证码</Text>
+              <Text className={styles.inputLabel}>{isRegister ? '验证码' : '密码'}</Text>
               <View className={styles.inputRow}>
-                <Text className={styles.inputIcon}>🔐</Text>
+                <Text className={styles.inputIcon}>{isRegister ? '🔐' : '🔑'}</Text>
                 <Input
                   className={styles.input}
-                  type="number"
-                  maxlength={6}
-                  placeholder="请输入验证码"
-                  value={code}
-                  onInput={(e) => setCode(e.detail.value)}
+                  type={isRegister ? 'number' : 'text'}
+                  password={!isRegister}
+                  maxlength={isRegister ? 6 : undefined}
+                  placeholder={isRegister ? '请输入验证码' : '请输入密码（至少6位）'}
+                  value={isRegister ? code : password}
+                  onInput={(e) => isRegister ? setCode(e.detail.value) : setPassword(e.detail.value)}
                 />
-                <View 
-                  className={`${styles.codeBtn} ${countdown > 0 ? styles.disabled : ''}`}
-                  onClick={countdown === 0 ? sendCode : undefined}
-                >
-                  {countdown > 0 ? `${countdown}s` : '获取验证码'}
-                </View>
+                {isRegister && (
+                  <View
+                    className={`${styles.codeBtn} ${countdown > 0 ? styles.disabled : ''}`}
+                    onClick={countdown === 0 ? sendCode : undefined}
+                  >
+                    {countdown > 0 ? `${countdown}s` : '获取验证码'}
+                  </View>
+                )}
               </View>
             </View>
 
-            <View 
-              className={styles.loginBtn} 
+            {isRegister && (
+              <View className={styles.inputGroup}>
+                <Text className={styles.inputLabel}>密码</Text>
+                <View className={styles.inputRow}>
+                  <Text className={styles.inputIcon}>🔑</Text>
+                  <Input
+                    className={styles.input}
+                    password
+                    placeholder="请输入密码（至少6位）"
+                    value={password}
+                    onInput={(e) => setPassword(e.detail.value)}
+                  />
+                </View>
+              </View>
+            )}
+
+            <View
+              className={styles.loginBtn}
               onClick={handlePhoneLogin}
             >
               {isRegister ? '注册' : '登录'}
@@ -445,8 +487,7 @@ const LoginPage: React.FC = () => {
                 <>
                   <Text className={styles.toggleLink} onClick={() => {
                     setIsForgotPassword(true);
-                    setPhone('');
-                    setCode('');
+                    setPassword('');
                   }}>
                     忘记密码
                   </Text>
@@ -468,7 +509,7 @@ const LoginPage: React.FC = () => {
             <Text className={styles.dividerText}>其他登录方式</Text>
             <View className={styles.dividerLine} />
           </View>
-          
+
           <View className={styles.loginMethods}>
             <View className={styles.methodItem} onClick={switchToAccountLogin}>
               <View className={styles.methodIcon}>

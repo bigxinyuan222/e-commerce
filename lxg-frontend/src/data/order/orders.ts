@@ -220,14 +220,16 @@ function getOrders(): OrderData[] {
   try {
     const stored = localStorage.getItem('orders');
     if (stored) {
-      ordersCache = JSON.parse(stored);
-      const needSave = ordersCache.some(order => order.orderNo.startsWith('JD'));
+      const parsedOrders = JSON.parse(stored) as OrderData[];
+      const needSave = parsedOrders.some(order => order.orderNo.startsWith('JD'));
       if (needSave) {
-        ordersCache = ordersCache.map(order => ({
+        ordersCache = parsedOrders.map(order => ({
           ...order,
           orderNo: order.orderNo.startsWith('JD') ? order.orderNo.replace('JD', 'LXG') : order.orderNo
         }));
         saveOrders(ordersCache);
+      } else {
+        ordersCache = parsedOrders;
       }
       return ordersCache;
     }
