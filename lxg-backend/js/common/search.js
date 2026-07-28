@@ -54,18 +54,11 @@ function toggleSearchFavorite(query) {
 
 // 构建搜索索引（从各模块数据中提取可搜索字段）
 function buildSearchIndex() {
-    const index = { goods: [], orders: [], users: [], stores: [], coupons: [], reviews: [] };
-    
-    // 商品数据索引
-    if (typeof goodsData !== 'undefined') {
-        goodsData.forEach(g => {
-            index.goods.push({ id: g.id, name: g.name, type: 'goods', category: g.category, brand: g.brand });
-        });
-    }
+    const index = { orders: [], users: [], stores: [], reviews: [] };
     
     // 订单数据索引
-    if (typeof ordersData !== 'undefined') {
-        ordersData.forEach(o => {
+    if (Array.isArray(window.legacyOrderSnapshot)) {
+        window.legacyOrderSnapshot.forEach(o => {
             index.orders.push({ id: o.id, name: o.userName, type: 'orders', phone: o.phone, status: o.status });
         });
     }
@@ -81,13 +74,6 @@ function buildSearchIndex() {
     if (typeof storesData !== 'undefined') {
         storesData.forEach(s => {
             index.stores.push({ id: s.id, name: s.name, type: 'stores', address: s.address });
-        });
-    }
-    
-    // 优惠券数据索引
-    if (typeof couponsData !== 'undefined') {
-        couponsData.forEach(c => {
-            index.coupons.push({ id: c.id, name: c.name, type: 'coupons' });
         });
     }
     

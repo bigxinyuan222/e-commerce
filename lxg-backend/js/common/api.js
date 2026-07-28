@@ -9,24 +9,15 @@ const API_CONFIG = {
     },
     // 退款模块
     returns: {
-        list: `${API_BASE_URL}/refunds`,                           // 获取退款列表
-        detail: `${API_BASE_URL}/refunds/:id`,                     // 获取退款详情
-        approve: `${API_BASE_URL}/refunds/:id/audit`,              // 审核通过退款
-        reject: `${API_BASE_URL}/refunds/:id/audit`,               // 拒绝退款
+        list: `${API_BASE_URL}/admin/refunds`,                     // 管理端退货退款列表
+        detail: `${API_BASE_URL}/admin/refunds/:id`,               // 获取管理端退款详情
+        approve: `${API_BASE_URL}/admin/refunds/:id/audit`,        // 审核通过退款
+        reject: `${API_BASE_URL}/admin/refunds/:id/audit`,         // 拒绝退款
         confirmRefund: `${API_BASE_URL}/refunds/:id/confirm-refund`, // 确认退款（打款）
-        reasonList: `${API_BASE_URL}/refund-reasons`,              // 获取退款原因列表
-        reasonAdd: `${API_BASE_URL}/refund-reasons`,               // 添加退款原因
-        reasonEdit: `${API_BASE_URL}/refund-reasons/:id`,          // 编辑退款原因
-        reasonDelete: `${API_BASE_URL}/refund-reasons/:id`         // 删除退款原因
-    },
-    // 优惠券模块
-    coupons: {
-        list: `${API_BASE_URL}/coupons`,                     // 获取优惠券列表
-        detail: `${API_BASE_URL}/coupons/:id`,               // 获取优惠券详情
-        add: `${API_BASE_URL}/coupons`,                      // 新增优惠券
-        edit: `${API_BASE_URL}/coupons/:id`,                 // 编辑优惠券
-        toggle: `${API_BASE_URL}/coupons/:id/toggle`,        // 启用/停用优惠券
-        records: `${API_BASE_URL}/coupons/:id/records`       // 获取优惠券领取记录
+        reasonList: `${API_BASE_URL}/admin/refund-reasons`,        // 获取管理端退款原因列表
+        reasonAdd: `${API_BASE_URL}/admin/refund-reasons`,         // 添加退款原因
+        reasonEdit: `${API_BASE_URL}/admin/refund-reasons/:id`,    // 编辑退款原因
+        reasonDelete: `${API_BASE_URL}/admin/refund-reasons/:id`   // 删除退款原因
     },
     // 通知模块
     notifications: {
@@ -47,16 +38,6 @@ const API_CONFIG = {
         cancel: `${API_BASE_URL}/admin/orders/:id/cancel`, // 取消订单
         ship: `${API_BASE_URL}/admin/orders/:id/ship`,     // 发货操作
         confirm: `${API_BASE_URL}/admin/orders/:id/confirm` // 确认收货/核销
-    },
-    // 商品模块
-    goods: {
-        list: `${API_BASE_URL}/products`,                // 获取商品列表
-        detail: `${API_BASE_URL}/products/:id`,          // 获取商品详情
-        add: `${API_BASE_URL}/products`,                 // 新增商品
-        edit: `${API_BASE_URL}/products/:id`,            // 编辑商品
-        delete: `${API_BASE_URL}/products/:id`,          // 删除商品
-        toggle: `${API_BASE_URL}/products/:id/toggle`,   // 上架/下架商品
-        batch: `${API_BASE_URL}/products/batch`          // 批量操作
     },
     // 用户模块
     users: {
@@ -109,7 +90,10 @@ const API_CONFIG = {
     },
     // 库存模块
     inventory: {
-        logs: `${API_BASE_URL}/inventory-logs`,   // 获取库存变动日志
+        dashboard: `${API_BASE_URL}/admin/home`, // 获取总仓汇总及低库存预警
+        search: `${API_BASE_URL}/admin/search/inventory`, // 分页查询库存 SKU
+        update: `${API_BASE_URL}/admin/update/inventory`, // 调整指定 SKU 库存
+        logs: `${API_BASE_URL}/admin/log/inventory`, // 获取库存变动日志
         adjust: `${API_BASE_URL}/inventory/adjust` // 库存调整
     },
     // 秒杀模块
@@ -150,13 +134,14 @@ const API_CONFIG = {
     },
     // 支付模块
     payments: {
-        list: `${API_BASE_URL}/payments`,          // 获取支付记录列表
-        refundList: `${API_BASE_URL}/refund-payments` // 获取退款支付记录
+        list: `${API_BASE_URL}/admin/payments`,    // 管理端支付记录列表
+        refundList: `${API_BASE_URL}/admin/refund-payments` // 管理端退款支付记录
     },
     // 客服模块
     service: {
-        conversations: `${API_BASE_URL}/conversations`,          // 获取会话列表
-        accept: `${API_BASE_URL}/conversations/:id/accept`,      // 接会话
+        pendingCount: `${API_BASE_URL}/admin/chat/conversations/pending-count`, // 待接入会话数量
+        conversations: `${API_BASE_URL}/admin/chat/conversations`, // 获取管理端会话列表
+        accept: `${API_BASE_URL}/admin/chat/conversations/:id/accept`, // 接入会话
         close: `${API_BASE_URL}/conversations/:id/close`,        // 关闭会话
         transfer: `${API_BASE_URL}/conversations/:id/transfer`,  // 转接会话
         messages: `${API_BASE_URL}/conversations/:id/messages`,  // 获取会话消息

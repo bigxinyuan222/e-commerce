@@ -9,12 +9,11 @@ function getRoleSpecificStats() {
     
     // 收集各模块数据（处理未定义情况）
     let stats = {
-        orders: (typeof ordersData !== 'undefined' && Array.isArray(ordersData)) ? ordersData : [],
-        returns: (typeof returnsData !== 'undefined' && Array.isArray(returnsData)) ? returnsData : [],
+        orders: Array.isArray(window.legacyOrderSnapshot) ? window.legacyOrderSnapshot : [],
+        returns: Array.isArray(window.legacyRefundSnapshot) ? window.legacyRefundSnapshot : [],
         reviews: (typeof reviewsData !== 'undefined' && Array.isArray(reviewsData)) ? reviewsData : [],
         stock: (typeof stockData !== 'undefined' && Array.isArray(stockData)) ? stockData : [],
-        users: (typeof usersData !== 'undefined' && Array.isArray(usersData)) ? usersData : [],
-        coupons: (typeof couponsData !== 'undefined' && Array.isArray(couponsData)) ? couponsData : []
+        users: (typeof usersData !== 'undefined' && Array.isArray(usersData)) ? usersData : []
     };
     
     // 门店用户只看自己门店的数据
@@ -48,7 +47,7 @@ function getRoleSpecificStats() {
 // 获取门店销售排行榜（TOP6）
 function getStoreSalesRanking() {
     const storeSales = {};
-    const orders = typeof ordersData !== 'undefined' && Array.isArray(ordersData) ? ordersData : [];
+    const orders = Array.isArray(window.legacyOrderSnapshot) ? window.legacyOrderSnapshot : [];
     
     // 按门店汇总销售额
     orders.forEach(o => {
@@ -87,7 +86,7 @@ function getStoreSalesRanking() {
 // 获取商品销量排行榜（TOP10）
 function getGoodsSalesRanking() {
     const goodsSales = {};
-    const orders = typeof ordersData !== 'undefined' && Array.isArray(ordersData) ? ordersData : [];
+    const orders = Array.isArray(window.legacyOrderSnapshot) ? window.legacyOrderSnapshot : [];
     
     // 按商品汇总销量和销售额
     orders.forEach(o => {
@@ -350,7 +349,7 @@ function statsPage() {
             { label: '待审核评价', value: stats.pendingReviews, sub: '需处理', icon: 'fa-star', color: '#f59e0b', highlight: stats.pendingReviews > 0, action: 'reviews' }
         ],
         goods_op: [
-            { label: '商品总数', value: (typeof goodsData !== 'undefined' ? goodsData.length : 0).toLocaleString(), sub: '-', icon: 'fa-box', color: '#4f6ef7' },
+            { label: '商品总数', value: '-', sub: '-', icon: 'fa-box', color: '#4f6ef7' },
             { label: '库存预警', value: stats.lowStock, sub: '低于阈值', icon: 'fa-exclamation-triangle', color: '#ef4444', highlight: stats.lowStock > 0, action: 'stock' },
             { label: '待审核评价', value: stats.pendingReviews, sub: '需处理', icon: 'fa-star', color: '#f59e0b', highlight: stats.pendingReviews > 0, action: 'reviews' },
             { label: '今日销售额', value: '¥' + stats.todaySales.toLocaleString(), sub: '-', icon: 'fa-chart-line', color: '#22c55e' },
@@ -473,12 +472,7 @@ function handleQuickAction(action, subAction) {
     // 延迟300ms后执行子操作（等待页面切换完成）
     setTimeout(() => {
         if (action === 'goods' && subAction === 'add') {
-            try { 
-                showAddGoodsModal();  // 尝试调用商品模块的添加弹窗
-            } catch(e) { 
-                console.error('showAddGoodsModal error:', e);
-                createAddGoodsModal();  // 降级创建简易弹窗
-            }
+            if (typeof window.openProductCreate === 'function') window.openProductCreate();
         } else if (action === 'coupons' && subAction === 'add') {
             if (typeof window.openCouponCreate === 'function') window.openCouponCreate();
         } else if (action === 'stock' && subAction === 'adjust') {
@@ -487,55 +481,6 @@ function handleQuickAction(action, subAction) {
             try { showAddSeckillModal(); } catch(e) {}
         }
     }, 300);
-}
-
-function createAddGoodsModal() {
-    document.querySelectorAll('.modal-overlay, .modal-content').forEach(el => el.remove());
-    
-    const modalContent = `
-        <div class="modal-overlay" onclick="closeGoodsDetail()" style="position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.5);z-index:1000;display:flex;align-items:center;justify-content:center;"></div>
-        <div class="modal-content" style="position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);width:800px;background:#fff;border-radius:12px;box-shadow:0 25px 50px -12px rgba(0,0,0,0.25);display:flex;flex-direction:column;max-height:80vh;overflow:hidden;z-index:1001;">
-            <div style="padding:16px 20px;border-bottom:1px solid #e2e8f0;display:flex;justify-content:space-between;align-items:center;">
-                <h3 style="font-size:16px;font-weight:600;color:#1e293b;margin:0;"><i class="fas fa-plus"></i> 新增商品</h3>
-                <button onclick="closeGoodsDetail()" style="background:none;border:none;color:#94a3b8;cursor:pointer;font-size:16px;padding:4px;" onmouseover="this.style.color='#64748b'"><i class="fas fa-times"></i></button>
-            </div>
-            <div style="padding:20px;overflow-y:auto;max-height:60vh;">
-                <div style="display:flex;justify-content:center;margin-bottom:16px;">
-                    <div style="display:flex;align-items:center;gap:24px;">
-                        <div style="text-align:center;">
-                            <div style="width:36px;height:36px;background:#4f6ef7;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 4px;"><span style="font-size:14px;color:#fff;">1</span></div>
-                            <div style="font-size:12px;color:#4f6ef7;">基础信息</div>
-                        </div>
-                        <div style="width:60px;height:2px;background:#e2e8f0;"></div>
-                        <div style="text-align:center;">
-                            <div style="width:36px;height:36px;background:#e2e8f0;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 4px;"><span style="font-size:14px;color:#94a3b8;">2</span></div>
-                            <div style="font-size:12px;color:#94a3b8;">规格设置</div>
-                        </div>
-                        <div style="width:60px;height:2px;background:#e2e8f0;"></div>
-                        <div style="text-align:center;">
-                            <div style="width:36px;height:36px;background:#e2e8f0;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 4px;"><span style="font-size:14px;color:#94a3b8;">3</span></div>
-                            <div style="font-size:12px;color:#94a3b8;">SKU配置</div>
-                        </div>
-                    </div>
-                </div>
-                <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
-                    <div><label style="display:block;font-size:13px;color:#64748b;margin-bottom:4px;">商品名称 <span style="color:#ef4444;">*</span></label><input type="text" placeholder="请输入商品名称" style="width:100%;padding:8px 12px;border:1px solid #e2e8f0;border-radius:6px;font-size:13px;outline:none;" onfocus="this.style.borderColor='#4f6ef7'" /></div>
-                    <div><label style="display:block;font-size:13px;color:#64748b;margin-bottom:4px;">品牌</label><select style="width:100%;padding:8px 12px;border:1px solid #e2e8f0;border-radius:6px;font-size:13px;outline:none;"><option>请选择品牌</option><option>华为</option><option>苹果</option><option>小米</option><option>索尼</option><option>三星</option><option>美的</option></select></div>
-                    <div><label style="display:block;font-size:13px;color:#64748b;margin-bottom:4px;">分类 <span style="color:#ef4444;">*</span></label><select style="width:100%;padding:8px 12px;border:1px solid #e2e8f0;border-radius:6px;font-size:13px;outline:none;"><option>请选择分类</option><option>手机数码</option><option>家用电器</option><option>服装服饰</option><option>运动户外</option><option>美妆护肤</option></select></div>
-                    <div><label style="display:block;font-size:13px;color:#64748b;margin-bottom:4px;">原价 <span style="color:#ef4444;">*</span></label><input type="number" placeholder="请输入原价" style="width:100%;padding:8px 12px;border:1px solid #e2e8f0;border-radius:6px;font-size:13px;outline:none;" onfocus="this.style.borderColor='#4f6ef7'" /></div>
-                    <div style="grid-column:span 2;"><label style="display:block;font-size:13px;color:#64748b;margin-bottom:4px;">商品描述</label><textarea rows="3" placeholder="请输入商品描述" style="width:100%;padding:8px 12px;border:1px solid #e2e8f0;border-radius:6px;font-size:13px;outline:none;resize:vertical;" onfocus="this.style.borderColor='#4f6ef7'"></textarea></div>
-                    <div><label style="display:block;font-size:13px;color:#64748b;margin-bottom:4px;">主图</label><div style="border:1px dashed #e2e8f0;border-radius:8px;padding:24px;text-align:center;"><i class="fas fa-upload" style="color:#94a3b8;font-size:24px;"></i><div style="font-size:13px;color:#94a3b8;margin-top:8px;">点击上传主图</div></div></div>
-                    <div><label style="display:block;font-size:13px;color:#64748b;margin-bottom:4px;">轮播图</label><div style="border:1px dashed #e2e8f0;border-radius:8px;padding:24px;text-align:center;"><i class="fas fa-images" style="color:#94a3b8;font-size:24px;"></i><div style="font-size:13px;color:#94a3b8;margin-top:8px;">点击上传轮播图</div></div></div>
-                    <div style="grid-column:span 2;"><label style="display:block;font-size:13px;color:#64748b;margin-bottom:8px;">初始状态</label><div style="display:flex;gap:16px;"><label style="display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer;"><input type="radio" name="initialStatus" checked style="accent-color:#4f6ef7;" />下架（默认）</label><label style="display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer;"><input type="radio" name="initialStatus" style="accent-color:#4f6ef7;" />上架</label></div></div>
-                </div>
-            </div>
-            <div style="padding:16px 20px;border-top:1px solid #e2e8f0;display:flex;justify-content:flex-end;gap:10px;">
-                <button style="padding:8px 16px;border:1px solid #e2e8f0;border-radius:6px;background:#fff;color:#64748b;cursor:pointer;font-size:13px;" onclick="closeGoodsDetail()">取消</button>
-                <button style="padding:8px 16px;border:none;border-radius:6px;background:#4f6ef7;color:#fff;cursor:pointer;font-size:13px;" onclick="closeGoodsDetail();showToast('商品保存成功！', 'success');refreshGoodsPage();"><i class="fas fa-arrow-right"></i> 下一步</button>
-            </div>
-        </div>
-    `;
-    document.body.insertAdjacentHTML('beforeend', modalContent);
 }
 
 function refreshStats(range) {

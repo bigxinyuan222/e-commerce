@@ -6,26 +6,121 @@ let currentChatId = '';
 let filterStatus = 'all';
 // 会话搜索关键词
 let currentChatSearchKeyword = '';
+let pendingChatCount = null;
+let currentChatPage = 1;
+const chatPageSize = 20;
+let chatTotal = 0;
+let chatSocket = null;
+let chatSocketState = 'disconnected';
+let chatSocketReconnectTimer = null;
+let chatSocketReconnectAttempts = 0;
+let chatSocketManuallyClosed = false;
+
+function getChatSocketUrl() {
+    const configuredUrl = window.LXG_CHAT_WS_URL || `${location.protocol === 'https:' ? 'wss' : 'ws'}://192.168.10.7:8089/api/v1/admin/chat/ws`;
+    const user = JSON.parse(localStorage.getItem('lexiangou_admin_user') || '{}');
+    if (!user.token) return configuredUrl;
+    const separator = configuredUrl.includes('?') ? '&' : '?';
+    return `${configuredUrl}${separator}token=${encodeURIComponent(user.token)}`;
+}
+
+function connectChatWebSocket() {
+    if (chatSocket && (chatSocket.readyState === WebSocket.OPEN || chatSocket.readyState === WebSocket.CONNECTING)) return;
+    clearTimeout(chatSocketReconnectTimer);
+    chatSocketManuallyClosed = false;
+    chatSocketState = 'connecting';
+    refreshServicePage();
+
+    try {
+        chatSocket = new WebSocket(getChatSocketUrl());
+    } catch (error) {
+        console.error('Unable to create chat WebSocket:', error);
+        scheduleChatSocketReconnect();
+        return;
+    }
+
+    chatSocket.addEventListener('open', () => {
+        chatSocketState = 'connected';
+        chatSocketReconnectAttempts = 0;
+        refreshServicePage();
+    });
+    chatSocket.addEventListener('message', event => handleChatSocketMessage(event.data));
+    chatSocket.addEventListener('error', error => console.error('Chat WebSocket error:', error));
+    chatSocket.addEventListener('close', () => {
+        chatSocket = null;
+        chatSocketState = 'disconnected';
+        refreshServicePage();
+        if (!chatSocketManuallyClosed) scheduleChatSocketReconnect();
+    });
+}
+
+function scheduleChatSocketReconnect() {
+    clearTimeout(chatSocketReconnectTimer);
+    const delay = Math.min(30000, 1000 * (2 ** chatSocketReconnectAttempts));
+    chatSocketReconnectAttempts += 1;
+    chatSocketReconnectTimer = setTimeout(connectChatWebSocket, delay);
+}
+
+function handleChatSocketMessage(rawMessage) {
+    let payload;
+    try {
+        payload = typeof rawMessage === 'string' ? JSON.parse(rawMessage) : rawMessage;
+    } catch (error) {
+        console.warn('Ignored invalid chat WebSocket message:', rawMessage, error);
+        return;
+    }
+    if (payload?.type !== 'chat') return;
+    const data = payload.data || {};
+    const conversationId = data.conversationId ?? data.conversation_id;
+    const chat = chatData.find(item => String(item.id) === String(conversationId));
+    if (!chat || !data.content) return;
+
+    const messageId = data.id ?? data.messageId ?? `ws-${Date.now()}`;
+    if (chat.messages.some(message => String(message.id) === String(messageId))) return;
+    const sender = data.from ?? data.senderType ?? data.sender_type;
+    const from = sender === 'admin' || sender === 'service' ? 'other' : 'me';
+    chat.messages.push({ id: messageId, from, content: data.content, time: data.createdAt ?? data.created_at ?? new Date().toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' }), isAI: false });
+    chat.lastMessage = data.content;
+    chat.lastTime = new Date().toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' });
+    if (String(currentChatId) !== String(chat.id)) chat.unread += 1;
+    refreshServicePage();
+    loadPendingChatCount();
+}
+
+async function loadPendingChatCount() {
+    try {
+        const response = await apiGet(API_CONFIG.service.pendingCount);
+        pendingChatCount = Number(response?.count ?? 0);
+        refreshServicePage();
+    } catch (error) {
+        pendingChatCount = null;
+        console.error('Failed to load pending conversation count:', error);
+    }
+}
 
 // 加载客服会话列表
 async function loadChats() {
+    connectChatWebSocket();
+    await loadPendingChatCount();
     try {
         const params = {
-            status: filterStatus === 'all' ? '' : filterStatus,
-            keyword: currentChatSearchKeyword
+            page: currentChatPage,
+            pageSize: chatPageSize,
+            status: filterStatus === 'all' ? '' : ({ pending: 0, active: 1, closed: 2 }[filterStatus] ?? '')
         };
         const response = await apiGet(API_CONFIG.service.conversations, params);
-        const dataList = response && response.list ? response.list : (Array.isArray(response) ? response : []);
+        const dataList = response && response.list ? response.list : (response?.items ?? response?.records ?? (Array.isArray(response) ? response : []));
+        chatTotal = Number(response?.total ?? response?.total_count ?? response?.count ?? dataList.length);
         chatData = dataList.map(item => ({
             id: item.ID || item.id,
-            userId: item.userId || '',
-            userName: item.userName || '',
-            phone: item.phone || '',
-            avatar: (item.userName || '').charAt(0) || '用',  // 用户名首字作为头像
+            userId: item.user_id ?? item.userId ?? item.user?.id ?? '',
+            userName: item.user_name ?? item.userName ?? item.user?.nickname ?? item.user?.name ?? '',
+            phone: item.phone ?? item.user?.phone ?? '',
+            avatar: (item.user_name ?? item.userName ?? item.user?.nickname ?? item.user?.name ?? '').charAt(0) || '用',
             status: item.status === 0 ? 'pending' : item.status === 1 ? 'active' : 'closed',
-            lastMessage: item.lastMessage || '',
-            lastTime: item.updatedAt || item.lastTime || '',
-            unread: item.unreadCount || 0,
+            lastMessage: item.last_message ?? item.lastMessage ?? '',
+            lastTime: item.updated_at ?? item.updatedAt ?? item.last_time ?? item.lastTime ?? '',
+            unread: Number(item.unread_count ?? item.unreadCount) || 0,
             messages: []
         }));
         // 默认选中第一个会话并加载消息
@@ -44,7 +139,7 @@ async function loadChatMessages(chatId) {
     try {
         const response = await apiGet(API_CONFIG.service.messages, {}, { id: chatId });
         const dataList = response && response.list ? response.list : (Array.isArray(response) ? response : []);
-        const chat = chatData.find(c => c.id === chatId);
+        const chat = chatData.find(c => String(c.id) === String(chatId));
         if (chat) {
             chat.messages = dataList.map(item => ({
                 id: item.ID || item.id,
@@ -95,7 +190,7 @@ function searchChats() {
 
 // 处理会话操作（接入/关闭）
 async function handleChatAction(chatId, action) {
-    const chat = chatData.find(c => c.id === chatId);
+    const chat = chatData.find(c => String(c.id) === String(chatId));
     if (!chat) return;
     
     if (action === 'accept') {
@@ -103,6 +198,8 @@ async function handleChatAction(chatId, action) {
             await apiPut(API_CONFIG.service.accept, {}, { id: chatId });
             chat.status = 'active';
             chat.unread = 0;
+            if (filterStatus === 'pending') currentChatId = '';
+            await loadChats();
             showToast('已接入会话！', 'success');
         } catch (error) {
             console.error('Failed to accept conversation:', error);
@@ -141,11 +238,16 @@ async function sendMessage() {
     const content = input.value.trim();
     if (!content) return;
     
-    const chat = chatData.find(c => c.id === currentChatId);
+    const chat = chatData.find(c => String(c.id) === String(currentChatId));
     if (!chat) return;
     
     try {
-        await apiPost(API_CONFIG.service.sendMessage, { content }, { id: currentChatId });
+        if (chatSocket?.readyState === WebSocket.OPEN) {
+            chatSocket.send(JSON.stringify({ type: 'chat', data: { conversationId: Number(currentChatId) || currentChatId, content, messageType: 1 } }));
+        } else {
+            await apiPost(API_CONFIG.service.sendMessage, { content }, { id: currentChatId });
+            connectChatWebSocket();
+        }
         
         chat.messages.push({
             id: 'm' + Date.now(),
@@ -167,7 +269,7 @@ async function sendMessage() {
 }
 
 function triggerAIReply() {
-    const chat = chatData.find(c => c.id === currentChatId);
+    const chat = chatData.find(c => String(c.id) === String(currentChatId));
     if (!chat) return;
     
     const aiResponses = [
@@ -201,20 +303,28 @@ function triggerAIReply() {
 
 async function selectChat(chatId) {
     currentChatId = chatId;
-    const chat = chatData.find(c => c.id === chatId);
+    const chat = chatData.find(c => String(c.id) === String(chatId));
     if (chat) {
         chat.unread = 0;
-        if (chat.status === 'pending') {
-            chat.status = 'active';
-        }
         await loadChatMessages(chatId);
     }
     refreshServicePage();
 }
 
-function switchChatFilter(status) {
+async function switchChatFilter(status) {
     filterStatus = status;
-    refreshServicePage();
+    currentChatPage = 1;
+    currentChatId = '';
+    await loadChats();
+}
+
+async function changeChatPage(page) {
+    const totalPages = Math.max(1, Math.ceil(chatTotal / chatPageSize));
+    const nextPage = Math.min(Math.max(1, Number(page) || 1), totalPages);
+    if (nextPage === currentChatPage) return;
+    currentChatPage = nextPage;
+    currentChatId = '';
+    await loadChats();
 }
 
 function refreshServicePage() {
@@ -224,10 +334,11 @@ function refreshServicePage() {
 
 function servicePage() {
     const chats = filterChats();
-    const currentChat = chatData.find(c => c.id === currentChatId) || chats[0];
-    const pendingCount = chatData.filter(c => c.status === 'pending').length;
+    const currentChat = chatData.find(c => String(c.id) === String(currentChatId)) || chats[0];
+    const pendingCount = pendingChatCount ?? chatData.filter(c => c.status === 'pending').length;
     const activeCount = chatData.filter(c => c.status === 'active').length;
     const closedCount = chatData.filter(c => c.status === 'closed').length;
+    const totalPages = Math.max(1, Math.ceil(chatTotal / chatPageSize));
     
     return `
         <div class="flex-between mb-4">
@@ -241,6 +352,10 @@ function servicePage() {
                 </select>
                 <button class="btn btn-primary" onclick="searchChats()"><i class="fas fa-search"></i> 搜索</button>
             </div>
+            <button class="btn btn-outline btn-sm" onclick="connectChatWebSocket()" title="点击重新连接">
+                <i class="fas fa-circle" style="font-size:8px;color:${chatSocketState === 'connected' ? '#16a34a' : chatSocketState === 'connecting' ? '#f59e0b' : '#94a3b8'};"></i>
+                ${chatSocketState === 'connected' ? '实时连接' : chatSocketState === 'connecting' ? '连接中' : '重新连接'}
+            </button>
         </div>
 
         <div class="system-stat-grid">
@@ -254,7 +369,7 @@ function servicePage() {
                 <div class="system-chat-sidebar">
                     <div class="system-chat-sidebar-header">
                         <span class="title"><i class="fas fa-comments"></i> 会话列表</span>
-                        <span class="count">共 ${chats.length} 条</span>
+                        <span class="count">共 ${chatTotal} 条</span>
                     </div>
                     <div class="system-chat-sidebar-body">
                         ${chats.map(chat => `
@@ -277,6 +392,7 @@ function servicePage() {
                             </div>
                         `).join('')}
                     </div>
+                    ${totalPages > 1 ? `<div style="display:flex;align-items:center;justify-content:center;gap:8px;padding:10px;border-top:1px solid #e2e8f0;"><button class="icon-btn" ${currentChatPage <= 1 ? 'disabled' : ''} onclick="changeChatPage(${currentChatPage - 1})"><i class="fas fa-angle-left"></i></button><span style="font-size:12px;color:#64748b;">${currentChatPage} / ${totalPages}</span><button class="icon-btn" ${currentChatPage >= totalPages ? 'disabled' : ''} onclick="changeChatPage(${currentChatPage + 1})"><i class="fas fa-angle-right"></i></button></div>` : ''}
                 </div>
                 
                 <div class="system-chat-main">

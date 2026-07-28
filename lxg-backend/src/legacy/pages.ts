@@ -47,19 +47,18 @@ const roleMenus: Record<string, PageId[]> = {
   store_staff: ['stores', 'returns'],
 }
 
-const pageFactories: Record<PageId, string> = {
-  stats: 'statsPage', goods: 'goodsPage', stock: 'stockPage', reviews: 'reviewsPage',
-  coupons: 'couponsPage', marketing: 'marketingPage', orders: 'ordersPage',
-  service: 'servicePage', stores: 'storesPage', returns: 'returnsPage', users: 'usersPage',
+const pageFactories: Partial<Record<PageId, string>> = {
+  stats: 'statsPage', stock: 'stockPage', reviews: 'reviewsPage',
+  marketing: 'marketingPage',
+  service: 'servicePage', stores: 'storesPage', users: 'usersPage',
   admin: 'adminPage', homepage: 'homepagePage', notification: 'notificationPage',
   payment: 'paymentPage', settings: 'settingsPage',
 }
 
 const pageLoaders: Partial<Record<PageId, string[]>> = {
-  goods: ['loadGoods', 'loadCategories', 'loadBrands', 'loadSpecs'],
   stock: ['loadStock'], reviews: ['loadReviews', 'loadSummaries'],
-  marketing: ['loadSeckill'], orders: ['loadOrders'], service: ['loadChats'],
-  stores: ['loadStores'], returns: ['loadReturns', 'loadReturnReasons'], users: ['loadUsers'],
+  marketing: ['loadSeckill'], service: ['loadChats'],
+  stores: ['loadStores'], users: ['loadUsers'],
   admin: ['loadAdmins', 'loadAdminStores'],
   homepage: ['loadBanners', 'loadRecommendations', 'loadHomepageGoods'],
   notification: ['loadNotifications', 'loadTemplates'], payment: ['loadPayments', 'loadRefunds'],
@@ -72,7 +71,8 @@ export function allowedMenus(role: string): MenuItem[] {
 }
 
 export function renderLegacyPage(id: PageId): string {
-  const factory = window[pageFactories[id]]
+  const factoryName = pageFactories[id]
+  const factory = factoryName ? window[factoryName] : undefined
   if (typeof factory !== 'function') return '<div class="page-error"><p>页面加载失败</p></div>'
   try {
     return (factory as () => string)()
