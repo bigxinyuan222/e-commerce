@@ -5,6 +5,8 @@ import { loginAdmin } from './services/auth'
 import LoginForm from './components/LoginForm.vue'
 import CouponsPage from './components/CouponsPage.vue'
 import ProductsPage from './components/ProductsPage.vue'
+import ReturnsPage from './components/ReturnsPage.vue'
+import OrdersPage from './components/OrdersPage.vue'
 
 interface LegacyBridge {
   setUser: (user: AdminUser) => void
@@ -138,6 +140,8 @@ onMounted(() => {
         <section v-for="menu in visibleMenus" :id="`panel-${menu.id}`" :key="menu.id" class="page-panel" :class="{ active: activePage === menu.id }">
           <CouponsPage v-if="menu.id === 'coupons'" :token="user?.token" />
           <ProductsPage v-else-if="menu.id === 'goods'" :token="user?.token" />
+          <ReturnsPage v-else-if="menu.id === 'returns'" :token="user?.token" :store-id="user?.storeId" />
+          <OrdersPage v-else-if="menu.id === 'orders'" :token="user?.token" :store-id="user?.storeId" />
           <div v-else v-html="renderLegacyPage(menu.id)"></div>
         </section>
       </main>

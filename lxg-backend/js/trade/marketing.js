@@ -22,14 +22,14 @@ function getSeckillStatusBadge(status) {
 
 // 获取秒杀活动总销售额
 function getSeckillSalesAmount() {
-    const orders = typeof ordersData !== 'undefined' && Array.isArray(ordersData) ? ordersData : [];
+    const orders = Array.isArray(window.legacyOrderSnapshot) ? window.legacyOrderSnapshot : [];
     const total = orders.reduce((sum, o) => sum + (o.payAmount || o.totalAmount || 0), 0);
     return total > 0 ? `¥${(total / 10000).toFixed(1)}万` : '-';
 }
 
 // 获取秒杀活动订单数
 function getSeckillOrderCount() {
-    const orders = typeof ordersData !== 'undefined' && Array.isArray(ordersData) ? ordersData : [];
+    const orders = Array.isArray(window.legacyOrderSnapshot) ? window.legacyOrderSnapshot : [];
     return orders.length > 0 ? orders.length : '-';
 }
 
@@ -40,7 +40,7 @@ function getSeckillSalesPercent() {
 
 // 获取秒杀活动转化率文本
 function getSeckillConversionRate() {
-    const orders = typeof ordersData !== 'undefined' && Array.isArray(ordersData) ? ordersData : [];
+    const orders = Array.isArray(window.legacyOrderSnapshot) ? window.legacyOrderSnapshot : [];
     const activeSeckill = seckillData.filter(s => s.status === 'active').length;
     return activeSeckill > 0 && orders.length > 0 ? '68.5%' : '-';
 }

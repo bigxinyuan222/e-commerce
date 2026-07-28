@@ -7,7 +7,12 @@
     "dev": "vite --host 0.0.0.0",
     "build": "vue-tsc -b && vite build && node scripts/copy-legacy.mjs",
     "preview": "vite preview --host 0.0.0.0",
-    "test:login": "node scripts/smoke-login.mjs"
+    "test:login": "node scripts/smoke-login.mjs",
+    "test:stock": "node scripts/smoke-stock.mjs",
+    "test:payment": "node scripts/smoke-payment.mjs",
+    "test:returns": "node scripts/smoke-returns.mjs",
+    "test:orders": "node scripts/smoke-orders.mjs",
+    "test:service-ws": "node scripts/smoke-service-ws.mjs"
   },
   "dependencies": {
     "taro_template": "file:..",

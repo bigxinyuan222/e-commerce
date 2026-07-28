@@ -57,8 +57,8 @@ function buildSearchIndex() {
     const index = { orders: [], users: [], stores: [], reviews: [] };
     
     // 订单数据索引
-    if (typeof ordersData !== 'undefined') {
-        ordersData.forEach(o => {
+    if (Array.isArray(window.legacyOrderSnapshot)) {
+        window.legacyOrderSnapshot.forEach(o => {
             index.orders.push({ id: o.id, name: o.userName, type: 'orders', phone: o.phone, status: o.status });
         });
     }

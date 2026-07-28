@@ -9,8 +9,8 @@ function getRoleSpecificStats() {
     
     // 收集各模块数据（处理未定义情况）
     let stats = {
-        orders: (typeof ordersData !== 'undefined' && Array.isArray(ordersData)) ? ordersData : [],
-        returns: (typeof returnsData !== 'undefined' && Array.isArray(returnsData)) ? returnsData : [],
+        orders: Array.isArray(window.legacyOrderSnapshot) ? window.legacyOrderSnapshot : [],
+        returns: Array.isArray(window.legacyRefundSnapshot) ? window.legacyRefundSnapshot : [],
         reviews: (typeof reviewsData !== 'undefined' && Array.isArray(reviewsData)) ? reviewsData : [],
         stock: (typeof stockData !== 'undefined' && Array.isArray(stockData)) ? stockData : [],
         users: (typeof usersData !== 'undefined' && Array.isArray(usersData)) ? usersData : []
@@ -47,7 +47,7 @@ function getRoleSpecificStats() {
 // 获取门店销售排行榜（TOP6）
 function getStoreSalesRanking() {
     const storeSales = {};
-    const orders = typeof ordersData !== 'undefined' && Array.isArray(ordersData) ? ordersData : [];
+    const orders = Array.isArray(window.legacyOrderSnapshot) ? window.legacyOrderSnapshot : [];
     
     // 按门店汇总销售额
     orders.forEach(o => {
@@ -86,7 +86,7 @@ function getStoreSalesRanking() {
 // 获取商品销量排行榜（TOP10）
 function getGoodsSalesRanking() {
     const goodsSales = {};
-    const orders = typeof ordersData !== 'undefined' && Array.isArray(ordersData) ? ordersData : [];
+    const orders = Array.isArray(window.legacyOrderSnapshot) ? window.legacyOrderSnapshot : [];
     
     // 按商品汇总销量和销售额
     orders.forEach(o => {

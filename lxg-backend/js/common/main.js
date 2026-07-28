@@ -212,8 +212,6 @@ function buildPage(id) {
             case 'stock': return stockPage();              // 库存管理页面
             case 'stores': return storesPage();            // 门店总览页面
             case 'homepage': return homepagePage();        // 首页管理页面
-            case 'orders': return ordersPage();            // 订单管理页面
-            case 'returns': return returnsPage();          // 退货退款页面
             case 'reviews': return reviewsPage();          // 评价管理页面
             case 'marketing': return marketingPage();      // 营销活动页面
             case 'service': return servicePage();          // 客服消息页面
@@ -305,11 +303,9 @@ if (savedUser && savedUser.token) {
     setTimeout(() => {
         if (typeof loadStores === 'function') loadStores();
         if (typeof loadUsers === 'function') loadUsers();
-        if (typeof loadOrders === 'function') loadOrders();
         if (typeof loadStock === 'function') loadStock();
         if (typeof loadSeckill === 'function') loadSeckill();
         if (typeof loadReviews === 'function') loadReviews();
-        if (typeof loadReturns === 'function') loadReturns();
         if (typeof loadLogs === 'function') loadLogs();
         if (typeof loadChats === 'function') loadChats();
         if (typeof loadBanners === 'function') loadBanners();

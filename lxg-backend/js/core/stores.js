@@ -158,8 +158,8 @@ function refreshStoresPage() {
 }
 
 function getStoreStats(storeId) {
-    const orders = Array.isArray(ordersData) ? ordersData : [];
-    const returns = Array.isArray(returnsData) ? returnsData : [];
+    const orders = Array.isArray(window.legacyOrderSnapshot) ? window.legacyOrderSnapshot : [];
+    const returns = Array.isArray(window.legacyRefundSnapshot) ? window.legacyRefundSnapshot : [];
     
     const storeOrders = storeId ? orders.filter(o => o && String(o.storeId) === String(storeId)) : [];
     const storeReturns = storeId ? returns.filter(r => r && String(r.storeId) === String(storeId)) : [];
@@ -204,12 +204,8 @@ async function showStoreDetail(storeId) {
         }
     }
     
-    if (typeof loadOrders === 'function' && (!Array.isArray(ordersData) || ordersData.length === 0)) {
-        await loadOrders();
-    }
-    
     const stats = getStoreStats(storeId);
-    const storeOrders = Array.isArray(ordersData) ? ordersData.filter(o => o && String(o.storeId) === String(storeId)) : [];
+    const storeOrders = Array.isArray(window.legacyOrderSnapshot) ? window.legacyOrderSnapshot.filter(o => o && String(o.storeId) === String(storeId)) : [];
     
     const modalContent = `
         <div class="modal-overlay" onclick="closeStoreDetail()"></div>
@@ -549,7 +545,7 @@ function storesPage() {
                         <div class="table-wrap"><table>
                             <thead><tr><th>订单号</th><th>用户</th><th>商品</th><th>金额</th><th>状态</th><th>下单时间</th><th>操作</th></tr></thead>
                             <tbody>
-                                ${(Array.isArray(ordersData) ? ordersData.filter(o => o && o.storeId === currentUser.storeId) : []).slice(0, 10).map(order => `
+                                ${(Array.isArray(window.legacyOrderSnapshot) ? window.legacyOrderSnapshot.filter(o => o && o.storeId === currentUser.storeId) : []).slice(0, 10).map(order => `
                                     <tr>
                                         <td>${order.id}</td>
                                         <td><div><span>${order.userName}</span><div style="font-size:12px;color:#94a3b8;">${order.phone}</div></div></td>
@@ -595,10 +591,10 @@ function storesPage() {
                                     <div>
                                         <div class="progress-label-row">
                                             <span class="label">已完成</span>
-                                            <span class="value">${(Array.isArray(ordersData) ? ordersData.filter(o => o && o.storeId === currentUser.storeId && o.status === 'completed') : []).length}</span>
+                                            <span class="value">${(Array.isArray(window.legacyOrderSnapshot) ? window.legacyOrderSnapshot.filter(o => o && o.storeId === currentUser.storeId && o.status === 'completed') : []).length}</span>
                                         </div>
                                         <div class="progress-bar-container">
-                                            <div class="progress-bar green" style="width:${stats.totalOrders > 0 ? ((Array.isArray(ordersData) ? ordersData.filter(o => o && o.storeId === currentUser.storeId && o.status === 'completed') : []).length / stats.totalOrders) * 100 : 0}%;"></div>
+                                            <div class="progress-bar green" style="width:${stats.totalOrders > 0 ? ((Array.isArray(window.legacyOrderSnapshot) ? window.legacyOrderSnapshot.filter(o => o && o.storeId === currentUser.storeId && o.status === 'completed') : []).length / stats.totalOrders) * 100 : 0}%;"></div>
                                         </div>
                                     </div>
                                 </div>
