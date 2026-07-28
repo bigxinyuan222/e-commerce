@@ -209,14 +209,12 @@ function buildPage(id) {
         // 根据页面ID调用对应的页面渲染函数
         switch (id) {
             case 'stats': return statsPage();              // 数据统计页面
-            case 'goods': return goodsPage();              // 商品管理页面
             case 'stock': return stockPage();              // 库存管理页面
             case 'stores': return storesPage();            // 门店总览页面
             case 'homepage': return homepagePage();        // 首页管理页面
             case 'orders': return ordersPage();            // 订单管理页面
             case 'returns': return returnsPage();          // 退货退款页面
             case 'reviews': return reviewsPage();          // 评价管理页面
-            case 'coupons': return couponsPage();          // 优惠券管理页面
             case 'marketing': return marketingPage();      // 营销活动页面
             case 'service': return servicePage();          // 客服消息页面
             case 'users': return usersPage();              // 用户管理页面
@@ -308,7 +306,6 @@ if (savedUser && savedUser.token) {
         if (typeof loadStores === 'function') loadStores();
         if (typeof loadUsers === 'function') loadUsers();
         if (typeof loadOrders === 'function') loadOrders();
-        if (typeof loadCoupons === 'function') loadCoupons();
         if (typeof loadStock === 'function') loadStock();
         if (typeof loadSeckill === 'function') loadSeckill();
         if (typeof loadReviews === 'function') loadReviews();
@@ -322,10 +319,6 @@ if (savedUser && savedUser.token) {
         if (typeof loadRefunds === 'function') loadRefunds();
         if (typeof loadNotifications === 'function') loadNotifications();
         if (typeof loadTemplates === 'function') loadTemplates();
-        if (typeof loadGoods === 'function') loadGoods();
-        if (typeof loadCategories === 'function') loadCategories();
-        if (typeof loadBrands === 'function') loadBrands();
-        if (typeof loadSpecs === 'function') loadSpecs();
         if (typeof loadAdmins === 'function') loadAdmins();
         if (typeof loadRoles === 'function') loadRoles();
         if (typeof loadAdminStores === 'function') loadAdminStores();

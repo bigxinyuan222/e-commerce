@@ -1,5 +1,16 @@
 // 秒杀活动数据缓存
 let seckillData = [];
+let marketingGoodsData = [];
+
+async function loadMarketingGoods() {
+    const response = await apiGet('/api/v1/admin/product/list', { page: 1, size: 100, status: 1 });
+    const dataList = response && response.list ? response.list : (Array.isArray(response) ? response : []);
+    marketingGoodsData = dataList.map(item => ({
+        id: item.id || item.ID,
+        name: item.name || '',
+        originalPrice: Number(item.original_price || item.originalPrice || 0)
+    }));
+}
 
 // 获取秒杀活动状态标签HTML
 function getSeckillStatusBadge(status) {
@@ -89,7 +100,14 @@ async function handleSeckillAction(seckillId, action) {
     }
 }
 
-function showAddSeckillModal() {
+async function showAddSeckillModal() {
+    try {
+        await loadMarketingGoods();
+    } catch (error) {
+        console.error('Failed to load marketing goods:', error);
+        showToast('商品列表加载失败，请重试', 'error');
+        return;
+    }
     const modalContent = `
         <div class="modal-overlay" onclick="closeMarketingModal()"></div>
         <div class="modal-content" style="width:640px;">
@@ -123,7 +141,7 @@ function showAddSeckillModal() {
                                     <i class="fas fa-search"></i>
                                     <input type="hidden" id="seckillGoods-0" value="" />
                                     <div id="seckillGoodsDropdown-0" class="trade-seckill-goods-dropdown">
-                                        ${typeof goodsData !== 'undefined' ? goodsData.map(g => `<div class="trade-seckill-goods-item" onclick="selectSeckillGoods('${g.id}', '${g.name}', ${g.originalPrice}, this, 0)">${g.name} (¥${g.originalPrice})</div>`).join('') : '<div class="trade-seckill-goods-item empty">暂无商品数据</div>'}
+                                        ${marketingGoodsData.length ? marketingGoodsData.map(g => `<div class="trade-seckill-goods-item" onclick="selectSeckillGoods('${g.id}', '${g.name}', ${g.originalPrice}, this, 0)">${g.name} (¥${g.originalPrice})</div>`).join('') : '<div class="trade-seckill-goods-item empty">暂无商品数据</div>'}
                                     </div>
                                 </div>
                             </div>
@@ -156,7 +174,7 @@ function addSeckillProduct() {
                     <i class="fas fa-search"></i>
                     <input type="hidden" id="seckillGoods-${index}" value="" />
                     <div id="seckillGoodsDropdown-${index}" class="trade-seckill-goods-dropdown">
-                        ${typeof goodsData !== 'undefined' ? goodsData.map(g => `<div class="trade-seckill-goods-item" onclick="selectSeckillGoods('${g.id}', '${g.name}', ${g.originalPrice}, this, ${index})">${g.name} (¥${g.originalPrice})</div>`).join('') : ''}
+                        ${marketingGoodsData.map(g => `<div class="trade-seckill-goods-item" onclick="selectSeckillGoods('${g.id}', '${g.name}', ${g.originalPrice}, this, ${index})">${g.name} (¥${g.originalPrice})</div>`).join('')}
                     </div>
                 </div>
             </div>

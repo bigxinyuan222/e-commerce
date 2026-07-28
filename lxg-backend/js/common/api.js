@@ -19,15 +19,6 @@ const API_CONFIG = {
         reasonEdit: `${API_BASE_URL}/refund-reasons/:id`,          // 编辑退款原因
         reasonDelete: `${API_BASE_URL}/refund-reasons/:id`         // 删除退款原因
     },
-    // 优惠券模块
-    coupons: {
-        list: `${API_BASE_URL}/coupons`,                     // 获取优惠券列表
-        detail: `${API_BASE_URL}/coupons/:id`,               // 获取优惠券详情
-        add: `${API_BASE_URL}/coupons`,                      // 新增优惠券
-        edit: `${API_BASE_URL}/coupons/:id`,                 // 编辑优惠券
-        toggle: `${API_BASE_URL}/coupons/:id/toggle`,        // 启用/停用优惠券
-        records: `${API_BASE_URL}/coupons/:id/records`       // 获取优惠券领取记录
-    },
     // 通知模块
     notifications: {
         list: `${API_BASE_URL}/notifications`,                      // 获取通知列表
@@ -47,16 +38,6 @@ const API_CONFIG = {
         cancel: `${API_BASE_URL}/admin/orders/:id/cancel`, // 取消订单
         ship: `${API_BASE_URL}/admin/orders/:id/ship`,     // 发货操作
         confirm: `${API_BASE_URL}/admin/orders/:id/confirm` // 确认收货/核销
-    },
-    // 商品模块
-    goods: {
-        list: `${API_BASE_URL}/products`,                // 获取商品列表
-        detail: `${API_BASE_URL}/products/:id`,          // 获取商品详情
-        add: `${API_BASE_URL}/products`,                 // 新增商品
-        edit: `${API_BASE_URL}/products/:id`,            // 编辑商品
-        delete: `${API_BASE_URL}/products/:id`,          // 删除商品
-        toggle: `${API_BASE_URL}/products/:id/toggle`,   // 上架/下架商品
-        batch: `${API_BASE_URL}/products/batch`          // 批量操作
     },
     // 用户模块
     users: {
