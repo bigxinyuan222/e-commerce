@@ -142,10 +142,10 @@ const API_CONFIG = {
         pendingCount: `${API_BASE_URL}/admin/chat/conversations/pending-count`, // 待接入会话数量
         conversations: `${API_BASE_URL}/admin/chat/conversations`, // 获取管理端会话列表
         accept: `${API_BASE_URL}/admin/chat/conversations/:id/accept`, // 接入会话
-        close: `${API_BASE_URL}/conversations/:id/close`,        // 关闭会话
+        close: `${API_BASE_URL}/admin/chat/conversations/:id/close`, // 管理员关闭会话
         transfer: `${API_BASE_URL}/conversations/:id/transfer`,  // 转接会话
-        messages: `${API_BASE_URL}/conversations/:id/messages`,  // 获取会话消息
-        sendMessage: `${API_BASE_URL}/conversations/:id/messages` // 发送消息
+        messages: `${API_BASE_URL}/admin/chat/conversations/:id/messages`,  // 获取管理员端会话历史消息
+        sendMessage: `${API_BASE_URL}/admin/chat/conversations/:id/messages` // 管理员发送消息
     },
     // 首页模块
     homepage: {

@@ -77,14 +77,26 @@ function handleChatSocketMessage(rawMessage) {
 
     const messageId = data.id ?? data.messageId ?? `ws-${Date.now()}`;
     if (chat.messages.some(message => String(message.id) === String(messageId))) return;
-    const sender = data.from ?? data.senderType ?? data.sender_type;
-    const from = sender === 'admin' || sender === 'service' ? 'other' : 'me';
-    chat.messages.push({ id: messageId, from, content: data.content, time: data.createdAt ?? data.created_at ?? new Date().toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' }), isAI: false });
+    const presentation = getChatMessagePresentation(data);
+    chat.messages.push({ id: messageId, ...presentation, content: data.content, time: data.createdAt ?? data.created_at ?? new Date().toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' }) });
     chat.lastMessage = data.content;
     chat.lastTime = new Date().toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' });
     if (String(currentChatId) !== String(chat.id)) chat.unread += 1;
     refreshServicePage();
     loadPendingChatCount();
+}
+
+function getChatMessagePresentation(message = {}) {
+    const sender = message.from ?? message.senderType ?? message.sender_type;
+    const normalizedSender = String(sender ?? '').toLowerCase();
+    const isAI = Number(sender) === 3 || normalizedSender === 'ai' || Number(message.replySource ?? message.reply_source) === 1 || message.isAI === true;
+    const isStaff = Number(sender) === 2 || ['admin', 'service', 'staff', 'agent'].includes(normalizedSender);
+
+    return {
+        // In the admin console, customer messages are left; staff and AI replies are right.
+        from: isStaff || isAI ? 'me' : 'other',
+        isAI
+    };
 }
 
 async function loadPendingChatCount() {
@@ -137,16 +149,18 @@ async function loadChats() {
 // 加载会话消息
 async function loadChatMessages(chatId) {
     try {
-        const response = await apiGet(API_CONFIG.service.messages, {}, { id: chatId });
+        const response = await apiGet(API_CONFIG.service.messages, {
+            page: 1,
+            pageSize: 20
+        }, { id: chatId });
         const dataList = response && response.list ? response.list : (Array.isArray(response) ? response : []);
         const chat = chatData.find(c => String(c.id) === String(chatId));
         if (chat) {
-            chat.messages = dataList.map(item => ({
+            chat.messages = [...dataList].reverse().map(item => ({
                 id: item.ID || item.id,
-                from: item.from === 'admin' ? 'other' : 'me',  // admin发送的是other，用户发送的是me
+                ...getChatMessagePresentation(item),
                 content: item.content || '',
-                time: item.createdAt || item.time || '',
-                isAI: item.isAI || false
+                time: item.createdAt || item.created_at || item.time || ''
             }));
         }
     } catch (error) {
@@ -242,16 +256,23 @@ async function sendMessage() {
     if (!chat) return;
     
     try {
+        let sentViaSocket = false;
         if (chatSocket?.readyState === WebSocket.OPEN) {
-            chatSocket.send(JSON.stringify({ type: 'chat', data: { conversationId: Number(currentChatId) || currentChatId, content, messageType: 1 } }));
-        } else {
-            await apiPost(API_CONFIG.service.sendMessage, { content }, { id: currentChatId });
+            try {
+                chatSocket.send(JSON.stringify({ type: 'chat', data: { conversationId: Number(currentChatId) || currentChatId, content, messageType: 1 } }));
+                sentViaSocket = true;
+            } catch (socketError) {
+                console.warn('Chat WebSocket send failed, falling back to HTTP:', socketError);
+            }
+        }
+        if (!sentViaSocket) {
+            await apiPost(API_CONFIG.service.sendMessage, { content, message_type: 1 }, { id: currentChatId });
             connectChatWebSocket();
         }
         
         chat.messages.push({
             id: 'm' + Date.now(),
-            from: 'other',
+            from: 'me',
             content: content,
             time: new Date().toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' }),
             isAI: false
