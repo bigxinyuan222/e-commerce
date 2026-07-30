@@ -209,7 +209,6 @@ function buildPage(id) {
         // 根据页面ID调用对应的页面渲染函数
         switch (id) {
             case 'stats': return statsPage();              // 数据统计页面
-            case 'stock': return stockPage();              // 库存管理页面
             case 'stores': return storesPage();            // 门店总览页面
             case 'homepage': return homepagePage();        // 首页管理页面
             case 'reviews': return reviewsPage();          // 评价管理页面
@@ -303,7 +302,6 @@ if (savedUser && savedUser.token) {
     setTimeout(() => {
         if (typeof loadStores === 'function') loadStores();
         if (typeof loadUsers === 'function') loadUsers();
-        if (typeof loadStock === 'function') loadStock();
         if (typeof loadSeckill === 'function') loadSeckill();
         if (typeof loadReviews === 'function') loadReviews();
         if (typeof loadLogs === 'function') loadLogs();

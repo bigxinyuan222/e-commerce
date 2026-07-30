@@ -41,9 +41,9 @@ const API_CONFIG = {
     },
     // 用户模块
     users: {
-        list: `${API_BASE_URL}/users`,                // 获取用户列表
+        list: `${API_BASE_URL}/get/users`,            // 分页获取用户列表
         detail: `${API_BASE_URL}/users/:id`,          // 获取用户详情
-        toggle: `${API_BASE_URL}/users/:id/toggle`    // 启用/停用用户
+        toggle: `${API_BASE_URL}/enable/user`         // 启用/禁用用户
     },
     // 统计模块
     stats: {

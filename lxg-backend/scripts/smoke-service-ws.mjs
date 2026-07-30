@@ -11,6 +11,7 @@ const conversationQueries = []
 const messageQueries = []
 const closeRequests = []
 const sendRequests = []
+const acceptRequests = []
 
 await page.routeWebSocket('**/api/v1/admin/chat/ws?**', ws => {
   socketUrl = ws.url()
@@ -23,7 +24,7 @@ await page.route('**/api/**', async route => {
   let data = {}
   if (url.pathname === '/api/v1/admin/chat/conversations') {
     conversationQueries.push(Object.fromEntries(url.searchParams))
-    data = { list: [{ id: 5, user_name: '测试用户', phone: '13800000000', status: 1, last_message: '您好', updated_at: '10:00', unread_count: 0 }], total: 45 }
+    data = { list: [{ conversation_id: 5, user_name: '测试用户', phone: '13800000000', status: 1, last_message: '您好', updated_at: '10:00', unread_count: 0 }], total: 45 }
   } else if (url.pathname === '/api/v1/admin/chat/conversations/pending-count') {
     pendingCountPaths.push(url.pathname)
     data = { count: 7 }
@@ -36,6 +37,8 @@ await page.route('**/api/**', async route => {
     ] }
   } else if (url.pathname === '/api/v1/admin/chat/conversations/5/close') {
     closeRequests.push({ method: route.request().method(), path: url.pathname })
+  } else if (url.pathname === '/api/v1/admin/chat/conversations/5/accept') {
+    acceptRequests.push({ method: route.request().method(), path: url.pathname })
   } else if (url.pathname === '/api/v1/admin/chat/conversations/5/messages' && route.request().method() === 'POST') {
     sendRequests.push({ method: route.request().method(), body: route.request().postDataJSON() })
   }
@@ -103,5 +106,5 @@ try {
   ])
   const expectedCloseRequest = { method: 'PUT', path: '/api/v1/admin/chat/conversations/5/close' }
   if (JSON.stringify(closeRequests[0]) !== JSON.stringify(expectedCloseRequest)) throw new Error(`关闭会话请求错误: ${JSON.stringify(closeRequests[0])}`)
-  process.stdout.write(`${JSON.stringify({ socketUrl, pendingCountPaths, conversationQueries, messageQueries, closeRequests, sendRequests, outbound, inboundRendered: true }, null, 2)}\n`)
+  process.stdout.write(`${JSON.stringify({ socketUrl, pendingCountPaths, conversationQueries, messageQueries, closeRequests, sendRequests, acceptRequests, outbound, inboundRendered: true }, null, 2)}\n`)
 } finally { await browser.close() }

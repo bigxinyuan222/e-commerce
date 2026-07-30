@@ -124,7 +124,7 @@ async function loadChats() {
         const dataList = response && response.list ? response.list : (response?.items ?? response?.records ?? (Array.isArray(response) ? response : []));
         chatTotal = Number(response?.total ?? response?.total_count ?? response?.count ?? dataList.length);
         chatData = dataList.map(item => ({
-            id: item.ID || item.id,
+            id: item.conversation_id ?? item.conversationId ?? item.ID ?? item.id,
             userId: item.user_id ?? item.userId ?? item.user?.id ?? '',
             userName: item.user_name ?? item.userName ?? item.user?.nickname ?? item.user?.name ?? '',
             phone: item.phone ?? item.user?.phone ?? '',
@@ -217,7 +217,7 @@ async function handleChatAction(chatId, action) {
             showToast('已接入会话！', 'success');
         } catch (error) {
             console.error('Failed to accept conversation:', error);
-            showToast('操作失败，请重试', 'error');
+            showToast(error.message || '接入会话失败，请重试', 'error');
         }
     } else if (action === 'close') {
         showConfirm('确定关闭此会话吗？', async function() {
@@ -254,21 +254,27 @@ async function sendMessage() {
     
     const chat = chatData.find(c => String(c.id) === String(currentChatId));
     if (!chat) return;
+    if (chat.id === null || chat.id === undefined || chat.id === '') {
+        showToast('当前会话缺少有效ID，无法发送消息', 'error');
+        return;
+    }
     
     try {
-        let sentViaSocket = false;
-        if (chatSocket?.readyState === WebSocket.OPEN) {
-            try {
-                chatSocket.send(JSON.stringify({ type: 'chat', data: { conversationId: Number(currentChatId) || currentChatId, content, messageType: 1 } }));
-                sentViaSocket = true;
-            } catch (socketError) {
-                console.warn('Chat WebSocket send failed, falling back to HTTP:', socketError);
-            }
+        if (chat.status === 'pending') {
+            await apiPut(API_CONFIG.service.accept, {}, { id: chat.id });
+            chat.status = 'active';
+            chat.unread = 0;
+            if (pendingChatCount !== null) pendingChatCount = Math.max(0, pendingChatCount - 1);
         }
-        if (!sentViaSocket) {
-            await apiPost(API_CONFIG.service.sendMessage, { content, message_type: 1 }, { id: currentChatId });
+
+        if (!chatSocket || chatSocket.readyState !== WebSocket.OPEN) {
             connectChatWebSocket();
+            throw new Error('客服实时连接未建立，请等待连接成功后再发送');
         }
+        chatSocket.send(JSON.stringify({
+            type: 'chat',
+            data: { conversationId: Number(currentChatId) || currentChatId, content, messageType: 1 }
+        }));
         
         chat.messages.push({
             id: 'm' + Date.now(),
@@ -285,7 +291,7 @@ async function sendMessage() {
         refreshServicePage();
     } catch (error) {
         console.error('Failed to send message:', error);
-        showToast('发送失败，请重试', 'error');
+        showToast(error.message || '发送失败，请重试', 'error');
     }
 }
 

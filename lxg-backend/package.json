@@ -11,6 +11,7 @@
     "test:stock": "node scripts/smoke-stock.mjs",
     "test:payment": "node scripts/smoke-payment.mjs",
     "test:returns": "node scripts/smoke-returns.mjs",
+    "test:users": "node scripts/smoke-users.mjs",
     "test:orders": "node scripts/smoke-orders.mjs",
     "test:service-ws": "node scripts/smoke-service-ws.mjs"
   },

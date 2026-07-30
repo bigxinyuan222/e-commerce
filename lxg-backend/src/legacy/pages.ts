@@ -48,22 +48,24 @@ const roleMenus: Record<string, PageId[]> = {
 }
 
 const pageFactories: Partial<Record<PageId, string>> = {
-  stats: 'statsPage', stock: 'stockPage', reviews: 'reviewsPage',
+  stats: 'statsPage', reviews: 'reviewsPage',
   marketing: 'marketingPage',
-  service: 'servicePage', stores: 'storesPage', users: 'usersPage',
+  service: 'servicePage', stores: 'storesPage',
   admin: 'adminPage', homepage: 'homepagePage', notification: 'notificationPage',
   payment: 'paymentPage', settings: 'settingsPage',
 }
 
 const pageLoaders: Partial<Record<PageId, string[]>> = {
-  stock: ['loadStock'], reviews: ['loadReviews', 'loadSummaries'],
+  reviews: ['loadReviews', 'loadSummaries'],
   marketing: ['loadSeckill'], service: ['loadChats'],
-  stores: ['loadStores'], users: ['loadUsers'],
+  stores: ['loadStores'],
   admin: ['loadAdmins', 'loadAdminStores'],
   homepage: ['loadBanners', 'loadRecommendations', 'loadHomepageGoods'],
   notification: ['loadNotifications', 'loadTemplates'], payment: ['loadPayments', 'loadRefunds'],
   settings: ['loadLogs'],
 }
+
+const legacyPageCache = new Map<PageId, string>()
 
 export function allowedMenus(role: string): MenuItem[] {
   const allowed = roleMenus[role] || roleMenus.super_admin
@@ -75,10 +77,12 @@ export function renderLegacyPage(id: PageId): string {
   const factory = factoryName ? window[factoryName] : undefined
   if (typeof factory !== 'function') return '<div class="page-error"><p>页面加载失败</p></div>'
   try {
-    return (factory as () => string)()
+    const html = (factory as () => string)()
+    legacyPageCache.set(id, html)
+    return html
   } catch (error) {
     console.error(`Unable to render ${id}`, error)
-    return '<div class="page-error"><p>页面加载失败</p></div>'
+    return legacyPageCache.get(id) || '<div class="page-error"><p>页面加载失败</p></div>'
   }
 }
 

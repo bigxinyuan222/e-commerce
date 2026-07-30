@@ -1,9 +1,15 @@
 // 当前统计时间范围（7天/30天）
 let currentStatsRange = '7d';
 
+function getStatsDate(value, ...fallbacks) {
+    const candidate = [value, ...fallbacks].find(item => item !== null && item !== undefined && item !== '');
+    return String(candidate || '');
+}
+
 // 获取角色特定的统计数据
 function getRoleSpecificStats() {
-    const role = currentUser ? currentUser.role : 'super_admin';
+    const activeUser = typeof window.currentUser !== 'undefined' && window.currentUser ? window.currentUser : null;
+    const role = activeUser ? activeUser.role : 'super_admin';
     const now = new Date();
     const todayStr = now.toISOString().split('T')[0];  // 获取今日日期字符串
     
@@ -17,13 +23,13 @@ function getRoleSpecificStats() {
     };
     
     // 门店用户只看自己门店的数据
-    if (currentUser && currentUser.storeId) {
-        stats.orders = stats.orders.filter(o => o.storeId === currentUser.storeId);
-        stats.returns = stats.returns.filter(r => r.storeId === currentUser.storeId);
+    if (activeUser && activeUser.storeId) {
+        stats.orders = stats.orders.filter(o => o.storeId === activeUser.storeId);
+        stats.returns = stats.returns.filter(r => r.storeId === activeUser.storeId);
     }
     
     // 计算今日订单和已支付订单
-    const todayOrders = stats.orders.filter(o => o.createTime.startsWith(todayStr));
+    const todayOrders = stats.orders.filter(o => getStatsDate(o.createTime, o.create_time, o.createdAt, o.created_at).startsWith(todayStr));
     const paidOrders = stats.orders.filter(o => o.status !== 'pending_payment');
     
     return {
@@ -36,7 +42,7 @@ function getRoleSpecificStats() {
         pendingRefunds: stats.returns.filter(r => r.status === 'pending').length,           // 待退款
         pendingReviews: stats.reviews.filter(r => r.status === 'pending').length,           // 待审核评价
         lowStock: stats.stock.filter(s => s.stock <= s.threshold).length,                   // 库存预警
-        newUsers: stats.users.filter(u => u.registerTime.startsWith(todayStr)).length,     // 今日新用户
+        newUsers: stats.users.filter(u => getStatsDate(u.registerTime, u.register_time, u.createdAt, u.created_at).startsWith(todayStr)).length,     // 今日新用户
         avgOrderValue: paidOrders.length > 0 ? Math.round(paidOrders.reduce((sum, o) => sum + (o.payAmount || o.totalAmount), 0) / paidOrders.length) : 0,  // 客单价
         totalOrders: stats.orders.length,                     // 总订单数
         totalSales: paidOrders.reduce((sum, o) => sum + (o.payAmount || o.totalAmount), 0), // 总销售额
@@ -233,7 +239,7 @@ function generateChartData(range) {
         // 统计当日销售额
         const dateStr = date.toISOString().split('T')[0];
         const stats = getRoleSpecificStats();
-        const dayOrders = stats.orders.filter(o => o.createTime && o.createTime.startsWith(dateStr));
+        const dayOrders = stats.orders.filter(o => getStatsDate(o.createTime, o.create_time, o.createdAt, o.created_at).startsWith(dateStr));
         const daySales = dayOrders.reduce((sum, o) => sum + (Number(o.payAmount) || Number(o.totalAmount) || 0), 0);
         
         data.push(daySales);
@@ -378,7 +384,7 @@ function statsPage() {
     return `
         <div style="margin-bottom:20px;">
             <h1 style="font-size:24px;font-weight:700;color:#1e293b;margin-bottom:4px;">${roleTitle}</h1>
-            <div style="font-size:14px;color:#64748b;">${new Date().toLocaleDateString('zh-CN', { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' })} · 欢迎回来，${currentUser.name}</div>
+            <div style="font-size:14px;color:#64748b;">${new Date().toLocaleDateString('zh-CN', { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' })} · 欢迎回来，${(typeof window.currentUser !== 'undefined' && window.currentUser?.name) || '管理员'}</div>
         </div>
 
         <div class="stats-grid" style="grid-template-columns:repeat(6,1fr);gap:12px;margin-bottom:20px;">

@@ -7,6 +7,8 @@ import CouponsPage from './components/CouponsPage.vue'
 import ProductsPage from './components/ProductsPage.vue'
 import ReturnsPage from './components/ReturnsPage.vue'
 import OrdersPage from './components/OrdersPage.vue'
+import UsersPage from './components/UsersPage.vue'
+import StockPage from './components/StockPage.vue'
 
 interface LegacyBridge {
   setUser: (user: AdminUser) => void
@@ -142,6 +144,8 @@ onMounted(() => {
           <ProductsPage v-else-if="menu.id === 'goods'" :token="user?.token" />
           <ReturnsPage v-else-if="menu.id === 'returns'" :token="user?.token" :store-id="user?.storeId" />
           <OrdersPage v-else-if="menu.id === 'orders'" :token="user?.token" :store-id="user?.storeId" />
+          <UsersPage v-else-if="menu.id === 'users'" :token="user?.token" />
+          <StockPage v-else-if="menu.id === 'stock'" :token="user?.token" />
           <div v-else v-html="renderLegacyPage(menu.id)"></div>
         </section>
       </main>
