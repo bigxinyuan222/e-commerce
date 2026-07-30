@@ -50,14 +50,14 @@ const roleMenus: Record<string, PageId[]> = {
 const pageFactories: Partial<Record<PageId, string>> = {
   stats: 'statsPage', reviews: 'reviewsPage',
   marketing: 'marketingPage',
-  service: 'servicePage', stores: 'storesPage',
+  stores: 'storesPage',
   admin: 'adminPage', homepage: 'homepagePage', notification: 'notificationPage',
   payment: 'paymentPage', settings: 'settingsPage',
 }
 
 const pageLoaders: Partial<Record<PageId, string[]>> = {
   reviews: ['loadReviews', 'loadSummaries'],
-  marketing: ['loadSeckill'], service: ['loadChats'],
+  marketing: ['loadSeckill'],
   stores: ['loadStores'],
   admin: ['loadAdmins', 'loadAdminStores'],
   homepage: ['loadBanners', 'loadRecommendations', 'loadHomepageGoods'],

@@ -53,7 +53,7 @@ try {
   const pendingCard = page.locator('.system-stat-card').filter({ hasText: '待接入' })
   if (!(await pendingCard.textContent())?.includes('7')) throw new Error(`待接入数量渲染错误: ${await pendingCard.textContent()}`)
   if (pendingCountPaths[0] !== '/api/v1/admin/chat/conversations/pending-count') throw new Error(`待接入接口路径错误: ${JSON.stringify(pendingCountPaths)}`)
-  if (!socketUrl.startsWith('ws://192.168.10.7:8089/api/v1/admin/chat/ws?')) throw new Error(`WebSocket 地址错误: ${socketUrl}`)
+  if (!socketUrl.startsWith('ws://127.0.0.1:8081/api/v1/admin/chat/ws?')) throw new Error(`WebSocket 地址错误: ${socketUrl}`)
   if (!socketUrl.includes('token=ws-test-token')) throw new Error(`WebSocket 缺少 token: ${socketUrl}`)
   const expectedInitialQuery = { page: '1', pageSize: '20', status: '' }
   if (JSON.stringify(conversationQueries[0]) !== JSON.stringify(expectedInitialQuery)) throw new Error(`会话列表初始参数错误: ${JSON.stringify(conversationQueries[0])}`)
@@ -83,22 +83,19 @@ try {
   await page.locator('#chatInput').fill('用户您好，请问有什么问题')
   await page.locator('#chatInput').press('Enter')
   await page.waitForFunction(() => document.querySelector('.system-chat-messages')?.textContent?.includes('用户您好，请问有什么问题'))
-  if (!(await page.getByText('用户您好，请问有什么问题', { exact: true }).locator('../..').getAttribute('class'))?.includes('me')) throw new Error('客服实时消息未显示在右侧')
+  if (!(await page.locator('.system-chat-messages').getByText('用户您好，请问有什么问题', { exact: true }).locator('../..').getAttribute('class'))?.includes('me')) throw new Error('客服实时消息未显示在右侧')
   const expected = { type: 'chat', data: { conversationId: 5, content: '用户您好，请问有什么问题', messageType: 1 } }
   if (JSON.stringify(outbound[0]) !== JSON.stringify(expected)) throw new Error(`WebSocket 出站消息错误: ${JSON.stringify(outbound)}`)
 
   serverSocket.send(JSON.stringify({ type: 'chat', data: { id: 99, conversationId: 5, content: '我想咨询退款进度', messageType: 1, from: 'user' } }))
   await page.locator('.system-chat-messages').getByText('我想咨询退款进度', { exact: true }).waitFor()
-  if (!(await page.getByText('我想咨询退款进度', { exact: true }).locator('../..').getAttribute('class'))?.includes('other')) throw new Error('用户实时消息未显示在左侧')
+  if (!(await page.locator('.system-chat-messages').getByText('我想咨询退款进度', { exact: true }).locator('../..').getAttribute('class'))?.includes('other')) throw new Error('用户实时消息未显示在左侧')
   serverSocket.close()
   await page.waitForTimeout(100)
   await page.locator('#chatInput').fill('WebSocket断开后发送')
-  await Promise.all([
-    page.waitForResponse(response => response.url().includes('/api/v1/admin/chat/conversations/5/messages') && response.request().method() === 'POST'),
-    page.locator('#chatInput').press('Enter'),
-  ])
-  const expectedSendRequest = { method: 'POST', body: { content: 'WebSocket断开后发送', message_type: 1 } }
-  if (JSON.stringify(sendRequests[0]) !== JSON.stringify(expectedSendRequest)) throw new Error(`HTTP 发送回退错误: ${JSON.stringify(sendRequests[0])}`)
+  await page.locator('#chatInput').press('Enter')
+  await page.getByText('客服实时连接未建立，请等待连接成功后再发送', { exact: true }).waitFor()
+  if (sendRequests.length) throw new Error(`WebSocket 断开后不应调用不存在的 HTTP 发送接口: ${JSON.stringify(sendRequests)}`)
   await page.locator('#panel-service button').filter({ hasText: '关闭' }).click()
   await Promise.all([
     page.waitForResponse(response => response.url().includes('/api/v1/admin/chat/conversations/5/close')),
