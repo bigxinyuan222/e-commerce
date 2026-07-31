@@ -2,8 +2,9 @@ import React, { useState, useRef, useEffect } from 'react';
 import { View, Text, Input } from '@tarojs/components';
 import Taro from '@tarojs/taro';
 import { useAppContext } from '@/store/AppContext';
-import { apiPost } from '@/api/common';
-import { authApi } from '@/api/user';
+import { apiPost, apiGet } from '@/api/common';
+import { authApi, userApi } from '@/api/user';
+import { normalizeUserProfile } from '@/api/user/normalize';
 import styles from '@/styles/user/login.module.scss';
 
 const LoginPage: React.FC = () => {
@@ -17,6 +18,13 @@ const LoginPage: React.FC = () => {
   const [code, setCode] = useState('');
   const [countdown, setCountdown] = useState(0);
   const countdownRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
+  // 微信登录相关状态
+  const [isWechatLogin, setIsWechatLogin] = useState(false);
+  const [showSetPasswordModal, setShowSetPasswordModal] = useState(false);
+  const [wechatTempToken, setWechatTempToken] = useState('');
+  const [wechatSetPassword, setWechatSetPassword] = useState('');
+  const [wechatConfirmPassword, setWechatConfirmPassword] = useState('');
 
   useEffect(() => {
     return () => {
@@ -34,10 +42,9 @@ const LoginPage: React.FC = () => {
     return `${year}-${month}-${day}`;
   };
 
-  // 统一保存登录态：token 供后续接口使用，userInfo 供全局状态使用
   const saveUserSession = (result: any) => {
     const payload = result?.data ?? result ?? {};
-    const token = payload.token ?? payload.accessToken ?? '';
+    const token = payload.token ?? payload.accessToken ?? payload.tempToken ?? '';
     const user = payload.user_login ?? payload.user ?? payload.userInfo ?? payload;
 
     Taro.setStorageSync('lxg_user', JSON.stringify({ token, user }));
@@ -56,7 +63,6 @@ const LoginPage: React.FC = () => {
     };
 
     setUserInfo(loggedInUser);
-
     return loggedInUser;
   };
 
@@ -106,9 +112,28 @@ const LoginPage: React.FC = () => {
 
     Taro.showLoading({ title: '登录中...' });
     try {
-      const result = await apiPost(authApi.login, {}, {}, { phone, password }, true);
+      const result = await apiPost(authApi.login, { phone, password }, {}, {}, true);
+      const loggedInUser = saveUserSession(result);
+      // 登录成功后获取完整用户信息
+      try {
+        const profileRes = await apiGet(userApi.profile);
+        const normalized = normalizeUserProfile(profileRes);
+        setUserInfo({
+          id: normalized.id || loggedInUser.id,
+          nickname: normalized.nickname || loggedInUser.nickname,
+          avatar: normalized.avatar || loggedInUser.avatar,
+          phone: normalized.phone || loggedInUser.phone,
+          accountName: normalized.accountName || loggedInUser.accountName,
+          gender: normalized.gender || loggedInUser.gender,
+          birthday: normalized.birthday || loggedInUser.birthday,
+          registerDate: normalized.registerDate || loggedInUser.registerDate,
+          email: normalized.email || loggedInUser.email,
+          isLoggedIn: true
+        });
+      } catch (profileErr) {
+        console.error('获取用户信息失败，使用登录返回信息:', profileErr);
+      }
       Taro.hideLoading();
-      saveUserSession(result);
       Taro.showToast({ title: '登录成功', icon: 'success' });
       setTimeout(() => {
         Taro.navigateBack();
@@ -157,7 +182,6 @@ const LoginPage: React.FC = () => {
   };
 
   const handlePhoneLogin = () => {
-    // 当前服务端仅提供手机号密码登录，手机号登录 Tab 同样走密码登录
     if (isRegister) {
       doRegister();
     } else {
@@ -200,6 +224,147 @@ const LoginPage: React.FC = () => {
         setConfirmPassword('');
       }, 1500);
     }, 1500);
+  };
+
+  // 微信登录
+  const handleWechatLogin = async () => {
+    setIsWechatLogin(true);
+
+    try {
+      // #ifdef WEAPP
+      Taro.login({
+        success: async (res) => {
+          if (res.code) {
+            Taro.showLoading({ title: '微信登录中...' });
+            try {
+              const result = await apiPost(authApi.wechatLogin, { code: res.code }, {}, {}, true);
+              Taro.hideLoading();
+              handleWechatLoginResult(result);
+            } catch (error: any) {
+              Taro.hideLoading();
+              // 如果返回需要设置密码的错误码
+              const errCode = error?.code;
+              const tempToken = error?.response?.data?.tempToken || error?.response?.data?.token || '';
+              if (tempToken && (errCode === 403 || errCode === 422 || errCode === 400)) {
+                setWechatTempToken(tempToken);
+                setShowSetPasswordModal(true);
+                Taro.showToast({ title: '请设置登录密码', icon: 'none' });
+              } else {
+                Taro.showToast({ title: error.message || '微信登录失败', icon: 'none' });
+              }
+            }
+          } else {
+            Taro.showToast({ title: '获取微信授权失败', icon: 'none' });
+            setIsWechatLogin(false);
+          }
+        },
+        fail: () => {
+          Taro.showToast({ title: '微信登录失败', icon: 'none' });
+          setIsWechatLogin(false);
+        }
+      });
+      // #endif
+
+      // #ifdef H5
+      Taro.showLoading({ title: '微信登录中...' });
+      // H5端模拟微信登录，实际需要跳转到微信授权页面
+      // 这里先调用后端接口进行测试
+      try {
+        const result = await apiPost(authApi.wechatLogin, { openid: 'test_h5_openid' }, {}, {}, true);
+        Taro.hideLoading();
+        handleWechatLoginResult(result);
+      } catch (error: any) {
+        Taro.hideLoading();
+        const errCode = error?.code;
+        const tempToken = error?.response?.data?.tempToken || error?.response?.data?.token || '';
+        if (tempToken && (errCode === 403 || errCode === 422 || errCode === 400)) {
+          setWechatTempToken(tempToken);
+          setShowSetPasswordModal(true);
+          Taro.showToast({ title: '请设置登录密码', icon: 'none' });
+        } else {
+          Taro.showToast({ title: error.message || '微信登录失败', icon: 'none' });
+        }
+      }
+      // #endif
+    } catch (error: any) {
+      Taro.hideLoading();
+      Taro.showToast({ title: error.message || '微信登录失败', icon: 'none' });
+    } finally {
+      setIsWechatLogin(false);
+    }
+  };
+
+  const handleWechatLoginResult = (result: any) => {
+    const payload = result?.data ?? result ?? {};
+    const needSetPassword = payload.needSetPassword || payload.need_set_password || false;
+    const tempToken = payload.tempToken || payload.temp_token || '';
+
+    if (needSetPassword && tempToken) {
+      setWechatTempToken(tempToken);
+      setShowSetPasswordModal(true);
+      Taro.showToast({ title: '请设置登录密码', icon: 'none' });
+    } else {
+      saveUserSession(result);
+      Taro.showToast({ title: '登录成功', icon: 'success' });
+      setTimeout(() => {
+        Taro.navigateBack();
+      }, 1500);
+    }
+  };
+
+  // 设置密码
+  const handleSetPassword = async () => {
+    if (!wechatSetPassword || wechatSetPassword.length < 6) {
+      Taro.showToast({ title: '密码至少6位', icon: 'none' });
+      return;
+    }
+    if (wechatSetPassword !== wechatConfirmPassword) {
+      Taro.showToast({ title: '两次密码输入不一致', icon: 'none' });
+      return;
+    }
+
+    Taro.showLoading({ title: '设置密码中...' });
+    try {
+      const result = await apiPost(authApi.setPassword, {
+        tempToken: wechatTempToken,
+        password: wechatSetPassword
+      }, {}, {}, true);
+      Taro.hideLoading();
+
+      // 设置密码成功后自动登录
+      const payload = result?.data ?? result ?? {};
+      const token = payload.token ?? payload.accessToken ?? wechatTempToken;
+      const user = payload.user_login ?? payload.user ?? payload.userInfo ?? payload;
+
+      Taro.setStorageSync('lxg_user', JSON.stringify({ token, user }));
+
+      const loggedInUser = {
+        id: String(user.id || user.userId || ''),
+        nickname: user.nickname || user.phone || '',
+        avatar: user.avatar || '',
+        phone: user.phone || '',
+        accountName: user.accountName || user.phone || '',
+        gender: user.gender || '保密',
+        birthday: user.birthday || '请填写您的生日',
+        registerDate: user.registerDate || user.created_at || getCurrentDate(),
+        email: user.email || '',
+        isLoggedIn: true
+      };
+
+      setUserInfo(loggedInUser);
+      setShowSetPasswordModal(false);
+      setWechatSetPassword('');
+      setWechatConfirmPassword('');
+      setWechatTempToken('');
+
+      Taro.showToast({ title: '设置成功', icon: 'success' });
+      setTimeout(() => {
+        Taro.navigateBack();
+      }, 1500);
+    } catch (error: any) {
+      Taro.hideLoading();
+      Taro.showToast({ title: error.message || '设置密码失败', icon: 'none' });
+    }
   };
 
   const toggleRegisterMode = () => {
@@ -523,6 +688,15 @@ const LoginPage: React.FC = () => {
               </View>
               <Text className={styles.methodLabel}>手机</Text>
             </View>
+            <View 
+              className={`${styles.methodItem} ${isWechatLogin ? styles.disabledMethod : ''}`} 
+              onClick={isWechatLogin ? undefined : handleWechatLogin}
+            >
+              <View className={styles.methodIcon}>
+                <Text className={styles.iconText}>💬</Text>
+              </View>
+              <Text className={styles.methodLabel}>微信</Text>
+            </View>
           </View>
         </View>
       )}
@@ -533,6 +707,56 @@ const LoginPage: React.FC = () => {
         和
         <Text className={styles.link}>《隐私政策》</Text>
       </View>
+
+      {/* 设置密码弹窗 */}
+      {showSetPasswordModal && (
+        <View className={styles.modalOverlay} onClick={() => setShowSetPasswordModal(false)}>
+          <View className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
+            <Text className={styles.modalTitle}>设置登录密码</Text>
+            <Text className={styles.modalDesc}>微信登录成功，请设置您的登录密码</Text>
+            
+            <View className={styles.inputGroup}>
+              <Text className={styles.inputLabel}>新密码</Text>
+              <View className={styles.inputRow}>
+                <Text className={styles.inputIcon}>🔑</Text>
+                <Input
+                  className={styles.input}
+                  password
+                  placeholder="请输入密码（至少6位）"
+                  value={wechatSetPassword}
+                  onInput={(e) => setWechatSetPassword(e.detail.value)}
+                />
+              </View>
+            </View>
+
+            <View className={styles.inputGroup}>
+              <Text className={styles.inputLabel}>确认密码</Text>
+              <View className={styles.inputRow}>
+                <Text className={styles.inputIcon}>🔑</Text>
+                <Input
+                  className={styles.input}
+                  password
+                  placeholder="请再次输入密码"
+                  value={wechatConfirmPassword}
+                  onInput={(e) => setWechatConfirmPassword(e.detail.value)}
+                />
+              </View>
+            </View>
+
+            <View className={styles.modalBtn} onClick={handleSetPassword}>
+              确认设置
+            </View>
+            <View className={styles.modalCancel} onClick={() => {
+              setShowSetPasswordModal(false);
+              setWechatTempToken('');
+              setWechatSetPassword('');
+              setWechatConfirmPassword('');
+            }}>
+              取消
+            </View>
+          </View>
+        </View>
+      )}
     </View>
   );
 };

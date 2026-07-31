@@ -2,6 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, Image, Input } from '@tarojs/components';
 import Taro from '@tarojs/taro';
 import { useAppContext } from '@/store/AppContext';
+import { apiPut } from '@/api/common';
+import { userApi } from '@/api/user';
+import { getImageUrl } from '@/utils/image';
 import styles from '@/styles/user/personal-info.module.scss';
 
 const PersonalInfoPage: React.FC = () => {
@@ -15,6 +18,27 @@ const PersonalInfoPage: React.FC = () => {
     birthday: userInfo?.birthday || '请填写您的生日',
     registerDate: userInfo?.registerDate || '2023-08-15'
   });
+
+  // 调用 PUT 接口更新用户信息，并同步到本地状态
+  const updateProfile = async (updates: Partial<typeof formData>) => {
+    try {
+      Taro.showLoading({ title: '保存中...' });
+      await apiPut(userApi.updateProfile, updates);
+      Taro.hideLoading();
+      // 更新本地状态
+      const newFormData = { ...formData, ...updates };
+      setFormData(newFormData);
+      setUserInfo({ ...userInfo!, ...updates, isLoggedIn: true });
+      Taro.showToast({ title: '修改成功', icon: 'success' });
+    } catch (err: any) {
+      Taro.hideLoading();
+      // 即使接口失败，也本地更新保证体验
+      const newFormData = { ...formData, ...updates };
+      setFormData(newFormData);
+      setUserInfo({ ...userInfo!, ...updates, isLoggedIn: true });
+      Taro.showToast({ title: err.message || '修改失败，已本地保存', icon: 'none' });
+    }
+  };
 
   // 切换账号
   const handleSwitchAccount = () => {
@@ -119,10 +143,8 @@ const PersonalInfoPage: React.FC = () => {
   // 处理日期选择确认
   const handleDateConfirm = () => {
     const birthdayStr = `${selectedYear}年${String(selectedMonth).padStart(2, '0')}月${String(selectedDay).padStart(2, '0')}日`;
-    setFormData({ ...formData, birthday: birthdayStr });
-    setUserInfo({ ...userInfo!, birthday: birthdayStr });
     setShowDatePicker(false);
-    Taro.showToast({ title: '修改成功', icon: 'success' });
+    updateProfile({ birthday: birthdayStr });
   };
 
   const handleItemClick = (title: string) => {
@@ -193,7 +215,7 @@ const PersonalInfoPage: React.FC = () => {
         <View className={styles.infoItem} onClick={() => handleItemClick('头像')}>
           <Text className={styles.itemLabel}>头像</Text>
           <View className={styles.itemContent}>
-            <Image src={formData.avatar} className={styles.avatar} mode="aspectFill" />
+            <Image src={getImageUrl(formData.avatar)} className={styles.avatar} mode="aspectFill" />
             <Text className={styles.itemArrow}>›</Text>
           </View>
         </View>
@@ -318,11 +340,34 @@ const PersonalInfoPage: React.FC = () => {
               <Text className={styles.avatarPickerClose} onClick={() => setShowAvatarPicker(false)}>×</Text>
             </View>
             <View className={styles.avatarPickerBody}>
-                <View className={styles.avatarPickerOption} onClick={() => { setShowAvatarPicker(false); Taro.showToast({ title: '从相册选择', icon: 'none' }); }}>
+                <View className={styles.avatarPickerOption} onClick={() => {
+                  setShowAvatarPicker(false);
+                  Taro.chooseImage({
+                    count: 1,
+                    sizeType: ['compressed'],
+                    sourceType: ['album'],
+                    success: (res) => {
+                      const tempFilePath = res.tempFilePaths[0];
+                      // TODO: 上传到服务器获取URL，目前先用本地临时路径
+                      updateProfile({ avatar: tempFilePath });
+                    }
+                  });
+                }}>
                   <Text className={styles.avatarPickerOptionText}>从相册选择</Text>
                 </View>
                 <View className={styles.avatarPickerDivider}></View>
-                <View className={styles.avatarPickerOption} onClick={() => { setShowAvatarPicker(false); Taro.showToast({ title: '拍照功能', icon: 'none' }); }}>
+                <View className={styles.avatarPickerOption} onClick={() => {
+                  setShowAvatarPicker(false);
+                  Taro.chooseImage({
+                    count: 1,
+                    sizeType: ['compressed'],
+                    sourceType: ['camera'],
+                    success: (res) => {
+                      const tempFilePath = res.tempFilePaths[0];
+                      updateProfile({ avatar: tempFilePath });
+                    }
+                  });
+                }}>
                   <Text className={styles.avatarPickerOptionText}>拍照</Text>
                 </View>
               </View>
@@ -355,10 +400,8 @@ const PersonalInfoPage: React.FC = () => {
               </View>
               <View className={styles.nicknameModalBtn} onClick={() => {
                 if (nicknameInput.trim()) {
-                  setFormData({ ...formData, nickname: nicknameInput.trim() });
-                  setUserInfo({ ...userInfo!, nickname: nicknameInput.trim() });
                   setShowNicknameModal(false);
-                  Taro.showToast({ title: '修改成功', icon: 'success' });
+                  updateProfile({ nickname: nicknameInput.trim() });
                 } else {
                   Taro.showToast({ title: '请输入昵称', icon: 'none' });
                 }
@@ -380,25 +423,22 @@ const PersonalInfoPage: React.FC = () => {
             </View>
             <View className={styles.genderPickerBody}>
               <View className={styles.genderPickerOption} onClick={() => {
-                setFormData({ ...formData, gender: '男' });
-                setUserInfo({ ...userInfo!, gender: '男' });
                 setShowGenderPicker(false);
+                updateProfile({ gender: '男' });
               }}>
                 <Text className={styles.genderPickerOptionText}>男</Text>
               </View>
               <View className={styles.genderPickerDivider}></View>
               <View className={styles.genderPickerOption} onClick={() => {
-                setFormData({ ...formData, gender: '女' });
-                setUserInfo({ ...userInfo!, gender: '女' });
                 setShowGenderPicker(false);
+                updateProfile({ gender: '女' });
               }}>
                 <Text className={styles.genderPickerOptionText}>女</Text>
               </View>
               <View className={styles.genderPickerDivider}></View>
               <View className={styles.genderPickerOption} onClick={() => {
-                setFormData({ ...formData, gender: '保密' });
-                setUserInfo({ ...userInfo!, gender: '保密' });
                 setShowGenderPicker(false);
+                updateProfile({ gender: '保密' });
               }}>
                 <Text className={styles.genderPickerOptionText}>保密</Text>
               </View>

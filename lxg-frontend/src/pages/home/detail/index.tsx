@@ -2,10 +2,10 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { View, Text, Image, Swiper, SwiperItem, ScrollView, Input } from '@tarojs/components';
 import Taro from '@tarojs/taro';
 import { useAppContext } from '@/store/AppContext';
-import { getProductById } from '@/data/product/products';
-import { getEvaluationsByProduct, getEvaluationStats, getAiSummary } from '@/data/product/evaluations';
-import { availableCoupons, Coupon } from '@/data/common/coupons';
-
+import { apiGet, apiPost } from '@/api/common';
+import { productApi, reviewApi } from '@/api/home';
+import { addToCartAPI } from '@/api/cart';
+import { getImageUrl, normalizeProductImages, lazyImgProps } from '@/utils/image';
 import styles from '@/styles/home/detail.module.scss';
 
 interface Product {
@@ -46,10 +46,10 @@ const EvaluationItem = React.memo(({
   <View key={evaluation.id} className={styles.evaluateItem}>
     <View className={styles.evaluateHeader}>
       <Image 
-        src={evaluation.userAvatar} 
+        src={getImageUrl(evaluation.userAvatar)} 
         className={styles.userAvatar} 
         mode="aspectFill" 
-        lazyLoad
+        {...lazyImgProps()}
       />
       <View className={styles.userInfo}>
         <Text className={styles.userName}>{evaluation.userName}</Text>
@@ -57,10 +57,10 @@ const EvaluationItem = React.memo(({
       </View>
     </View>
     <Text className={styles.evaluateContent}>{evaluation.content}</Text>
-    {evaluation.images.length > 0 && (
+    {evaluation.images && evaluation.images.length > 0 && (
       <View className={styles.evaluateImages}>
         {evaluation.images.map((img: string, idx: number) => (
-          <Image key={idx} src={img} mode="aspectFill" lazyLoad />
+          <Image key={idx} src={getImageUrl(img)} mode="aspectFill" {...lazyImgProps()} />
         ))}
       </View>
     )}
@@ -80,7 +80,6 @@ const EvaluationItem = React.memo(({
   </View>
 ));
 
-// SKU选项组件
 const SkuOptionGroup = React.memo(({ 
   specName, 
   product, 
@@ -88,7 +87,7 @@ const SkuOptionGroup = React.memo(({
   availableValues,
   onSelect 
 }: { 
-  specName: string;
+  specName: string; 
   product: Product;
   specSelections: { [key: string]: string };
   availableValues: string[];
@@ -97,7 +96,7 @@ const SkuOptionGroup = React.memo(({
   <View key={specName} className={styles.optionGroup}>
     <Text className={styles.optionLabel}>{specName}</Text>
     <View className={styles.optionValues}>
-      {Array.from(new Set(product.skus.map(sku => sku.specs[specName]))).map((specValue) => {
+      {Array.from(new Set(product.skus.map(sku => sku.specs[specName]))).map((specValue: string) => {
         const isAvailable = availableValues.includes(specValue);
         const isSelected = specSelections[specName] === specValue;
         return (
@@ -124,24 +123,17 @@ const ProductDetailPage: React.FC = () => {
   const [skuModalType, setSkuModalType] = useState<'cart' | 'buy'>('cart');
   const [specSelections, setSpecSelections] = useState<{ [key: string]: string }>({});
   const [evaluations, setEvaluations] = useState<any[]>([]);
-  const [, setEvalStats] = useState<any>(null);
+  const [evalStats, setEvalStats] = useState<any>(null);
   const [aiSummary, setAiSummary] = useState<any>(null);
   const [isSeckill, setIsSeckill] = useState(false);
   const [seckillCountdown, setSeckillCountdown] = useState('');
-  const [showCommentModal, setShowCommentModal] = useState(false);
-  const [currentEvaluation, setCurrentEvaluation] = useState<any>(null);
-  const [commentInput, setCommentInput] = useState('');
-  const [productCoupons, setProductCoupons] = useState<Coupon[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [productId, setProductId] = useState('');
 
-  // 使用 useMemo 缓存折扣计算
-  
-
-  // 使用 useCallback 缓存事件处理函数
   const onBannerChange = useCallback((e: any) => {
     setCurrentImage(e.detail.current);
   }, []);
 
-  // 获取可选的规格值
   const getAvailableSpecValues = useCallback((specName: string) => {
     if (!product) return [];
     const availableValues: string[] = [];
@@ -160,7 +152,6 @@ const ProductDetailPage: React.FC = () => {
     return [...new Set(availableValues)];
   }, [product, specSelections]);
 
-  // 选择规格
   const selectSpec = useCallback((specName: string, specValue: string) => {
     const newSelections = { ...specSelections, [specName]: specValue };
     setSpecSelections(newSelections);
@@ -174,14 +165,12 @@ const ProductDetailPage: React.FC = () => {
     }
   }, [product, specSelections]);
 
-  // 减少数量
   const decreaseQuantity = useCallback(() => {
     if (quantity > 1) {
       setQuantity(quantity - 1);
     }
   }, [quantity]);
 
-  // 增加数量
   const increaseQuantity = useCallback(() => {
     if (selectedSku && quantity < selectedSku.stock) {
       setQuantity(quantity + 1);
@@ -190,9 +179,17 @@ const ProductDetailPage: React.FC = () => {
     }
   }, [selectedSku, quantity]);
 
-  // 添加到购物车
-  const handleAddToCart = useCallback(() => {
+  const handleAddToCart = useCallback(async () => {
     if (!product || !selectedSku) return;
+    try {
+      await addToCartAPI({
+        productId: product.id,
+        skuId: selectedSku.id,
+        quantity: quantity,
+      });
+    } catch (error) {
+      console.error('添加到购物车API失败:', error);
+    }
     addToCart({
       productId: product.id,
       productName: product.name,
@@ -207,7 +204,6 @@ const ProductDetailPage: React.FC = () => {
     setShowSkuModal(false);
   }, [addToCart, product, selectedSku, quantity, isSeckill]);
 
-  // 立即购买
   const handleBuyNow = useCallback(() => {
     if (!product || !selectedSku) return;
     setShowSkuModal(false);
@@ -229,221 +225,193 @@ const ProductDetailPage: React.FC = () => {
     }, 300);
   }, [product, selectedSku, quantity, isSeckill]);
 
-  // 打开SKU弹窗
   const openSkuModal = useCallback((type: 'cart' | 'buy') => {
     setSkuModalType(type);
     setShowSkuModal(true);
   }, []);
 
-  // 返回首页
   const goHome = useCallback(() => {
     Taro.switchTab({ url: '/pages/home/index' });
   }, []);
 
-  // 跳转到购物车
   const goToCart = useCallback(() => {
     Taro.switchTab({ url: '/pages/cart/index' });
   }, []);
 
-  // 跳转到评价页面
   const goToEvaluations = useCallback(() => {
     Taro.navigateTo({ url: `/pages/home/evaluations/index?id=${product?.id}` });
   }, [product]);
 
-  // 拨打电话
   const callStore = useCallback(() => {
     if (currentStore) {
       Taro.makePhoneCall({ phoneNumber: currentStore.phone });
     }
   }, [currentStore]);
 
-  // 切换门店
   const handleSwitchStore = useCallback(() => {
     Taro.navigateTo({ url: '/pages/category/stores/index' });
   }, []);
 
-  // 跳转到客服页面
   const goToCustomerService = useCallback(() => {
     Taro.switchTab({ url: '/pages/message/index' });
   }, []);
 
-  // 分享商品
   const handleShare = useCallback(() => {
     try {
       const shareLink = `https://lexiangou.com/product/${product?.id}`;
       Taro.setClipboardData({
         data: shareLink,
         success: () => {
-          Taro.showToast({
-            title: '链接已复制',
-            icon: 'success'
-          });
+          Taro.showToast({ title: '链接已复制', icon: 'success' });
         },
         fail: () => {
-          Taro.showToast({
-            title: '复制失败',
-            icon: 'none'
-          });
+          Taro.showToast({ title: '复制失败', icon: 'none' });
         }
       });
     } catch (error) {
-      Taro.showToast({
-        title: '复制失败',
-        icon: 'none'
-      });
+      Taro.showToast({ title: '复制失败', icon: 'none' });
     }
   }, [product]);
 
-  // 评价点赞
-  const handleEvaluationLike = useCallback((evalId: string) => {
-    setEvaluations(prev => {
-      return prev.map(evalItem => {
-        if (evalItem.id === evalId) {
-          return {
-            ...evalItem,
-            isLike: !evalItem.isLike,
-            likeCount: evalItem.isLike ? evalItem.likeCount - 1 : evalItem.likeCount + 1
-          };
-        }
-        return evalItem;
+  const handleEvaluationLike = useCallback(async (evalId: string) => {
+    try {
+      await apiPost(reviewApi.like, { reviewId: evalId });
+      setEvaluations(prev => {
+        return prev.map(evalItem => {
+          if (evalItem.id === evalId) {
+            return {
+              ...evalItem,
+              isLike: !evalItem.isLike,
+              likeCount: evalItem.isLike ? evalItem.likeCount - 1 : evalItem.likeCount + 1
+            };
+          }
+          return evalItem;
+        });
       });
-    });
+    } catch (error) {
+      console.error('Failed to like review:', error);
+    }
   }, []);
 
-  // 打开评论弹窗
+  const [showCommentModal, setShowCommentModal] = useState(false);
+  const [currentEvaluation, setCurrentEvaluation] = useState<any>(null);
+  const [commentInput, setCommentInput] = useState('');
+
   const openCommentModal = useCallback((evaluation: any) => {
     setCurrentEvaluation(evaluation);
     setShowCommentModal(true);
   }, []);
 
-  // 关闭评论弹窗
   const closeCommentModal = useCallback(() => {
     setShowCommentModal(false);
     setCurrentEvaluation(null);
     setCommentInput('');
   }, []);
 
-  // 发送评论
-  const sendComment = useCallback(() => {
+  const sendComment = useCallback(async () => {
     if (!commentInput.trim()) {
       Taro.showToast({ title: '请输入评论内容', icon: 'none' });
       return;
     }
 
-    const newComment = {
-      id: `comment-${Date.now()}`,
-      evaluationId: currentEvaluation.id,
-      userId: 'user-current',
-      userName: '我',
-      userAvatar: 'https://picsum.photos/id/99/100/100',
-      content: commentInput.trim(),
-      createTime: new Date().toLocaleString(),
-      likeCount: 0,
-      isLike: false
-    };
-
-    setEvaluations(prev => {
-      return prev.map(evalItem => {
-        if (evalItem.id === currentEvaluation.id) {
-          return {
-            ...evalItem,
-            comments: [...evalItem.comments, newComment]
-          };
-        }
-        return evalItem;
+    try {
+      await apiPost(reviewApi.submit, {
+        reviewId: currentEvaluation?.id,
+        content: commentInput.trim()
       });
-    });
+      
+      const newComment = {
+        id: `comment-${Date.now()}`,
+        evaluationId: currentEvaluation.id,
+        userId: 'user-current',
+        userName: '我',
+        userAvatar: '',
+        content: commentInput.trim(),
+        createTime: new Date().toLocaleString(),
+        likeCount: 0,
+        isLike: false
+      };
 
-    setCurrentEvaluation(prev => ({
-      ...prev,
-      comments: [...prev.comments, newComment]
-    }));
+      setEvaluations(prev => {
+        return prev.map(evalItem => {
+          if (evalItem.id === currentEvaluation.id) {
+            return {
+              ...evalItem,
+              comments: [...evalItem.comments, newComment]
+            };
+          }
+          return evalItem;
+        });
+      });
 
-    setCommentInput('');
-    Taro.showToast({ title: '评论成功', icon: 'success' });
+      setCommentInput('');
+      Taro.showToast({ title: '评论成功', icon: 'success' });
+    } catch (error) {
+      console.error('Failed to send comment:', error);
+      Taro.showToast({ title: '评论失败', icon: 'none' });
+    }
   }, [commentInput, currentEvaluation]);
-
-  // 评论点赞
-  const handleCommentLike = useCallback((commentId: string) => {
-    setEvaluations(prev => {
-      return prev.map(evalItem => {
-        if (evalItem.id === currentEvaluation.id) {
-          return {
-            ...evalItem,
-            comments: evalItem.comments.map((comment: any) => {
-              if (comment.id === commentId) {
-                return {
-                  ...comment,
-                  isLike: !comment.isLike,
-                  likeCount: comment.isLike ? comment.likeCount - 1 : comment.likeCount + 1
-                };
-              }
-              return comment;
-            })
-          };
-        }
-        return evalItem;
-      });
-    });
-
-    setCurrentEvaluation(prev => ({
-      ...prev,
-      comments: prev.comments.map((comment: any) => {
-        if (comment.id === commentId) {
-          return {
-            ...comment,
-            isLike: !comment.isLike,
-            likeCount: comment.isLike ? comment.likeCount - 1 : comment.likeCount + 1
-          };
-        }
-        return comment;
-      })
-    }));
-  }, [currentEvaluation]);
 
   useEffect(() => {
     const { id, seckill } = Taro.getCurrentInstance().router?.params || {};
     setIsSeckill(seckill === '1');
-    if (id) {
-      const productData = getProductById(id);
-      if (productData) {
-        setProduct(productData as Product);
-        setSelectedSku(productData.skus[0]);
-        
-        const initialSelections: { [key: string]: string } = {};
-        Object.keys(productData.skus[0].specs).forEach(key => {
-          initialSelections[key] = productData.skus[0].specs[key];
-        });
-        setSpecSelections(initialSelections);
-        
-        const evalList = getEvaluationsByProduct(id);
-        setEvaluations(evalList.slice(0, 2));
-        
-        const stats = getEvaluationStats(id);
-        setEvalStats(stats);
-        
-        const summary = getAiSummary(id);
-        setAiSummary(summary);
-        
-        const categoryMap: { [key: string]: string } = {
-          '1': 'digital',
-          '2': 'digital',
-          '3': 'clothing',
-          '4': 'home',
-          '5': 'food',
-          '6': 'beauty',
-          '7': 'baby',
-          '8': 'home'
-        };
-        const coupons = availableCoupons.filter(c => {
-          if (c.scope === 'product') return c.productId === id;
-          if (c.scope === 'category') return c.categoryId === categoryMap[productData.categoryId];
-          if (c.scope === 'all') return true;
-          return false;
-        });
-        setProductCoupons(coupons.slice(0, 4));
-      }
+    
+    if (!id) {
+      Taro.showToast({ title: '商品不存在', icon: 'none' });
+      setTimeout(() => Taro.navigateBack(), 1000);
+      return;
     }
+    
+    setProductId(id);
+    
+    const loadProduct = async () => {
+      setLoading(true);
+      try {
+        const [productRes, reviewRes, statsRes] = await Promise.all([
+          apiGet(productApi.detail, { id }).catch(() => null),
+          apiGet(reviewApi.list, { page: 1, size: 2 }, { id }).catch(() => null),
+          apiGet(reviewApi.stats, {}, { id }).catch(() => null),
+        ]);
+
+        if (productRes?.data) {
+          const productData = normalizeProductImages(productRes.data);
+          setProduct(productData);
+          
+          if (productData.skus && productData.skus.length > 0) {
+            setSelectedSku(productData.skus[0]);
+            
+            const initialSelections: { [key: string]: string } = {};
+            if (productData.skus[0].specs) {
+              Object.keys(productData.skus[0].specs).forEach(key => {
+                initialSelections[key] = productData.skus[0].specs[key];
+              });
+            }
+            setSpecSelections(initialSelections);
+          }
+        }
+
+        if (reviewRes?.data) {
+          const reviewData = Array.isArray(reviewRes.data) ? reviewRes.data : reviewRes.data?.list || [];
+          setEvaluations(reviewData.slice(0, 2));
+        }
+
+        if (statsRes?.data) {
+          setEvalStats(statsRes.data);
+          if (statsRes.data.aiSummary) {
+            setAiSummary(statsRes.data.aiSummary);
+          } else if (statsRes.data.summary) {
+            setAiSummary(statsRes.data.summary);
+          }
+        }
+      } catch (error) {
+        console.error('Failed to load product:', error);
+        Taro.showToast({ title: '加载失败', icon: 'none' });
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadProduct();
   }, []);
 
   useEffect(() => {
@@ -476,7 +444,7 @@ const ProductDetailPage: React.FC = () => {
     return () => clearInterval(timer);
   }, [isSeckill]);
 
-  if (!product) {
+  if (loading || !product) {
     return (
       <View className={styles.productDetailPage}>
         <View style={{ padding: '100rpx', textAlign: 'center' }}>
@@ -489,7 +457,6 @@ const ProductDetailPage: React.FC = () => {
   return (
     <View className={styles.productDetailPage}>
       <ScrollView scrollY style={{ height: 'calc(100vh - 120rpx)' }}>
-        {/* 商品轮播图 */}
         <View className={styles.bannerWrap}>
           <View className={styles.shareBtn} onClick={handleShare}>
             <Text className={styles.shareIcon}>↗</Text>
@@ -503,7 +470,7 @@ const ProductDetailPage: React.FC = () => {
             >
               {product.images.map((image, index) => (
                 <SwiperItem key={index}>
-                  <Image src={image} mode="aspectFill" lazyLoad />
+                  <Image src={getImageUrl(image)} mode="aspectFill" {...lazyImgProps()} />
                 </SwiperItem>
               ))}
             </Swiper>
@@ -513,11 +480,10 @@ const ProductDetailPage: React.FC = () => {
           </View>
         </View>
 
-        {/* 价格信息 */}
         <View className={styles.priceSection}>
           <View className={styles.priceRow}>
-            <Text className={styles.currentPrice}>{selectedSku?.price || product.price}</Text>
-            <Text className={styles.originalPrice}>{product.originalPrice}</Text>
+            <Text className={styles.currentPrice}>¥{selectedSku?.price || product.price}</Text>
+            {product.originalPrice && <Text className={styles.originalPrice}>¥{product.originalPrice}</Text>}
             {isSeckill && (
               <View className={styles.seckillBadge}>
                 <Text className={styles.seckillBadgeText}>限时秒杀</Text>
@@ -529,27 +495,15 @@ const ProductDetailPage: React.FC = () => {
             <Text className={styles.salesValue}>{product.sales > 10000 ? `${(product.sales / 10000).toFixed(1)}万` : product.sales}</Text>
             <Text className={styles.salesLabel}>已售</Text>
           </View>
-          <View className={styles.activityTags}>
-            {product.tags.map((tag) => (
-              <Text key={tag} className={styles.tag}>{tag}</Text>
-            ))}
-          </View>
-          {!isSeckill && productCoupons.length > 0 && (
-            <View className={styles.couponTags}>
-              {productCoupons.map((coupon) => (
-                <View key={coupon.id} className={styles.couponTag}>
-                  <Text className={styles.couponTagValue}>¥{coupon.value}</Text>
-                  <Text className={styles.couponTagDesc}>
-                    {coupon.minAmount > 0 ? `满${coupon.minAmount}减${coupon.value}` : `${coupon.scopeText}`}
-                  </Text>
-                  <Text className={styles.couponTagBtn}>领</Text>
-                </View>
+          {product.tags && product.tags.length > 0 && (
+            <View className={styles.activityTags}>
+              {product.tags.map((tag: string) => (
+                <Text key={tag} className={styles.tag}>{tag}</Text>
               ))}
             </View>
           )}
         </View>
 
-        {/* 商品名称和基础信息 */}
         <View className={styles.infoSection}>
           <Text className={styles.productName}>{product.name}</Text>
           <View className={styles.productTags}>
@@ -558,7 +512,6 @@ const ProductDetailPage: React.FC = () => {
           </View>
         </View>
 
-        {/* 门店信息 */}
         <View className={styles.storeSection}>
           <View className={styles.storeHeader}>
             <Text className={styles.sectionTitle}>门店自提</Text>
@@ -576,15 +529,8 @@ const ProductDetailPage: React.FC = () => {
               拨打电话
             </View>
           </View>
-          <View 
-            style={{ textAlign: 'center', marginTop: '20rpx' }}
-            onClick={handleSwitchStore}
-          >
-            <Text style={{ color: '#e2231a', fontSize: '24rpx' }}>查看更多门店 &gt;</Text>
-          </View>
         </View>
 
-        {/* 商品评价 */}
         {evaluations.length > 0 && (
           <View className={styles.evaluateSection}>
             <View className={styles.sectionHeader}>
@@ -598,12 +544,12 @@ const ProductDetailPage: React.FC = () => {
                   <View className={styles.aiIcon}>🤖</View>
                   <Text className={styles.aiSummaryTitle}>AI评价总结</Text>
                   <View className={styles.aiScore}>
-                    <Text className={styles.scoreValue}>{Math.round(aiSummary.averageRating * 20)}%</Text>
+                    <Text className={styles.scoreValue}>{Math.round((aiSummary.averageRating || 0) * 20)}%</Text>
                     <Text className={styles.scoreLabel}>综合评分</Text>
                   </View>
                 </View>
-                <Text className={styles.aiOverall}>{aiSummary.overall}</Text>
-                {aiSummary.strengths.length > 0 && (
+                {aiSummary.overall && <Text className={styles.aiOverall}>{aiSummary.overall}</Text>}
+                {aiSummary.strengths && aiSummary.strengths.length > 0 && (
                   <View className={styles.aiStrengths}>
                     <Text className={styles.aiLabel}>👍 好评亮点</Text>
                     <View className={styles.aiTags}>
@@ -613,7 +559,7 @@ const ProductDetailPage: React.FC = () => {
                     </View>
                   </View>
                 )}
-                {aiSummary.weaknesses.length > 0 && (
+                {aiSummary.weaknesses && aiSummary.weaknesses.length > 0 && (
                   <View className={styles.aiWeaknesses}>
                     <Text className={styles.aiLabel}>👎 待改进</Text>
                     <View className={styles.aiTags}>
@@ -639,7 +585,6 @@ const ProductDetailPage: React.FC = () => {
           </View>
         )}
 
-        {/* 商品详情 */}
         <View className={styles.detailSection}>
           <Text className={styles.sectionTitle}>商品详情</Text>
           <View className={styles.detailContent}>
@@ -650,7 +595,6 @@ const ProductDetailPage: React.FC = () => {
         <View style={{ height: '40rpx' }} />
       </ScrollView>
 
-      {/* 底部操作栏 */}
       <View className={styles.bottomBar}>
         <View className={styles.actionIcons}>
           <View className={styles.actionItem} onClick={goHome}>
@@ -679,20 +623,19 @@ const ProductDetailPage: React.FC = () => {
         </View>
       </View>
 
-      {/* SKU选择弹窗 */}
       {showSkuModal && (
         <View className={styles.skuModal}>
           <View className={styles.modalMask} onClick={() => setShowSkuModal(false)} />
           <View className={styles.modalContent}>
             <View className={styles.modalHeader}>
               <Image 
-                src={selectedSku?.image || product.images[0]} 
+                src={getImageUrl(selectedSku?.image || product.images[0])}
                 className={styles.selectedImage}
                 mode="aspectFill"
-                lazyLoad
+                {...lazyImgProps()}
               />
               <View className={styles.selectedInfo}>
-                <Text className={styles.selectedPrice}>{selectedSku?.price || product.price}</Text>
+                <Text className={styles.selectedPrice}>¥{selectedSku?.price || product.price}</Text>
                 <Text className={styles.selectedStock}>库存: {selectedSku?.stock || 0} 件</Text>
                 <Text className={styles.selectedName}>{selectedSku?.name || '请选择规格'}</Text>
               </View>
@@ -700,7 +643,7 @@ const ProductDetailPage: React.FC = () => {
             </View>
             
             <View className={styles.modalBody}>
-              {product.skus[0] && Object.keys(product.skus[0].specs).map((specName) => (
+              {product.skus[0] && product.skus[0].specs && Object.keys(product.skus[0].specs).map((specName) => (
                 <SkuOptionGroup
                   key={specName}
                   specName={specName}
@@ -746,7 +689,7 @@ const ProductDetailPage: React.FC = () => {
               </View>
             </View>
             <ScrollView scrollY className={styles.commentModalBody}>
-              {currentEvaluation.comments.length === 0 ? (
+              {!currentEvaluation.comments || currentEvaluation.comments.length === 0 ? (
                 <View className={styles.emptyComment}>
                   <Text>暂无评论，快来发表第一条评论吧~</Text>
                 </View>
@@ -755,9 +698,10 @@ const ProductDetailPage: React.FC = () => {
                   {currentEvaluation.comments.map((comment: any) => (
                     <View key={comment.id} className={styles.commentItem}>
                       <Image 
-                        src={comment.userAvatar} 
+                        src={getImageUrl(comment.userAvatar)}
                         className={styles.commentAvatar} 
                         mode="aspectFill" 
+                        {...lazyImgProps()}
                       />
                       <View className={styles.commentContent}>
                         <View className={styles.commentHeader}>
@@ -765,13 +709,6 @@ const ProductDetailPage: React.FC = () => {
                           <Text className={styles.commentTime}>{comment.createTime}</Text>
                         </View>
                         <Text className={styles.commentText}>{comment.content}</Text>
-                      </View>
-                      <View 
-                        className={`${styles.commentLike} ${comment.isLike ? styles.liked : ''}`}
-                        onClick={() => handleCommentLike(comment.id)}
-                      >
-                        <Text>{comment.isLike ? '❤️' : '👍'}</Text>
-                        <Text className={styles.commentLikeCount}>{comment.likeCount}</Text>
                       </View>
                     </View>
                   ))}

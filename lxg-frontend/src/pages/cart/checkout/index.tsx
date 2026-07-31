@@ -2,9 +2,10 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { View, Text, Image, Input } from '@tarojs/components';
 import Taro from '@tarojs/taro';
 import { useAppContext } from '@/store/AppContext';
-
-import { myCoupons } from '@/data/common/coupons';
-import { createOrder, OrderItem } from '@/data/order/orders';
+import { apiGet } from '@/api/common';
+import { submitOrder, batchDeleteCartItem } from '@/api/cart';
+import { fetchMyCoupons } from '@/api/user';
+import { getImageUrl, lazyImgProps } from '@/utils/image';
 import styles from '@/styles/cart/checkout.module.scss';
 
 interface BuyNowItem {
@@ -17,12 +18,34 @@ interface BuyNowItem {
   isSeckill?: boolean;
 }
 
+interface OrderItem {
+  productId: string;
+  productName: string;
+  skuId: string;
+  skuName: string;
+  price: number;
+  quantity: number;
+  image: string;
+}
+
+interface Coupon {
+  id: string;
+  name: string;
+  type: 'cash' | 'discount';
+  value: number;
+  minAmount: number;
+  status: string;
+}
+
 const CheckoutPage: React.FC = () => {
   const { cartItems, getCartTotal, currentStore, setCartItems } = useAppContext();
   const [paymentMethod, setPaymentMethod] = useState<'wechat' | 'alipay'>('wechat');
-  const [selectedCoupon] = useState(myCoupons[0]);
+  const [coupons, setCoupons] = useState<Coupon[]>([]);
+  const [selectedCouponId, setSelectedCouponId] = useState<string | null>(null);
+  const [address, setAddress] = useState<any>(null);
   const [remark, setRemark] = useState('');
   const [buyNowItem, setBuyNowItem] = useState<BuyNowItem | null>(null);
+  const [loadingData, setLoadingData] = useState(true);
 
   const handleSwitchStore = useCallback(() => {
     Taro.navigateTo({ url: '/pages/category/stores/index' });
@@ -38,6 +61,35 @@ const CheckoutPage: React.FC = () => {
         console.error('Failed to parse buyNow data:', e);
       }
     }
+
+    const loadInitialData = async () => {
+      setLoadingData(true);
+      try {
+        const [couponRes, addressRes] = await Promise.all([
+          fetchMyCoupons().catch(() => null),
+          apiGet('/api/v1/address/default').catch(() => null),
+        ]);
+
+        if (couponRes?.data) {
+          const couponList = Array.isArray(couponRes.data) ? couponRes.data : couponRes.data?.list || [];
+          const availableCouponsList = couponList.filter((c: Coupon) => c.status === 'available');
+          setCoupons(availableCouponsList);
+          if (availableCouponsList.length > 0) {
+            setSelectedCouponId(availableCouponsList[0].id);
+          }
+        }
+
+        if (addressRes?.data) {
+          setAddress(addressRes.data);
+        }
+      } catch (error) {
+        console.error('Failed to load checkout data:', error);
+      } finally {
+        setLoadingData(false);
+      }
+    };
+
+    loadInitialData();
   }, []);
 
   // 获取结算商品列表
@@ -51,35 +103,34 @@ const CheckoutPage: React.FC = () => {
   const selectedItems = getCheckoutItems();
   getCartTotal();
 
-  // 检测是否包含秒杀商品（不支持优惠券）
+  const selectedCoupon = coupons.find(c => c.id === selectedCouponId) || null;
+
   const hasSpecialItem = selectedItems.some(item => item.isSeckill);
 
-  // 计算订单金额（秒杀商品不支持优惠券）
   const goodsAmount = selectedItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
   const freightAmount = 0;
   const couponAmount = hasSpecialItem ? 0 : (selectedCoupon ? selectedCoupon.value : 0);
   const finalAmount = goodsAmount + freightAmount - couponAmount;
 
-  // 提交订单
-  const handleSubmitOrder = () => {
+  const handleSubmitOrder = async () => {
+    if (loadingData) {
+      Taro.showToast({ title: '数据加载中，请稍候', icon: 'none' });
+      return;
+    }
+
     Taro.showLoading({ title: '提交中...' });
 
-    setTimeout(() => {
-      Taro.hideLoading();
-      
-      // 构建订单商品项
-      const orderItems: OrderItem[] = selectedItems.map((item, index) => ({
-        id: `item-${Date.now()}-${index}`,
+    try {
+      const orderItems: OrderItem[] = selectedItems.map((item) => ({
         productId: item.productId,
         productName: item.productName,
-        skuId: `sku-${item.productId}-${index}`,
+        skuId: item.skuId || item.productId,
         skuName: item.skuName,
         price: item.price,
         quantity: item.quantity,
         image: item.image
       }));
 
-      // 构建门店信息
       const storeInfo = currentStore ? {
         name: currentStore.name,
         phone: currentStore.phone,
@@ -87,33 +138,48 @@ const CheckoutPage: React.FC = () => {
         businessHours: currentStore.hours
       } : undefined;
 
-      // 创建待支付订单
-      createOrder({
+      const submitData = {
         items: orderItems,
         totalAmount: goodsAmount,
         freightAmount: 0,
+        couponId: selectedCouponId,
         couponAmount: couponAmount,
         payAmount: finalAmount,
         store: storeInfo,
-        paymentMethod: paymentMethod === 'wechat' ? 'wechat' : 'alipay'
-      });
-      
-      // 如果是购物车模式，删除已购买的商品
-      if (!buyNowItem) {
-        const selectedIds = selectedItems.map(item => item.id);
-        const remainingItems = cartItems.filter(item => !selectedIds.includes(item.id));
-        setCartItems(remainingItems);
-      }
-      
-      Taro.showModal({
-        title: '订单提交成功',
-        content: '订单已提交，请前往订单页面支付',
-        showCancel: false,
-        success: () => {
-          Taro.navigateTo({ url: '/pages/order/list/index?status=pending_payment' });
+        address: address || undefined,
+        paymentMethod: paymentMethod === 'wechat' ? 'wechat' : 'alipay',
+        remark
+      };
+
+      const res = await submitOrder(submitData);
+
+      Taro.hideLoading();
+
+      if (res?.data) {
+        if (!buyNowItem) {
+          const selectedIds = selectedItems.map(item => item.id);
+          const remainingItems = cartItems.filter(item => !selectedIds.includes(item.id));
+          setCartItems(remainingItems);
+          batchDeleteCartItem(selectedIds).catch(() => null);
         }
+
+        Taro.showModal({
+          title: '订单提交成功',
+          content: '订单已提交，请前往订单页面支付',
+          showCancel: false,
+          success: () => {
+            Taro.navigateTo({ url: '/pages/cart/order/list/index?status=pending_payment' });
+          }
+        });
+      }
+    } catch (error: any) {
+      Taro.hideLoading();
+      console.error('Submit order failed:', error);
+      Taro.showToast({
+        title: error?.message || '提交失败，请重试',
+        icon: 'none'
       });
-    }, 1500);
+    }
   };
 
   // 选择优惠券
@@ -161,7 +227,7 @@ const CheckoutPage: React.FC = () => {
         <View className={styles.goodsList}>
           {selectedItems.map((item) => (
             <View key={item.id} className={styles.goodsItem}>
-              <Image src={item.image} className={styles.goodsImage} mode="aspectFill" />
+              <Image src={getImageUrl(item.image)} className={styles.goodsImage} mode="aspectFill" {...lazyImgProps()} />
               <View className={styles.goodsInfo}>
                 <Text className={styles.goodsName}>{item.productName}</Text>
                 <Text className={styles.goodsSpecs}>{item.skuName}</Text>

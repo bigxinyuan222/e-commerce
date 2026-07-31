@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, Image, ScrollView } from '@tarojs/components';
 import Taro from '@tarojs/taro';
-import { getOrderById, confirmPickup, payOrder, cancelOrder, confirmDelivery } from '@/data/order/orders';
+import { fetchOrderDetail, cancelOrder, confirmOrder, payOrder, paymentCallback, fetchOrderPaymentStatus } from '@/api/cart';
+import { getImageUrl, lazyImgProps } from '@/utils/image';
 import styles from '@/styles/cart/order-detail.module.scss';
 
 const OrderDetailPage: React.FC = () => {
@@ -11,15 +12,29 @@ const OrderDetailPage: React.FC = () => {
   useEffect(() => {
     const params = Taro.getCurrentInstance()?.router?.params || {};
     if (params.id) {
-      const orderData = getOrderById(params.id);
-      if (orderData) {
-        setOrder(orderData);
+      loadOrderDetail(params.id as string);
+    } else {
+      setLoading(false);
+      Taro.showToast({ title: '订单ID不存在', icon: 'none' });
+    }
+  }, []);
+
+  const loadOrderDetail = async (orderId: string) => {
+    setLoading(true);
+    try {
+      const res = await fetchOrderDetail(orderId);
+      if (res?.data) {
+        setOrder(res.data);
       } else {
         Taro.showToast({ title: '订单不存在', icon: 'none' });
       }
+    } catch (error: any) {
+      console.error('加载订单详情失败:', error);
+      Taro.showToast({ title: error?.message || '加载失败', icon: 'none' });
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
-  }, []);
+  };
 
   const goToProductDetail = (productId: string) => {
     Taro.navigateTo({ url: `/pages/home/detail/index?id=${productId}` });
@@ -31,14 +46,40 @@ const OrderDetailPage: React.FC = () => {
     }
   };
 
-  const handlePay = () => {
-    if (order?.id) {
-      payOrder(order.id);
-      const updatedOrder = getOrderById(order.id);
-      if (updatedOrder) {
-        setOrder(updatedOrder);
+  const handlePay = async () => {
+    if (!order?.id) return;
+    Taro.showLoading({ title: '支付处理中...', mask: true });
+    try {
+      // 1. 发起支付
+      const payRes = await payOrder(order.id, { paymentMethod: 'wechat' });
+      const payData = payRes?.data || payRes;
+      const orderNo = payData?.orderNo ?? order.orderNo;
+      const transactionId = payData?.transactionId ?? payData?.prepayId ?? payData?.prepay_id ?? '';
+      const amount = payData?.amount ?? order.payAmount;
+
+      // 2. 支付回调（模拟微信异步通知）
+      await paymentCallback({
+        orderId: order.id,
+        orderNo,
+        transactionId,
+        paymentMethod: 'wechat',
+        amount,
+      });
+
+      // 3. 查询订单支付状态，确认是否支付成功
+      const statusRes = await fetchOrderPaymentStatus(order.id);
+      const payStatus = statusRes?.data;
+      Taro.hideLoading();
+      if (payStatus?.isPaid) {
         Taro.showToast({ title: '支付成功', icon: 'success' });
+        loadOrderDetail(order.id);
+      } else {
+        Taro.showToast({ title: payStatus?.message || '支付状态未确认，请稍后查看', icon: 'none' });
+        loadOrderDetail(order.id);
       }
+    } catch (error: any) {
+      Taro.hideLoading();
+      Taro.showToast({ title: error?.message || '支付失败', icon: 'none' });
     }
   };
 
@@ -47,13 +88,14 @@ const OrderDetailPage: React.FC = () => {
       Taro.showModal({
         title: '确认自提',
         content: '确定已收到商品吗？',
-        success: (res) => {
+        success: async (res) => {
           if (res.confirm) {
-            confirmPickup(order.id);
-            const updatedOrder = getOrderById(order.id);
-            if (updatedOrder) {
-              setOrder(updatedOrder);
+            try {
+              await confirmOrder(order.id);
               Taro.showToast({ title: '已确认收货', icon: 'success' });
+              loadOrderDetail(order.id);
+            } catch (error: any) {
+              Taro.showToast({ title: error?.message || '操作失败', icon: 'none' });
             }
           }
         }
@@ -66,13 +108,14 @@ const OrderDetailPage: React.FC = () => {
       Taro.showModal({
         title: '确认发货',
         content: '确定要发货吗？发货后订单将变为待自提状态。',
-        success: (res) => {
+        success: async (res) => {
           if (res.confirm) {
-            confirmDelivery(order.id);
-            const updatedOrder = getOrderById(order.id);
-            if (updatedOrder) {
-              setOrder(updatedOrder);
+            try {
+              await confirmOrder(order.id);
               Taro.showToast({ title: '已确认发货', icon: 'success' });
+              loadOrderDetail(order.id);
+            } catch (error: any) {
+              Taro.showToast({ title: error?.message || '操作失败', icon: 'none' });
             }
           }
         }
@@ -85,13 +128,14 @@ const OrderDetailPage: React.FC = () => {
       Taro.showModal({
         title: '确认取消',
         content: '确定要取消该订单吗？',
-        success: (res) => {
+        success: async (res) => {
           if (res.confirm) {
-            cancelOrder(order.id);
-            const updatedOrder = getOrderById(order.id);
-            if (updatedOrder) {
-              setOrder(updatedOrder);
+            try {
+              await cancelOrder(order.id);
               Taro.showToast({ title: '订单已取消', icon: 'success' });
+              loadOrderDetail(order.id);
+            } catch (error: any) {
+              Taro.showToast({ title: error?.message || '取消失败', icon: 'none' });
             }
           }
         }
@@ -101,7 +145,7 @@ const OrderDetailPage: React.FC = () => {
 
   const handleRefund = () => {
     if (order?.id) {
-      Taro.navigateTo({ url: `/pages/order/refund/index?id=${order.id}` });
+      Taro.navigateTo({ url: `/pages/cart/order/refund/index?id=${order.id}` });
     }
   };
 
@@ -180,7 +224,7 @@ const OrderDetailPage: React.FC = () => {
         <View className={styles.goodsSection}>
           {(order.items || []).map((item: any) => (
             <View key={item.id} className={styles.goodsItem} onClick={() => goToProductDetail(item.productId)}>
-              <Image src={item.image} className={styles.goodsImage} mode="aspectFill" />
+              <Image src={getImageUrl(item.image)} className={styles.goodsImage} mode="aspectFill" {...lazyImgProps()} />
               <View className={styles.goodsInfo}>
                 <Text className={styles.goodsName}>{item.productName}</Text>
                 <Text className={styles.goodsSpecs}>{item.skuName}</Text>

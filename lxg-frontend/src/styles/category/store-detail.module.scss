@@ -1,0 +1,271 @@
+@use '@/styles/variables.scss' as *;
+
+.storeDetailPage {
+  min-height: 100vh;
+  background-color: $color-bg-page;
+  padding-bottom: 180rpx; // 为底部按钮留出空间
+}
+
+.loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 120rpx 0;
+
+  .loadingText {
+    font-size: $font-size-sm;
+    color: $color-text-tertiary;
+  }
+}
+
+.emptyState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 160rpx 40rpx;
+
+  .emptyText {
+    font-size: $font-size-lg;
+    color: $color-text-primary;
+    margin-bottom: 12rpx;
+  }
+
+  .emptyDesc {
+    font-size: $font-size-sm;
+    color: $color-text-tertiary;
+    margin-bottom: 32rpx;
+    text-align: center;
+  }
+
+  .retryBtn {
+    padding: 16rpx 48rpx;
+    background-color: $color-primary;
+    color: #ffffff;
+    border-radius: $radius-button;
+    font-size: $font-size-sm;
+
+    &:active {
+      opacity: 0.8;
+    }
+  }
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  background-color: $color-bg-card;
+  padding: 32rpx;
+  margin-bottom: $spacing-lg;
+
+  .storeImage {
+    width: 120rpx;
+    height: 120rpx;
+    border-radius: $radius-md;
+    margin-right: 24rpx;
+    flex-shrink: 0;
+    background-color: $color-bg-page;
+  }
+
+  .headerInfo {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .storeName {
+    display: block;
+    font-size: $font-size-lg;
+    font-weight: $font-weight-semibold;
+    color: $color-text-primary;
+    margin-bottom: 12rpx;
+    line-height: $line-height-tight;
+  }
+
+  .storeStatus {
+    display: inline-block;
+    font-size: $font-size-xs;
+    color: $color-success;
+    padding: 4rpx 16rpx;
+    background-color: $color-success-bg;
+    border-radius: $radius-xs;
+    margin-bottom: 12rpx;
+  }
+
+  .serviceTags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12rpx;
+
+    .serviceTag {
+      font-size: $font-size-xs;
+      color: $color-text-secondary;
+      padding: 4rpx 16rpx;
+      background-color: $color-bg-page;
+      border-radius: $radius-xs;
+    }
+  }
+}
+
+.section {
+  padding: 0 32rpx;
+  margin-bottom: $spacing-lg;
+
+  .sectionTitle {
+    display: flex;
+    align-items: center;
+    margin-bottom: 16rpx;
+
+    .sectionTitleText {
+      font-size: $font-size-md;
+      font-weight: $font-weight-semibold;
+      color: $color-text-primary;
+    }
+  }
+}
+
+.infoCard {
+  background-color: $color-bg-card;
+  border-radius: $radius-lg;
+  padding: 8rpx 24rpx;
+
+  .infoItem {
+    display: flex;
+    align-items: center;
+    padding: 24rpx 0;
+    border-bottom: $border-width-sm solid $color-divider;
+
+    &:last-child {
+      border-bottom: none;
+    }
+
+    .infoLabel {
+      width: 160rpx;
+      font-size: $font-size-sm;
+      color: $color-text-tertiary;
+      flex-shrink: 0;
+    }
+
+    .infoValue {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      min-width: 0;
+
+      .infoText {
+        flex: 1;
+        font-size: $font-size-sm;
+        color: $color-text-primary;
+        line-height: $line-height-normal;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      .infoAction {
+        font-size: $font-size-xs;
+        color: $color-primary;
+        padding: 8rpx 16rpx;
+        margin-left: 16rpx;
+        flex-shrink: 0;
+
+        &:active {
+          opacity: 0.7;
+        }
+      }
+    }
+  }
+}
+
+.descCard {
+  background-color: $color-bg-card;
+  border-radius: $radius-lg;
+  padding: 24rpx;
+
+  .descText {
+    font-size: $font-size-sm;
+    color: $color-text-secondary;
+    line-height: $line-height-loose;
+  }
+}
+
+.mapCard {
+  background-color: $color-bg-card;
+  border-radius: $radius-lg;
+  overflow: hidden;
+  box-shadow: $shadow-card;
+
+  .mapPlaceholder {
+    height: 240rpx;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #f0f5ff 0%, #e6f7ff 100%);
+
+    .mapIcon {
+      font-size: 64rpx;
+      margin-bottom: 12rpx;
+    }
+
+    .mapText {
+      font-size: $font-size-sm;
+      color: $color-info;
+    }
+  }
+
+  &:active {
+    opacity: 0.85;
+  }
+}
+
+.footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  gap: 16rpx;
+  padding: 16rpx 32rpx;
+  padding-bottom: calc(16rpx + env(safe-area-inset-bottom));
+  background-color: $color-bg-card;
+  box-shadow: 0 -4rpx 16rpx rgba(0, 0, 0, 0.06);
+  z-index: 100;
+
+  .callBtn {
+    flex: 1;
+    height: $button-height-md;
+    background-color: $color-bg-page;
+    color: $color-text-primary;
+    border-radius: $radius-button;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: $font-size-md;
+    font-weight: $font-weight-medium;
+
+    &:active {
+      opacity: 0.8;
+    }
+  }
+
+  .selectBtn {
+    flex: 1.5;
+    height: $button-height-md;
+    background-color: $color-primary;
+    color: #ffffff;
+    border-radius: $radius-button;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: $font-size-md;
+    font-weight: $font-weight-medium;
+
+    &:active {
+      opacity: 0.8;
+    }
+
+    &.selectBtnDisabled {
+      background-color: $color-text-tertiary;
+    }
+  }
+}

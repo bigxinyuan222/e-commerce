@@ -32,6 +32,7 @@ export default defineAppConfig({
     'pages/message/customer-service/index',
     // 分类模块（门店）
     'pages/category/stores/index',
+    'pages/category/store-detail/index',
   ],
   window: {
     backgroundTextStyle: 'light',

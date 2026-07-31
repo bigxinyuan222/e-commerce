@@ -1,12 +1,42 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, Image, Switch } from '@tarojs/components';
 import Taro from '@tarojs/taro';
 import { useAppContext } from '@/store/AppContext';
+import { apiGet } from '@/api/common';
+import { userApi } from '@/api/user';
+import { normalizeUserProfile } from '@/api/user/normalize';
+import { getImageUrl } from '@/utils/image';
 import styles from '@/styles/user/profile.module.scss';
 
 const ProfilePage: React.FC = () => {
   const { userInfo, setUserInfo } = useAppContext();
   const [notificationEnabled, setNotificationEnabled] = useState(true);
+
+  // 进入页面时刷新用户信息
+  useEffect(() => {
+    if (!userInfo?.isLoggedIn) return;
+    const fetchProfile = async () => {
+      try {
+        const res = await apiGet(userApi.profile);
+        const normalized = normalizeUserProfile(res);
+        setUserInfo({
+          id: normalized.id || userInfo.id,
+          nickname: normalized.nickname || userInfo.nickname,
+          avatar: normalized.avatar || userInfo.avatar,
+          phone: normalized.phone || userInfo.phone,
+          accountName: normalized.accountName || userInfo.accountName,
+          gender: normalized.gender || userInfo.gender,
+          birthday: normalized.birthday || userInfo.birthday,
+          registerDate: normalized.registerDate || userInfo.registerDate,
+          email: normalized.email || userInfo.email,
+          isLoggedIn: true
+        });
+      } catch (err) {
+        console.error('获取用户信息失败:', err);
+      }
+    };
+    fetchProfile();
+  }, []);
 
   const handleMenuItemClick = (title: string) => {
     switch (title) {
@@ -56,7 +86,7 @@ const ProfilePage: React.FC = () => {
     <View className={styles.profilePage}>
       <View className={styles.profileHeader}>
         <View className={styles.avatarSection}>
-          <Image src={userInfo?.avatar || 'https://picsum.photos/id/64/200/200'} className={styles.avatar} mode="aspectFill" />
+          <Image src={getImageUrl(userInfo?.avatar) || 'https://picsum.photos/id/64/200/200'} className={styles.avatar} mode="aspectFill" />
           <Text className={styles.nickname}>{userInfo?.nickname || '乐享购用户'}</Text>
         </View>
       </View>
