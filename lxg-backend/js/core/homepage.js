@@ -74,7 +74,7 @@ async function handleBannerAction(bannerId, action) {
     
     if (action === 'up') {
         if (index === 0) {
-            alert('已经是第一个了');
+            showToast('已经是第一个了', 'error');
             return;
         }
         const temp = bannerData[index];
@@ -85,7 +85,7 @@ async function handleBannerAction(bannerId, action) {
         refreshHomepagePage();
     } else if (action === 'down') {
         if (index === bannerData.length - 1) {
-            alert('已经是最后一个了');
+            showToast('已经是最后一个了', 'error');
             return;
         }
         const temp = bannerData[index];
@@ -98,21 +98,21 @@ async function handleBannerAction(bannerId, action) {
         try {
             await apiPut(API_CONFIG.homepage.toggleBanner, { status: 1 }, { id: bannerId });
             bannerData[index].status = 'active';
-            alert('轮播图已发布！');
+            showToast('轮播图已发布！', 'success');
             refreshHomepagePage();
         } catch (error) {
             console.error('Failed to publish banner:', error);
-            alert('操作失败，请重试');
+            showToast('操作失败，请重试', 'error');
         }
     } else if (action === 'unpublish') {
         try {
             await apiPut(API_CONFIG.homepage.toggleBanner, { status: 0 }, { id: bannerId });
             bannerData[index].status = 'draft';
-            alert('轮播图已下架！');
+            showToast('轮播图已下架！', 'success');
             refreshHomepagePage();
         } catch (error) {
             console.error('Failed to unpublish banner:', error);
-            alert('操作失败，请重试');
+            showToast('操作失败，请重试', 'error');
         }
     } else if (action === 'delete') {
         showConfirm('确定删除此轮播图吗？', async function() {
@@ -120,10 +120,10 @@ async function handleBannerAction(bannerId, action) {
                 await apiDelete(API_CONFIG.homepage.deleteBanner, {}, { id: bannerId });
                 bannerData.splice(index, 1);
                 bannerData.forEach((b, i) => b.sort = i + 1);
-                alert('轮播图已删除！');
+                showToast('轮播图已删除！', 'success');
             } catch (error) {
                 console.error('Failed to delete banner:', error);
-                alert('操作失败，请重试');
+                showToast('操作失败，请重试', 'error');
             }
             refreshHomepagePage();
         });
@@ -141,10 +141,10 @@ async function handleRecommendAction(recId, action) {
             const newStatus = rec.status === 'active' ? 0 : 1;
             await apiPut(API_CONFIG.homepage.editRecommendation, { status: newStatus }, { id: recId });
             rec.status = rec.status === 'active' ? 'inactive' : 'active';
-            alert(`${rec.name}已${rec.status === 'active' ? '启用' : '禁用'}！`);
+            showToast(`${rec.name}已${rec.status === 'active' ? '启用' : '禁用'}！`, 'success');
         } catch (error) {
             console.error('Failed to toggle recommendation:', error);
-            alert('操作失败，请重试');
+            showToast('操作失败，请重试', 'error');
         }
         refreshHomepagePage();
     } else if (action === 'delete') {
@@ -152,10 +152,10 @@ async function handleRecommendAction(recId, action) {
             try {
                 await apiDelete(API_CONFIG.homepage.deleteRecommendation, {}, { id: recId });
                 recommendData = recommendData.filter(r => r.id !== recId);
-                alert('推荐位已删除！');
+                showToast('推荐位已删除！', 'success');
             } catch (error) {
                 console.error('Failed to delete recommendation:', error);
-                alert('操作失败，请重试');
+                showToast('操作失败，请重试', 'error');
             }
             refreshHomepagePage();
         });
@@ -286,7 +286,7 @@ async function saveBanner(bannerId = null) {
     const status = document.getElementById('bannerStatus').value;
     
     if (!title) {
-        alert('请输入标题');
+        showToast('请输入标题', 'error');
         return;
     }
     
@@ -311,7 +311,7 @@ async function saveBanner(bannerId = null) {
                 banner.sort = sort;
                 banner.status = status;
             }
-            alert('轮播图已更新！');
+            showToast('轮播图已更新！', 'success');
         } else {
             const response = await apiPost(API_CONFIG.homepage.addBanner, data);
             if (response && response.data) {
@@ -326,7 +326,7 @@ async function saveBanner(bannerId = null) {
                     createTime: new Date().toISOString().replace('T', ' ').substring(0, 19)
                 });
             }
-            alert('轮播图创建成功！');
+            showToast('轮播图创建成功！', 'success');
         }
         
         bannerData.sort((a, b) => a.sort - b.sort);
@@ -336,7 +336,7 @@ async function saveBanner(bannerId = null) {
         refreshHomepagePage();
     } catch (error) {
         console.error('Failed to save banner:', error);
-        alert('保存失败，请重试');
+        showToast('保存失败，请重试', 'error');
     }
 }
 
@@ -425,7 +425,7 @@ function removeRecommendGood(recId, goodsId) {
 function saveRecommendGoods(recId) {
     const rec = recommendData.find(r => r.id === recId);
     if (rec) {
-        alert(`推荐位 ${rec.name} 商品已更新！`);
+        showToast(`推荐位 ${rec.name} 商品已更新！`, 'success');
         closeHomepageModal();
         refreshHomepagePage();
     }
@@ -469,13 +469,13 @@ function saveRecommend() {
     const status = document.getElementById('recommendStatus').value;
     
     if (!name) {
-        alert('请输入推荐位名称');
+        showToast('请输入推荐位名称', 'error');
         return;
     }
     
     const exists = recommendData.find(r => r.name === name);
     if (exists) {
-        alert('该推荐位名称已存在');
+        showToast('该推荐位名称已存在', 'error');
         return;
     }
     
@@ -487,7 +487,7 @@ function saveRecommend() {
         createTime: new Date().toISOString().substring(0, 10)
     });
     
-    alert('推荐位创建成功！');
+    showToast('推荐位创建成功！', 'success');
     closeHomepageModal();
     refreshHomepagePage();
 }

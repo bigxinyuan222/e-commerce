@@ -244,7 +244,32 @@
     font-size: $font-size-xs;
     color: $color-text-tertiary;
     text-align: right;
+  }
+
+  .contentFooter {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     margin-top: 12rpx;
+  }
+
+  .anonymousToggle {
+    padding: 8rpx 16rpx;
+    border-radius: 8rpx;
+    background: #f5f5f5;
+
+    .anonymousText {
+      font-size: $font-size-xs;
+      color: $color-text-secondary;
+    }
+
+    &.anonymousActive {
+      background: rgba(226, 35, 26, 0.08);
+
+      .anonymousText {
+        color: #e2231a;
+      }
+    }
   }
 }
 

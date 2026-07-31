@@ -3,6 +3,10 @@ import { View, Text, Image, ScrollView } from '@tarojs/components';
 import Taro from '@tarojs/taro';
 import { useAppContext } from '@/store/AppContext';
 import { userInfo as defaultUserInfo } from '@/data/user/user';
+import { apiGet } from '@/api/common';
+import { userApi } from '@/api/user';
+import { normalizeUserProfile } from '@/api/user/normalize';
+import { getImageUrl, lazyImgProps } from '@/utils/image';
 import styles from '@/styles/user/mine.module.scss';
 
 // 订单状态项组件
@@ -37,8 +41,9 @@ const FunctionItem = React.memo(({ icon, name, desc, onClick }: {
 ));
 
 const MinePage: React.FC = () => {
-  const { userInfo } = useAppContext();
+  const { userInfo, setUserInfo } = useAppContext();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [profile, setProfile] = useState<any>(null);
 
   useEffect(() => {
     const checkLogin = () => {
@@ -52,6 +57,41 @@ const MinePage: React.FC = () => {
     
     checkLogin();
   }, [userInfo]);
+
+  useEffect(() => {
+    if (!isLoggedIn) {
+      setProfile(null);
+      return;
+    }
+    let cancelled = false;
+    const loadProfile = async () => {
+      try {
+        const res = await apiGet(userApi.profile);
+        if (cancelled) return;
+        const normalized = normalizeUserProfile(res);
+        setProfile(normalized);
+        // 同步到全局状态
+        setUserInfo({
+          id: normalized.id || userInfo.id,
+          nickname: normalized.nickname || userInfo.nickname,
+          avatar: normalized.avatar || userInfo.avatar,
+          phone: normalized.phone || userInfo.phone,
+          accountName: normalized.accountName || userInfo.accountName,
+          gender: normalized.gender || userInfo.gender,
+          birthday: normalized.birthday || userInfo.birthday,
+          registerDate: normalized.registerDate || userInfo.registerDate,
+          email: normalized.email || userInfo.email,
+          isLoggedIn: true
+        });
+      } catch (err) {
+        console.error('加载用户信息失败:', err);
+      }
+    };
+    loadProfile();
+    return () => {
+      cancelled = true;
+    };
+  }, [isLoggedIn]);
 
   // 使用 useCallback 缓存事件处理函数
   const goToLogin = useCallback(() => {
@@ -71,7 +111,7 @@ const MinePage: React.FC = () => {
       goToLogin();
       return;
     }
-    Taro.navigateTo({ url: `/pages/order/list/index?status=${status || 'all'}` });
+    Taro.navigateTo({ url: `/pages/cart/order/list/index?status=${status || 'all'}` });
   }, [isLoggedIn, goToLogin]);
 
   const goToMyCoupons = useCallback(() => {
@@ -101,8 +141,8 @@ const MinePage: React.FC = () => {
         <View className={styles.userInfoSection}>
           <View className={styles.userInfoCard}>
             <View className={styles.avatar} onClick={goToProfile}>
-              {isLoggedIn && userInfo.avatar ? (
-                <Image src={userInfo.avatar} mode="aspectFill" lazyLoad />
+              {isLoggedIn && (profile?.avatar || userInfo.avatar) ? (
+                <Image src={getImageUrl(profile?.avatar || userInfo.avatar)} mode="aspectFill" {...lazyImgProps()} />
               ) : (
                 <Text className={styles.avatarPlaceholder}>👤</Text>
               )}
@@ -110,8 +150,8 @@ const MinePage: React.FC = () => {
             <View className={styles.userDetails}>
               {isLoggedIn ? (
                 <>
-                  <Text className={styles.nickname}>{userInfo.nickname || defaultUserInfo.nickname}</Text>
-                  <Text className={styles.userPhone}>{userInfo.phone || defaultUserInfo.phone}</Text>
+                  <Text className={styles.nickname}>{profile?.nickname || userInfo.nickname || defaultUserInfo.nickname}</Text>
+                  <Text className={styles.userPhone}>{profile?.phone || userInfo.phone || defaultUserInfo.phone}</Text>
                 </>
               ) : (
                 <>

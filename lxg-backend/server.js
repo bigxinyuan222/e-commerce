@@ -4,8 +4,8 @@ const path = require('path');
 const { parse } = require('url');
 
 const FRONTEND_PORT = 8081;
-const BACKEND_PORT = 8899;
-const BACKEND_HOST = '192.168.10.78';
+const BACKEND_PORT = 8089;
+const BACKEND_HOST = '192.168.10.7';
 
 const mimeTypes = {
     '.html': 'text/html',
@@ -28,7 +28,12 @@ function serveFile(res, filePath) {
         if (err) {
             if (err.code === 'ENOENT') {
                 fs.readFile(path.join(__dirname, 'index.html'), (err, content) => {
-                    res.writeHead(200, { 'Content-Type': 'text/html' });
+                    res.writeHead(200, { 
+                        'Content-Type': 'text/html',
+                        'Cache-Control': 'no-cache, no-store, must-revalidate',
+                        'Pragma': 'no-cache',
+                        'Expires': '0'
+                    });
                     res.end(content, 'utf-8');
                 });
             } else {
@@ -38,7 +43,12 @@ function serveFile(res, filePath) {
         } else {
             const ext = path.extname(filePath);
             const contentType = mimeTypes[ext] || 'application/octet-stream';
-            res.writeHead(200, { 'Content-Type': contentType });
+            res.writeHead(200, { 
+                'Content-Type': contentType,
+                'Cache-Control': 'no-cache, no-store, must-revalidate',
+                'Pragma': 'no-cache',
+                'Expires': '0'
+            });
             res.end(content, 'utf-8');
         }
     });
@@ -47,18 +57,26 @@ function serveFile(res, filePath) {
 let backendUnavailableLogged = false;
 
 function proxyRequest(req, res) {
+    console.log(`[Proxy] ${req.method} ${req.url}`);
+    
+    const headers = { ...req.headers };
+    delete headers.host;
+    delete headers.origin;
+    delete headers.referer;
+    
     const options = {
         hostname: BACKEND_HOST,
         port: BACKEND_PORT,
         path: req.url,
         method: req.method,
         headers: {
-            ...req.headers,
+            ...headers,
             Host: `${BACKEND_HOST}:${BACKEND_PORT}`
         }
     };
 
     const proxyReq = http.request(options, (proxyRes) => {
+        console.log(`[Proxy Response] ${proxyRes.statusCode}`);
         res.writeHead(proxyRes.statusCode, proxyRes.headers);
         proxyRes.pipe(res, { end: true });
     });

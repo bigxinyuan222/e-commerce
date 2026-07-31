@@ -1,10 +1,21 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { View, Text, Image, ScrollView } from '@tarojs/components';
 import Taro from '@tarojs/taro';
-import { getOrdersByStatus, cancelOrder, payOrder, confirmDelivery, confirmPickup, updateRefundStatus } from '@/data/order/orders';
+import { fetchOrderList, cancelOrder, payOrder, confirmOrder, paymentCallback, fetchOrderPaymentStatus } from '@/api/cart';
+import { getImageUrl, lazyImgProps } from '@/utils/image';
 import styles from '@/styles/cart/order-list.module.scss';
 
-// 订单状态映射
+const statusCodeMap: { [key: number]: string } = {
+  0: 'pending_payment',
+  1: 'pending_delivery',
+  2: 'pending_pickup',
+  3: 'completed',
+  4: 'cancelled',
+  5: 'refunding',
+  6: 'refund_rejected',
+  7: 'refunded',
+};
+
 const statusMap: { [key: string]: string } = {
   'pending_payment': '待支付',
   'pending_delivery': '待发货',
@@ -15,9 +26,10 @@ const statusMap: { [key: string]: string } = {
   'reviewed': '已评价',
   'cancelled': '已取消',
   'refunding': '退款中',
+  'refund_rejected': '商家已拒绝',
+  'refunded': '已退款',
 };
 
-// 订单状态颜色映射
 const statusColorMap: { [key: string]: string } = {
   'pending_payment': '#e2231a',
   'pending_delivery': '#1890ff',
@@ -32,33 +44,80 @@ const statusColorMap: { [key: string]: string } = {
   'refunded': '#52c41a',
 };
 
-// 订单商品项组件
+function transformOrderItem(item: any): any {
+  return {
+    id: item.id || item.ID || '',
+    productId: item.productId || item.ProductID || '',
+    productName: item.productName || item.ProductName || '',
+    skuId: item.skuId || item.SkuID || '',
+    skuName: item.skuName || item.SkuName || '',
+    price: item.price != null ? item.price : (item.Price || 0),
+    quantity: item.quantity != null ? item.quantity : (item.Quantity || 0),
+    image: getImageUrl(item.image || item.Image || ''),
+  };
+}
+
+function transformOrder(order: any): any {
+  const rawStatus = order.status ?? order.Status;
+  const isNumericStatus = typeof rawStatus === 'number';
+  const status = isNumericStatus ? (statusCodeMap[rawStatus as number] || 'unknown') : (rawStatus || 'unknown');
+
+  const items = (order.items || order.Items || []).map(transformOrderItem);
+
+  const store = order.store || order.Store
+    ? {
+        name: order.store?.name || order.Store?.Name || '',
+        address: order.store?.address || order.Store?.Address || '',
+      }
+    : undefined;
+
+  return {
+    id: order.id || order.ID || '',
+    orderNo: order.orderNo || order.OrderNo || '',
+    status,
+    statusText: order.statusText || order.StatusText || statusMap[status] || '',
+    createTime: order.createTime || order.CreateTime || '',
+    totalAmount: order.totalAmount ?? order.TotalAmount ?? 0,
+    freightAmount: order.freightAmount ?? order.FreightAmount ?? 0,
+    couponAmount: order.couponAmount ?? order.CouponAmount ?? 0,
+    payAmount: order.payAmount ?? order.PayAmount ?? 0,
+    items,
+    store,
+    address: order.address || order.Address || {},
+    paymentMethod: order.paymentMethod || order.PaymentMethod || '',
+    payTime: order.payTime || order.PayTime || '',
+    deliverTime: order.deliverTime || order.DeliverTime || '',
+    completeTime: order.completeTime || order.CompleteTime || '',
+    cancelTime: order.cancelTime || order.CancelTime || '',
+    cancelReason: order.cancelReason || order.CancelReason || '',
+  };
+}
+
 const OrderProductItem = React.memo(({ product, onClick }: { product: any; onClick: () => void }) => (
   <View className={styles.orderProduct} onClick={onClick}>
-    <Image 
-      src={product.image} 
-      className={styles.productImage} 
+    <Image
+      src={product.image}
+      className={styles.productImage}
       mode="aspectFill"
-      lazyLoad
+      {...lazyImgProps()}
     />
     <View className={styles.productInfo}>
       <Text className={styles.productName}>{product.productName}</Text>
       <Text className={styles.productSpecs}>{product.skuName}</Text>
       <View className={styles.productBottom}>
-        <Text className={styles.productPrice}>{product.price}</Text>
+        <Text className={styles.productPrice}>¥{product.price}</Text>
         <Text className={styles.productQuantity}>x{product.quantity}</Text>
       </View>
     </View>
   </View>
 ));
 
-// 订单操作按钮组件
-const OrderActionButton = React.memo(({ 
-  text, 
-  type, 
-  onClick 
-}: { 
-  text: string; 
+const OrderActionButton = React.memo(({
+  text,
+  type,
+  onClick
+}: {
+  text: string;
   type: 'primary' | 'secondary' | 'danger';
   onClick: () => void;
 }) => (
@@ -67,19 +126,18 @@ const OrderActionButton = React.memo(({
   </View>
 ));
 
-// 订单卡片组件
-const OrderCard = React.memo(({ 
-  order, 
-  onDetail, 
-  onCancel, 
-  onPay, 
+const OrderCard = React.memo(({
+  order,
+  onDetail,
+  onCancel,
+  onPay,
   onConfirmDelivery,
-  onConfirmPickup, 
+  onConfirmPickup,
   onRefund,
   onReview,
   onRefundStatusChange
-}: { 
-  order: any; 
+}: {
+  order: any;
   onDetail: (id: string) => void;
   onCancel: (id: string) => void;
   onPay: (id: string) => void;
@@ -89,15 +147,10 @@ const OrderCard = React.memo(({
   onReview: (id: string) => void;
   onRefundStatusChange: (orderId: string, status: string) => void;
 }) => {
-  // 判断订单是否可取消
   const canCancel = order.status === 'pending_payment';
-  // 判断订单是否可支付
   const canPay = order.status === 'pending_payment';
-  // 判断订单是否可确认发货
   const canConfirmDelivery = order.status === 'pending_delivery';
-  // 判断订单是否可确认自提
   const canConfirmPickup = order.status === 'pending_pickup';
-  // 判断订单是否可退款（待发货、待自提和已完成都可退款）
   const canRefund = order.status === 'pending_delivery' || order.status === 'pending_pickup' || order.status === 'completed' || order.status === 'pending_review';
   const canReview = order.status === 'completed' || order.status === 'pending_review';
   const isRefundOrder = order.status === 'refunding' || order.status === 'refund_rejected' || order.status === 'refunded';
@@ -116,7 +169,6 @@ const OrderCard = React.memo(({
 
   return (
     <View className={styles.orderCard} key={order.id}>
-      {/* 订单头部 */}
       <View className={styles.orderHeader}>
         <Text className={styles.orderId}>{isRefundOrder ? '退货编号' : '订单编号'}: {order.orderNo}</Text>
         <Text className={styles.orderStatus} style={{ color: isRefundOrder ? refundStatusColorMap[order.status] : (statusColorMap[order.status] || '#999') }}>
@@ -124,16 +176,16 @@ const OrderCard = React.memo(({
         </Text>
       </View>
 
-      {/* 门店信息 */}
-      <View className={styles.storeInfo}>
-        <Text className={styles.storeName}>{order.store?.name || '无门店信息'}</Text>
-        <Text className={styles.storeAddress}>{order.store?.address || ''}</Text>
-      </View>
+      {order.store && (
+        <View className={styles.storeInfo}>
+          <Text className={styles.storeName}>{order.store.name || '无门店信息'}</Text>
+          <Text className={styles.storeAddress}>{order.store.address || ''}</Text>
+        </View>
+      )}
 
-      {/* 商品列表 */}
       <View className={styles.orderProducts}>
         {(order.items || []).map((product: any, index: number) => (
-          <OrderProductItem 
+          <OrderProductItem
             key={`${order.id}-${product.productId}-${index}`}
             product={product}
             onClick={() => onDetail(order.id)}
@@ -141,7 +193,6 @@ const OrderCard = React.memo(({
         ))}
       </View>
 
-      {/* 订单底部 */}
       <View className={styles.orderFooter}>
         <View className={styles.orderTotal}>
           <Text className={styles.totalLabel}>合计:</Text>
@@ -149,66 +200,65 @@ const OrderCard = React.memo(({
         </View>
         <View className={styles.orderActions}>
           {canCancel && (
-            <OrderActionButton 
-              text="取消订单" 
-              type="danger" 
-              onClick={() => onCancel(order.id)} 
+            <OrderActionButton
+              text="取消订单"
+              type="danger"
+              onClick={() => onCancel(order.id)}
             />
           )}
           {canPay && (
-            <OrderActionButton 
-              text="立即支付" 
-              type="primary" 
-              onClick={() => onPay(order.id)} 
+            <OrderActionButton
+              text="立即支付"
+              type="primary"
+              onClick={() => onPay(order.id)}
             />
           )}
           {canConfirmDelivery && (
-            <OrderActionButton 
-              text="确认发货" 
-              type="primary" 
-              onClick={() => onConfirmDelivery(order.id)} 
+            <OrderActionButton
+              text="确认发货"
+              type="primary"
+              onClick={() => onConfirmDelivery(order.id)}
             />
           )}
           {canConfirmPickup && (
-            <OrderActionButton 
-              text="确认自提" 
-              type="primary" 
-              onClick={() => onConfirmPickup(order.id)} 
+            <OrderActionButton
+              text="确认自提"
+              type="primary"
+              onClick={() => onConfirmPickup(order.id)}
             />
           )}
           {canRefund && (
-            <OrderActionButton 
-              text="申请退款" 
-              type="secondary" 
-              onClick={() => onRefund(order.id)} 
+            <OrderActionButton
+              text="申请退款"
+              type="secondary"
+              onClick={() => onRefund(order.id)}
             />
           )}
           {canReview && (
-            <OrderActionButton 
-              text="评价晒单" 
-              type="primary" 
-              onClick={() => onReview(order.id)} 
+            <OrderActionButton
+              text="评价晒单"
+              type="primary"
+              onClick={() => onReview(order.id)}
             />
           )}
         </View>
       </View>
 
-      {/* 退款状态操作按钮 */}
       {isRefundOrder && (
         <View className={styles.refundStatusActions}>
-          <View 
+          <View
             className={`${styles.refundStatusBtn} ${order.status === 'refunding' ? styles.active : ''}`}
             onClick={() => onRefundStatusChange(order.id, 'refunding')}
           >
             <Text>退款中</Text>
           </View>
-          <View 
+          <View
             className={`${styles.refundStatusBtn} ${order.status === 'refund_rejected' ? styles.active : ''}`}
             onClick={() => onRefundStatusChange(order.id, 'refund_rejected')}
           >
             <Text>商家已拒绝</Text>
           </View>
-          <View 
+          <View
             className={`${styles.refundStatusBtn} ${order.status === 'refunded' ? styles.active : ''}`}
             onClick={() => onRefundStatusChange(order.id, 'refunded')}
           >
@@ -220,7 +270,6 @@ const OrderCard = React.memo(({
   );
 });
 
-// 空订单组件
 const EmptyOrder = React.memo(({ onGoShopping }: { onGoShopping: () => void }) => (
   <View className={styles.emptyOrder}>
     <View className={styles.emptyIcon}>
@@ -234,8 +283,8 @@ const EmptyOrder = React.memo(({ onGoShopping }: { onGoShopping: () => void }) =
 ));
 
 const OrderListPage: React.FC = () => {
-  const [currentStatus, setCurrentStatus] = useState('all');
-  const [orderList, setOrderList] = useState<any[]>([]);
+  const [activeTab, setActiveTab] = useState('all');
+  const [orders, setOrders] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
   const tabs = [
@@ -248,31 +297,59 @@ const OrderListPage: React.FC = () => {
     { key: 'reviewed', label: '已取消' },
   ];
 
-  // 初始化时读取URL参数
   useEffect(() => {
     const params = Taro.getCurrentInstance()?.router?.params || {};
     if (params.status) {
-      setCurrentStatus(params.status);
+      setActiveTab(params.status);
     }
   }, []);
 
-  // 加载订单列表
-  const loadOrders = useCallback(() => {
+  const loadOrders = useCallback(async (status?: string) => {
     setLoading(true);
-    setTimeout(() => {
-      const filteredOrders = getOrdersByStatus(currentStatus);
-      setOrderList(filteredOrders);
+    try {
+      const params: Record<string, any> = { page: 1, size: 50 };
+      if (status && status !== 'all' && status !== 'refunding' && status !== 'pending_review' && status !== 'reviewed') {
+        params.status = status;
+      }
+      const res = await fetchOrderList(params);
+      const list = Array.isArray(res?.data) ? res.data : [];
+      const transformed = list.map(transformOrder);
+
+      if (status === 'refunding') {
+        setOrders(transformed.filter((o: any) => ['refunding', 'refund_rejected', 'refunded'].includes(o.status)));
+      } else if (status === 'pending_review') {
+        setOrders(transformed.filter((o: any) => o.status === 'completed' || o.status === 'pending_review'));
+      } else if (status === 'reviewed') {
+        setOrders(transformed.filter((o: any) => o.status === 'reviewed' || o.status === 'cancelled'));
+      } else {
+        setOrders(transformed);
+      }
+    } catch (error) {
+      console.error('加载订单列表失败:', error);
+      setOrders([]);
+      Taro.showToast({ title: '加载失败', icon: 'none' });
+    } finally {
       setLoading(false);
-    }, 100);
-  }, [currentStatus]);
+    }
+  }, []);
 
   useEffect(() => {
-    loadOrders();
-  }, [loadOrders]);
+    loadOrders(activeTab);
+  }, [activeTab, loadOrders]);
 
-  // 使用 useCallback 缓存事件处理函数
+  // 监听评价成功事件，自动刷新订单列表
+  useEffect(() => {
+    const handler = () => {
+      loadOrders(activeTab);
+    };
+    Taro.eventCenter.on('orderReviewSuccess', handler);
+    return () => {
+      Taro.eventCenter.off('orderReviewSuccess', handler);
+    };
+  }, [loadOrders, activeTab]);
+
   const handleTabChange = useCallback((status: string) => {
-    setCurrentStatus(status);
+    setActiveTab(status);
   }, []);
 
   const goShopping = useCallback(() => {
@@ -280,93 +357,132 @@ const OrderListPage: React.FC = () => {
   }, []);
 
   const goToOrderDetail = useCallback((orderId: string) => {
-    Taro.navigateTo({ url: `/pages/order/detail/index?id=${orderId}` });
+    Taro.navigateTo({ url: `/pages/cart/order/detail/index?id=${orderId}` });
   }, []);
 
   const handleCancelOrder = useCallback((orderId: string) => {
     Taro.showModal({
       title: '确认取消',
       content: '确定要取消该订单吗？',
-      success: (res) => {
+      success: async (res) => {
         if (res.confirm) {
-          cancelOrder(orderId);
-          loadOrders();
-          Taro.showToast({ title: '订单已取消', icon: 'success' });
+          try {
+            await cancelOrder(orderId);
+            Taro.showToast({ title: '订单已取消', icon: 'success' });
+            loadOrders(activeTab);
+          } catch (error: any) {
+            Taro.showToast({ title: error?.message || '取消失败', icon: 'none' });
+          }
         }
       }
     });
-  }, [loadOrders]);
+  }, [loadOrders, activeTab]);
 
-  const handlePayOrder = useCallback((orderId: string) => {
-    payOrder(orderId);
-    loadOrders();
-    Taro.showToast({ title: '支付成功', icon: 'success' });
-  }, [loadOrders]);
+  const handlePayOrder = useCallback(async (orderId: string) => {
+    const orderInfo = orders.find((o) => o.id === orderId);
+    Taro.showLoading({ title: '支付处理中...', mask: true });
+    try {
+      // 1. 发起支付
+      const payRes = await payOrder(orderId, { paymentMethod: 'wechat' });
+      const payData = payRes?.data || payRes;
+      const orderNo = payData?.orderNo ?? orderInfo?.orderNo ?? '';
+      const transactionId = payData?.transactionId ?? payData?.prepayId ?? payData?.prepay_id ?? '';
+      const amount = payData?.amount ?? orderInfo?.payAmount ?? 0;
+
+      // 2. 支付回调（模拟微信异步通知）
+      await paymentCallback({
+        orderId,
+        orderNo,
+        transactionId,
+        paymentMethod: 'wechat',
+        amount,
+      });
+
+      // 3. 查询订单支付状态，确认是否支付成功
+      const statusRes = await fetchOrderPaymentStatus(orderId);
+      const payStatus = statusRes?.data;
+      Taro.hideLoading();
+      if (payStatus?.isPaid) {
+        Taro.showToast({ title: '支付成功', icon: 'success' });
+      } else {
+        Taro.showToast({ title: payStatus?.message || '支付状态未确认，请稍后查看', icon: 'none' });
+      }
+      loadOrders(activeTab);
+    } catch (error: any) {
+      Taro.hideLoading();
+      Taro.showToast({ title: error?.message || '支付失败', icon: 'none' });
+    }
+  }, [loadOrders, activeTab, orders]);
 
   const handleConfirmDelivery = useCallback((orderId: string) => {
     Taro.showModal({
       title: '确认发货',
       content: '确定已发货吗？发货后订单将变为待自提状态',
-      success: (res) => {
+      success: async (res) => {
         if (res.confirm) {
-          confirmDelivery(orderId);
-          loadOrders();
-          Taro.showToast({ title: '已确认发货', icon: 'success' });
+          try {
+            await confirmOrder(orderId);
+            Taro.showToast({ title: '已确认发货', icon: 'success' });
+            loadOrders(activeTab);
+          } catch (error: any) {
+            Taro.showToast({ title: error?.message || '操作失败', icon: 'none' });
+          }
         }
       }
     });
-  }, [loadOrders]);
+  }, [loadOrders, activeTab]);
 
   const handleConfirmPickup = useCallback((orderId: string) => {
     Taro.showModal({
       title: '确认自提',
       content: '确定已收到商品吗？',
-      success: (res) => {
+      success: async (res) => {
         if (res.confirm) {
-          confirmPickup(orderId);
-          loadOrders();
-          Taro.showToast({ title: '已确认收货', icon: 'success' });
+          try {
+            await confirmOrder(orderId);
+            Taro.showToast({ title: '已确认收货', icon: 'success' });
+            loadOrders(activeTab);
+          } catch (error: any) {
+            Taro.showToast({ title: error?.message || '操作失败', icon: 'none' });
+          }
         }
       }
     });
-  }, [loadOrders]);
+  }, [loadOrders, activeTab]);
 
   const handleApplyRefund = useCallback((orderId: string) => {
-    Taro.navigateTo({ url: `/pages/order/refund/index?id=${orderId}` });
+    Taro.navigateTo({ url: `/pages/cart/order/refund/index?id=${orderId}` });
   }, []);
 
   const handleReviewOrder = useCallback((orderId: string) => {
-    Taro.navigateTo({ url: `/pages/order/review/index?id=${orderId}` });
+    Taro.navigateTo({ url: `/pages/cart/order/review/index?id=${orderId}` });
   }, []);
 
-  const handleRefundStatusChange = useCallback((orderId: string, status: string) => {
-    updateRefundStatus(orderId, status);
-    loadOrders();
+  const handleRefundStatusChange = useCallback((_orderId: string, status: string) => {
     const statusTextMap: { [key: string]: string } = {
       'refunding': '退款中',
       'refund_rejected': '商家已拒绝',
       'refunded': '已退款',
     };
     Taro.showToast({ title: `状态已更新为${statusTextMap[status]}`, icon: 'success' });
-  }, [loadOrders]);
+    loadOrders(activeTab);
+  }, [loadOrders, activeTab]);
 
-  // 使用 useMemo 缓存当前选中的标签索引
   const activeTabIndex = useMemo(() => {
-    return tabs.findIndex(tab => tab.key === currentStatus);
-  }, [currentStatus, tabs]);
+    return tabs.findIndex(tab => tab.key === activeTab);
+  }, [activeTab, tabs]);
 
   return (
     <View className={styles.orderListPage}>
-      {/* 标签导航（退款/售后页面不显示标签） */}
-      {currentStatus !== 'refunding' && (
-        <ScrollView 
-          scrollX 
+      {activeTab !== 'refunding' && (
+        <ScrollView
+          scrollX
           className={styles.tabBar}
           showScrollbar={false}
         >
           <View className={styles.tabList}>
             {tabs.map((tab, index) => (
-              <View 
+              <View
                 key={tab.key}
                 className={`${styles.tabItem} ${activeTabIndex === index ? styles.active : ''}`}
                 onClick={() => handleTabChange(tab.key)}
@@ -380,27 +496,25 @@ const OrderListPage: React.FC = () => {
           </View>
         </ScrollView>
       )}
-      {/* 退款/售后页面标题 */}
-      {currentStatus === 'refunding' && (
+      {activeTab === 'refunding' && (
         <View className={styles.refundHeader}>
           <Text className={styles.refundTitle}>退款/售后</Text>
         </View>
       )}
 
-      {/* 订单列表 */}
       {loading ? (
         <View className={styles.loading}>
           <Text>加载中...</Text>
         </View>
-      ) : orderList.length > 0 ? (
-        <ScrollView 
-          scrollY 
+      ) : orders.length > 0 ? (
+        <ScrollView
+          scrollY
           className={styles.orderList}
           enhanced
           showScrollbar={false}
         >
-          {orderList.map((order) => (
-            <OrderCard 
+          {orders.map((order) => (
+            <OrderCard
               key={order.id}
               order={order}
               onDetail={goToOrderDetail}

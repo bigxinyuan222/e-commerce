@@ -305,17 +305,17 @@ async function saveCoupon() {
     const totalQuantity = parseInt(document.getElementById('couponTotalQuantity').value) || 0;
     
     if (!name) {
-        alert('请输入优惠券名称');
+        showToast('请输入优惠券名称', 'error');
         return;
     }
     
     if (value <= 0) {
-        alert('请输入有效面值');
+        showToast('请输入有效面值', 'error');
         return;
     }
     
     if (type === 'discount' && value >= threshold) {
-        alert('满减券的面值不能超过门槛');
+        showToast('满减券的面值不能超过门槛', 'error');
         return;
     }
     
@@ -336,15 +336,15 @@ async function saveCoupon() {
         });
         
         if (response.code === 200 || response.code === 201) {
-            alert('优惠券创建成功！');
+            showToast('优惠券创建成功！', 'success');
             closeCouponModal();
             await loadCoupons();
         } else {
-            alert(response.message || '创建失败');
+            showToast(response.message || '创建失败', 'error');
         }
     } catch (error) {
         console.error('Failed to create coupon:', error);
-        alert('创建优惠券失败，请重试');
+        showToast('创建优惠券失败，请重试', 'error');
     }
 }
 
@@ -393,7 +393,7 @@ function cancelReceivedCoupon(receiveId) {
         const item = couponReceivedData.find(r => r.id === receiveId);
         if (item) {
             item.status = 'expired';
-            alert('优惠券已作废！');
+            showToast('优惠券已作废！', 'success');
         }
         closeCouponModal();
         refreshCouponsPage();

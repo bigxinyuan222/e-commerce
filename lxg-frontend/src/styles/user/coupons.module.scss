@@ -5,13 +5,47 @@
   background-color: $color-bg-page;
 }
 
+/* 顶部模式切换：我的优惠券 / 领券中心 */
+.modeTabs {
+  display: flex;
+  background: linear-gradient(135deg, #e2231a 0%, #ff4d4d 100%);
+  color: #fff;
+
+  .modeTab {
+    flex: 1;
+    padding: 28rpx 0;
+    text-align: center;
+    font-size: $font-size-md;
+    color: rgba(255, 255, 255, 0.75);
+    position: relative;
+    transition: color 0.2s;
+
+    &.modeActive {
+      color: #fff;
+      font-weight: $font-weight-semibold;
+
+      &::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 56rpx;
+        height: 6rpx;
+        background-color: #fff;
+        border-radius: 3rpx;
+      }
+    }
+  }
+}
+
 .tabs {
   display: flex;
   background-color: $color-bg-card;
   position: sticky;
   top: 0;
   z-index: 10;
-  
+
   .tab {
     flex: 1;
     padding: 24rpx 0;
@@ -19,11 +53,11 @@
     font-size: $font-size-md;
     color: $color-text-secondary;
     position: relative;
-    
+
     &.active {
       color: $color-primary;
       font-weight: $font-weight-semibold;
-      
+
       &::after {
         content: '';
         position: absolute;
@@ -113,10 +147,21 @@
         border-radius: 32rpx;
         font-size: $font-size-sm;
         font-weight: $font-weight-medium;
-        
+
         &:active {
           background-color: rgba(255, 255, 255, 0.3);
         }
+
+        &.couponBtnDisabled {
+          opacity: 0.55;
+          pointer-events: none;
+        }
+      }
+
+      .couponCount {
+        font-size: $font-size-xs;
+        opacity: 0.85;
+        margin-top: 4rpx;
       }
     }
   }
@@ -128,9 +173,18 @@
   align-items: center;
   justify-content: center;
   padding: 200rpx 0;
-  
+
   .emptyText {
     font-size: $font-size-md;
     color: $color-text-tertiary;
+  }
+
+  .refreshBtn {
+    margin-top: 24rpx;
+    padding: 16rpx 48rpx;
+    background-color: $color-primary;
+    color: #fff;
+    border-radius: 40rpx;
+    font-size: $font-size-sm;
   }
 }

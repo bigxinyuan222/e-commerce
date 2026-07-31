@@ -2,11 +2,16 @@ let storesData = [];
 let storesLoaded = false;
 
 async function loadStores() {
+    const token = getAuthToken();
+    console.log('Loading stores with token:', token ? 'Token exists' : 'No token');
+    
     try {
         const response = await apiGet(API_CONFIG.stores.list);
+        console.log('Store API Response:', response);
         const dataList = response && response.list ? response.list : (Array.isArray(response) ? response : []);
+        console.log('Parsed store list:', dataList);
         storesData = dataList.map(store => ({
-            id: store.ID || store.id,
+            id: String(store.ID || store.id),
             name: store.name,
             address: store.address,
             phone: store.phone,
@@ -16,8 +21,15 @@ async function loadStores() {
             orderCount: store.orderCount || 0,
             clerkCount: store.clerkCount || 0
         }));
+        console.log('Processed storesData:', storesData);
     } catch (error) {
         console.error('Failed to load stores:', error);
+        if (error.message.includes('401') || error.message.includes('token')) {
+            showToast('登录已失效，请重新登录', 'error');
+            localStorage.removeItem('lexiangou_admin_user');
+            setTimeout(() => window.location.href = '/login.html', 1500);
+            return;
+        }
     } finally {
         storesLoaded = true;
         refreshStoresPage();
@@ -38,17 +50,33 @@ async function handleStoreAction(storeId, action) {
     if (action === 'toggle') {
         try {
             const newStatus = store.status === 'active' ? 0 : 1;
-            const response = await apiPut(API_CONFIG.stores.toggle, { status: newStatus }, { id: storeId });
+            await apiPut(API_CONFIG.stores.toggle, { status: newStatus }, { id: storeId });
             
-            if (response.code === 200) {
-                store.status = store.status === 'active' ? 'disabled' : 'active';
-                refreshStoresPage();
-            } else {
-                alert(response.message || '操作失败');
-            }
+            store.status = store.status === 'active' ? 'disabled' : 'active';
+            refreshStoresPage();
+            showToast('操作成功！', 'success');
         } catch (error) {
             console.error('Failed to toggle store status:', error);
-            alert('操作失败，请重试');
+            showToast('操作失败，请重试', 'error');
+        }
+    } else if (action === 'delete') {
+        if (!confirm('确定要删除该门店吗？删除后无法恢复！')) {
+            return;
+        }
+        
+        try {
+            console.log('Deleting store with id:', storeId);
+            const result = await apiDelete(API_CONFIG.stores.delete, {}, { id: storeId });
+            console.log('Delete result:', result);
+            showToast('门店删除成功！', 'success');
+            await loadStores();
+            refreshStoresPage();
+        } catch (error) {
+            console.error('Failed to delete store:', error);
+            console.error('Error message:', error.message);
+            console.error('Error stack:', error.stack);
+            const errorMsg = error.message || '该门店可能存在关联数据，请先删除关联数据后再试';
+            showToast(errorMsg, 'error');
         }
     }
     
@@ -57,19 +85,19 @@ async function handleStoreAction(storeId, action) {
 
 function showAddStoreModal() {
     const modalContent = `
-        <div class="modal-overlay" style="position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.5);z-index:1000;display:flex;align-items:center;justify-content:center;" onclick="closeStoreModal()"></div>
-        <div class="modal-content" style="position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:#fff;border-radius:12px;box-shadow:0 25px 50px -12px rgba(0,0,0,0.25);display:flex;flex-direction:column;max-height:80vh;overflow:hidden;z-index:1001;width:560px;">
+        <div class="modal-overlay" onclick="closeStoreModal()"></div>
+        <div class="modal-content modal-width-sm">
             <div class="modal-header">
                 <h3><i class="fas fa-plus"></i> 新增门店</h3>
                 <button onclick="closeStoreModal()" class="modal-close"><i class="fas fa-times"></i></button>
             </div>
-            <div class="modal-body" style="max-height:60vh;overflow-y:auto;">
-                <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
-                    <div><label style="display:block;font-size:13px;color:#64748b;margin-bottom:4px;">门店名称 <span style="color:#ef4444;">*</span></label><input type="text" id="storeName" placeholder="请输入门店名称" style="width:100%;padding:8px 12px;border:1px solid #e2e8f0;border-radius:6px;font-size:13px;outline:none;" onfocus="this.style.borderColor='#4f6ef7'" /></div>
-                    <div><label style="display:block;font-size:13px;color:#64748b;margin-bottom:4px;">联系电话 <span style="color:#ef4444;">*</span></label><input type="text" id="storePhone" placeholder="请输入联系电话" style="width:100%;padding:8px 12px;border:1px solid #e2e8f0;border-radius:6px;font-size:13px;outline:none;" onfocus="this.style.borderColor='#4f6ef7'" /></div>
-                    <div style="grid-column:span 2;"><label style="display:block;font-size:13px;color:#64748b;margin-bottom:4px;">门店地址 <span style="color:#ef4444;">*</span></label><input type="text" id="storeAddress" placeholder="请输入门店地址" style="width:100%;padding:8px 12px;border:1px solid #e2e8f0;border-radius:6px;font-size:13px;outline:none;" onfocus="this.style.borderColor='#4f6ef7'" /></div>
-                    <div><label style="display:block;font-size:13px;color:#64748b;margin-bottom:4px;">营业时间</label><div style="display:flex;gap:8px;"><input type="time" id="storeStartHour" value="09:00" style="flex:1;padding:8px;border:1px solid #e2e8f0;border-radius:6px;" /><span style="color:#94a3b8;">~</span><input type="time" id="storeEndHour" value="21:00" style="flex:1;padding:8px;border:1px solid #e2e8f0;border-radius:6px;" /></div></div>
-                    <div style="grid-column:span 2;"><label style="display:block;font-size:13px;color:#64748b;margin-bottom:4px;">门店公告</label><textarea rows="3" id="storeNotice" placeholder="请输入门店公告（选填）" style="width:100%;padding:8px 12px;border:1px solid #e2e8f0;border-radius:6px;font-size:13px;outline:none;resize:vertical;" onfocus="this.style.borderColor='#4f6ef7'"></textarea></div>
+            <div class="modal-body modal-body-scroll">
+                <div class="form-grid">
+                    <div><label class="form-label">门店名称 <span class="form-required">*</span></label><input type="text" id="storeName" placeholder="请输入门店名称" class="form-input" /></div>
+                    <div><label class="form-label">联系电话 <span class="form-required">*</span></label><input type="text" id="storePhone" placeholder="请输入联系电话" class="form-input" /></div>
+                    <div class="form-grid-full"><label class="form-label">门店地址 <span class="form-required">*</span></label><input type="text" id="storeAddress" placeholder="请输入门店地址" class="form-input" /></div>
+                    <div><label class="form-label">营业时间</label><div style="display:flex;gap:8px;"><input type="time" id="storeStartHour" value="09:00" class="form-input" /><span class="text-muted">~</span><input type="time" id="storeEndHour" value="21:00" class="form-input" /></div></div>
+                    <div class="form-grid-full"><label class="form-label">门店公告</label><textarea rows="3" id="storeNotice" placeholder="请输入门店公告（选填）" class="form-textarea"></textarea></div>
                 </div>
             </div>
             <div class="modal-footer">
@@ -90,7 +118,7 @@ async function saveStore() {
     const announcement = document.getElementById('storeNotice').value.trim();
     
     if (!name || !phone || !address) {
-        alert('请填写必填字段');
+        showToast('请填写必填字段', 'error');
         return;
     }
     
@@ -104,16 +132,12 @@ async function saveStore() {
             status: 1
         });
         
-        if (response.code === 200 || response.code === 201) {
-            alert('门店创建成功！');
-            closeStoreModal();
-            await loadStores();
-        } else {
-            alert(response.message || '创建失败');
-        }
+        showToast('门店创建成功！', 'success');
+        closeStoreModal();
+        await loadStores();
     } catch (error) {
         console.error('Failed to create store:', error);
-        alert('创建门店失败，请重试');
+        showToast('创建门店失败，请重试', 'error');
     }
 }
 
@@ -130,8 +154,8 @@ function getStoreStats(storeId) {
     const orders = Array.isArray(ordersData) ? ordersData : [];
     const returns = Array.isArray(returnsData) ? returnsData : [];
     
-    const storeOrders = storeId ? orders.filter(o => o && o.storeId === storeId) : [];
-    const storeReturns = storeId ? returns.filter(r => r && r.storeId === storeId) : [];
+    const storeOrders = storeId ? orders.filter(o => o && String(o.storeId) === String(storeId)) : [];
+    const storeReturns = storeId ? returns.filter(r => r && String(r.storeId) === String(storeId)) : [];
     
     const today = new Date().toISOString().split('T')[0];
     const todayOrders = storeOrders.filter(o => o.createTime && o.createTime.startsWith(today));
@@ -148,52 +172,77 @@ function getStoreStats(storeId) {
     };
 }
 
-function showStoreDetail(storeId) {
-    const store = storesData.find(s => s.id === storeId);
-    if (!store) return;
+async function showStoreDetail(storeId) {
+    let store = storesData.find(s => s.id === storeId);
+    
+    try {
+        const response = await apiGet(API_CONFIG.stores.detail, {}, { id: storeId });
+        store = {
+            id: String(response.ID || response.id),
+            name: response.name,
+            address: response.address,
+            phone: response.phone,
+            businessHours: response.businessHours,
+            status: response.status === 1 ? 'active' : 'disabled',
+            createTime: response.CreatedAt || response.createdAt || '',
+            orderCount: response.orderCount || 0,
+            clerkCount: response.clerkCount || 0,
+            announcement: response.announcement || ''
+        };
+    } catch (error) {
+        console.error('Failed to load store detail:', error);
+        if (!store) {
+            showToast('获取门店详情失败', 'error');
+            return;
+        }
+    }
+    
+    if (typeof loadOrders === 'function' && (!Array.isArray(ordersData) || ordersData.length === 0)) {
+        await loadOrders();
+    }
     
     const stats = getStoreStats(storeId);
-    const storeOrders = Array.isArray(ordersData) ? ordersData.filter(o => o && o.storeId === storeId) : [];
+    const storeOrders = Array.isArray(ordersData) ? ordersData.filter(o => o && String(o.storeId) === String(storeId)) : [];
     
     const modalContent = `
-        <div class="modal-overlay" onclick="closeStoreDetail()" style="position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.5);z-index:1000;"></div>
-        <div class="modal-content" style="position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);width:900px;background:#fff;border-radius:12px;box-shadow:0 25px 50px -12px rgba(0,0,0,0.25);display:flex;flex-direction:column;max-height:90vh;overflow:hidden;z-index:1001;">
+        <div class="modal-overlay" onclick="closeStoreDetail()"></div>
+        <div class="modal-content modal-width-xl">
             <div class="modal-header">
                 <div>
-                    <h3 style="font-size:18px;font-weight:700;color:#1e293b;margin:0;">${store.name}</h3>
-                    <p style="font-size:13px;color:#64748b;margin:4px 0 0;">${store.address}</p>
+                    <h3 class="store-header-title">${store.name}</h3>
+                    <p class="store-header-address">${store.address}</p>
                 </div>
-                <div style="display:flex;gap:8px;">
+                <div class="store-header-actions">
                     ${getStatusBadge(store.status)}
                     <button onclick="closeStoreDetail()" class="modal-close"><i class="fas fa-times"></i></button>
                 </div>
             </div>
-            <div class="modal-body" style="overflow-y:auto;max-height:calc(90vh - 120px);">
-                <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:16px;">
+            <div class="modal-body modal-body-scroll">
+                <div class="stats-row">
                     <div class="stat-card">
                         <div class="label"><i class="fas fa-shopping-cart"></i> 今日订单</div>
                         <div class="value" style="font-size:24px;color:#4f6ef7;">${stats.todayOrderCount}</div>
-                        <div style="font-size:12px;color:#94a3b8;">笔订单</div>
+                        <div class="sub">笔订单</div>
                     </div>
                     <div class="stat-card">
                         <div class="label"><i class="fas fa-yen-sign"></i> 今日销售额</div>
                         <div class="value" style="font-size:24px;color:#22c55e;">¥${stats.todaySales.toLocaleString()}</div>
-                        <div style="font-size:12px;color:#94a3b8;">元</div>
+                        <div class="sub">元</div>
                     </div>
                     <div class="stat-card">
                         <div class="label"><i class="fas fa-truck"></i> 待发货</div>
                         <div class="value" style="font-size:24px;color:#3b82f6;">${stats.pendingDelivery}</div>
-                        <div style="font-size:12px;color:#94a3b8;">笔订单</div>
+                        <div class="sub">笔订单</div>
                     </div>
                     <div class="stat-card">
                         <div class="label"><i class="fas fa-map-marker-alt"></i> 待自提</div>
                         <div class="value" style="font-size:24px;color:#f59e0b;">${stats.pendingPickup}</div>
-                        <div style="font-size:12px;color:#94a3b8;">笔订单</div>
+                        <div class="sub">笔订单</div>
                     </div>
                     <div class="stat-card">
                         <div class="label"><i class="fas fa-undo"></i> 待退款</div>
                         <div class="value" style="font-size:24px;color:#ef4444;">${stats.pendingRefunds}</div>
-                        <div style="font-size:12px;color:#94a3b8;">笔申请</div>
+                        <div class="sub">笔申请</div>
                     </div>
                 </div>
 
@@ -232,30 +281,30 @@ function showStoreDetail(storeId) {
                         <div class="card">
                             <div class="card-header"><span class="card-title"><i class="fas fa-info-circle"></i> 门店信息</span></div>
                             <div class="card-body">
-                                <div style="display:flex;flex-direction:column;gap:8px;font-size:13px;">
-                                    <div style="display:flex;justify-content:space-between;">
-                                        <span style="color:#64748b;">门店ID</span>
-                                        <span style="font-family:monospace;">${store.id}</span>
+                                <div class="detail-info-list">
+                                    <div class="detail-info-row">
+                                        <span class="label">门店ID</span>
+                                        <span class="value" style="font-family:monospace;">${store.id}</span>
                                     </div>
-                                    <div style="display:flex;justify-content:space-between;">
-                                        <span style="color:#64748b;">联系电话</span>
-                                        <span>${store.phone}</span>
+                                    <div class="detail-info-row">
+                                        <span class="label">联系电话</span>
+                                        <span class="value">${store.phone}</span>
                                     </div>
-                                    <div style="display:flex;justify-content:space-between;">
-                                        <span style="color:#64748b;">营业时间</span>
-                                        <span>${store.businessHours}</span>
+                                    <div class="detail-info-row">
+                                        <span class="label">营业时间</span>
+                                        <span class="value">${store.businessHours}</span>
                                     </div>
-                                    <div style="display:flex;justify-content:space-between;">
-                                        <span style="color:#64748b;">累计订单</span>
-                                        <span>${store.orderCount} 笔</span>
+                                    <div class="detail-info-row">
+                                        <span class="label">累计订单</span>
+                                        <span class="value">${store.orderCount} 笔</span>
                                     </div>
-                                    <div style="display:flex;justify-content:space-between;">
-                                        <span style="color:#64748b;">累计销售额</span>
-                                        <span style="font-weight:600;color:#4f6ef7;">¥${stats.totalSales.toLocaleString()}</span>
+                                    <div class="detail-info-row">
+                                        <span class="label">累计销售额</span>
+                                        <span class="value price">¥${stats.totalSales.toLocaleString()}</span>
                                     </div>
-                                    <div style="display:flex;justify-content:space-between;">
-                                        <span style="color:#64748b;">创建时间</span>
-                                        <span>${store.createTime}</span>
+                                    <div class="detail-info-row">
+                                        <span class="label">创建时间</span>
+                                        <span class="value">${store.createTime}</span>
                                     </div>
                                 </div>
                             </div>
@@ -266,30 +315,30 @@ function showStoreDetail(storeId) {
                             <div class="card-body">
                                 <div style="display:flex;flex-direction:column;gap:10px;">
                                     <div>
-                                        <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px;">
-                                            <span>待发货</span>
-                                            <span style="font-weight:600;">${stats.pendingDelivery}</span>
+                                        <div class="progress-label-row">
+                                            <span class="label">待发货</span>
+                                            <span class="value">${stats.pendingDelivery}</span>
                                         </div>
-                                        <div style="height:8px;background:#e2e8f0;border-radius:4px;overflow:hidden;">
-                                            <div style="width:${stats.totalOrders > 0 ? (stats.pendingDelivery / stats.totalOrders) * 100 : 0}%;height:100%;background:#3b82f6;border-radius:4px;"></div>
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px;">
-                                            <span>待自提</span>
-                                            <span style="font-weight:600;">${stats.pendingPickup}</span>
-                                        </div>
-                                        <div style="height:8px;background:#e2e8f0;border-radius:4px;overflow:hidden;">
-                                            <div style="width:${stats.totalOrders > 0 ? (stats.pendingPickup / stats.totalOrders) * 100 : 0}%;height:100%;background:#f59e0b;border-radius:4px;"></div>
+                                        <div class="progress-bar-container">
+                                            <div class="progress-bar blue" style="width:${stats.totalOrders > 0 ? (stats.pendingDelivery / stats.totalOrders) * 100 : 0}%;"></div>
                                         </div>
                                     </div>
                                     <div>
-                                        <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px;">
-                                            <span>已完成</span>
-                                            <span style="font-weight:600;">${stats.completedOrders}</span>
+                                        <div class="progress-label-row">
+                                            <span class="label">待自提</span>
+                                            <span class="value">${stats.pendingPickup}</span>
                                         </div>
-                                        <div style="height:8px;background:#e2e8f0;border-radius:4px;overflow:hidden;">
-                                            <div style="width:${stats.totalOrders > 0 ? (stats.completedOrders / stats.totalOrders) * 100 : 0}%;height:100%;background:#22c55e;border-radius:4px;"></div>
+                                        <div class="progress-bar-container">
+                                            <div class="progress-bar yellow" style="width:${stats.totalOrders > 0 ? (stats.pendingPickup / stats.totalOrders) * 100 : 0}%;"></div>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div class="progress-label-row">
+                                            <span class="label">已完成</span>
+                                            <span class="value">${stats.completedOrders}</span>
+                                        </div>
+                                        <div class="progress-bar-container">
+                                            <div class="progress-bar green" style="width:${stats.totalOrders > 0 ? (stats.completedOrders / stats.totalOrders) * 100 : 0}%;"></div>
                                         </div>
                                     </div>
                                 </div>
@@ -300,19 +349,19 @@ function showStoreDetail(storeId) {
                             <div class="card-header"><span class="card-title"><i class="fas fa-clock"></i> 待办提醒</span></div>
                             <div class="card-body">
                                 ${stats.pendingDelivery > 0 ? `
-                                <div style="padding:10px 12px;background:#dbeafe;border-radius:6px;font-size:12px;color:#1e40af;margin-bottom:8px;">
+                                <div class="alert-box info">
                                     <i class="fas fa-truck"></i> 有 ${stats.pendingDelivery} 笔订单待发货
                                 </div>` : ''}
                                 ${stats.pendingPickup > 0 ? `
-                                <div style="padding:10px 12px;background:#fef3c7;border-radius:6px;font-size:12px;color:#b45309;margin-bottom:8px;">
+                                <div class="alert-box warning">
                                     <i class="fas fa-map-marker-alt"></i> 有 ${stats.pendingPickup} 笔订单待自提
                                 </div>` : ''}
                                 ${stats.pendingRefunds > 0 ? `
-                                <div style="padding:10px 12px;background:#fee2e2;border-radius:6px;font-size:12px;color:#b91c1c;">
+                                <div class="alert-box error">
                                     <i class="fas fa-undo"></i> 有 ${stats.pendingRefunds} 笔退款待审核
                                 </div>` : ''}
                                 ${stats.pendingDelivery === 0 && stats.pendingPickup === 0 && stats.pendingRefunds === 0 ? `
-                                <div style="padding:10px 12px;background:#e8f5e9;border-radius:6px;font-size:12px;color:#166534;text-align:center;">
+                                <div class="alert-box success">
                                     <i class="fas fa-check-circle"></i> 暂无待处理事项
                                 </div>` : ''}
                             </div>
@@ -341,18 +390,18 @@ function showEditStoreModal(storeId) {
     const [startHour, endHour] = store.businessHours.split('-');
     
     const modalContent = `
-        <div class="modal-overlay" style="position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.5);z-index:1000;display:flex;align-items:center;justify-content:center;" onclick="closeStoreModal()"></div>
-        <div class="modal-content" style="position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:#fff;border-radius:12px;box-shadow:0 25px 50px -12px rgba(0,0,0,0.25);display:flex;flex-direction:column;max-height:80vh;overflow:hidden;z-index:1001;width:560px;">
+        <div class="modal-overlay" onclick="closeStoreModal()"></div>
+        <div class="modal-content modal-width-sm">
             <div class="modal-header">
                 <h3><i class="fas fa-edit"></i> 编辑门店</h3>
                 <button onclick="closeStoreModal()" class="modal-close"><i class="fas fa-times"></i></button>
             </div>
-            <div class="modal-body" style="max-height:60vh;overflow-y:auto;">
-                <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
-                    <div><label style="display:block;font-size:13px;color:#64748b;margin-bottom:4px;">门店名称 <span style="color:#ef4444;">*</span></label><input type="text" id="storeName" value="${store.name}" placeholder="请输入门店名称" style="width:100%;padding:8px 12px;border:1px solid #e2e8f0;border-radius:6px;font-size:13px;outline:none;" onfocus="this.style.borderColor='#4f6ef7'" /></div>
-                    <div><label style="display:block;font-size:13px;color:#64748b;margin-bottom:4px;">联系电话 <span style="color:#ef4444;">*</span></label><input type="text" id="storePhone" value="${store.phone}" placeholder="请输入联系电话" style="width:100%;padding:8px 12px;border:1px solid #e2e8f0;border-radius:6px;font-size:13px;outline:none;" onfocus="this.style.borderColor='#4f6ef7'" /></div>
-                    <div style="grid-column:span 2;"><label style="display:block;font-size:13px;color:#64748b;margin-bottom:4px;">门店地址 <span style="color:#ef4444;">*</span></label><input type="text" id="storeAddress" value="${store.address}" placeholder="请输入门店地址" style="width:100%;padding:8px 12px;border:1px solid #e2e8f0;border-radius:6px;font-size:13px;outline:none;" onfocus="this.style.borderColor='#4f6ef7'" /></div>
-                    <div><label style="display:block;font-size:13px;color:#64748b;margin-bottom:4px;">营业时间</label><div style="display:flex;gap:8px;"><input type="time" id="storeStartHour" value="${startHour || '09:00'}" style="flex:1;padding:8px;border:1px solid #e2e8f0;border-radius:6px;" /><span style="color:#94a3b8;">~</span><input type="time" id="storeEndHour" value="${endHour || '21:00'}" style="flex:1;padding:8px;border:1px solid #e2e8f0;border-radius:6px;" /></div></div>
+            <div class="modal-body modal-body-scroll">
+                <div class="form-grid">
+                    <div><label class="form-label">门店名称 <span class="form-required">*</span></label><input type="text" id="storeName" value="${store.name}" placeholder="请输入门店名称" class="form-input" /></div>
+                    <div><label class="form-label">联系电话 <span class="form-required">*</span></label><input type="text" id="storePhone" value="${store.phone}" placeholder="请输入联系电话" class="form-input" /></div>
+                    <div class="form-grid-full"><label class="form-label">门店地址 <span class="form-required">*</span></label><input type="text" id="storeAddress" value="${store.address}" placeholder="请输入门店地址" class="form-input" /></div>
+                    <div><label class="form-label">营业时间</label><div style="display:flex;gap:8px;"><input type="time" id="storeStartHour" value="${startHour || '09:00'}" class="form-input" /><span class="text-muted">~</span><input type="time" id="storeEndHour" value="${endHour || '21:00'}" class="form-input" /></div></div>
                 </div>
             </div>
             <div class="modal-footer">
@@ -373,35 +422,35 @@ async function saveEditStore(storeId) {
     const phone = document.getElementById('storePhone').value.trim();
     const address = document.getElementById('storeAddress').value.trim();
     const businessHours = `${document.getElementById('storeStartHour').value}-${document.getElementById('storeEndHour').value}`;
+    const announcement = store.announcement || '';
+    const status = store.status === 'active' ? 1 : 0;
     
     if (!name || !phone || !address) {
-        alert('请填写必填字段');
+        showToast('请填写必填字段', 'error');
         return;
     }
     
     try {
-        const response = await apiPut(API_CONFIG.stores.edit, {
+        await apiPut(API_CONFIG.stores.edit, {
             name: name,
             phone: phone,
             address: address,
-            businessHours: businessHours
+            businessHours: businessHours,
+            announcement: announcement,
+            status: status
         }, { id: storeId });
         
-        if (response.code === 200) {
-            store.name = name;
-            store.phone = phone;
-            store.address = address;
-            store.businessHours = businessHours;
-            
-            alert('门店信息更新成功！');
-            closeStoreModal();
-            refreshStoresPage();
-        } else {
-            alert(response.message || '更新失败');
-        }
+        store.name = name;
+        store.phone = phone;
+        store.address = address;
+        store.businessHours = businessHours;
+        
+        showToast('门店信息更新成功！', 'success');
+        closeStoreModal();
+        refreshStoresPage();
     } catch (error) {
         console.error('Failed to update store:', error);
-        alert('更新门店失败，请重试');
+        showToast('更新门店失败，请重试', 'error');
     }
 }
 
@@ -411,20 +460,20 @@ function storesPage() {
     
     if (!storesLoaded) {
         return `
-            <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;padding:80px 20px;">
-                <div style="width:64px;height:64px;border:4px solid #e2e8f0;border-top-color:#4f6ef7;border-radius:50%;animation:spin 1s linear infinite;margin-bottom:20px;"></div>
-                <div style="font-size:14px;color:#94a3b8;">正在加载门店数据...</div>
+            <div class="skeleton-loading">
+                <div class="skeleton-spinner"></div>
+                <div class="skeleton-text">正在加载门店数据...</div>
             </div>
         `;
     }
     
     if (storesData.length === 0) {
         return `
-            <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;padding:80px 20px;">
-                <div style="width:64px;height:64px;border:2px solid #e2e8f0;border-radius:50%;display:flex;align-items:center;justify-content:center;margin-bottom:16px;">
-                    <i class="fas fa-store" style="font-size:24px;color:#94a3b8;"></i>
+            <div class="empty-state-box">
+                <div class="empty-state-icon">
+                    <i class="fas fa-store"></i>
                 </div>
-                <div style="font-size:14px;color:#94a3b8;margin-bottom:16px;">暂无门店数据</div>
+                <div class="empty-state-text">暂无门店数据</div>
                 <button class="btn btn-primary" onclick="showAddStoreModal()"><i class="fas fa-plus"></i> 新增门店</button>
             </div>
         `;
@@ -435,25 +484,15 @@ function storesPage() {
         const store = storesData.find(s => s.id === currentUser.storeId);
         
         return `
-            <style>
-                .modal-overlay { position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.5);z-index:1000;display:flex;align-items:center;justify-content:center; }
-                .modal-content { background:#fff;border-radius:12px;box-shadow:0 25px 50px -12px rgba(0,0,0,0.25);display:flex;flex-direction:column;max-height:80vh;overflow:hidden; }
-                .modal-header { padding:16px 20px;border-bottom:1px solid #e2e8f0;display:flex;align-items:center;justify-content:space-between; }
-                .modal-header h3 { margin:0;font-size:16px;font-weight:600; }
-                .modal-close { background:none;border:none;color:#94a3b8;cursor:pointer;font-size:16px;padding:4px; }
-                .modal-body { padding:16px 20px; }
-                .modal-footer { padding:12px 20px;border-top:1px solid #e2e8f0;display:flex;justify-content:flex-end;gap:8px; }
-            </style>
-            
-            <div style="border:1px solid #4f6ef7;border-radius:8px;padding:24px;background:#f8faff;margin-bottom:12px;">
-                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+            <div class="store-header-card">
+                <div class="store-header-top">
                     <div>
-                        <h2 style="font-size:24px;font-weight:700;color:#4f6ef7;margin:0;">${store?.name || '我的门店'}</h2>
-                        <p style="font-size:13px;color:#64748b;margin:4px 0 0;">${store?.address || '-'}</p>
+                        <h2 class="store-header-title">${store?.name || '我的门店'}</h2>
+                        <p class="store-header-address">${store?.address || '-'}</p>
                     </div>
-                    <div style="display:flex;gap:12px;">
-                        <span>${getStatusBadge(store?.status || 'active')}</span>
-                        <span class="tag" style="background:#e2e8f0;color:#64748b;">${store?.businessHours || '-'}</span>
+                    <div class="store-header-actions">
+                        ${getStatusBadge(store?.status || 'active')}
+                        <span class="tag">${store?.businessHours || '-'}</span>
                     </div>
                 </div>
                 
@@ -465,31 +504,31 @@ function storesPage() {
                 </div>
             </div>
 
-            <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:12px;">
-                <div class="stat-card">
+            <div class="stats-row">
+                <div class="stat-card stat-card-large">
                     <div class="label"><i class="fas fa-shopping-cart"></i> 今日订单</div>
                     <div class="value" style="font-size:28px;color:#4f6ef7;">${stats.todayOrderCount}</div>
-                    <div style="font-size:12px;color:#94a3b8;">笔订单</div>
+                    <div class="sub">笔订单</div>
                 </div>
-                <div class="stat-card">
+                <div class="stat-card stat-card-large">
                     <div class="label"><i class="fas fa-yen-sign"></i> 今日销售额</div>
                     <div class="value" style="font-size:28px;color:#22c55e;">¥${stats.todaySales}</div>
-                    <div style="font-size:12px;color:#94a3b8;">元</div>
+                    <div class="sub">元</div>
                 </div>
-                <div class="stat-card">
+                <div class="stat-card stat-card-large">
                     <div class="label"><i class="fas fa-truck"></i> 待发货</div>
                     <div class="value" style="font-size:28px;color:#3b82f6;">${stats.pendingDelivery}</div>
-                    <div style="font-size:12px;color:#94a3b8;">笔订单</div>
+                    <div class="sub">笔订单</div>
                 </div>
-                <div class="stat-card">
+                <div class="stat-card stat-card-large">
                     <div class="label"><i class="fas fa-map-marker-alt"></i> 待自提</div>
                     <div class="value" style="font-size:28px;color:#f59e0b;">${stats.pendingPickup}</div>
-                    <div style="font-size:12px;color:#94a3b8;">笔订单</div>
+                    <div class="sub">笔订单</div>
                 </div>
-                <div class="stat-card">
+                <div class="stat-card stat-card-large">
                     <div class="label"><i class="fas fa-undo"></i> 待处理退款</div>
                     <div class="value" style="font-size:28px;color:#ef4444;">${stats.pendingRefunds}</div>
-                    <div style="font-size:12px;color:#94a3b8;">笔申请</div>
+                    <div class="sub">笔申请</div>
                 </div>
             </div>
 
@@ -525,78 +564,78 @@ function storesPage() {
 
                 <div style="display:flex;flex-direction:column;gap:12px;">
                     <div class="card">
-                        <div class="card-header"><span class="card-title"><i class="fas fa-chart-bar"></i> 订单状态分布</span></div>
-                        <div class="card-body">
-                            <div style="display:flex;flex-direction:column;gap:10px;">
-                                <div>
-                                    <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px;">
-                                        <span>待发货</span>
-                                        <span style="font-weight:600;">${stats.pendingDelivery}</span>
+                            <div class="card-header"><span class="card-title"><i class="fas fa-chart-bar"></i> 订单状态分布</span></div>
+                            <div class="card-body">
+                                <div style="display:flex;flex-direction:column;gap:10px;">
+                                    <div>
+                                        <div class="progress-label-row">
+                                            <span class="label">待发货</span>
+                                            <span class="value">${stats.pendingDelivery}</span>
+                                        </div>
+                                        <div class="progress-bar-container">
+                                            <div class="progress-bar blue" style="width:${stats.totalOrders > 0 ? (stats.pendingDelivery / stats.totalOrders) * 100 : 0}%;"></div>
+                                        </div>
                                     </div>
-                                    <div style="height:8px;background:#e2e8f0;border-radius:4px;overflow:hidden;">
-                                        <div style="width:${stats.totalOrders > 0 ? (stats.pendingDelivery / stats.totalOrders) * 100 : 0}%;height:100%;background:#3b82f6;border-radius:4px;"></div>
+                                    <div>
+                                        <div class="progress-label-row">
+                                            <span class="label">待自提</span>
+                                            <span class="value">${stats.pendingPickup}</span>
+                                        </div>
+                                        <div class="progress-bar-container">
+                                            <div class="progress-bar yellow" style="width:${stats.totalOrders > 0 ? (stats.pendingPickup / stats.totalOrders) * 100 : 0}%;"></div>
+                                        </div>
                                     </div>
-                                </div>
-                                <div>
-                                    <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px;">
-                                        <span>待自提</span>
-                                        <span style="font-weight:600;">${stats.pendingPickup}</span>
-                                    </div>
-                                    <div style="height:8px;background:#e2e8f0;border-radius:4px;overflow:hidden;">
-                                        <div style="width:${stats.totalOrders > 0 ? (stats.pendingPickup / stats.totalOrders) * 100 : 0}%;height:100%;background:#f59e0b;border-radius:4px;"></div>
-                                    </div>
-                                </div>
-                                <div>
-                                    <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px;">
-                                        <span>已完成</span>
-                                        <span style="font-weight:600;">${(Array.isArray(ordersData) ? ordersData.filter(o => o && o.storeId === currentUser.storeId && o.status === 'completed') : []).length}</span>
-                                    </div>
-                                    <div style="height:8px;background:#e2e8f0;border-radius:4px;overflow:hidden;">
-                                        <div style="width:${stats.totalOrders > 0 ? ((Array.isArray(ordersData) ? ordersData.filter(o => o && o.storeId === currentUser.storeId && o.status === 'completed') : []).length / stats.totalOrders) * 100 : 0}%;height:100%;background:#22c55e;border-radius:4px;"></div>
+                                    <div>
+                                        <div class="progress-label-row">
+                                            <span class="label">已完成</span>
+                                            <span class="value">${(Array.isArray(ordersData) ? ordersData.filter(o => o && o.storeId === currentUser.storeId && o.status === 'completed') : []).length}</span>
+                                        </div>
+                                        <div class="progress-bar-container">
+                                            <div class="progress-bar green" style="width:${stats.totalOrders > 0 ? ((Array.isArray(ordersData) ? ordersData.filter(o => o && o.storeId === currentUser.storeId && o.status === 'completed') : []).length / stats.totalOrders) * 100 : 0}%;"></div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
 
-                    <div class="card">
-                        <div class="card-header"><span class="card-title"><i class="fas fa-info-circle"></i> 门店信息</span></div>
-                        <div class="card-body">
-                            <div style="display:flex;flex-direction:column;gap:8px;font-size:13px;">
-                                <div style="display:flex;justify-content:space-between;">
-                                    <span style="color:#64748b;">门店电话</span>
-                                    <span>${store?.phone || '-'}</span>
+                        <div class="card">
+                            <div class="card-header"><span class="card-title"><i class="fas fa-info-circle"></i> 门店信息</span></div>
+                            <div class="card-body">
+                                <div class="detail-info-list">
+                                    <div class="detail-info-row">
+                                        <span class="label">门店电话</span>
+                                        <span class="value">${store?.phone || '-'}</span>
+                                    </div>
+                                    <div class="detail-info-row">
+                                        <span class="label">营业时间</span>
+                                        <span class="value">${store?.businessHours || '-'}</span>
+                                    </div>
+                                    <div class="detail-info-row">
+                                        <span class="label">累计订单</span>
+                                        <span class="value">${store?.orderCount || 0} 笔</span>
+                                    </div>
                                 </div>
-                                <div style="display:flex;justify-content:space-between;">
-                                <span style="color:#64748b;">营业时间</span>
-                                <span>${store?.businessHours || '-'}</span>
-                            </div>
-                            <div style="display:flex;justify-content:space-between;">
-                                <span style="color:#64748b;">累计订单</span>
-                                <span>${store?.orderCount || 0} 笔</span>
-                            </div>
                             </div>
                         </div>
-                    </div>
 
-                    <div class="card">
-                        <div class="card-header"><span class="card-title"><i class="fas fa-clock"></i> 今日提醒</span></div>
-                        <div class="card-body">
-                            ${stats.pendingDelivery > 0 ? `
-                            <div style="padding:10px 12px;background:#dbeafe;border-radius:6px;font-size:12px;color:#1e40af;margin-bottom:8px;">
-                                <i class="fas fa-truck"></i> 有 ${stats.pendingDelivery} 笔订单待发货
-                            </div>` : ''}
-                            ${stats.pendingPickup > 0 ? `
-                            <div style="padding:10px 12px;background:#fef3c7;border-radius:6px;font-size:12px;color:#b45309;margin-bottom:8px;">
-                                <i class="fas fa-map-marker-alt"></i> 有 ${stats.pendingPickup} 笔订单待自提
-                            </div>` : ''}
-                            ${stats.pendingRefunds > 0 ? `
-                            <div style="padding:10px 12px;background:#fee2e2;border-radius:6px;font-size:12px;color:#b91c1c;">
-                                <i class="fas fa-undo"></i> 有 ${stats.pendingRefunds} 笔退款待审核
-                            </div>` : ''}
-                            ${stats.pendingDelivery === 0 && stats.pendingPickup === 0 && stats.pendingRefunds === 0 ? `
-                            <div style="padding:10px 12px;background:#e8f5e9;border-radius:6px;font-size:12px;color:#166534;text-align:center;">
-                                <i class="fas fa-check-circle"></i> 今日暂无待处理事项
+                        <div class="card">
+                            <div class="card-header"><span class="card-title"><i class="fas fa-clock"></i> 今日提醒</span></div>
+                            <div class="card-body">
+                                ${stats.pendingDelivery > 0 ? `
+                                <div class="alert-box info">
+                                    <i class="fas fa-truck"></i> 有 ${stats.pendingDelivery} 笔订单待发货
+                                </div>` : ''}
+                                ${stats.pendingPickup > 0 ? `
+                                <div class="alert-box warning">
+                                    <i class="fas fa-map-marker-alt"></i> 有 ${stats.pendingPickup} 笔订单待自提
+                                </div>` : ''}
+                                ${stats.pendingRefunds > 0 ? `
+                                <div class="alert-box error">
+                                    <i class="fas fa-undo"></i> 有 ${stats.pendingRefunds} 笔退款待审核
+                                </div>` : ''}
+                                ${stats.pendingDelivery === 0 && stats.pendingPickup === 0 && stats.pendingRefunds === 0 ? `
+                                <div class="alert-box success">
+                                    <i class="fas fa-check-circle"></i> 今日暂无待处理事项
                             </div>` : ''}
                         </div>
                     </div>
@@ -609,25 +648,15 @@ function storesPage() {
     const disabledCount = storesData.filter(s => s.status === 'disabled').length;
     
     return `
-        <style>
-            .modal-overlay { position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.5);z-index:1000;display:flex;align-items:center;justify-content:center; }
-            .modal-content { background:#fff;border-radius:12px;box-shadow:0 25px 50px -12px rgba(0,0,0,0.25);display:flex;flex-direction:column;max-height:80vh;overflow:hidden; }
-            .modal-header { padding:16px 20px;border-bottom:1px solid #e2e8f0;display:flex;align-items:center;justify-content:space-between; }
-            .modal-header h3 { margin:0;font-size:16px;font-weight:600; }
-            .modal-close { background:none;border:none;color:#94a3b8;cursor:pointer;font-size:16px;padding:4px; }
-            .modal-body { padding:16px 20px; }
-            .modal-footer { padding:12px 20px;border-top:1px solid #e2e8f0;display:flex;justify-content:flex-end;gap:8px; }
-        </style>
-        
         <div class="flex-between mb-4">
             <span></span>
             <button class="btn btn-primary" onclick="showAddStoreModal()"><i class="fas fa-plus"></i> 新增门店</button>
         </div>
 
-        <div class="stats-grid" style="grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:12px;">
-            <div class="stat-card"><div class="label"><i class="fas fa-store"></i> 总门店</div><div class="value" style="font-size:22px;">${storesData.length}</div></div>
-            <div class="stat-card"><div class="label"><i class="fas fa-check-circle"></i> 营业中</div><div class="value" style="font-size:22px;color:#22c55e;">${activeCount}</div></div>
-            <div class="stat-card"><div class="label"><i class="fas fa-times-circle"></i> 已停用</div><div class="value" style="font-size:22px;color:#ef4444;">${disabledCount}</div></div>
+        <div class="stats-grid stats-row-3">
+            <div class="stat-card"><div class="label"><i class="fas fa-store"></i> 总门店</div><div class="value">${storesData.length}</div></div>
+            <div class="stat-card"><div class="label"><i class="fas fa-check-circle"></i> 营业中</div><div class="value" style="color:#22c55e;">${activeCount}</div></div>
+            <div class="stat-card"><div class="label"><i class="fas fa-times-circle"></i> 已停用</div><div class="value" style="color:#ef4444;">${disabledCount}</div></div>
         </div>
 
         <div class="card">
@@ -656,6 +685,7 @@ function storesPage() {
                                     ` : `
                                     <button class="btn btn-sm btn-success" onclick="handleStoreAction('${store.id}', 'toggle')"><i class="fas fa-play"></i> 启用</button>
                                     `}
+                                    <button class="btn btn-sm btn-danger-outline" onclick="handleStoreAction('${store.id}', 'delete')"><i class="fas fa-trash"></i> 删除</button>
                                 </td>
                             </tr>
                         `).join('')}
@@ -669,13 +699,13 @@ function storesPage() {
             <div class="card-body">
                 <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;">
                     ${storesData.filter(s => s.status === 'active').sort((a, b) => b.orderCount - a.orderCount).slice(0, 6).map((store, index) => `
-                        <div style="border:1px solid #e2e8f0;border-radius:8px;padding:16px;${index === 0 ? 'border-color:#4f6ef7;background:#f8fafc;' : ''}">
-                            <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
-                                <span style="width:24px;height:24px;background:${index === 0 ? '#4f6ef7' : index === 1 ? '#667eea' : index === 2 ? '#7c3aed' : '#e2e8f0'};color:${index < 3 ? '#fff' : '#94a3b8'};border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;">${index + 1}</span>
-                                <span style="font-weight:600;">${store.name}</span>
+                        <div class="rank-card ${index === 0 ? 'top' : ''}">
+                            <div class="rank-header">
+                                <span class="rank-badge ${index === 0 ? 'gold' : index === 1 ? 'silver' : index === 2 ? 'bronze' : 'other'}">${index + 1}</span>
+                                <span class="rank-name">${store.name}</span>
                             </div>
-                            <div style="font-size:20px;font-weight:700;color:#4f6ef7;">${store.orderCount}</div>
-                            <div style="font-size:12px;color:#94a3b8;">累计订单</div>
+                            <div class="rank-value">${store.orderCount}</div>
+                            <div class="rank-label">累计订单</div>
                         </div>
                     `).join('')}
                 </div>

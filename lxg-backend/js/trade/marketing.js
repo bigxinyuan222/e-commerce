@@ -70,7 +70,7 @@ async function handleSeckillAction(seckillId, action) {
                 refreshMarketingPage();
             } catch (error) {
                 console.error('Failed to close seckill:', error);
-                alert('操作失败，请重试');
+                showToast('操作失败，请重试', 'error');
             }
         });
     } else if (action === 'edit') {
@@ -199,11 +199,11 @@ async function saveSeckill() {
     const endTime = document.getElementById('seckillEndTime').value;
     
     if (!name) {
-        alert('请输入活动名称');
+        showToast('请输入活动名称', 'error');
         return;
     }
     if (!startTime || !endTime) {
-        alert('请选择活动时间');
+        showToast('请选择活动时间', 'error');
         return;
     }
     
@@ -229,7 +229,7 @@ async function saveSeckill() {
     });
     
     if (products.length === 0) {
-        alert('请至少选择一个商品');
+        showToast('请至少选择一个商品', 'error');
         return;
     }
     
@@ -242,15 +242,15 @@ async function saveSeckill() {
         });
         
         if (response.code === 200) {
-            alert('秒杀活动创建成功！');
+            showToast('秒杀活动创建成功！', 'success');
             closeMarketingModal();
             loadSeckill();
         } else {
-            alert(response.message || '创建失败');
+            showToast(response.message || '创建失败', 'error');
         }
     } catch (error) {
         console.error('Failed to create seckill:', error);
-        alert('创建失败，请重试');
+        showToast('创建失败，请重试', 'error');
     }
 }
 
