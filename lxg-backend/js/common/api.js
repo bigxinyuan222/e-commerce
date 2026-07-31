@@ -164,6 +164,30 @@ const API_CONFIG = {
     }
 };
 
+// These modules are owned by Vue components. Keep their legacy definitions above
+// only as migration history, but make them unavailable to executable plain JS so
+// stale code cannot issue duplicate or non-admin requests.
+const VUE_OWNED_API_SECTIONS = [
+    'auth',
+    'returns',
+    'notifications',
+    'orders',
+    'users',
+    'stats',
+    'inventory',
+    'categories',
+    'brands',
+    'specifications',
+    'service',
+    'stores',
+    'admin',
+    'payments'
+];
+
+VUE_OWNED_API_SECTIONS.forEach(section => {
+    delete API_CONFIG[section];
+});
+
 function getAuthToken() {
     const user = JSON.parse(localStorage.getItem('lexiangou_admin_user') || '{}');
     return user.token || '';

@@ -9,11 +9,14 @@
     "preview": "vite preview --host 0.0.0.0",
     "test:login": "node scripts/smoke-login.mjs",
     "test:stock": "node scripts/smoke-stock.mjs",
-    "test:payment": "node scripts/smoke-payment.mjs",
+    "test:payment": "node scripts/smoke-vue-migrated-modules.mjs",
     "test:returns": "node scripts/smoke-returns.mjs",
     "test:users": "node scripts/smoke-users.mjs",
     "test:orders": "node scripts/smoke-orders.mjs",
-    "test:service-ws": "node scripts/smoke-service-ws.mjs"
+    "test:service-ws": "node scripts/smoke-service-ws.mjs",
+    "test:notification-vue": "node scripts/smoke-notification-vue.mjs",
+    "test:vue-api-ownership": "node scripts/check-vue-api-ownership.mjs"
+    ,"test:vue-migrated-modules": "node scripts/smoke-vue-migrated-modules.mjs"
   },
   "dependencies": {
     "taro_template": "file:..",

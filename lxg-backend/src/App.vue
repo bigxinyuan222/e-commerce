@@ -10,6 +10,10 @@ import OrdersPage from './components/OrdersPage.vue'
 import UsersPage from './components/UsersPage.vue'
 import StockPage from './components/StockPage.vue'
 import ServicePage from './components/ServicePage.vue'
+import NotificationPage from './components/NotificationPage.vue'
+import StoresPage from './components/StoresPage.vue'
+import AdminPage from './components/AdminPage.vue'
+import PaymentPage from './components/PaymentPage.vue'
 
 interface LegacyBridge {
   setUser: (user: AdminUser) => void
@@ -140,15 +144,19 @@ onMounted(() => {
         </div>
       </header>
       <main id="contentArea" class="content">
-        <section v-for="menu in visibleMenus" :id="`panel-${menu.id}`" :key="menu.id" class="page-panel" :class="{ active: activePage === menu.id }">
-          <CouponsPage v-if="menu.id === 'coupons'" :token="user?.token" />
-          <ProductsPage v-else-if="menu.id === 'goods'" :token="user?.token" />
-          <ReturnsPage v-else-if="menu.id === 'returns'" :token="user?.token" :store-id="user?.storeId" />
-          <OrdersPage v-else-if="menu.id === 'orders'" :token="user?.token" :store-id="user?.storeId" />
-          <UsersPage v-else-if="menu.id === 'users'" :token="user?.token" />
-          <StockPage v-else-if="menu.id === 'stock'" :token="user?.token" />
-          <ServicePage v-else-if="menu.id === 'service'" :token="user?.token" />
-          <div v-else v-html="renderLegacyPage(menu.id)"></div>
+        <section :id="`panel-${activePage}`" :key="activePage" class="page-panel active">
+          <CouponsPage v-if="activePage === 'coupons'" :token="user?.token" />
+          <ProductsPage v-else-if="activePage === 'goods'" :token="user?.token" />
+          <ReturnsPage v-else-if="activePage === 'returns'" :token="user?.token" :store-id="user?.storeId" />
+          <OrdersPage v-else-if="activePage === 'orders'" :token="user?.token" :store-id="user?.storeId" />
+          <UsersPage v-else-if="activePage === 'users'" :token="user?.token" />
+          <StockPage v-else-if="activePage === 'stock'" :token="user?.token" />
+          <ServicePage v-else-if="activePage === 'service'" :token="user?.token" />
+          <NotificationPage v-else-if="activePage === 'notification'" :token="user?.token" />
+          <StoresPage v-else-if="activePage === 'stores'" :token="user?.token" />
+          <AdminPage v-else-if="activePage === 'admin'" :token="user?.token" />
+          <PaymentPage v-else-if="activePage === 'payment'" :token="user?.token" />
+          <div v-else v-html="renderLegacyPage(activePage)"></div>
         </section>
       </main>
     </div>
