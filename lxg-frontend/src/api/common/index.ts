@@ -125,4 +125,107 @@ export async function apiDelete(url: string, data: Record<string, any> = {}, pat
     });
 }
 
+// ==================== 文件上传 ====================
+
+/**
+ * 从上传接口响应中提取图片URL，兼容多种字段命名
+ */
+function extractUploadUrl(respData: any): string {
+    if (!respData) return '';
+    // 兼容 { data: {...} } / { data: "url" } / 顶层直接含 url 等多种结构
+    const container = respData.data ?? respData.result ?? respData;
+    if (typeof container === 'string') return container;
+    if (!container || typeof container !== 'object') return '';
+
+    const candidates = [
+        container.url, container.URL, container.Url,
+        container.imageUrl, container.image_url, container.ImageUrl,
+        container.avatarUrl, container.avatar_url, container.AvatarUrl,
+        container.filePath, container.file_url, container.FileUrl, container.fileUrl,
+        container.path, container.Path,
+        container.link, container.Link,
+        container.src, container.Src,
+    ];
+    for (const v of candidates) {
+        if (typeof v === 'string' && v) return v;
+    }
+    // 兜底：递归查找第一个以 http 开头的字符串值
+    for (const k of Object.keys(container)) {
+        const v = container[k];
+        if (typeof v === 'string' && /^https?:\/\//i.test(v)) return v;
+    }
+    return '';
+}
+
+/**
+ * 上传图片
+ * 使用 Taro.uploadFile（multipart/form-data），Taro.request 不支持文件流
+ *
+ * @param url      上传接口地址，通常传 userApi.upload
+ * @param filePath chooseImage 返回的临时文件路径
+ * @param name     后端接收文件的表单字段名，默认 "file"
+ * @param formData 额外的表单字段
+ * @returns 上传后的图片URL字符串；失败抛出 Error
+ */
+export async function uploadImage(
+    url: string,
+    filePath: string,
+    name: string = 'file',
+    formData: Record<string, any> = {}
+): Promise<string> {
+    const token = getAuthToken();
+    const header: Record<string, string> = {};
+    if (token) header['Authorization'] = `Bearer ${token}`;
+
+    console.log('[Upload Request]', { url, filePath, name, formData });
+    const res = await Taro.uploadFile({
+        url,
+        filePath,
+        name,
+        formData,
+        header,
+        timeout: 30000,
+    });
+    console.log('[Upload Response]', { statusCode: res.statusCode, data: res.data });
+
+    if (res.statusCode === 401) {
+        Taro.removeStorageSync('lxg_user');
+        Taro.navigateTo({ url: '/pages/user/login/index' });
+        throw new Error('登录已失效，请重新登录');
+    }
+
+    if (res.statusCode !== 200) {
+        let backendMsg = '';
+        try {
+            const parsed = typeof res.data === 'string' ? JSON.parse(res.data) : res.data;
+            backendMsg = parsed?.message || parsed?.msg || '';
+        } catch { /* ignore */ }
+        throw new Error(backendMsg || `上传失败，HTTP状态: ${res.statusCode}`);
+    }
+
+    // 解析响应体（uploadFile 的 data 是字符串）
+    let respData: any;
+    try {
+        respData = typeof res.data === 'string' ? JSON.parse(res.data) : res.data;
+    } catch {
+        // 非JSON：可能直接就是URL文本
+        if (typeof res.data === 'string' && /^https?:\/\//i.test(res.data.trim())) {
+            return res.data.trim();
+        }
+        throw new Error('上传响应格式无法识别');
+    }
+
+    // 业务 code 校验
+    if (respData && typeof respData.code === 'number' && respData.code !== 200) {
+        throw new Error(respData.message || respData.msg || '上传失败');
+    }
+
+    const imgUrl = extractUploadUrl(respData);
+    if (!imgUrl) {
+        console.warn('[Upload] 未能从响应中提取到图片URL，原始响应:', respData);
+        throw new Error('上传成功但未获取到图片地址');
+    }
+    return imgUrl;
+}
+
 export { getAuthToken };

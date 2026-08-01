@@ -5,6 +5,7 @@ import { useAppContext } from '@/store/AppContext';
 import { apiGet, apiPost } from '@/api/common';
 import { productApi, reviewApi } from '@/api/home';
 import { addToCartAPI } from '@/api/cart';
+import { fetchProductSeckillActivity, createSeckillPurchase, pollSeckillPurchaseResult } from '@/api/seckill';
 import { getImageUrl, normalizeProductImages, lazyImgProps } from '@/utils/image';
 import styles from '@/styles/home/detail.module.scss';
 
@@ -129,6 +130,10 @@ const ProductDetailPage: React.FC = () => {
   const [seckillCountdown, setSeckillCountdown] = useState('');
   const [loading, setLoading] = useState(true);
   const [productId, setProductId] = useState('');
+  // 秒杀活动信息
+  const [seckillActivityId, setSeckillActivityId] = useState('');
+  const [seckillInfo, setSeckillInfo] = useState<any>(null);
+  const [purchasing, setPurchasing] = useState(false);
 
   const onBannerChange = useCallback((e: any) => {
     setCurrentImage(e.detail.current);
@@ -204,9 +209,72 @@ const ProductDetailPage: React.FC = () => {
     setShowSkuModal(false);
   }, [addToCart, product, selectedSku, quantity, isSeckill]);
 
+  // 秒杀购买流程：创建秒杀订单 -> 轮询购买结果
+  const handleSeckillPurchase = useCallback(async () => {
+    if (!product) return;
+    if (purchasing) return;
+    setPurchasing(true);
+    Taro.showLoading({ title: '抢购中...', mask: true });
+    try {
+      const purchaseRes = await createSeckillPurchase({
+        activityId: seckillActivityId,
+        productId: product.id,
+        skuId: selectedSku?.id,
+        quantity: quantity,
+      });
+      const purchaseId = purchaseRes?.data?.purchaseId || purchaseRes?.data?.id || purchaseRes?.data?.orderId || '';
+      if (!purchaseId) {
+        // 未返回 purchaseId：后端可能为同步处理，直接展示返回结果
+        const status = purchaseRes?.data?.status;
+        const statusText = purchaseRes?.data?.statusText;
+        Taro.hideLoading();
+        if (status === 'success' || status === 'succeeded' || status === 'paid') {
+          Taro.showToast({ title: '抢购成功', icon: 'success' });
+        } else {
+          Taro.showToast({ title: statusText || purchaseRes?.data?.message || '抢购结果未知', icon: 'none' });
+        }
+        return;
+      }
+
+      // 轮询购买结果
+      const result = await pollSeckillPurchaseResult(purchaseId, { interval: 1500, timeout: 15000 });
+      Taro.hideLoading();
+      const status = String(result.status ?? '');
+      if (status === 'success' || status === 'succeeded' || status === 'paid') {
+        Taro.showModal({
+          title: '抢购成功',
+          content: `订单号：${result.orderId || purchaseId}`,
+          showCancel: true,
+          confirmText: '去支付',
+          cancelText: '继续逛',
+          success: (res) => {
+            if (res.confirm && result.orderId) {
+              Taro.navigateTo({ url: `/pages/cart/order/detail/index?id=${result.orderId}` });
+            }
+          }
+        });
+      } else if (status === 'out_of_stock' || status === 'out-of-stock' || status === 'sold_out') {
+        Taro.showToast({ title: '手慢了，商品已售罄', icon: 'none' });
+      } else {
+        Taro.showToast({ title: result.statusText || result.message || '抢购失败', icon: 'none' });
+      }
+    } catch (error: any) {
+      Taro.hideLoading();
+      console.error('Seckill purchase failed:', error);
+      Taro.showToast({ title: error?.message || '抢购失败，请重试', icon: 'none' });
+    } finally {
+      setPurchasing(false);
+    }
+  }, [product, selectedSku, quantity, seckillActivityId, purchasing]);
+
   const handleBuyNow = useCallback(() => {
     if (!product || !selectedSku) return;
     setShowSkuModal(false);
+    // 秒杀商品走秒杀购买流程
+    if (isSeckill) {
+      handleSeckillPurchase();
+      return;
+    }
     setTimeout(() => {
       const buyNowData = JSON.stringify({
         productId: product.id,
@@ -219,11 +287,11 @@ const ProductDetailPage: React.FC = () => {
         stock: selectedSku.stock,
         isSeckill
       });
-      Taro.navigateTo({ 
-        url: `/pages/cart/checkout/index?buyNow=${encodeURIComponent(buyNowData)}` 
+      Taro.navigateTo({
+        url: `/pages/cart/checkout/index?buyNow=${encodeURIComponent(buyNowData)}`
       });
     }, 300);
-  }, [product, selectedSku, quantity, isSeckill]);
+  }, [product, selectedSku, quantity, isSeckill, handleSeckillPurchase]);
 
   const openSkuModal = useCallback((type: 'cart' | 'buy') => {
     setSkuModalType(type);
@@ -353,33 +421,43 @@ const ProductDetailPage: React.FC = () => {
   }, [commentInput, currentEvaluation]);
 
   useEffect(() => {
-    const { id, seckill } = Taro.getCurrentInstance().router?.params || {};
-    setIsSeckill(seckill === '1');
-    
+    const { id, seckill, activityId } = Taro.getCurrentInstance().router?.params || {};
+    const isSeckillPage = seckill === '1';
+    setIsSeckill(isSeckillPage);
+    if (activityId) setSeckillActivityId(activityId);
+
     if (!id) {
       Taro.showToast({ title: '商品不存在', icon: 'none' });
       setTimeout(() => Taro.navigateBack(), 1000);
       return;
     }
-    
+
     setProductId(id);
-    
+
     const loadProduct = async () => {
       setLoading(true);
       try {
-        const [productRes, reviewRes, statsRes] = await Promise.all([
+        const requestList: Promise<any>[] = [
           apiGet(productApi.detail, { id }).catch(() => null),
           apiGet(reviewApi.list, { page: 1, size: 2 }, { id }).catch(() => null),
           apiGet(reviewApi.stats, {}, { id }).catch(() => null),
-        ]);
+        ];
+        // 秒杀商品：额外获取指定商品秒杀活动信息
+        if (isSeckillPage) {
+          requestList.push(
+            fetchProductSeckillActivity({ productId: id, activityId: activityId || undefined }).catch(() => null)
+          );
+        }
+
+        const [productRes, reviewRes, statsRes, seckillRes] = await Promise.all(requestList);
 
         if (productRes?.data) {
           const productData = normalizeProductImages(productRes.data);
           setProduct(productData);
-          
+
           if (productData.skus && productData.skus.length > 0) {
             setSelectedSku(productData.skus[0]);
-            
+
             const initialSelections: { [key: string]: string } = {};
             if (productData.skus[0].specs) {
               Object.keys(productData.skus[0].specs).forEach(key => {
@@ -403,6 +481,18 @@ const ProductDetailPage: React.FC = () => {
             setAiSummary(statsRes.data.summary);
           }
         }
+
+        // 处理秒杀活动信息
+        if (seckillRes?.data) {
+          const data = seckillRes.data;
+          // fetchProductSeckillActivity 可能返回活动对象（含 products）或单个商品活动
+          if (data.products || data.endTime) {
+            setSeckillInfo(data);
+            if (data.id) setSeckillActivityId(String(data.id));
+          } else if (data.seckillPrice !== undefined) {
+            setSeckillInfo(data);
+          }
+        }
       } catch (error) {
         console.error('Failed to load product:', error);
         Taro.showToast({ title: '加载失败', icon: 'none' });
@@ -416,33 +506,37 @@ const ProductDetailPage: React.FC = () => {
 
   useEffect(() => {
     if (!isSeckill) return;
-    
+
     const updateCountdown = () => {
+      // 优先使用秒杀活动返回的 endTime，兜底默认 12 小时后
+      const endTimeStr = seckillInfo?.endTime
+        || seckillInfo?.end_time
+        || new Date(Date.now() + 12 * 60 * 60 * 1000).toISOString();
       const now = new Date().getTime();
-      const endTime = new Date('2026-07-31 23:59:59').getTime();
+      const endTime = new Date(String(endTimeStr).replace(/-/g, '/')).getTime();
       const diff = endTime - now;
-      
+
       if (diff <= 0) {
         setSeckillCountdown('已结束');
         return;
       }
-      
+
       const days = Math.floor(diff / (1000 * 60 * 60 * 24));
       const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
       const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
       const seconds = Math.floor((diff % (1000 * 60)) / 1000);
-      
+
       if (days > 0) {
         setSeckillCountdown(`${days}天${hours}时${minutes}分`);
       } else {
         setSeckillCountdown(`${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`);
       }
     };
-    
+
     updateCountdown();
     const timer = setInterval(updateCountdown, 1000);
     return () => clearInterval(timer);
-  }, [isSeckill]);
+  }, [isSeckill, seckillInfo]);
 
   if (loading || !product) {
     return (
@@ -462,20 +556,24 @@ const ProductDetailPage: React.FC = () => {
             <Text className={styles.shareIcon}>↗</Text>
           </View>
           <View className={styles.productBanner}>
-            <Swiper
-              autoplay
-              interval={3000}
-              circular
-              onChange={onBannerChange}
-            >
-              {product.images.map((image, index) => (
-                <SwiperItem key={index}>
-                  <Image src={getImageUrl(image)} mode="aspectFill" {...lazyImgProps()} />
-                </SwiperItem>
-              ))}
-            </Swiper>
+            {(product.images && product.images.length > 0) ? (
+              <Swiper
+                autoplay={product.images.length > 1}
+                interval={3000}
+                circular={product.images.length > 1}
+                onChange={onBannerChange}
+              >
+                {product.images.map((image, index) => (
+                  <SwiperItem key={index}>
+                    <Image src={getImageUrl(image)} mode="aspectFill" {...lazyImgProps()} />
+                  </SwiperItem>
+                ))}
+              </Swiper>
+            ) : (
+              <Image src={getImageUrl('')} mode="aspectFill" className={styles.productBannerFallback} />
+            )}
             <Text className={styles.bannerIndicator}>
-              {currentImage + 1}/{product.images.length}
+              {currentImage + 1}/{product.images.length || 1}
             </Text>
           </View>
         </View>
@@ -614,8 +712,11 @@ const ProductDetailPage: React.FC = () => {
           <View className={styles.addCartBtn} onClick={() => openSkuModal('cart')}>
             加入购物车
           </View>
-          <View className={styles.buyNowBtn} onClick={() => openSkuModal('buy')}>
-            <Text className={styles.buyBtnText}>立即购买</Text>
+          <View
+            className={`${styles.buyNowBtn} ${purchasing ? styles.disabled : ''}`}
+            onClick={() => !purchasing && openSkuModal('buy')}
+          >
+            <Text className={styles.buyBtnText}>{purchasing ? '抢购中...' : (isSeckill ? '立即抢购' : '立即购买')}</Text>
             {isSeckill && seckillCountdown && (
               <Text className={styles.btnCountdown}>{seckillCountdown}</Text>
             )}

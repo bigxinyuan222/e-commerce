@@ -4,6 +4,7 @@ import Taro, { useDidShow } from '@tarojs/taro';
 import { apiGet } from '@/api/common';
 import { categoryApi } from '@/api/home';
 import { getImageUrl, normalizeProductListImages, lazyImgProps } from '@/utils/image';
+import { getCategoryIcon } from '@/utils/categoryIcons';
 import styles from '@/styles/category/category.module.scss';
 
 function normalizeCategory(item: any): any {
@@ -35,18 +36,25 @@ const SubCategoryItem = React.memo(({
 }: { 
   subCategory: any; 
   onClick: (id: string) => void;
-}) => (
-  <View 
-    key={subCategory.id} 
-    className={styles.subCategoryItem}
-    onClick={() => onClick(subCategory.id)}
-  >
-    <View className={styles.subCategoryIcon}>
-      <Image src={getImageUrl(subCategory.icon)} mode="aspectFill" {...lazyImgProps()} />
+}) => {
+  const iconSrc = getCategoryIcon(subCategory.name, subCategory.icon);
+  return (
+    <View 
+      key={subCategory.id} 
+      className={styles.subCategoryItem}
+      onClick={() => onClick(subCategory.id)}
+    >
+      <View className={styles.subCategoryIcon}>
+        <Image 
+          src={iconSrc.startsWith('data:') || iconSrc.includes('.svg') ? iconSrc : getImageUrl(iconSrc)} 
+          mode="aspectFill" 
+          {...lazyImgProps()} 
+        />
+      </View>
+      <Text className={styles.subCategoryName}>{subCategory.name}</Text>
     </View>
-    <Text className={styles.subCategoryName}>{subCategory.name}</Text>
-  </View>
-));
+  );
+});
 
 const RecommendProduct = React.memo(({ 
   product, 
@@ -190,6 +198,8 @@ const CategoryPage: React.FC = () => {
 
   const handleCategoryClick = useCallback((index: number) => {
     setActiveCategory(index);
+    Taro.removeStorageSync('targetCategoryId');
+    initialCategoryIdRef.current = '';
     if (categories[index]) {
       setCategoryProducts([]);
       loadSubCategories(categories[index].id);
@@ -209,15 +219,13 @@ const CategoryPage: React.FC = () => {
   }, [loadingMore, hasMore, categories, activeCategory, subCategories, page]);
 
   useEffect(() => {
-    const params = Taro.getCurrentInstance()?.router?.params;
-    const targetCategoryId = params?.id || '';
+    const targetCategoryId = Taro.getStorageSync('targetCategoryId') || '';
     initialCategoryIdRef.current = targetCategoryId;
     loadCategoryTree(targetCategoryId);
   }, []);
 
   useDidShow(() => {
-    const params = Taro.getCurrentInstance()?.router?.params;
-    const targetCategoryId = params?.id || '';
+    const targetCategoryId = Taro.getStorageSync('targetCategoryId') || '';
     if (targetCategoryId && targetCategoryId !== initialCategoryIdRef.current) {
       initialCategoryIdRef.current = targetCategoryId;
       loadCategoryTree(targetCategoryId);

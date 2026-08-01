@@ -46,6 +46,11 @@
         height: 100%;
       }
     }
+
+    .productBannerFallback {
+      width: 100%;
+      height: 750rpx;
+    }
     
     .bannerIndicator {
       position: absolute;
@@ -1051,7 +1056,12 @@
         opacity: 0.9;
         transform: scale(0.98);
       }
-      
+
+      &.disabled {
+        opacity: 0.6;
+        pointer-events: none;
+      }
+
       .buyBtnText {
         font-size: $font-size-sm;
         white-space: nowrap;

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, Image, Input } from '@tarojs/components';
 import Taro from '@tarojs/taro';
 import { useAppContext } from '@/store/AppContext';
-import { apiPut } from '@/api/common';
+import { apiPut, uploadImage } from '@/api/common';
 import { userApi } from '@/api/user';
 import { getImageUrl } from '@/utils/image';
 import styles from '@/styles/user/personal-info.module.scss';
@@ -145,6 +145,32 @@ const PersonalInfoPage: React.FC = () => {
     const birthdayStr = `${selectedYear}年${String(selectedMonth).padStart(2, '0')}月${String(selectedDay).padStart(2, '0')}日`;
     setShowDatePicker(false);
     updateProfile({ birthday: birthdayStr });
+  };
+
+  // 选择并上传头像：先调 /api/v1/user/upload 拿到URL，再更新用户资料
+  const handleAvatarChoose = (sourceType: 'album' | 'camera') => {
+    setShowAvatarPicker(false);
+    Taro.chooseImage({
+      count: 1,
+      sizeType: ['compressed'],
+      sourceType: [sourceType],
+      success: async (res) => {
+        const tempFilePath = res.tempFilePaths[0];
+        Taro.showLoading({ title: '上传中...', mask: true });
+        try {
+          const avatarUrl = await uploadImage(userApi.upload, tempFilePath, 'file', { type: 'avatar' });
+          Taro.hideLoading();
+          await updateProfile({ avatar: avatarUrl });
+        } catch (err: any) {
+          Taro.hideLoading();
+          console.error('头像上传失败:', err);
+          Taro.showToast({ title: err?.message || '头像上传失败', icon: 'none' });
+        }
+      },
+      fail: (err) => {
+        console.log('取消选择图片或选择失败:', err);
+      },
+    });
   };
 
   const handleItemClick = (title: string) => {
@@ -340,34 +366,11 @@ const PersonalInfoPage: React.FC = () => {
               <Text className={styles.avatarPickerClose} onClick={() => setShowAvatarPicker(false)}>×</Text>
             </View>
             <View className={styles.avatarPickerBody}>
-                <View className={styles.avatarPickerOption} onClick={() => {
-                  setShowAvatarPicker(false);
-                  Taro.chooseImage({
-                    count: 1,
-                    sizeType: ['compressed'],
-                    sourceType: ['album'],
-                    success: (res) => {
-                      const tempFilePath = res.tempFilePaths[0];
-                      // TODO: 上传到服务器获取URL，目前先用本地临时路径
-                      updateProfile({ avatar: tempFilePath });
-                    }
-                  });
-                }}>
+                <View className={styles.avatarPickerOption} onClick={() => handleAvatarChoose('album')}>
                   <Text className={styles.avatarPickerOptionText}>从相册选择</Text>
                 </View>
                 <View className={styles.avatarPickerDivider}></View>
-                <View className={styles.avatarPickerOption} onClick={() => {
-                  setShowAvatarPicker(false);
-                  Taro.chooseImage({
-                    count: 1,
-                    sizeType: ['compressed'],
-                    sourceType: ['camera'],
-                    success: (res) => {
-                      const tempFilePath = res.tempFilePaths[0];
-                      updateProfile({ avatar: tempFilePath });
-                    }
-                  });
-                }}>
+                <View className={styles.avatarPickerOption} onClick={() => handleAvatarChoose('camera')}>
                   <Text className={styles.avatarPickerOptionText}>拍照</Text>
                 </View>
               </View>

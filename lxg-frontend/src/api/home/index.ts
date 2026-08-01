@@ -5,8 +5,8 @@ const API_BASE_URL = process.env.TARO_ENV === 'h5'
   : `${BACKEND_HOST}/api/v1`;
 
 export const homeApi = {
-    banners: `${API_BASE_URL}/product/banner`,
-    recommendations: `${API_BASE_URL}/product/recommend`,
+    banners: `${API_BASE_URL}/homepage/banners`,
+    recommendations: `${API_BASE_URL}/homepage/recommendations`,
     seckillActivities: `${API_BASE_URL}/home/seckill-activities`,
     activities: `${API_BASE_URL}/seckill/activities`,
     activityProducts: `${API_BASE_URL}/seckill/activities/:id/products`,

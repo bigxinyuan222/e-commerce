@@ -1,48 +1,128 @@
+@use '@/styles/variables.scss' as *;
+
 .customerServicePage {
   min-height: 100vh;
-  background-color: #f5f5f5;
+  background-color: $color-bg-page;
   display: flex;
   flex-direction: column;
 }
 
+// ------- 顶部 Header -------
 .header {
-  height: 50px;
-  background-color: #ffffff;
+  height: 100rpx;
+  background-color: $color-bg-card;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 16px;
+  padding: 0 32rpx;
   position: sticky;
   top: 0;
   z-index: 100;
-  border-bottom: 1px solid #eee;
+  border-bottom: 1px solid $color-divider;
+
+  .backBtn {
+    font-size: 48rpx;
+    color: $color-text-primary;
+    padding: 8rpx;
+    min-width: 64rpx;
+  }
+
+  .headerCenter {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex: 1;
+  }
+
+  .headerTitle {
+    font-size: 34rpx;
+    font-weight: $font-weight-bold;
+    color: $color-text-primary;
+    line-height: 1.2;
+  }
+
+  .headerStatus {
+    font-size: 22rpx;
+    margin-top: 4rpx;
+
+    &.ws-open {
+      color: #52c41a;
+    }
+    &.ws-connecting {
+      color: #faad14;
+    }
+    &.ws-closed {
+      color: #ff4d4f;
+    }
+    &.ws-closing,
+    &.ws-idle {
+      color: $color-text-tertiary;
+    }
+  }
+
+  .headerRight {
+    width: 80rpx;
+  }
 }
 
-.backBtn {
-  font-size: 24px;
-  color: #333;
-  padding: 8px;
-}
-
-.headerTitle {
-  font-size: 17px;
-  font-weight: 600;
-  color: #333;
-}
-
-.headerRight {
-  width: 40px;
-}
-
+// ------- 聊天区 -------
 .chatContainer {
   flex: 1;
-  padding: 16px;
+  padding: 24rpx;
   overflow-y: auto;
+  padding-bottom: 120rpx;
 }
 
+// ------- 日期分割线 -------
+.dateDivider {
+  display: flex;
+  justify-content: center;
+  margin: 16rpx 0 24rpx;
+
+  .dateText {
+    font-size: 22rpx;
+    color: $color-text-tertiary;
+    background: rgba(0, 0, 0, 0.05);
+    padding: 4rpx 20rpx;
+    border-radius: 20rpx;
+  }
+}
+
+// ------- 加载 / 空状态 -------
+.loadingState,
+.emptyChat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 80rpx 0;
+  gap: 16rpx;
+}
+
+.loadingText {
+  font-size: $font-size-sm;
+  color: $color-text-tertiary;
+}
+
+.emptyChat {
+  .emptyChatIcon {
+    font-size: 80rpx;
+    margin-bottom: 8rpx;
+  }
+
+  .emptyChatText {
+    font-size: $font-size-sm;
+    color: $color-text-secondary;
+    text-align: center;
+    max-width: 80%;
+    line-height: 1.6;
+  }
+}
+
+// ------- 消息气泡 -------
 .messageWrap {
   display: flex;
-  margin-bottom: 16px;
+  margin-bottom: 32rpx;
   align-items: flex-end;
 
   &.me {
@@ -55,10 +135,19 @@
 }
 
 .avatar {
-  width: 40px;
-  height: 40px;
+  width: 80rpx;
+  height: 80rpx;
   border-radius: 50%;
-  margin-right: 12px;
+  background-color: #f5f5f5;
+  flex-shrink: 0;
+}
+
+.messageWrap.other .avatar {
+  margin-right: 20rpx;
+}
+
+.messageWrap.me .avatar {
+  margin-left: 20rpx;
 }
 
 .messageContent {
@@ -68,68 +157,97 @@
   align-items: flex-start;
 }
 
-.me {
-  .messageContent {
-    align-items: flex-end;
-  }
-
-  .messageText {
-    background-color: #e2231a;
-    color: #ffffff;
-    border-radius: 16px 16px 0 16px;
-  }
+.me .messageContent {
+  align-items: flex-end;
 }
 
-.other {
-  .messageText {
-    background-color: #ffffff;
-    color: #333;
-    border-radius: 16px 16px 16px 0;
-  }
+.me .messageText {
+  background-color: $color-primary;
+  color: #ffffff;
+  border-radius: 24rpx 24rpx 0 24rpx;
+}
+
+.other .messageText {
+  background-color: $color-bg-card;
+  color: $color-text-primary;
+  border-radius: 24rpx 24rpx 24rpx 0;
+  box-shadow: $shadow-card;
 }
 
 .messageText {
-  padding: 12px 16px;
-  font-size: 15px;
-  line-height: 1.5;
+  padding: 20rpx 28rpx;
+  font-size: $font-size-md;
+  line-height: 1.55;
   word-break: break-all;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  white-space: pre-wrap;
+}
+
+.messageMeta {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+  margin-top: 6rpx;
+  min-height: 24rpx;
 }
 
 .messageTime {
-  font-size: 11px;
-  color: #999;
-  margin-top: 4px;
+  font-size: 22rpx;
+  color: $color-text-tertiary;
 }
 
+.messageStatus {
+  font-size: 20rpx;
+  color: $color-text-placeholder;
+}
+
+// ------- 底部输入栏 -------
 .inputBar {
-  height: 60px;
-  background-color: #ffffff;
+  min-height: 112rpx;
+  background-color: $color-bg-card;
   display: flex;
   align-items: center;
-  padding: 8px 16px;
-  border-top: 1px solid #eee;
-  gap: 12px;
+  padding: 16rpx 32rpx;
+  border-top: 1px solid $color-divider;
+  gap: 20rpx;
+  position: sticky;
+  bottom: 0;
+  z-index: 99;
 }
 
 .input {
   flex: 1;
-  height: 44px;
-  background-color: #f5f5f5;
-  border-radius: 22px;
-  padding: 0 16px;
-  font-size: 15px;
+  min-height: 80rpx;
+  background-color: $color-bg-page;
+  border-radius: 40rpx;
+  padding: 0 32rpx;
+  font-size: $font-size-md;
+  color: $color-text-primary;
+
+  &::placeholder {
+    color: $color-text-placeholder;
+  }
 }
 
 .sendBtn {
-  width: 60px;
-  height: 44px;
-  background-color: #e2231a;
+  min-width: 120rpx;
+  height: 80rpx;
+  background-color: $color-primary;
   color: #ffffff;
-  border-radius: 22px;
+  border-radius: 40rpx;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 15px;
-  font-weight: 500;
+  font-size: $font-size-md;
+  font-weight: $font-weight-medium;
+  padding: 0 28rpx;
+  transition: opacity 0.15s ease;
+
+  &.disabled {
+    opacity: 0.5;
+    pointer-events: none;
+  }
+
+  &:active:not(.disabled) {
+    opacity: 0.85;
+  }
 }

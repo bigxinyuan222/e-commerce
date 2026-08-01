@@ -72,7 +72,7 @@ function transformOrder(order: any): any {
     : undefined;
 
   return {
-    id: order.id || order.ID || '',
+    id: order.id || order.ID || order.orderNo || order.OrderNo || '',
     orderNo: order.orderNo || order.OrderNo || '',
     status,
     statusText: order.statusText || order.StatusText || statusMap[status] || '',
@@ -168,7 +168,7 @@ const OrderCard = React.memo(({
   };
 
   return (
-    <View className={styles.orderCard} key={order.id}>
+    <View className={styles.orderCard}>
       <View className={styles.orderHeader}>
         <Text className={styles.orderId}>{isRefundOrder ? '退货编号' : '订单编号'}: {order.orderNo}</Text>
         <Text className={styles.orderStatus} style={{ color: isRefundOrder ? refundStatusColorMap[order.status] : (statusColorMap[order.status] || '#999') }}>
@@ -513,9 +513,9 @@ const OrderListPage: React.FC = () => {
           enhanced
           showScrollbar={false}
         >
-          {orders.map((order) => (
+          {orders.map((order, index) => (
             <OrderCard
-              key={order.id}
+              key={order.id || `order-${index}`}
               order={order}
               onDetail={goToOrderDetail}
               onCancel={handleCancelOrder}

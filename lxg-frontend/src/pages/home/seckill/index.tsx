@@ -1,33 +1,82 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { View, Text, Image, ScrollView } from '@tarojs/components';
 import Taro from '@tarojs/taro';
+import { fetchSeckillActivities } from '@/api/seckill';
 import { seckillProducts } from '@/data/common/home';
+import { getImageUrl, lazyImgProps } from '@/utils/image';
 import styles from '@/styles/home/seckill.module.scss';
 
+interface ActivityItem {
+  id: string;
+  name: string;
+  startTime: string;
+  endTime: string;
+  status: string;
+  products: any[];
+}
+
+// 兜底：当接口未返回数据时，使用本地 mock 包装成单个活动
+function buildFallbackActivities(): ActivityItem[] {
+  const now = new Date();
+  const endTime = new Date(now.getTime() + 12 * 60 * 60 * 1000);
+  const fmt = (d: Date) => d.toISOString().replace('T', ' ').slice(0, 19);
+  return [{
+    id: 'seckill-fallback',
+    name: '限时秒杀',
+    startTime: fmt(now),
+    endTime: fmt(endTime),
+    status: 'active',
+    products: seckillProducts,
+  }];
+}
+
 const SeckillPage: React.FC = () => {
-  const [, setTimeLeft] = useState({
-    hours: 0,
-    minutes: 0,
-    seconds: 0
-  });
-  const [activeCategory, setActiveCategory] = useState('推荐');
+  const [activities, setActivities] = useState<ActivityItem[]>([]);
+  const [activeActivityIndex, setActiveActivityIndex] = useState(0);
+  const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
+  const [loading, setLoading] = useState(true);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
-  const categories = ['推荐', '品质家电', '数码', '酒水', '学生专享', '电脑办公'];
-
-  const getBeijingTime = useCallback(() => {
-    const now = new Date();
-    const utc = now.getTime() + now.getTimezoneOffset() * 60000;
-    return new Date(utc + 8 * 60 * 60 * 1000);
+  // 加载秒杀活动列表
+  const loadActivities = useCallback(async () => {
+    setLoading(true);
+    try {
+      const res = await fetchSeckillActivities({ status: 'active' });
+      const list = Array.isArray(res?.data) ? res.data : [];
+      if (list.length > 0) {
+        setActivities(list as ActivityItem[]);
+      } else {
+        // 接口返回空，使用兜底数据
+        setActivities(buildFallbackActivities());
+      }
+    } catch (error) {
+      console.error('Failed to load seckill activities:', error);
+      // 接口异常，使用兜底数据，保证页面可用
+      setActivities(buildFallbackActivities());
+    } finally {
+      setLoading(false);
+    }
   }, []);
 
+  useEffect(() => {
+    loadActivities();
+  }, [loadActivities]);
+
+  // 当前活动
+  const currentActivity = activities[activeActivityIndex] || activities[0];
+
+  // 倒计时：基于当前活动 endTime
   const updateCountdown = useCallback(() => {
-    const now = getBeijingTime().getTime();
-    const endTime = new Date('2026-07-31 23:59:59').getTime();
+    if (!currentActivity?.endTime) {
+      setTimeLeft({ days: 0, hours: 0, minutes: 0, seconds: 0 });
+      return;
+    }
+    const now = new Date().getTime();
+    const endTime = new Date(currentActivity.endTime.replace(/-/g, '/')).getTime();
     const diff = endTime - now;
 
     if (diff <= 0) {
-      setTimeLeft({ hours: 0, minutes: 0, seconds: 0 });
+      setTimeLeft({ days: 0, hours: 0, minutes: 0, seconds: 0 });
       if (timerRef.current) {
         clearInterval(timerRef.current);
         timerRef.current = null;
@@ -35,30 +84,52 @@ const SeckillPage: React.FC = () => {
       return;
     }
 
-    const hours = Math.floor(diff / (1000 * 60 * 60));
+    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
     const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
     const seconds = Math.floor((diff % (1000 * 60)) / 1000);
 
-    setTimeLeft({ hours, minutes, seconds });
-  }, [getBeijingTime]);
+    setTimeLeft({ days, hours, minutes, seconds });
+  }, [currentActivity]);
 
   useEffect(() => {
+    if (!currentActivity) return;
     updateCountdown();
     timerRef.current = setInterval(updateCountdown, 1000);
     return () => {
       if (timerRef.current) {
         clearInterval(timerRef.current);
+        timerRef.current = null;
       }
     };
-  }, [updateCountdown]);
+  }, [updateCountdown, currentActivity]);
 
-  const goToProductDetail = (productId: string) => {
-    Taro.navigateTo({ url: `/pages/home/detail/index?id=${productId}&seckill=1` });
+  const goToProductDetail = (product: any) => {
+    const productId = product.productId || product.id;
+    const activityId = currentActivity?.id || '';
+    Taro.navigateTo({
+      url: `/pages/home/detail/index?id=${productId}&seckill=1&activityId=${activityId}`
+    });
   };
 
-  const filteredProducts = activeCategory === '推荐' 
-    ? seckillProducts 
-    : seckillProducts.filter(p => p.category === activeCategory);
+  // 倒计时展示文本
+  const countdownText = (() => {
+    const { days, hours, minutes, seconds } = timeLeft;
+    if (days > 0) {
+      return `距结束 ${days}天 ${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+    }
+    return `距结束 ${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+  })();
+
+  if (loading) {
+    return (
+      <View className={styles.seckillPage}>
+        <View style={{ padding: '100rpx', textAlign: 'center' }}>
+          <Text>加载中...</Text>
+        </View>
+      </View>
+    );
+  }
 
   return (
     <View className={styles.seckillPage}>
@@ -66,61 +137,78 @@ const SeckillPage: React.FC = () => {
         <View className={styles.headerBanner}>
           <View className={styles.bannerLeft}>
             <Text className={styles.bannerTitle}>限时秒杀</Text>
-            <Text className={styles.bannerSubtitle}>全场特惠 限时抢购</Text>
+            <Text className={styles.bannerSubtitle}>{currentActivity?.name || '全场特惠 限时抢购'}</Text>
+            <Text className={styles.bannerSubtitle}>{countdownText}</Text>
           </View>
         </View>
 
-        <View className={styles.categoryBar}>
-          <ScrollView scrollX className={styles.categoryScroll} showScrollbar={false}>
-            <View className={styles.categoryList}>
-              {categories.map((category) => (
-                <Text 
-                  key={category}
-                  className={`${styles.categoryItem} ${activeCategory === category ? styles.activeCategory : ''}`}
-                  onClick={() => setActiveCategory(category)}
-                >
-                  {category}
-                </Text>
-              ))}
-            </View>
-          </ScrollView>
-        </View>
+        {/* 活动场次切换（多于一场时展示） */}
+        {activities.length > 1 && (
+          <View className={styles.categoryBar}>
+            <ScrollView scrollX className={styles.categoryScroll} showScrollbar={false}>
+              <View className={styles.categoryList}>
+                {activities.map((activity, idx) => (
+                  <Text
+                    key={activity.id || idx}
+                    className={`${styles.categoryItem} ${activeActivityIndex === idx ? styles.activeCategory : ''}`}
+                    onClick={() => setActiveActivityIndex(idx)}
+                  >
+                    {activity.name}
+                  </Text>
+                ))}
+              </View>
+            </ScrollView>
+          </View>
+        )}
 
         <View className={styles.productList}>
-          {filteredProducts.map((product) => (
-            <View 
-              key={product.id} 
-              className={styles.productCard}
-              onClick={() => goToProductDetail(product.productId)}
-            >
-              <Image src={product.image} className={styles.productImage} mode="aspectFill" />
-              <View className={styles.productInfo}>
-                <Text className={styles.productName}>{product.productName}</Text>
-                <View className={styles.productTags}>
-                  {product.tags.map((tag, idx) => (
-                    <Text key={idx} className={styles.productTag}>{tag}</Text>
-                  ))}
-                </View>
-                <View className={styles.priceRow}>
-                  <View className={styles.seckillPrice}>
-                    <Text className={styles.priceSymbol}>¥</Text>
-                    <Text className={styles.priceNum}>{product.seckillPrice}</Text>
+          {(currentActivity?.products || []).map((product: any, idx: number) => {
+            const soldPercent = product.soldPercent ?? 0;
+            const productId = product.productId || product.id;
+            return (
+              <View
+                key={product.id || productId || idx}
+                className={styles.productCard}
+                onClick={() => goToProductDetail(product)}
+              >
+                <Image
+                  src={getImageUrl(product.image)}
+                  className={styles.productImage}
+                  mode="aspectFill"
+                  {...lazyImgProps()}
+                />
+                <View className={styles.productInfo}>
+                  <Text className={styles.productName}>{product.productName || product.name}</Text>
+                  <View className={styles.productTags}>
+                    <Text className={styles.productTag}>限时秒杀</Text>
                   </View>
-                  <Text className={styles.originalPrice}>¥{product.originalPrice}</Text>
-                </View>
-                <View className={styles.progressArea}>
-                  <View className={styles.progressBar}>
-                    <View className={styles.progressFill} style={{ width: `${product.soldPercent}%` }} />
+                  <View className={styles.priceRow}>
+                    <View className={styles.seckillPrice}>
+                      <Text className={styles.priceSymbol}>¥</Text>
+                      <Text className={styles.priceNum}>{product.seckillPrice}</Text>
+                    </View>
+                    <Text className={styles.originalPrice}>¥{product.originalPrice}</Text>
                   </View>
-                  <Text className={styles.progressText}>已抢{product.soldPercent}%</Text>
+                  <View className={styles.progressArea}>
+                    <View className={styles.progressBar}>
+                      <View className={styles.progressFill} style={{ width: `${soldPercent}%` }} />
+                    </View>
+                    <Text className={styles.progressText}>已抢{soldPercent}%</Text>
+                  </View>
+                </View>
+                <View className={styles.seckillBtn}>
+                  <Text>抢</Text>
                 </View>
               </View>
-              <View className={styles.seckillBtn}>
-                <Text>抢</Text>
-              </View>
-            </View>
-          ))}
+            );
+          })}
         </View>
+
+        {(!currentActivity?.products || currentActivity.products.length === 0) && (
+          <View style={{ padding: '80rpx', textAlign: 'center' }}>
+            <Text>暂无秒杀商品</Text>
+          </View>
+        )}
 
         <View className={styles.bottomSpace} />
       </ScrollView>
