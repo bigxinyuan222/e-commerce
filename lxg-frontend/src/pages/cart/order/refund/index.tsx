@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, Image, ScrollView, Textarea } from '@tarojs/components';
 import Taro from '@tarojs/taro';
 import { fetchOrderDetail, fetchRefundReasons, applyRefund as applyRefundAPI } from '@/api/cart';
+import { uploadImage } from '@/api/common';
+import { userApi } from '@/api/user';
 import { getImageUrl, lazyImgProps } from '@/utils/image';
 import styles from '@/styles/cart/order-refund.module.scss';
 
@@ -89,6 +91,19 @@ const RefundApplyPage: React.FC = () => {
 
     setIsSubmitting(true);
     try {
+      // 先将本地临时图片上传到服务器，拿到URL列表
+      let uploadedImages: string[] = [];
+      if (images.length > 0) {
+        Taro.showLoading({ title: `上传图片 0/${images.length}`, mask: true });
+        uploadedImages = [];
+        for (let i = 0; i < images.length; i++) {
+          Taro.showLoading({ title: `上传图片 ${i + 1}/${images.length}`, mask: true });
+          const url = await uploadImage(userApi.upload, images[i], 'file', { type: 'refund' });
+          uploadedImages.push(url);
+        }
+        Taro.hideLoading();
+      }
+
       const reasonText = selectedReasonText || reasons.find(r => r.id === selectedReasonId)?.name || '';
       await applyRefundAPI({
         orderId: order.id,
@@ -97,13 +112,14 @@ const RefundApplyPage: React.FC = () => {
         reason: reasonText,
         amount: amount,
         description: remark,
-        images: images,
+        images: uploadedImages,
       });
       Taro.showToast({ title: '退款申请已提交', icon: 'success' });
       setTimeout(() => {
         Taro.navigateBack();
       }, 1500);
     } catch (error: any) {
+      Taro.hideLoading();
       console.error('提交退款申请失败:', error);
       Taro.showToast({ title: error?.message || '提交失败', icon: 'none' });
     } finally {

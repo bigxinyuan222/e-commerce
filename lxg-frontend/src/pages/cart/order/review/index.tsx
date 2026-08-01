@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, Image, ScrollView, Textarea } from '@tarojs/components';
 import Taro from '@tarojs/taro';
 import { fetchOrderDetail, submitOrderReview } from '@/api/cart';
+import { uploadImage } from '@/api/common';
+import { userApi } from '@/api/user';
 import { getImageUrl, lazyImgProps } from '@/utils/image';
 import styles from '@/styles/cart/order-review.module.scss';
 
@@ -124,9 +126,18 @@ const OrderReviewPage: React.FC = () => {
     Taro.showLoading({ title: '提交中...', mask: true });
 
     try {
-      // 上传图片（如果有的话）- 当前图片为本地临时路径，需要先上传获取URL
-      // 这里先以本地路径提交，后端如需上传可扩展
-      const uploadedImages = images;
+      // 先将本地临时图片上传到服务器，拿到URL列表
+      let uploadedImages: string[] = [];
+      if (images.length > 0) {
+        Taro.showLoading({ title: `上传图片 0/${images.length}`, mask: true });
+        uploadedImages = [];
+        for (let i = 0; i < images.length; i++) {
+          Taro.showLoading({ title: `上传图片 ${i + 1}/${images.length}`, mask: true });
+          const url = await uploadImage(userApi.upload, images[i], 'file', { type: 'review' });
+          uploadedImages.push(url);
+        }
+        Taro.showLoading({ title: '提交中...', mask: true });
+      }
 
       // 构造评价载荷：支持单商品和多商品
       const hasMultipleItems = order.items && order.items.length > 1;

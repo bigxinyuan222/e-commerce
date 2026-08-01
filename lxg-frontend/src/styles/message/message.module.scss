@@ -16,10 +16,29 @@
   background-color: $color-bg-card;
   border-bottom: 1px solid $color-divider;
 
+  .headerLeft {
+    display: flex;
+    align-items: center;
+    gap: 12rpx;
+  }
+
   .headerTitle {
     font-size: $font-size-lg;
     font-weight: $font-weight-bold;
     color: $color-text-primary;
+  }
+
+  .unreadTotalBadge {
+    min-width: 36rpx;
+    height: 36rpx;
+    padding: 0 10rpx;
+    border-radius: 18rpx;
+    background-color: $color-primary;
+    color: #fff;
+    font-size: $font-size-xs;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
   .headerActions {
@@ -29,7 +48,11 @@
 
     .clearBtn {
       font-size: $font-size-sm;
-      color: $color-text-secondary;
+      color: $color-primary;
+
+      &.clearBtnDisabled {
+        color: $color-text-tertiary;
+      }
     }
 
     .moreBtn {
@@ -118,6 +141,98 @@
       border-radius: 4rpx;
       margin-left: 4rpx;
     }
+  }
+}
+
+// 连接状态条
+.statusBar {
+  padding: 12rpx $page-padding;
+  background: linear-gradient(90deg, #fff7e6 0%, #fff1f0 100%);
+  border-bottom: 1px solid #ffe58f;
+
+  .statusText {
+    font-size: $font-size-xs;
+    color: #d46b08;
+    display: block;
+    text-align: center;
+  }
+}
+
+// 快捷入口卡片
+.quickEntry {
+  display: flex;
+  align-items: center;
+  margin: $page-spacing;
+  padding: 28rpx $page-padding;
+  background: linear-gradient(135deg, $color-primary 0%, $color-primary-light 100%);
+  border-radius: $radius-lg;
+  box-shadow: $shadow-card;
+
+  .quickEntryAvatar {
+    width: 88rpx;
+    height: 88rpx;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.25);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 24rpx;
+    overflow: hidden;
+  }
+
+  .quickEntryImg {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+  }
+
+  .quickEntryContent {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 6rpx;
+  }
+
+  .quickEntryTitle {
+    font-size: $font-size-md;
+    font-weight: $font-weight-bold;
+    color: #ffffff;
+  }
+
+  .quickEntryDesc {
+    font-size: $font-size-xs;
+    color: rgba(255, 255, 255, 0.85);
+  }
+
+  .quickEntryArrow {
+    font-size: 48rpx;
+    color: rgba(255, 255, 255, 0.7);
+    margin-left: 12rpx;
+  }
+}
+
+// 空状态
+.emptyState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 120rpx 0;
+  gap: 16rpx;
+
+  .emptyIcon {
+    font-size: 96rpx;
+  }
+
+  .emptyText {
+    font-size: $font-size-sm;
+    color: $color-text-tertiary;
+  }
+
+  .emptyHint {
+    font-size: $font-size-xs;
+    color: $color-text-placeholder;
+    margin-top: 8rpx;
   }
 }
 

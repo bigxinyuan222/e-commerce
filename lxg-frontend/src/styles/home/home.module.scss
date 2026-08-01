@@ -92,29 +92,29 @@
         display: flex;
         flex-direction: column;
         align-items: center;
-        min-width: 130rpx;
+        min-width: 120rpx;
         flex-shrink: 0;
         
         .categoryIcon {
-          width: 96rpx;
-          height: 96rpx;
+          width: 64rpx;
+          height: 64rpx;
           border-radius: 50%;
           background: linear-gradient(135deg, $color-primary 0%, $color-primary-light 100%);
           display: flex;
           align-items: center;
           justify-content: center;
-          margin-bottom: $spacing-md;
+          margin-bottom: $spacing-sm;
           box-shadow: 0 8rpx 20rpx rgba(226, 35, 26, 0.25);
           
-          image {
-            width: 56rpx;
-            height: 56rpx;
-            border-radius: 50%;
+          .categoryIconImg {
+            width: 32rpx;
+            height: 32rpx;
+            background: transparent;
           }
         }
         
         .categoryName {
-          font-size: $font-size-sm;
+          font-size: $font-size-xs;
           color: $color-text-secondary;
           font-weight: $font-weight-medium;
         }
@@ -170,26 +170,64 @@
 
     .brandItem {
       display: inline-block;
-      margin-right: $spacing-xl;
+      margin-right: $spacing-lg;
       text-align: center;
-      padding: $spacing-md;
       background-color: $color-bg-card;
       border-radius: $radius-lg;
       box-shadow: $shadow-card;
+      overflow: hidden;
+      width: 180rpx;
+      vertical-align: top;
 
-      .brandLogo {
-        width: 120rpx;
-        height: 120rpx;
-        border-radius: 50%;
-        background-color: $color-bg-page;
-        margin-bottom: $spacing-md;
-        border: 4rpx solid rgba(226, 35, 26, 0.1);
+      &:first-child {
+        margin-left: $page-padding;
+      }
+
+      &:last-child {
+        margin-right: $page-padding;
+      }
+
+      // 图片区域：1:1 正方形，logo 居中铺满
+      .brandIconWrap {
+        position: relative;
+        width: 100%;
+        padding-top: 100%;
+        background: linear-gradient(135deg, #fafafa 0%, #f0f0f0 100%);
+        overflow: hidden;
+
+        .brandIconImg {
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          width: 78%;
+          height: 78%;
+          border-radius: 0;
+          object-fit: contain;
+          display: block;
+        }
+
+        .brandIconSvg {
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          width: 78%;
+          height: 78%;
+          object-fit: contain;
+          display: block;
+        }
       }
 
       .brandName {
+        display: block;
+        padding: $spacing-sm $spacing-xs;
         font-size: $font-size-sm;
         color: $color-text-secondary;
         font-weight: $font-weight-medium;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
       }
     }
   }

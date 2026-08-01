@@ -1,107 +1,253 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useCallback, useEffect, useRef, useMemo } from 'react';
 import { View, Text, Input, ScrollView, Image } from '@tarojs/components';
-import Taro from '@tarojs/taro';
+import Taro, { useDidShow, useDidHide, useRouter } from '@tarojs/taro';
+import useChatStore, { ChatMessage } from '@/store/useChatStore';
+import { getImageUrl } from '@/utils/image';
 import styles from '@/styles/message/customer-service.module.scss';
 
-interface ChatMessage {
-  id: string;
-  content: string;
-  isMe: boolean;
-  time: string;
-}
+const DEFAULT_AVATAR = 'https://picsum.photos/id/2/100/100';
+const USER_DEFAULT_AVATAR = 'https://picsum.photos/id/64/100/100';
 
 const CustomerServicePage: React.FC = () => {
-  const [messages, setMessages] = useState<ChatMessage[]>([
-    {
-      id: '1',
-      content: '您好！欢迎来到乐享购官方客服，请问有什么可以帮助您的？',
-      isMe: false,
-      time: '10:00'
-    },
-    {
-      id: '2',
-      content: '我想咨询一下商品退换货政策',
-      isMe: true,
-      time: '10:01'
-    },
-    {
-      id: '3',
-      content: '您好！我们支持7天无理由退换货，商品需保持原样，不影响二次销售。如有质量问题，我们承担运费；非质量问题，运费需由您承担。',
-      isMe: false,
-      time: '10:02'
-    }
-  ]);
+  const router = useRouter();
+  const queryId = router?.params?.id ? decodeURIComponent(router.params.id) : null;
+
   const [inputValue, setInputValue] = useState('');
-  
+  const [initReady, setInitReady] = useState(false);
+  const scrollRef = useRef<any>(null);
+  const autoScrollRef = useRef(true);
 
+  const {
+    init,
+    connectWS,
+    disconnectWS,
+    conversations,
+    currentConversationId,
+    currentConversation,
+    messagesMap,
+    messagesLoadingMap,
+    wsStatus,
+    wsConnected,
+    fetchConversations,
+    fetchMessages,
+    sendMessage,
+    enterConversation,
+    leaveConversation,
+    createConversation,
+    markConversationRead,
+  } = useChatStore();
+
+  const conversationId = currentConversationId ?? queryId;
+  const messages: ChatMessage[] = conversationId ? (messagesMap[conversationId] ?? []) : [];
+  const messagesLoading = conversationId ? !!messagesLoadingMap[conversationId] : false;
+
+  // ========== 初始化 ==========
   useEffect(() => {
-    scrollToBottom();
-  }, [messages]);
-
-  const scrollToBottom = useCallback(() => {
-    setTimeout(() => {
-      Taro.pageScrollTo({ scrollTop: 99999, duration: 100 });
-    }, 100);
+    init();
+    bootstrap();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const handleSend = useCallback(() => {
-    if (!inputValue.trim()) return;
+  useDidShow(() => {
+    connectWS();
+    if (conversationId) {
+      markConversationRead(conversationId).catch(() => {});
+      fetchMessages(conversationId, false).catch(() => {});
+    }
+    scrollToBottom();
+  });
 
-    const newMessage: ChatMessage = {
-      id: Date.now().toString(),
-      content: inputValue.trim(),
-      isMe: true,
-      time: new Date().toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' })
-    };
+  useDidHide(() => {
+    // 保持后台 WS 连接
+  });
 
-    setMessages(prev => [...prev, newMessage]);
+  const bootstrap = async () => {
+    try {
+      // 拉一次会话列表，确定当前会话存在性
+      if (!conversations.length) await fetchConversations(true);
+
+      let cid = queryId;
+
+      // 无 id → 创建新会话
+      if (!cid) {
+        const conv = await createConversation({ title: '乐享购官方客服' });
+        cid = conv?.id ?? null;
+      }
+
+      if (cid) {
+        await enterConversation(cid);
+        await fetchMessages(cid, true);
+      }
+    } catch (e) {
+      console.error('[客服页] bootstrap 失败:', e);
+    } finally {
+      setInitReady(true);
+      setTimeout(scrollToBottom, 100);
+    }
+  };
+
+  // ========== 滚动 ==========
+  const scrollToBottom = useCallback(() => {
+    if (!autoScrollRef.current) return;
+    try {
+      Taro.createSelectorQuery()
+        .select(`.${styles.chatContainer}`)
+        .boundingClientRect((rect: any) => {
+          if (rect) {
+            Taro.pageScrollTo({ scrollTop: rect.height + 9999, duration: 150 });
+          }
+        })
+        .exec();
+    } catch (e) {
+      // 兜底
+      Taro.pageScrollTo({ scrollTop: 99999, duration: 150 });
+    }
+  }, []);
+
+  // 新消息自动滚底
+  useEffect(() => {
+    if (messages.length > 0) setTimeout(scrollToBottom, 50);
+  }, [messages.length, scrollToBottom]);
+
+  // 监听滚动：手动上滑则停止自动滚底，滑到底部则恢复
+  const onScroll = (e: any) => {
+    // TODO: 根据实际 scrollTop/clientHeight/scrollHeight 计算
+    // 简化：保持默认 autoScroll true
+  };
+
+  // ========== 发送 ==========
+  const handleSend = useCallback(async () => {
+    if (!conversationId) {
+      Taro.showToast({ title: '会话未就绪，请稍候', icon: 'none' });
+      return;
+    }
+    const content = inputValue.trim();
+    if (!content) return;
+
     setInputValue('');
+    autoScrollRef.current = true;
 
-    setTimeout(() => {
-      const replyMessage: ChatMessage = {
-        id: (Date.now() + 1).toString(),
-        content: '感谢您的咨询，我们会尽快处理您的问题！',
-        isMe: false,
-        time: new Date().toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' })
-      };
-      setMessages(prev => [...prev, replyMessage]);
-    }, 1000);
-  }, [inputValue]);
+    // 确保连接
+    if (!wsConnected) connectWS();
+
+    const result = await sendMessage(conversationId, { type: 'text', content });
+    void result;
+    scrollToBottom();
+  }, [conversationId, inputValue, sendMessage, wsConnected, connectWS, scrollToBottom]);
 
   const handleInputChange = useCallback((e: any) => {
-    setInputValue(e.detail.value);
+    setInputValue(e.detail.value ?? e.target?.value ?? '');
   }, []);
+
+  // ========== UI ==========
+  const conversationTitle = useMemo(() => {
+    return currentConversation?.title
+      ?? currentConversation?.name
+      ?? '乐享购自营官方客服';
+  }, [currentConversation]);
+
+  const statusText = useMemo(() => {
+    switch (wsStatus) {
+      case 'connecting': return '🔗 连接中...';
+      case 'open': return '✓ 在线';
+      case 'closing': return '断开中...';
+      case 'closed': return '⚠ 已离线';
+      default: return '';
+    }
+  }, [wsStatus]);
+
+  // 渲染消息气泡
+  const renderMessage = (msg: ChatMessage) => {
+    const isMe = msg.sender === 'user';
+    const avatar = isMe
+      ? USER_DEFAULT_AVATAR
+      : (currentConversation?.serviceAvatar ?? currentConversation?.avatar ?? DEFAULT_AVATAR);
+
+    const statusBadge = isMe ? (
+      <Text className={styles.messageStatus}>
+        {msg.status === 'sending' && '发送中...'}
+        {msg.status === 'failed' && <Text style={{ color: '#ef4444' }}>发送失败</Text>}
+        {msg.status === 'read' && '已读'}
+      </Text>
+    ) : null;
+
+    return (
+      <View
+        key={msg.id}
+        className={`${styles.messageWrap} ${isMe ? styles.me : styles.other}`}
+      >
+        {!isMe && (
+          <Image
+            src={getImageUrl(avatar)}
+            className={styles.avatar}
+            mode="aspectFill"
+          />
+        )}
+        <View className={styles.messageContent}>
+          <Text className={styles.messageText}>{msg.content}</Text>
+          <View className={styles.messageMeta}>
+            <Text className={styles.messageTime}>{msg.createTime}</Text>
+            {statusBadge}
+          </View>
+        </View>
+        {isMe && (
+          <Image
+            src={getImageUrl(avatar)}
+            className={styles.avatar}
+            mode="aspectFill"
+          />
+        )}
+      </View>
+    );
+  };
 
   return (
     <View className={styles.customerServicePage}>
+      {/* 顶部 Header */}
       <View className={styles.header}>
-        <Text className={styles.backBtn} onClick={() => Taro.navigateBack()}>←</Text>
-        <Text className={styles.headerTitle}>乐享购自营官方客服</Text>
+        <Text className={styles.backBtn} onClick={() => {
+          leaveConversation();
+          Taro.navigateBack();
+        }}>←</Text>
+        <View className={styles.headerCenter}>
+          <Text className={styles.headerTitle}>{conversationTitle}</Text>
+          {statusText ? (
+            <Text className={`${styles.headerStatus} ws-${wsStatus}`}>{statusText}</Text>
+          ) : null}
+        </View>
         <View className={styles.headerRight}></View>
       </View>
 
-      <ScrollView 
-        scrollY 
+      {/* 聊天区 */}
+      <ScrollView
+        scrollY
         className={styles.chatContainer}
         scrollWithAnimation
+        ref={scrollRef}
+        onScroll={onScroll}
       >
-        {messages.map((msg) => (
-          <View key={msg.id} className={`${styles.messageWrap} ${msg.isMe ? styles.me : styles.other}`}>
-            {!msg.isMe && (
-              <Image 
-                src="https://picsum.photos/id/2/100/100" 
-                className={styles.avatar} 
-                mode="aspectFill" 
-              />
-            )}
-            <View className={styles.messageContent}>
-              <Text className={styles.messageText}>{msg.content}</Text>
-              <Text className={styles.messageTime}>{msg.time}</Text>
-            </View>
+        {/* 时间分割线 */}
+        <View className={styles.dateDivider}>
+          <Text className={styles.dateText}>今天</Text>
+        </View>
+
+        {!initReady || messagesLoading ? (
+          <View className={styles.loadingState}>
+            <Text className={styles.loadingText}>加载消息中...</Text>
           </View>
-        ))}
+        ) : messages.length === 0 ? (
+          <View className={styles.emptyChat}>
+            <Text className={styles.emptyChatIcon}>💬</Text>
+            <Text className={styles.emptyChatText}>
+              您好，我是 {conversationTitle}，请问有什么可以帮您？
+            </Text>
+          </View>
+        ) : (
+          messages.map(renderMessage)
+        )}
       </ScrollView>
 
+      {/* 底部输入栏 */}
       <View className={styles.inputBar}>
         <Input
           className={styles.input}
@@ -109,8 +255,15 @@ const CustomerServicePage: React.FC = () => {
           value={inputValue}
           onInput={handleInputChange}
           onConfirm={handleSend}
+          confirmType="send"
+          adjustPosition
         />
-        <Text className={styles.sendBtn} onClick={handleSend}>发送</Text>
+        <Text
+          className={`${styles.sendBtn} ${!inputValue.trim() ? styles.disabled : ''}`}
+          onClick={handleSend}
+        >
+          发送
+        </Text>
       </View>
     </View>
   );

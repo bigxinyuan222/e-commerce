@@ -3,7 +3,7 @@ import { View, Text, Image, ScrollView } from '@tarojs/components';
 import Taro from '@tarojs/taro';
 import { apiGet } from '@/api/common';
 import { brandApi } from '@/api/home';
-import { getImageUrl, normalizeProductListImages, lazyImgProps } from '@/utils/image';
+import { getImageUrl, normalizeProductListImages, lazyImgProps, getBrandIcon } from '@/utils/image';
 import styles from '@/styles/home/brand-detail.module.scss';
 
 const PAGE_SIZE = 10;
@@ -192,12 +192,13 @@ const BrandDetailPage: React.FC = () => {
       lowerThreshold={100}
     >
       <View className={styles.brandHeader}>
-        <Image
-          src={getImageUrl(brand.logo)}
-          className={styles.brandLogo}
-          mode="aspectFill"
-          {...lazyImgProps()}
-        />
+        <View className={styles.brandIconWrap}>
+          <Image
+            src={getBrandIcon(brand)}
+            className={styles.brandIconImg}
+            mode="aspectFit"
+          />
+        </View>
         <View className={styles.brandInfo}>
           <Text className={styles.brandName}>{brand.name}</Text>
           {brand.description ? (

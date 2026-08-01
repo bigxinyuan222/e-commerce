@@ -3,7 +3,7 @@ import { View, Text, Image, ScrollView, Input } from '@tarojs/components';
 import Taro from '@tarojs/taro';
 import { apiGet } from '@/api/common';
 import { brandApi } from '@/api/home';
-import { getImageUrl, lazyImgProps } from '@/utils/image';
+import { getImageUrl, lazyImgProps, getBrandIcon } from '@/utils/image';
 import styles from '@/styles/home/brands.module.scss';
 
 /**
@@ -179,12 +179,11 @@ const BrandsPage = function() {
                 className={styles.brandItem}
                 onClick={function() { goToBrandDetail(brand.id); }}
               >
-                <View className={styles.brandLogoWrap}>
+                <View className={styles.brandIconWrap}>
                   <Image
-                    src={getImageUrl(brand.logo)}
-                    className={styles.brandLogo}
-                    mode="aspectFill"
-                    {...lazyImgProps()}
+                    src={getBrandIcon(brand)}
+                    className={styles.brandIconImg}
+                    mode="aspectFit"
                   />
                   {brand.isHot && (
                     <View className={styles.hotTag}>
@@ -192,8 +191,10 @@ const BrandsPage = function() {
                     </View>
                   )}
                 </View>
-                <Text className={styles.brandName}>{brand.name}</Text>
-                <Text className={styles.brandProductCount}>{brand.productsCount}款商品</Text>
+                <View className={styles.brandInfo}>
+                  <Text className={styles.brandName}>{brand.name}</Text>
+                  <Text className={styles.brandProductCount}>{brand.productsCount}款商品</Text>
+                </View>
               </View>
             );
           })}
