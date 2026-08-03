@@ -64,6 +64,13 @@ function normalizeStatus(row: any): UserRow['status'] {
   return 'deleted'
 }
 
+function formatDate(value: unknown): string {
+  if (!value) return '-'
+  const date = new Date(String(value))
+  if (Number.isNaN(date.getTime())) return String(value)
+  return date.toLocaleString('zh-CN', { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', hour12: false })
+}
+
 function normalizeUser(row: any): UserRow {
   const name = String(row.userName ?? row.username ?? row.name ?? row.nickname ?? '')
   return {
@@ -72,8 +79,8 @@ function normalizeUser(row: any): UserRow {
     phone: String(row.phone ?? row.mobile ?? ''),
     gender: String(row.gender ?? ''),
     status: normalizeStatus(row),
-    registerTime: String(row.CreatedAt ?? row.createdAt ?? row.created_at ?? '-'),
-    lastLogin: String(row.lastLogin ?? row.last_login ?? '-'),
+    registerTime: formatDate(row.CreatedAt ?? row.createdAt ?? row.created_at),
+    lastLogin: formatDate(row.lastLogin ?? row.last_login ?? row.lastLoginAt ?? row.last_login_at),
     totalOrders: Number(row.totalOrders ?? row.total_orders) || 0,
     totalAmount: Number(row.totalAmount ?? row.total_amount) || 0,
     reviewCount: Number(row.reviewCount ?? row.review_count) || 0,
@@ -164,12 +171,12 @@ onMounted(loadUsers)
     <div class="stat-card"><div class="label"><i class="fas fa-lock"></i> 已冻结</div><div class="value yellow">{{ frozenCount }}</div></div>
   </div>
 
-  <div class="system-layout-main">
-    <div class="card">
+  <div class="system-layout-main users-layout">
+    <div class="card users-table-card">
       <div class="card-header"><span class="card-title"><i class="fas fa-users"></i> 用户列表</span><span class="system-text-muted">共 {{ total }} 位用户 · 累计订单 {{ totalOrders }} 笔 · 累计消费 ¥{{ totalAmount }}</span></div>
       <div class="card-body no-pad">
         <div v-if="error" class="stock-list-error"><i class="fas fa-exclamation-circle"></i> {{ error }}</div>
-        <div class="table-wrap"><table>
+        <div class="table-wrap users-table-wrap"><table class="users-table">
           <thead><tr><th>用户</th><th>手机号</th><th>性别</th><th>注册时间</th><th>最近登录</th><th>订单数</th><th>消费金额</th><th>状态</th><th>操作</th></tr></thead>
           <tbody>
             <tr v-if="loading"><td colspan="9"><div class="stock-table-state"><i class="fas fa-spinner fa-spin"></i> 正在加载用户...</div></td></tr>
@@ -201,3 +208,36 @@ onMounted(loadUsers)
     <div class="modal-overlay" @click="pendingToggle = null"></div><div class="modal-content"><div class="modal-header"><h3><i class="fas fa-exclamation-circle"></i> 确认操作</h3><button class="modal-close" @click="pendingToggle = null"><i class="fas fa-times"></i></button></div><div class="modal-body"><p>确定要{{ pendingToggle.status === 'active' ? '禁用' : '启用' }}用户 {{ pendingToggle.name }} 吗？</p></div><div class="modal-footer"><button class="btn btn-outline" @click="pendingToggle = null">取消</button><button class="btn btn-primary" :disabled="toggling" @click="toggleUser"><i class="fas" :class="toggling ? 'fa-spinner fa-spin' : 'fa-check'"></i> 确认</button></div></div>
   </template>
 </template>
+
+<style scoped>
+.users-layout {
+  grid-template-columns: minmax(0, 3fr) minmax(300px, 1fr);
+  align-items: start;
+}
+.users-table-card { min-width: 0; }
+.users-table { min-width: 1080px; }
+.users-table th,
+.users-table td { padding: 12px 10px; vertical-align: middle; }
+.users-table th:first-child { min-width: 150px; }
+.users-table th:nth-child(2) { min-width: 112px; }
+.users-table th:nth-child(4),
+.users-table th:nth-child(5) { min-width: 142px; }
+.users-table th:last-child { min-width: 142px; }
+.users-table td:first-child > div { justify-content: flex-start; gap: 8px; white-space: nowrap; }
+.users-table td:first-child .system-user-avatar-sm { flex: 0 0 28px; }
+.users-table td:nth-child(4),
+.users-table td:nth-child(5) { white-space: nowrap; color: #475569; }
+.users-table td:nth-child(8) .status-badge { white-space: nowrap; }
+.users-table td:last-child { white-space: nowrap; }
+.users-table td:last-child .btn { min-width: 64px; justify-content: center; margin-right: 4px; }
+
+@media (max-width: 1280px) {
+  .users-layout { grid-template-columns: minmax(0, 1fr); }
+  .system-card-stack { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+
+@media (max-width: 760px) {
+  .system-stats-row,
+  .system-card-stack { grid-template-columns: minmax(0, 1fr); }
+}
+</style>

@@ -12,6 +12,8 @@ await page.route('**/api/**', async route => {
   let data = {}
   if (request.method() === 'GET' && url.pathname === '/api/v1/admin/notifications') {
     data = { list: [{ id: 11, title: '订单发货提醒', content: '您的订单已发货', type: 1, target_scope: 1, total_count: 100, delivered_count: 98, status: 1, created_at: '2026-07-31 10:00:00' }], total: 1 }
+  } else if (request.method() === 'GET' && url.pathname === '/api/v1/admin/notifications/11') {
+    data = { ID: 11, title: '订单发货提醒（详情）', content: '详情接口返回的完整通知内容', type: 1, targetScope: 1, receiverCount: 100, status: 1, CreatedAt: '2026-07-31T10:00:00+08:00' }
   } else if (request.method() === 'GET' && url.pathname === '/api/v1/admin/notification-templates') {
     data = { list: [{ id: 21, name: '发货模板', type: 1, title_template: '订单已发货', content_template: '您的订单已经发出' }] }
   } else if (request.method() === 'GET' && url.pathname === '/api/v1/get/users') {
@@ -33,11 +35,28 @@ try {
   await page.locator('#panel-payment').waitFor()
   await page.locator('#sidebarNav .menu-item[data-id="notification"]').click()
   await page.locator('#panel-notification').waitFor()
+  const initialNotificationListRequest = requests.find(item => item.method === 'GET' && item.path === '/api/v1/admin/notifications')
+  if (JSON.stringify(initialNotificationListRequest?.query) !== JSON.stringify({ page: '1', page_size: '20' })) {
+    throw new Error(`notification list query mismatch: ${JSON.stringify(initialNotificationListRequest)}`)
+  }
   if (await page.locator('#panel-payment').count()) throw new Error('切换页面后支付面板仍残留')
   if (await page.locator('.page-panel').count() !== 1) throw new Error(`页面容器数量错误: ${await page.locator('.page-panel').count()}`)
   if (requests.some(item => item.method === 'GET' && item.path === '/api/v1/notifications')) throw new Error('通知页面仍请求非管理端通知列表接口')
   await page.getByRole('button', { name: /通知记录/ }).click()
   await page.getByText('订单发货提醒', { exact: true }).waitFor()
+  await Promise.all([
+    page.waitForResponse(response => new URL(response.url()).pathname === '/api/v1/admin/notifications/11'),
+    page.getByRole('button', { name: '详情', exact: true }).click(),
+  ])
+  await page.getByText('订单发货提醒（详情）', { exact: true }).waitFor()
+  await page.getByText('详情接口返回的完整通知内容', { exact: true }).waitFor()
+  await page.locator('.notification-modal .modal-close').click()
+  page.once('dialog', dialog => dialog.accept())
+  await Promise.all([
+    page.waitForResponse(response => new URL(response.url()).pathname === '/api/v1/admin/notifications/11' && response.request().method() === 'DELETE'),
+    page.locator('#panel-notification .icon-btn.danger').click(),
+  ])
+  if (!requests.some(item => item.method === 'DELETE' && item.path === '/api/v1/admin/notifications/11')) throw new Error('notification delete endpoint mismatch')
   await page.getByRole('button', { name: /通知模板管理/ }).click()
   await page.getByText('发货模板', { exact: true }).waitFor()
   const templateListRequest = requests.find(item => item.method === 'GET' && item.path === '/api/v1/admin/notification-templates')
@@ -61,6 +80,12 @@ try {
   const updateTemplateRequest = requests.find(item => item.method === 'PUT' && item.path === '/api/v1/admin/notification-templates/21')
   const expectedUpdateBody = { name: '订单发货通知-已编辑', type: 1, titleTemplate: '订单发货通知', contentTemplate: '您的订单 {{order_no}} 已发货，请前往门店自提！' }
   if (JSON.stringify(updateTemplateRequest?.body) !== JSON.stringify(expectedUpdateBody)) throw new Error(`编辑模板请求错误: ${JSON.stringify(updateTemplateRequest)}`)
+  page.once('dialog', dialog => dialog.accept())
+  await Promise.all([
+    page.waitForResponse(response => new URL(response.url()).pathname === '/api/v1/admin/notification-templates/21' && response.request().method() === 'DELETE'),
+    templateEditor.getByRole('button', { name: /删除/ }).click(),
+  ])
+  if (!requests.some(item => item.method === 'DELETE' && item.path === '/api/v1/admin/notification-templates/21')) throw new Error('notification template delete endpoint mismatch')
   await page.getByRole('button', { name: /新建/ }).click()
   await templateEditor.locator('input').nth(0).fill('订单发货通知')
   await templateEditor.locator('select').selectOption('1')

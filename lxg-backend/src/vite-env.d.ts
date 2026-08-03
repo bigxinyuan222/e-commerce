@@ -13,5 +13,6 @@ interface Window {
   API_CONFIG: { auth: { login: string } }
   showToast: (message: string, type?: 'success' | 'error' | 'info') => void
   switchPage: (id: string) => void
+  refreshStatsView: () => void
   [key: string]: unknown
 }

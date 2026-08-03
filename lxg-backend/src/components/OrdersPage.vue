@@ -2,7 +2,7 @@
 import { computed, onMounted, reactive, ref } from 'vue'
 
 type Id = number | string
-type OrderStatus = 'pending_payment' | 'pending_delivery' | 'pending_pickup' | 'completed' | 'pending_review' | 'reviewed' | 'cancelled'
+type OrderStatus = 'pending_payment' | 'grouping' | 'pending_delivery' | 'pending_pickup' | 'completed' | 'pending_review' | 'reviewed' | 'cancelled' | 'unknown'
 interface OrderItem { name: string; spec: string; price: number; quantity: number; image: string }
 interface Order {
   id: Id; orderNo: string; userName: string; phone: string; storeId: Id | ''; storeName: string
@@ -23,7 +23,7 @@ const total = ref(0)
 const detail = ref<Order | null>(null)
 const detailLoading = ref(false)
 const actionLoading = ref<Id | null>(null)
-const stats = reactive({ pending_payment: 0, pending_delivery: 0, pending_pickup: 0, completed: 0, pending_review: 0, cancelled: 0, total: 0 })
+const stats = reactive({ pending_payment: 0, grouping: 0, pending_delivery: 0, pending_pickup: 0, completed: 0, pending_review: 0, cancelled: 0, total: 0 })
 
 const totalPages = computed(() => Math.max(1, Math.ceil(total.value / pageSize)))
 const storeOptions = computed(() => {
@@ -32,12 +32,12 @@ const storeOptions = computed(() => {
   return [...values.entries()].map(([id, name]) => ({ id, name }))
 })
 const statusOptions = [
-  { value: '', label: '全部状态' }, { value: 0, label: '待支付' }, { value: 1, label: '待发货' },
-  { value: 2, label: '待自提' }, { value: 3, label: '已完成' }, { value: 4, label: '待评价' },
-  { value: 5, label: '已评价' }, { value: 6, label: '已取消' },
+  { value: '', label: '全部状态' }, { value: 0, label: '待支付' }, { value: 1, label: '拼团中' }, { value: 2, label: '待发货' },
+  { value: 3, label: '待自提' }, { value: 4, label: '已完成' }, { value: 5, label: '已取消' },
 ]
 const statCards = computed(() => [
   { key: 'pending_payment', label: '待支付', icon: 'fa-clock', color: 'amber', value: stats.pending_payment },
+  { key: 'grouping', label: '拼团中', icon: 'fa-users', color: 'orange', value: stats.grouping },
   { key: 'pending_delivery', label: '待发货', icon: 'fa-box', color: 'blue', value: stats.pending_delivery },
   { key: 'pending_pickup', label: '待自提', icon: 'fa-store', color: 'violet', value: stats.pending_pickup },
   { key: 'completed', label: '已完成', icon: 'fa-check-circle', color: 'green', value: stats.completed },
@@ -71,7 +71,7 @@ function formatDate(value: unknown) {
 }
 function normalizeStatus(value: unknown): OrderStatus {
   if (typeof value === 'string' && Number.isNaN(Number(value))) return value as OrderStatus
-  return (['pending_payment', 'pending_delivery', 'pending_pickup', 'completed', 'pending_review', 'reviewed', 'cancelled'][Number(value)] || 'cancelled') as OrderStatus
+  return (({ 0: 'pending_payment', 1: 'grouping', 2: 'pending_delivery', 3: 'pending_pickup', 4: 'completed', 5: 'cancelled' } as Record<number, OrderStatus>)[Number(value)] || 'unknown') as OrderStatus
 }
 function normalizeOrder(row: any): Order {
   return {
@@ -79,7 +79,7 @@ function normalizeOrder(row: any): Order {
     userName: String(row.user?.nickname ?? row.user_name ?? row.userName ?? '-'), phone: String(row.user?.phone ?? row.phone ?? '-'),
     storeId: row.store?.id ?? row.store_id ?? row.storeId ?? '', storeName: String(row.store?.name ?? row.store_name ?? row.storeName ?? '-'),
     totalAmount: Number(row.total_amount ?? row.totalAmount ?? row.amount) || 0, discountAmount: Number(row.discount_amount ?? row.discountAmount) || 0,
-    payAmount: Number(row.pay_amount ?? row.payAmount ?? row.amount) || 0, status: normalizeStatus(row.status),
+    payAmount: Number(row.pay_amount ?? row.payAmount ?? 0) || 0, status: normalizeStatus(row.status),
     orderType: String(row.order_type ?? row.orderType ?? row.type ?? 'normal'), createdAt: formatDate(row.created_at ?? row.createdAt ?? row.CreatedAt),
     paidAt: formatDate(row.paid_at ?? row.paidAt ?? row.payTime), shippedAt: formatDate(row.shipped_at ?? row.shippedAt ?? row.deliveryTime),
     confirmedAt: formatDate(row.confirmed_at ?? row.confirmedAt ?? row.pickupTime), remark: String(row.remark ?? ''),
@@ -98,6 +98,7 @@ async function loadStats() {
 function applyStatsFallback() {
   if (Object.values(stats).some(Boolean)) return
   stats.pending_payment = orders.value.filter(item => item.status === 'pending_payment').length
+  stats.grouping = orders.value.filter(item => item.status === 'grouping').length
   stats.pending_delivery = orders.value.filter(item => item.status === 'pending_delivery').length
   stats.pending_pickup = orders.value.filter(item => item.status === 'pending_pickup').length
   stats.completed = orders.value.filter(item => item.status === 'completed').length
@@ -134,7 +135,7 @@ async function performAction(item: Order, action: 'cancel' | 'ship' | 'confirm')
   catch (cause) { notify(cause instanceof Error ? cause.message : `${labels[action]}失败`, 'error') }
   finally { actionLoading.value = null }
 }
-function statusLabel(value: OrderStatus) { return ({ pending_payment: '待支付', pending_delivery: '待发货', pending_pickup: '待自提', completed: '已完成', pending_review: '待评价', reviewed: '已评价', cancelled: '已取消' } as Record<OrderStatus, string>)[value] }
+function statusLabel(value: OrderStatus) { return ({ pending_payment: '待支付', grouping: '拼团中', pending_delivery: '待发货', pending_pickup: '待自提', completed: '已完成', pending_review: '待评价', reviewed: '已评价', cancelled: '已取消', unknown: '未知状态' } as Record<OrderStatus, string>)[value] }
 function money(value: number) { return new Intl.NumberFormat('zh-CN', { style: 'currency', currency: 'CNY' }).format(value) }
 
 onMounted(() => void loadOrders())
@@ -154,5 +155,5 @@ onMounted(() => void loadOrders())
 </template>
 
 <style scoped>
-.orders-page{display:flex;flex-direction:column;gap:14px}.order-toolbar{display:flex;align-items:center;justify-content:space-between;gap:12px}.search-bar{display:flex;gap:8px;flex-wrap:wrap}.search-bar input{width:240px}.order-total{font-size:13px;color:#64748b}.order-stats{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:10px}.order-stat{min-height:86px;padding:14px 16px;border:1px solid #e2e8f0;border-radius:7px;background:#fff;text-align:left;display:flex;flex-direction:column;justify-content:space-between;cursor:pointer}.order-stat span{display:flex;align-items:center;gap:7px;color:#64748b;font-size:12px}.order-stat strong{font-size:21px}.order-stat.amber strong,.order-stat.amber i{color:#d97706}.order-stat.blue strong,.order-stat.blue i{color:#2563eb}.order-stat.violet strong,.order-stat.violet i{color:#7c3aed}.order-stat.green strong,.order-stat.green i{color:#16a34a}.order-stat.orange strong,.order-stat.orange i{color:#ea580c}.order-stat.gray strong,.order-stat.gray i{color:#64748b}.order-alert{padding:10px 12px;border:1px solid #fecaca;border-radius:6px;background:#fef2f2;color:#b91c1c}.order-state{text-align:center!important;padding:42px 12px!important;color:#64748b}.amount{font-weight:700;color:#dc2626}.type-pill,.status-pill{display:inline-block;padding:3px 8px;border-radius:4px;font-size:12px;white-space:nowrap}.type-pill{background:#f1f5f9;color:#475569}.type-pill.seckill{background:#fee2e2;color:#dc2626}.status-pill.pending_payment{background:#fef3c7;color:#92400e}.status-pill.pending_delivery,.status-pill.pending_pickup{background:#dbeafe;color:#1d4ed8}.status-pill.completed{background:#dcfce7;color:#15803d}.status-pill.pending_review{background:#ffedd5;color:#c2410c}.status-pill.reviewed,.status-pill.cancelled{background:#f1f5f9;color:#64748b}.actions{display:flex;gap:5px;white-space:nowrap}td small,.detail-item small{display:block;color:#94a3b8;margin-top:3px}.order-pagination{display:flex;align-items:center;justify-content:center;gap:10px}.order-flow .card-body{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}.flow-step{text-align:center;position:relative}.flow-step i{display:flex;width:36px;height:36px;margin:0 auto 7px;align-items:center;justify-content:center;border-radius:50%;background:#eef2ff;color:#4f46e5;font-style:normal}.flow-step span{font-size:12px;color:#64748b}.detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.detail-grid>div{padding:12px;background:#f8fafc;border-radius:6px}.detail-grid span{display:block;font-size:12px;color:#64748b;margin-bottom:4px}.order-detail{display:flex;flex-direction:column;gap:18px;max-height:65vh;overflow:auto}.order-detail h4{font-size:14px;margin:0 0 9px}.detail-item,.amount-box>div,.timeline>div{display:flex;justify-content:space-between;gap:12px;padding:10px 12px;border-bottom:1px solid #f1f5f9}.amount-box{padding:4px 12px;background:#f8fafc;border-radius:6px}.amount-box .paid{border-bottom:0}.amount-box .paid strong{color:#4f46e5}.timeline strong{font-size:12px;color:#64748b}@media(max-width:1150px){.order-stats{grid-template-columns:repeat(3,1fr)}}@media(max-width:720px){.order-toolbar{align-items:stretch;flex-direction:column}.search-bar>*{width:100%!important}.order-stats{grid-template-columns:repeat(2,1fr)}.detail-grid{grid-template-columns:1fr}}
+.orders-page{display:flex;flex-direction:column;gap:14px}.order-toolbar{display:flex;align-items:center;justify-content:space-between;gap:12px}.search-bar{display:flex;gap:8px;flex-wrap:wrap}.search-bar input{width:240px}.order-total{font-size:13px;color:#64748b}.order-stats{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:10px}.order-stat{min-height:86px;padding:14px 16px;border:1px solid #e2e8f0;border-radius:7px;background:#fff;text-align:left;display:flex;flex-direction:column;justify-content:space-between;cursor:pointer}.order-stat span{display:flex;align-items:center;gap:7px;color:#64748b;font-size:12px}.order-stat strong{font-size:21px}.order-stat.amber strong,.order-stat.amber i{color:#d97706}.order-stat.blue strong,.order-stat.blue i{color:#2563eb}.order-stat.violet strong,.order-stat.violet i{color:#7c3aed}.order-stat.green strong,.order-stat.green i{color:#16a34a}.order-stat.orange strong,.order-stat.orange i{color:#ea580c}.order-stat.gray strong,.order-stat.gray i{color:#64748b}.order-alert{padding:10px 12px;border:1px solid #fecaca;border-radius:6px;background:#fef2f2;color:#b91c1c}.order-state{text-align:center!important;padding:42px 12px!important;color:#64748b}.amount{font-weight:700;color:#dc2626}.type-pill,.status-pill{display:inline-block;padding:3px 8px;border-radius:4px;font-size:12px;white-space:nowrap}.type-pill{background:#f1f5f9;color:#475569}.type-pill.seckill{background:#fee2e2;color:#dc2626}.status-pill.pending_payment{background:#fef3c7;color:#92400e}.status-pill.grouping{background:#ffedd5;color:#c2410c}.status-pill.pending_delivery,.status-pill.pending_pickup{background:#dbeafe;color:#1d4ed8}.status-pill.completed{background:#dcfce7;color:#15803d}.status-pill.pending_review{background:#ffedd5;color:#c2410c}.status-pill.reviewed,.status-pill.cancelled,.status-pill.unknown{background:#f1f5f9;color:#64748b}.actions{display:flex;gap:5px;white-space:nowrap}td small,.detail-item small{display:block;color:#94a3b8;margin-top:3px}.order-pagination{display:flex;align-items:center;justify-content:center;gap:10px}.order-flow .card-body{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}.flow-step{text-align:center;position:relative}.flow-step i{display:flex;width:36px;height:36px;margin:0 auto 7px;align-items:center;justify-content:center;border-radius:50%;background:#eef2ff;color:#4f46e5;font-style:normal}.flow-step span{font-size:12px;color:#64748b}.detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.detail-grid>div{padding:12px;background:#f8fafc;border-radius:6px}.detail-grid span{display:block;font-size:12px;color:#64748b;margin-bottom:4px}.order-detail{display:flex;flex-direction:column;gap:18px;max-height:65vh;overflow:auto}.order-detail h4{font-size:14px;margin:0 0 9px}.detail-item,.amount-box>div,.timeline>div{display:flex;justify-content:space-between;gap:12px;padding:10px 12px;border-bottom:1px solid #f1f5f9}.amount-box{padding:4px 12px;background:#f8fafc;border-radius:6px}.amount-box .paid{border-bottom:0}.amount-box .paid strong{color:#4f46e5}.timeline strong{font-size:12px;color:#64748b}@media(max-width:1150px){.order-stats{grid-template-columns:repeat(3,1fr)}}@media(max-width:720px){.order-toolbar{align-items:stretch;flex-direction:column}.search-bar>*{width:100%!important}.order-stats{grid-template-columns:repeat(2,1fr)}.detail-grid{grid-template-columns:1fr}}
 </style>

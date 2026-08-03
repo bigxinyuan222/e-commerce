@@ -12,7 +12,9 @@ await page.route('**/api/**', async route => {
   const url = new URL(route.request().url())
   requests.push(`${route.request().method()} ${url.pathname}${url.search}`)
   let data = {}
-  if (url.pathname === '/api/v1/admin/stores') {
+  if (url.pathname === '/api/v1/admin/seckill/activities') {
+    data = { activities: [{ ID: 21, name: '夏日秒杀', startTime: '2026-07-31 10:00:00', endTime: '2026-07-31 22:00:00', status: 1, products: [] }] }
+  } else if (url.pathname === '/api/v1/admin/stores') {
     data = { list: [
       { ID: 7, name: '中心门店', address: '人民路 8 号', phone: '13800000007', businessHours: '09:00-21:00', status: 1, orderCount: 36, clerkCount: 4 },
       { ID: 8, name: '朝阳门店', address: '朝阳路 6 号', phone: '13800000008', businessHours: '09:00-21:00', status: 1, orderCount: 1258, clerkCount: 6 },
@@ -37,13 +39,29 @@ try {
   })))
   await page.goto(baseUrl, { waitUntil: 'networkidle' })
 
-  for (const [id, expected] of [['stores', '中心门店'], ['admin', '门店管理员'], ['payment', 'PAY-001']]) {
+  for (const [id, expected] of [['marketing', '夏日秒杀'], ['stores', '中心门店'], ['admin', '门店管理员'], ['payment', 'PAY-001']]) {
     await page.locator(`#sidebarNav .menu-item[data-id="${id}"]`).click()
-    await page.locator(`#panel-${id} table`).first().getByText(expected, { exact: false }).first().waitFor()
+    const target = id === 'marketing'
+      ? page.locator(`#panel-${id}`).getByText(expected, { exact: false }).first()
+      : page.locator(`#panel-${id} table`).first().getByText(expected, { exact: false }).first()
+    await target.waitFor()
+    if (id === 'marketing') {
+      const query = requests.find(item => item.startsWith('GET /api/v1/admin/seckill/activities'))
+      if (query !== 'GET /api/v1/admin/seckill/activities?page=1&size=10') throw new Error(`秒杀分页参数错误: ${query || '未发出请求'}`)
+    }
     if (id === 'stores') {
       await page.locator('#panel-stores .ranking-grid .rank-card').first().getByText('朝阳门店', { exact: true }).waitFor()
       if (await page.locator('#panel-stores .ranking-grid').getByText('停用门店', { exact: true }).count()) {
         throw new Error('停用门店不应进入销售排行')
+      }
+    }
+    if (id === 'admin') {
+      const roles = page.locator('#panel-admin .role-management')
+      for (const role of ['超级管理员', '商品运营', '订单客服', '门店店员']) {
+        await roles.getByRole('heading', { name: role, exact: true }).waitFor()
+      }
+      if (await roles.getByRole('button', { name: /新增角色/ }).count()) {
+        throw new Error('只读角色说明区域不应包含新增角色功能')
       }
     }
   }

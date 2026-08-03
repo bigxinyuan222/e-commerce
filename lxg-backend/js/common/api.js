@@ -52,7 +52,7 @@ const API_CONFIG = {
     },
     // 评价模块
     reviews: {
-        list: `${API_BASE_URL}/reviews`,                           // 获取评价列表
+        list: `${API_BASE_URL}/admin/review/list`,                 // 获取管理端评价列表
         detail: `${API_BASE_URL}/reviews/:id`,                     // 获取评价详情
         audit: `${API_BASE_URL}/reviews/:id/audit`,                // 审核评价
         reply: `${API_BASE_URL}/reviews/:id/reply`,                // 回复评价
@@ -84,9 +84,12 @@ const API_CONFIG = {
     },
     // 系统设置模块
     settings: {
-        configs: `${API_BASE_URL}/system-configs`,          // 获取系统配置
-        updateConfig: `${API_BASE_URL}/system-configs/:id`,  // 更新系统配置
-        logs: `${API_BASE_URL}/operation-logs`               // 获取操作日志
+        configs: `${API_BASE_URL}/admin/system/configs`,    // 获取/新增系统配置
+        addConfig: `${API_BASE_URL}/admin/system/configs`,  // 新增系统配置
+        detailConfig: `${API_BASE_URL}/admin/system/configs/:key`, // 获取单项配置
+        updateConfig: `${API_BASE_URL}/admin/system/configs`,  // 批量更新系统配置
+        deleteConfig: `${API_BASE_URL}/admin/system/configs/:key`, // 删除配置
+        logs: `${API_BASE_URL}/admin/system/operation-logs` // 获取操作日志
     },
     // 库存模块
     inventory: {
@@ -98,12 +101,14 @@ const API_CONFIG = {
     },
     // 秒杀模块
     seckill: {
-        activities: `${API_BASE_URL}/seckill/activities`,                          // 获取秒杀活动列表
-        activityDetail: `${API_BASE_URL}/seckill/activities/:id`,                   // 获取秒杀活动详情
-        addProduct: `${API_BASE_URL}/seckill/activities/:id/products`,              // 添加秒杀商品
-        removeProduct: `${API_BASE_URL}/seckill/activities/:id/products/:product_id`, // 移除秒杀商品
-        skuPrices: `${API_BASE_URL}/seckill/activities/:id/products/:product_id/skus`, // 获取SKU价格
-        updateSkuPrice: `${API_BASE_URL}/seckill/sku-prices/:id`                    // 更新SKU价格
+        activities: `${API_BASE_URL}/admin/seckill/activities`,                          // 获取秒杀活动列表
+        publish: `${API_BASE_URL}/admin/seckill/activities/publish`,                    // 发布秒杀活动
+        close: `${API_BASE_URL}/admin/seckill/activities/close`,                        // 关闭秒杀活动
+        activityDetail: `${API_BASE_URL}/admin/seckill/activities/:id`,                   // 获取秒杀活动详情
+        addProduct: `${API_BASE_URL}/admin/seckill/activities/products`,                 // 添加秒杀商品
+        removeProduct: `${API_BASE_URL}/admin/seckill/activities/:id/products/:product_id`, // 移除秒杀商品
+        skuPrices: `${API_BASE_URL}/admin/seckill/activities/:id/products/:product_id/skus`, // 获取SKU价格
+        updateSkuPrice: `${API_BASE_URL}/admin/seckill/sku-prices/:id`                    // 更新SKU价格
     },
     // 商品分类模块
     categories: {
@@ -149,18 +154,24 @@ const API_CONFIG = {
     },
     // 首页模块
     homepage: {
-        banners: `${API_BASE_URL}/banners`,                                      // 获取轮播图列表
-        addBanner: `${API_BASE_URL}/banners`,                                    // 添加轮播图
-        editBanner: `${API_BASE_URL}/banners/:id`,                               // 编辑轮播图
-        deleteBanner: `${API_BASE_URL}/banners/:id`,                             // 删除轮播图
-        toggleBanner: `${API_BASE_URL}/banners/:id/toggle`,                      // 启用/停用轮播图
-        recommendations: `${API_BASE_URL}/recommendations`,                      // 获取推荐位列表
-        addRecommendation: `${API_BASE_URL}/recommendations`,                   // 添加推荐位
-        editRecommendation: `${API_BASE_URL}/recommendations/:id`,              // 编辑推荐位
-        deleteRecommendation: `${API_BASE_URL}/recommendations/:id`,            // 删除推荐位
-        addRecommendProduct: `${API_BASE_URL}/recommendations/:id/products`,    // 添加推荐商品
-        removeRecommendProduct: `${API_BASE_URL}/recommendations/:id/products/:product_id`, // 移除推荐商品
-        sortRecommendProducts: `${API_BASE_URL}/recommendations/:id/products/sort` // 推荐商品排序
+        uploadImage: `${API_BASE_URL}/user/upload`,                                 // 上传轮播图图片
+        banners: `${API_BASE_URL}/admin/banners`,                                // 获取轮播图列表
+        bannerDetail: `${API_BASE_URL}/admin/banners/:id`,                       // 获取轮播图详情
+        addBanner: `${API_BASE_URL}/admin/banners`,                              // 添加轮播图
+        editBanner: `${API_BASE_URL}/admin/banners/:id`,                         // 编辑轮播图
+        deleteBanner: `${API_BASE_URL}/admin/banners/:id`,                       // 删除轮播图
+        toggleBanner: `${API_BASE_URL}/admin/banners/:id/toggle`,                // 启用/停用轮播图
+        recommendations: `${API_BASE_URL}/admin/recommendations`,                // 获取推荐位列表
+        addRecommendation: `${API_BASE_URL}/admin/recommendations`,             // 添加推荐位
+        editRecommendation: `${API_BASE_URL}/admin/recommendations/:id`,         // 编辑推荐位
+        deleteRecommendation: `${API_BASE_URL}/admin/recommendations/:id`,       // 删除推荐位
+        recommendProducts: `${API_BASE_URL}/admin/recommendations/:id/products`, // 获取推荐位商品
+        addRecommendProduct: `${API_BASE_URL}/admin/recommendations/:id/products`, // 添加推荐商品
+        removeRecommendProduct: `${API_BASE_URL}/admin/recommendations/:id/products/:product_id`, // 移除推荐商品
+        sortRecommendProducts: `${API_BASE_URL}/admin/recommendations/:id/products/sort` // 推荐商品排序
+    },
+    goods: {
+        list: `${API_BASE_URL}/admin/product/list?page=1&pageSize=100`
     }
 };
 
@@ -181,7 +192,9 @@ const VUE_OWNED_API_SECTIONS = [
     'service',
     'stores',
     'admin',
-    'payments'
+    'payments',
+    'seckill'
+    ,'settings'
 ];
 
 VUE_OWNED_API_SECTIONS.forEach(section => {
@@ -220,6 +233,11 @@ async function apiRequest(url, options = {}) {
         }
     };
 
+    // Let the browser generate the multipart boundary for file uploads.
+    if (mergedOptions.body instanceof FormData) {
+        delete mergedOptions.headers['Content-Type'];
+    }
+
     try {
         const response = await fetch(url, mergedOptions);
 
@@ -247,6 +265,15 @@ async function apiRequest(url, options = {}) {
         console.error('API Request Error:', error);
         throw error;
     }
+}
+
+async function apiUpload(url, file, fieldName = 'file') {
+    const formData = new FormData();
+    formData.append(fieldName, file);
+    return apiRequest(url, {
+        method: 'POST',
+        body: formData
+    });
 }
 
 async function apiGet(url, params = {}, pathParams = {}) {

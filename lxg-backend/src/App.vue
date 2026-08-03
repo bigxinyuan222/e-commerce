@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, nextTick, onMounted, ref } from 'vue'
 import { allowedMenus, loadLegacyPage, renderLegacyPage, type AdminUser, type PageId } from './legacy/pages'
-import { loginAdmin } from './services/auth'
+import { fetchCurrentAdmin, loginAdmin } from './services/auth'
 import LoginForm from './components/LoginForm.vue'
 import CouponsPage from './components/CouponsPage.vue'
 import ProductsPage from './components/ProductsPage.vue'
@@ -14,6 +14,8 @@ import NotificationPage from './components/NotificationPage.vue'
 import StoresPage from './components/StoresPage.vue'
 import AdminPage from './components/AdminPage.vue'
 import PaymentPage from './components/PaymentPage.vue'
+import SettingsPage from './components/SettingsPage.vue'
+import MarketingPage from './components/MarketingPage.vue'
 
 interface LegacyBridge {
   setUser: (user: AdminUser) => void
@@ -25,9 +27,12 @@ const user = ref<AdminUser | null>(stored ? JSON.parse(stored) as AdminUser : nu
 const activePage = ref<PageId>('stats')
 const loggingIn = ref(false)
 const adminMenuOpen = ref(false)
+const profileOpen = ref(false)
+const profileLoading = ref(false)
 const todoOpen = ref(false)
 const theme = ref(localStorage.getItem('lxg_theme') || 'light')
 const loadedPages = new Set<PageId>()
+const pageRevision = ref(0)
 
 const visibleMenus = computed(() => allowedMenus(user.value?.role || 'super_admin'))
 const groupedMenus = computed(() => {
@@ -82,6 +87,37 @@ function logout() {
   document.body.classList.remove('show-main')
 }
 
+const roleLabels: Record<string, string> = {
+  super_admin: '超级管理员',
+  admin: '超级管理员',
+  goods_op: '商品运营',
+  order_cs: '订单客服',
+  store_staff: '门店店员',
+  user: '普通用户',
+}
+
+function statusLabel(status: AdminUser['status']) {
+  if (status === undefined || status === null || status === '') return '正常'
+  return status === 1 || status === '1' || status === 'active' || status === 'enabled' ? '正常' : '已停用'
+}
+
+async function showProfile() {
+  adminMenuOpen.value = false
+  profileLoading.value = true
+  profileOpen.value = true
+  try {
+    const current = await fetchCurrentAdmin(user.value!.token)
+    user.value = current
+    localStorage.setItem(storageKey, JSON.stringify(current))
+    getBridge().setUser(current)
+  } catch (error) {
+    profileOpen.value = false
+    showToast(error instanceof Error ? error.message : '获取个人信息失败', 'error')
+  } finally {
+    profileLoading.value = false
+  }
+}
+
 function toggleTheme() {
   theme.value = theme.value === 'light' ? 'dark' : 'light'
   localStorage.setItem('lxg_theme', theme.value)
@@ -97,17 +133,28 @@ function switchPage(id: PageId) {
 }
 
 window.switchPage = (id: string) => switchPage(id as PageId)
+window.refreshStatsView = () => {
+  if (activePage.value === 'stats') pageRevision.value += 1
+}
 
 async function mountPage(id: PageId) {
   if (loadedPages.has(id)) return
   await nextTick()
   await loadLegacyPage(id)
   loadedPages.add(id)
+  if (id === 'stats') pageRevision.value += 1
 }
 
-onMounted(() => {
+onMounted(async () => {
   document.documentElement.dataset.theme = theme.value
   if (user.value) {
+    try {
+      const current = await fetchCurrentAdmin(user.value.token)
+      user.value = current
+      localStorage.setItem(storageKey, JSON.stringify(current))
+    } catch (error) {
+      console.warn('Failed to refresh current admin info', error)
+    }
     getBridge().setUser(user.value)
     document.body.classList.add('show-main')
     const first = visibleMenus.value[0]
@@ -140,11 +187,11 @@ onMounted(() => {
           <button id="todoBtn" class="icon-btn" type="button" title="待办事项" @click="todoOpen = !todoOpen"><i class="fas fa-bars"></i><span id="todoDot" class="dot"></span></button>
           <div v-show="todoOpen" id="todoDropdown" class="todo-dropdown"><div class="dropdown-header"><span class="dropdown-title"><i class="fas fa-tasks"></i> 待办事项</span><span class="dropdown-count">0</span></div><div class="dropdown-body"><div style="text-align:center;padding:30px;color:#94a3b8"><i class="fas fa-check-circle" style="font-size:32px;margin-bottom:8px"></i><div style="font-size:13px">暂无待办事项</div></div></div></div>
           <button id="adminProfile" type="button" class="admin-profile" @click="adminMenuOpen = !adminMenuOpen"><div class="avatar">{{ user.name.charAt(0) }}</div><div class="info"><div id="adminName" class="name">{{ user.name }}</div><div id="adminRole" class="role">{{ user.role }}</div></div><i class="fas fa-chevron-down" style="font-size:12px;color:#94a3b8"></i></button>
-          <div v-show="adminMenuOpen" id="adminDropdown" class="admin-dropdown"><button type="button" class="dropdown-item" @click="switchPage('admin'); adminMenuOpen = false"><i class="fas fa-user-circle"></i><span>个人信息</span></button><div class="dropdown-divider"></div><button type="button" class="dropdown-item" @click="logout"><i class="fas fa-sign-out-alt"></i><span>退出登录</span></button></div>
+          <div v-show="adminMenuOpen" id="adminDropdown" class="admin-dropdown"><button type="button" class="dropdown-item" @click="showProfile"><i class="fas fa-user-circle"></i><span>个人信息</span></button><div class="dropdown-divider"></div><button type="button" class="dropdown-item" @click="logout"><i class="fas fa-sign-out-alt"></i><span>退出登录</span></button></div>
         </div>
       </header>
       <main id="contentArea" class="content">
-        <section :id="`panel-${activePage}`" :key="activePage" class="page-panel active">
+        <section :id="`panel-${activePage}`" :key="`${activePage}-${pageRevision}`" class="page-panel active">
           <CouponsPage v-if="activePage === 'coupons'" :token="user?.token" />
           <ProductsPage v-else-if="activePage === 'goods'" :token="user?.token" />
           <ReturnsPage v-else-if="activePage === 'returns'" :token="user?.token" :store-id="user?.storeId" />
@@ -156,9 +203,31 @@ onMounted(() => {
           <StoresPage v-else-if="activePage === 'stores'" :token="user?.token" />
           <AdminPage v-else-if="activePage === 'admin'" :token="user?.token" />
           <PaymentPage v-else-if="activePage === 'payment'" :token="user?.token" />
+          <SettingsPage v-else-if="activePage === 'settings'" :token="user?.token" />
+          <MarketingPage v-else-if="activePage === 'marketing'" :token="user?.token" />
           <div v-else v-html="renderLegacyPage(activePage)"></div>
         </section>
       </main>
+    </div>
+    <div v-if="profileOpen" class="profile-modal-overlay" @click.self="profileOpen = false">
+      <section class="profile-modal" role="dialog" aria-modal="true" aria-labelledby="profile-title">
+        <header class="profile-modal-header">
+          <h2 id="profile-title">个人信息</h2>
+          <button type="button" class="profile-modal-close" title="关闭" aria-label="关闭" @click="profileOpen = false"><i class="fas fa-times"></i></button>
+        </header>
+        <div v-if="profileLoading" class="profile-loading"><i class="fas fa-spinner fa-spin"></i><span>正在获取个人信息...</span></div>
+        <div v-else class="profile-modal-body">
+          <div class="profile-summary"><div class="profile-avatar">{{ user.name.charAt(0) }}</div><div><strong>{{ user.name }}</strong><span>{{ user.roleName || roleLabels[user.role] || user.role }}</span></div></div>
+          <dl class="profile-details">
+            <div><dt>登录账号</dt><dd>{{ user.username || '-' }}</dd></div>
+            <div><dt>姓名</dt><dd>{{ user.name }}</dd></div>
+            <div><dt>角色</dt><dd>{{ user.roleName || roleLabels[user.role] || user.role }}</dd></div>
+            <div><dt>手机号</dt><dd>{{ user.phone || '未设置' }}</dd></div>
+            <div><dt>账号状态</dt><dd><span class="profile-status" :class="{ disabled: statusLabel(user.status) !== '正常' }">{{ statusLabel(user.status) }}</span></dd></div>
+            <div><dt>所属门店</dt><dd>{{ user.storeName || '无' }}</dd></div>
+          </dl>
+        </div>
+      </section>
     </div>
   </div>
 </template>

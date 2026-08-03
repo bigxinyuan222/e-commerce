@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onMounted, reactive, ref } from 'vue'
+import { computed, onMounted, reactive, ref, watch } from 'vue'
 
 type Id = string | number
 type Tab = 'send' | 'record' | 'template'
@@ -52,9 +52,11 @@ const recordKeyword = ref('')
 const typeFilter = ref('all')
 const statusFilter = ref('all')
 const page = ref(1)
-const pageSize = 5
+const pageSize = 20
 const total = ref(0)
 const modal = ref<Modal>(null)
+const detailLoading = ref(false)
+const detailLoadedId = ref<Id | null>(null)
 
 const form = reactive({ type: 1, title: '', content: '', targetScope: 1, sendType: 1, sendTime: '' })
 const templateForm = reactive({ id: '' as Id | '', name: '', type: 1, category: '自定义', title: '', content: '', trigger: '手动触发' })
@@ -88,6 +90,13 @@ function statusText(value: NotificationItem['status']) { return { sent: '已送�
 function maskPhone(value: string) { return value.replace(/(\d{3})\d{4}(\d{4})/, '$1****$2') }
 
 function notificationView(row: any): NotificationItem {
+  row = {
+    ...row,
+    target_scope: row.target_scope ?? row.targetScope,
+    total_count: row.total_count ?? row.receiverCount ?? row.receiver_count,
+    delivered_count: row.delivered_count ?? row.deliveredCount ?? row.receiverCount ?? row.receiver_count,
+    created_at: row.created_at ?? row.CreatedAt ?? row.createdAt,
+  }
   return {
     id: row.ID ?? row.id,
     title: String(row.title ?? ''), content: String(row.content ?? ''), type: typeKey(row.type),
@@ -116,6 +125,27 @@ const filteredRecords = computed(() => notifications.value.filter(item => {
 const totalPages = computed(() => Math.max(1, Math.ceil((total.value || filteredRecords.value.length) / pageSize)))
 const pageRecords = computed(() => total.value > notifications.value.length ? filteredRecords.value : filteredRecords.value.slice((page.value - 1) * pageSize, page.value * pageSize))
 const selectedTemplate = computed(() => templates.value.find(item => String(item.id) === String(selectedTemplateId.value)))
+
+watch(modal, async (next) => {
+  if (!next || next.kind !== 'detail') {
+    detailLoadedId.value = null
+    return
+  }
+  if (String(detailLoadedId.value) === String(next.item.id) || detailLoading.value) return
+  const requestedId = next.item.id
+  detailLoading.value = true
+  try {
+    const data = await requestJson(`/api/v1/admin/notifications/${encodeURIComponent(String(requestedId))}`, { headers: headers() })
+    detailLoadedId.value = requestedId
+    if (modal.value?.kind === 'detail' && String(modal.value.item.id) === String(requestedId)) {
+      modal.value = { kind: 'detail', item: notificationView(data) }
+    }
+  } catch (cause) {
+    notify(cause instanceof Error ? cause.message : '通知详情加载失败', 'error')
+  } finally {
+    detailLoading.value = false
+  }
+})
 
 async function loadNotifications() {
   loadingRecords.value = true
@@ -237,12 +267,12 @@ async function saveTemplate() {
 }
 async function deleteTemplate() {
   if (!templateForm.id || !window.confirm('确定删除此通知模板吗？')) return
-  try { await requestJson(`/api/v1/notification-templates/${templateForm.id}`, { method: 'DELETE', headers: headers() }); notify('模板已删除'); await loadTemplates() }
+  try { await requestJson(`/api/v1/admin/notification-templates/${encodeURIComponent(String(templateForm.id))}`, { method: 'DELETE', headers: headers() }); notify('模板已删除'); await loadTemplates() }
   catch (cause) { notify(cause instanceof Error ? cause.message : '模板删除失败', 'error') }
 }
 async function deleteNotification(item: NotificationItem) {
   if (!window.confirm(`确定删除通知“${item.title}”吗？`)) return
-  try { await requestJson(`/api/v1/notifications/${item.id}`, { method: 'DELETE', headers: headers() }); notify('通知已删除'); await loadNotifications() }
+  try { await requestJson(`/api/v1/admin/notifications/${encodeURIComponent(String(item.id))}`, { method: 'DELETE', headers: headers() }); notify('通知已删除'); await loadNotifications() }
   catch (cause) { notify(cause instanceof Error ? cause.message : '通知删除失败', 'error') }
 }
 async function switchTab(next: Tab) { tab.value = next; if (next === 'record') await loadNotifications(); if (next === 'template') await loadTemplates() }
@@ -280,7 +310,7 @@ onMounted(async () => {
   </div>
 
   <div v-else-if="tab === 'record'" class="card"><div class="card-header"><span class="card-title"><i class="fas fa-list"></i> 通知记录</span><div class="search-bar"><input v-model="recordKeyword" placeholder="搜索标题"><select v-model="typeFilter" @change="page=1;loadNotifications()"><option value="all">全部类型</option><option value="order">订单通知</option><option value="activity">活动通知</option><option value="system">系统维护</option></select><select v-model="statusFilter"><option value="all">全部状态</option><option value="sent">已送达</option><option value="sending">发送中</option><option value="cancelled">已撤销</option></select><button class="btn btn-primary" @click="loadNotifications"><i class="fas fa-search"></i> 搜索</button></div></div>
-    <div class="card-body no-pad"><div class="table-wrap"><table><thead><tr><th>通知ID</th><th>标题</th><th>类型</th><th>接收范围</th><th>接收人数</th><th>送达人数</th><th>送达状态</th><th>发送时间</th><th>操作</th></tr></thead><tbody><tr v-if="loadingRecords"><td colspan="9" class="table-state"><i class="fas fa-spinner fa-spin"></i></td></tr><tr v-else-if="!pageRecords.length"><td colspan="9" class="table-state">暂无通知记录</td></tr><tr v-for="item in pageRecords" v-else :key="item.id"><td>{{ item.id }}</td><td>{{ item.title }}</td><td><span class="system-tag" :class="item.type === 'order' ? 'blue' : item.type === 'activity' ? 'primary' : 'yellow'">{{ typeText(item.type) }}</span></td><td>{{ item.scope }}</td><td>{{ item.totalCount.toLocaleString() }}</td><td>{{ item.deliveredCount.toLocaleString() }}</td><td><span class="status-badge" :class="item.status === 'sent' ? 'green' : item.status === 'sending' ? 'blue' : 'gray'"><span class="dot"></span>{{ statusText(item.status) }}</span></td><td>{{ item.time }}</td><td><button class="btn btn-sm btn-outline" @click="modal={kind:'detail',item}">详情</button><button class="btn btn-sm btn-outline" @click="modal={kind:'data',item}">数据</button><button class="icon-btn danger" title="删除通知" @click="deleteNotification(item)"><i class="fas fa-trash-alt"></i></button></td></tr></tbody></table></div></div>
+    <div class="card-body no-pad"><div class="table-wrap"><table><thead><tr><th>通知ID</th><th>标题</th><th>类型</th><th>接收范围</th><th>接收人数</th><th>送达人数</th><th>送达状态</th><th>发送时间</th><th>操作</th></tr></thead><tbody><tr v-if="loadingRecords"><td colspan="9" class="table-state"><i class="fas fa-spinner fa-spin"></i></td></tr><tr v-else-if="!pageRecords.length"><td colspan="9" class="table-state">暂无通知记录</td></tr><tr v-for="item in pageRecords" v-else :key="item.id"><td>{{ item.id }}</td><td>{{ item.title }}</td><td><span class="system-tag" :class="item.type === 'order' ? 'blue' : item.type === 'activity' ? 'primary' : 'yellow'">{{ typeText(item.type) }}</span></td><td>{{ item.scope }}</td><td>{{ item.totalCount.toLocaleString() }}</td><td>{{ item.deliveredCount.toLocaleString() }}</td><td><span class="status-badge" :class="item.status === 'sent' ? 'green' : item.status === 'sending' ? 'blue' : 'gray'"><span class="dot"></span>{{ statusText(item.status) }}</span></td><td>{{ item.time }}</td><td><button class="btn btn-sm btn-outline" @click="modal={kind:'detail',item}">详情</button><button class="icon-btn danger" title="删除通知" @click="deleteNotification(item)"><i class="fas fa-trash-alt"></i></button></td></tr></tbody></table></div></div>
     <div v-if="totalPages > 1" class="card-footer pagination"><button class="icon-btn" :disabled="page <= 1" @click="changePage(page-1)"><i class="fas fa-angle-left"></i></button><span>共 {{ total }} 条记录，第 {{ page }}/{{ totalPages }} 页</span><button class="icon-btn" :disabled="page >= totalPages" @click="changePage(page+1)"><i class="fas fa-angle-right"></i></button></div>
   </div>
 

@@ -8,6 +8,11 @@
     "build": "vue-tsc -b && vite build && node scripts/copy-legacy.mjs",
     "preview": "vite preview --host 0.0.0.0",
     "test:login": "node scripts/smoke-login.mjs",
+    "test:seckill-create": "node scripts/smoke-seckill-create.mjs",
+    "test:seckill-product": "node scripts/smoke-seckill-product.mjs",
+    "test:seckill-publish": "node scripts/smoke-seckill-publish.mjs",
+    "test:seckill-close": "node scripts/smoke-seckill-close.mjs",
+    "test:review-list": "node scripts/smoke-review-list.mjs",
     "test:stock": "node scripts/smoke-stock.mjs",
     "test:payment": "node scripts/smoke-vue-migrated-modules.mjs",
     "test:returns": "node scripts/smoke-returns.mjs",
@@ -15,6 +20,9 @@
     "test:orders": "node scripts/smoke-orders.mjs",
     "test:service-ws": "node scripts/smoke-service-ws.mjs",
     "test:notification-vue": "node scripts/smoke-notification-vue.mjs",
+    "test:stats-first-load": "node scripts/smoke-stats-first-load.mjs",
+    "test:stats-order-mapping": "node scripts/smoke-stats-order-mapping.mjs",
+    "test:homepage-recommendation": "node scripts/smoke-homepage-recommendation.mjs",
     "test:vue-api-ownership": "node scripts/check-vue-api-ownership.mjs"
     ,"test:vue-migrated-modules": "node scripts/smoke-vue-migrated-modules.mjs"
   },

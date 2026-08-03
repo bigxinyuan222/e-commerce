@@ -52,23 +52,25 @@ function getRatingStars(rating) {
 async function loadReviews() {
     try {
         const response = await apiGet(API_CONFIG.reviews.list);
-        const dataList = response && response.list ? response.list : (Array.isArray(response) ? response : []);
+        const dataList = Array.isArray(response)
+            ? response
+            : response?.list ?? response?.items ?? response?.records ?? response?.reviews ?? [];
         reviewsData = dataList.map(item => ({
             id: item.ID || item.id,
-            goodsId: item.productId || item.goodsId || '',
-            goodsName: item.productName || item.goodsName || '',
-            userId: item.userId || '',
-            userName: item.userName || item.name || '',
-            phone: item.phone || '',
-            rating: item.rating || 0,
+            goodsId: item.productId || item.product_id || item.goodsId || item.product?.id || '',
+            goodsName: item.productName || item.product_name || item.goodsName || item.product?.name || '',
+            userId: item.userId || item.user_id || item.user?.id || '',
+            userName: item.userName || item.user_name || item.user?.nickname || item.user?.name || item.name || '',
+            phone: item.phone || item.user?.phone || '',
+            rating: Number(item.rating || item.score || 0),
             content: item.content || '',
             images: item.images || [],
-            likes: item.likes || item.likeCount || 0,
+            likes: item.likes || item.likeCount || item.like_count || 0,
             status: item.status === 1 ? 'approved' : item.status === 0 ? 'pending' : 'hidden',
-            createTime: item.createdAt || item.CreatedAt || '',
-            reply: item.adminReply ? {
-                content: item.adminReply.content || '',
-                time: item.adminReply.time || item.adminReply.createdAt || ''
+            createTime: item.createdAt || item.created_at || item.CreatedAt || '',
+            reply: (item.adminReply || item.admin_reply) ? {
+                content: (item.adminReply || item.admin_reply).content || '',
+                time: (item.adminReply || item.admin_reply).time || (item.adminReply || item.admin_reply).createdAt || (item.adminReply || item.admin_reply).created_at || ''
             } : null,
             replies: (item.replies || []).map(r => ({
                 id: r.id || '',

@@ -16,6 +16,25 @@ interface AdminRow {
   lastLogin: string
 }
 interface OptionRow { id: Id; name: string }
+interface RoleDescription { name: string; scope: string; permissions: string[] }
+
+const roleDescriptions: RoleDescription[] = [
+  {
+    name: '运营管理员',
+    scope: '商品上下架、库存调整、评价审核、活动配置',
+    permissions: ['数据统计', '商品管理', '库存管理', '评价管理', '优惠券管理', '营销活动'],
+  },
+  {
+    name: '客服管理员',
+    scope: '处理订单、回复用户咨询',
+    permissions: ['订单管理', '退货退款', '客服消息'],
+  },
+  {
+    name: '门店管理员',
+    scope: '查看本店订单、处理本店退货、核销自提、编辑本店信息',
+    permissions: ['门店管理'],
+  },
+]
 
 const props = defineProps<{ token?: string }>()
 const rows = ref<AdminRow[]>([])
@@ -41,6 +60,9 @@ const filtered = computed(() => {
 })
 const activeCount = computed(() => rows.value.filter(row => row.status === 1).length)
 const inactiveCount = computed(() => rows.value.length - activeCount.value)
+const assignableRoles = computed(() => roles.value.filter(role =>
+  String(role.id) !== '1' && !['超级管理员', 'super_admin'].includes(role.name.trim().toLowerCase())
+))
 const storeAdminCount = computed(() => rows.value.filter(row =>
   String(row.roleId) === '4' || row.roleName.includes('门店')
 ).length)
@@ -249,6 +271,23 @@ onMounted(loadAdmins)
     </div>
   </div>
 
+  <div class="card role-management">
+    <div class="card-header">
+      <span class="card-title"><i class="fas fa-lock"></i> 角色权限管理</span>
+    </div>
+    <div class="card-body">
+      <div class="role-description-grid">
+        <article v-for="role in roleDescriptions" :key="role.name" class="role-description-card">
+          <h3>{{ role.name }}</h3>
+          <p><span>权限范围：</span>{{ role.scope }}</p>
+          <div class="role-permissions">
+            <span v-for="permission in role.permissions" :key="permission" class="role-permission-tag">{{ permission }}</span>
+          </div>
+        </article>
+      </div>
+    </div>
+  </div>
+
   <template v-if="editing">
     <div class="modal-overlay" @click="editing = null"></div>
     <div class="modal-content admin-modal">
@@ -259,7 +298,7 @@ onMounted(loadAdmins)
           <label><span>真实姓名 <b>*</b></span><input v-model="form.name" class="system-form-input"></label>
           <label><span>手机号 <b>*</b></span><input v-model="form.phone" class="system-form-input"></label>
           <label><span>密码 {{ editing.id ? '' : '*' }}</span><input v-model="form.password" type="password" class="system-form-input" :placeholder="editing.id ? '不修改请留空' : '请输入登录密码'"></label>
-          <label><span>角色 <b>*</b></span><select v-model="form.roleId" class="system-form-select"><option value="">请选择角色</option><option v-for="role in roles" :key="role.id" :value="String(role.id)">{{ role.name }}</option></select></label>
+          <label><span>角色 <b>*</b></span><select v-model="form.roleId" class="system-form-select"><option value="">请选择角色</option><option v-for="role in assignableRoles" :key="role.id" :value="String(role.id)">{{ role.name }}</option></select></label>
           <label><span>所属门店</span><select v-model="form.storeId" class="system-form-select"><option value="">无</option><option v-for="store in stores" :key="store.id" :value="String(store.id)">{{ store.name }}</option></select></label>
         </div>
       </div>
@@ -269,5 +308,5 @@ onMounted(loadAdmins)
 </template>
 
 <style scoped>
-.admin-toolbar{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:16px}.admin-message{display:flex;align-items:center;gap:8px;padding:12px 16px;font-size:13px}.admin-message.error{color:#dc2626;background:#fef2f2}.admin-message.warning{color:#92400e;background:#fffbeb}.admin-table-state{padding:34px;text-align:center;color:#94a3b8}.admin-identity{display:flex;align-items:center;gap:10px;min-width:150px}.admin-identity span:last-child{display:flex;flex-direction:column;gap:3px}.admin-identity small{color:#94a3b8}.admin-actions{white-space:nowrap}.admin-actions .btn{margin-right:5px}.admin-modal{width:min(680px,calc(100vw - 32px))}.admin-form-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}.admin-form-grid label{display:flex;flex-direction:column;gap:7px;font-size:13px;font-weight:600;color:#334155}.admin-form-grid b{color:#ef4444}@media(max-width:760px){.admin-toolbar{align-items:stretch;flex-direction:column}.admin-toolbar>.btn{align-self:flex-start}.search-bar{display:grid;grid-template-columns:1fr}.admin-form-grid{grid-template-columns:1fr}.admin-actions{white-space:normal}}
+.admin-toolbar{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:16px}.admin-message{display:flex;align-items:center;gap:8px;padding:12px 16px;font-size:13px}.admin-message.error{color:#dc2626;background:#fef2f2}.admin-message.warning{color:#92400e;background:#fffbeb}.admin-table-state{padding:34px;text-align:center;color:#94a3b8}.admin-identity{display:flex;align-items:center;gap:10px;min-width:150px}.admin-identity span:last-child{display:flex;flex-direction:column;gap:3px}.admin-identity small{color:#94a3b8}.admin-actions{white-space:nowrap}.admin-actions .btn{margin-right:5px}.admin-modal{width:min(680px,calc(100vw - 32px))}.admin-form-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}.admin-form-grid label{display:flex;flex-direction:column;gap:7px;font-size:13px;font-weight:600;color:#334155}.admin-form-grid b{color:#ef4444}.role-management{margin-top:16px}.role-description-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}.role-description-card{min-height:136px;padding:18px;border:1px solid #e2e8f0;border-radius:6px;background:#fff}.role-description-card.primary{background:#f8faff;border-color:#dbe4ff}.role-description-card h3{margin:0 0 10px;font-size:16px;color:#0f172a}.role-description-card.primary h3{color:#4f6ef7}.role-description-card p{margin:0 0 12px;font-size:13px;line-height:1.6;color:#64748b}.role-description-card p span{color:#475569}.role-permissions{display:flex;flex-wrap:wrap;gap:6px}.role-permission-tag{display:inline-flex;align-items:center;min-height:24px;padding:3px 9px;border-radius:4px;background:#f1f5f9;color:#64748b;font-size:12px}.role-description-card.primary .role-permission-tag{background:#eef2ff;color:#4f6ef7}[data-theme="dark"] .role-description-card{background:#0f172a;border-color:#334155}[data-theme="dark"] .role-description-card.primary{background:rgba(79,110,247,.08);border-color:#4f6ef7}[data-theme="dark"] .role-description-card h3{color:#f8fafc}@media(max-width:760px){.admin-toolbar{align-items:stretch;flex-direction:column}.admin-toolbar>.btn{align-self:flex-start}.search-bar{display:grid;grid-template-columns:1fr}.admin-form-grid,.role-description-grid{grid-template-columns:1fr}.admin-actions{white-space:normal}}
 </style>

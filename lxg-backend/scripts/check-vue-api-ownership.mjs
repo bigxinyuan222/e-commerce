@@ -1,9 +1,10 @@
-import { readFileSync } from 'node:fs'
+import { existsSync, readFileSync } from 'node:fs'
 import { resolve } from 'node:path'
 
 const root = resolve(import.meta.dirname, '..')
 const index = readFileSync(resolve(root, 'index.html'), 'utf8')
 const api = readFileSync(resolve(root, 'js/common/api.js'), 'utf8')
+const main = readFileSync(resolve(root, 'js/common/main.js'), 'utf8')
 
 const forbiddenScripts = [
   '/js/core/stock.js',
@@ -15,12 +16,23 @@ const forbiddenScripts = [
   '/js/core/stores.js',
   '/js/system/admin.js',
   '/js/system/payment.js',
+  '/js/system/settings.js',
+  '/js/trade/marketing.js',
 ]
 
 const loadedForbidden = forbiddenScripts.filter(script => index.includes(script))
 if (loadedForbidden.length) throw new Error(`Vue 已接管模块仍加载旧脚本: ${loadedForbidden.join(', ')}`)
 
-const requiredSections = ['auth', 'returns', 'notifications', 'orders', 'users', 'stats', 'inventory', 'categories', 'brands', 'specifications', 'service', 'stores', 'admin', 'payments']
+const existingForbidden = forbiddenScripts.filter(script =>
+  existsSync(resolve(root, script.slice(1))) || existsSync(resolve(root, 'dist', script.slice(1))),
+)
+if (existingForbidden.length) throw new Error(`legacy Vue-owned scripts still exist: ${existingForbidden.join(', ')}`)
+
+for (const symbol of ['marketingPage', 'loadSeckill']) {
+  if (main.includes(symbol)) throw new Error(`旧营销全局入口仍存在: ${symbol}`)
+}
+
+const requiredSections = ['auth', 'returns', 'notifications', 'orders', 'users', 'stats', 'inventory', 'categories', 'brands', 'specifications', 'service', 'stores', 'admin', 'payments', 'settings', 'seckill']
 for (const section of requiredSections) {
   if (!api.includes(`'${section}'`)) throw new Error(`旧 API 层未禁用 Vue 接口段: ${section}`)
 }

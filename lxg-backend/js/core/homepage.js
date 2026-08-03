@@ -25,17 +25,17 @@ async function loadHomepageGoods() {
 // 加载轮播图数据
 async function loadBanners() {
     try {
-        const response = await apiGet(API_CONFIG.homepage.banners);
+        const response = await apiGet(API_CONFIG.homepage.banners, { page: 1, pageSize: 20, status: 1 });
         const dataList = response && response.list ? response.list : (Array.isArray(response) ? response : []);
         bannerData = dataList.map(item => ({
             id: item.ID || item.id,
-            image: item.image || '',
+            image: item.imageUrl || item.image_url || item.image || '',
             title: item.title || '',
-            linkType: item.linkType || 'none',  // 跳转类型
-            link: item.link || '',               // 跳转链接
+            linkType: ({ 0: 'none', 1: 'goods', 2: 'activity', 3: 'category', 4: 'external' })[Number(item.linkType ?? item.link_type)] || item.linkType || 'none',  // 跳转类型
+            link: item.linkUrl || item.link_url || item.link || '',               // 跳转链接
             sort: item.sort || 0,                // 排序值
             status: item.status === 1 ? 'active' : item.status === 0 ? 'draft' : 'pending',
-            createTime: item.createdAt || item.createTime || ''
+            createTime: item.CreatedAt || item.createdAt || item.createTime || ''
         }));
         // 按排序值升序排列
         bannerData.sort((a, b) => (a.sort || 0) - (b.sort || 0));
@@ -48,7 +48,7 @@ async function loadBanners() {
 // 加载推荐位数据
 async function loadRecommendations() {
     try {
-        const response = await apiGet(API_CONFIG.homepage.recommendations);
+        const response = await apiGet(API_CONFIG.homepage.recommendations, { page: 1, pageSize: 20, status: 1 });
         const dataList = response && response.list ? response.list : (Array.isArray(response) ? response : []);
         recommendData = dataList.map(item => ({
             id: item.ID || item.id,
@@ -79,7 +79,7 @@ function getLinkTypeText(type) {
 
 // 处理轮播图操作（上移/下移/发布/删除）
 async function handleBannerAction(bannerId, action) {
-    const index = bannerData.findIndex(b => b.id === bannerId);
+    const index = bannerData.findIndex(b => String(b.id) === String(bannerId));
     if (index === -1) return;
     
     if (action === 'up') {
@@ -108,7 +108,7 @@ async function handleBannerAction(bannerId, action) {
         refreshHomepagePage();
     } else if (action === 'publish') {
         try {
-            await apiPut(API_CONFIG.homepage.toggleBanner, { status: 1 }, { id: bannerId });
+            await apiRequest(replaceUrlParams(API_CONFIG.homepage.toggleBanner, { id: bannerId }), { method: 'PUT' });
             bannerData[index].status = 'active';
             showToast('轮播图已发布！', 'success');
             refreshHomepagePage();
@@ -118,7 +118,7 @@ async function handleBannerAction(bannerId, action) {
         }
     } else if (action === 'unpublish') {
         try {
-            await apiPut(API_CONFIG.homepage.toggleBanner, { status: 0 }, { id: bannerId });
+            await apiRequest(replaceUrlParams(API_CONFIG.homepage.toggleBanner, { id: bannerId }), { method: 'PUT' });
             bannerData[index].status = 'draft';
             showToast('轮播图已下架！', 'success');
             refreshHomepagePage();
@@ -145,13 +145,13 @@ async function handleBannerAction(bannerId, action) {
 }
 
 async function handleRecommendAction(recId, action) {
-    const rec = recommendData.find(r => r.id === recId);
+    const rec = recommendData.find(r => String(r.id) === String(recId));
     if (!rec) return;
     
     if (action === 'toggle') {
         try {
             const newStatus = rec.status === 'active' ? 0 : 1;
-            await apiPut(API_CONFIG.homepage.editRecommendation, { status: newStatus }, { id: recId });
+            await apiPut(API_CONFIG.homepage.editRecommendation, { name: rec.name, status: newStatus }, { id: recId });
             rec.status = rec.status === 'active' ? 'inactive' : 'active';
             showToast(`${rec.name}已${rec.status === 'active' ? '启用' : '禁用'}！`, 'success');
         } catch (error) {
@@ -163,7 +163,7 @@ async function handleRecommendAction(recId, action) {
         showConfirm(`确定删除推荐位 ${rec.name} 吗？`, async function() {
             try {
                 await apiDelete(API_CONFIG.homepage.deleteRecommendation, {}, { id: recId });
-                recommendData = recommendData.filter(r => r.id !== recId);
+                recommendData = recommendData.filter(r => String(r.id) !== String(recId));
                 showToast('推荐位已删除！', 'success');
             } catch (error) {
                 console.error('Failed to delete recommendation:', error);
@@ -176,9 +176,27 @@ async function handleRecommendAction(recId, action) {
     refreshHomepagePage();
 }
 
-function showEditBannerModal(bannerId) {
-    const banner = bannerData.find(b => b.id === bannerId);
-    if (!banner) return;
+async function showEditBannerModal(bannerId) {
+    const cached = bannerData.find(b => String(b.id) === String(bannerId));
+    if (!cached) return;
+    let banner;
+    try {
+        const detail = await apiGet(API_CONFIG.homepage.bannerDetail, {}, { id: bannerId });
+        banner = {
+            ...cached,
+            id: detail.ID || detail.id || cached.id,
+            image: detail.imageUrl || detail.image_url || detail.image || cached.image,
+            linkType: ({ 0: 'none', 1: 'goods', 2: 'activity', 3: 'category', 4: 'external' })[Number(detail.linkType ?? detail.link_type)] || detail.linkType || cached.linkType,
+            link: detail.linkUrl || detail.link_url || detail.link || cached.link,
+            sort: Number(detail.sort ?? cached.sort),
+            status: Number(detail.status) === 1 ? 'active' : Number(detail.status) === 0 ? 'draft' : cached.status,
+            createTime: detail.CreatedAt || detail.createdAt || cached.createTime
+        };
+    } catch (error) {
+        console.error('Failed to load banner detail:', error);
+        showToast(error instanceof Error ? error.message : '轮播图详情加载失败，请重试', 'error');
+        return;
+    }
     const modalContent = `
         <div class="modal-overlay" style="position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.5);z-index:1000;display:flex;align-items:center;justify-content:center;" onclick="closeHomepageModal()"></div>
         <div class="modal-content" style="position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:#fff;border-radius:12px;box-shadow:0 25px 50px -12px rgba(0,0,0,0.25);display:flex;flex-direction:column;max-height:80vh;overflow:hidden;z-index:1001;width:640px;">
@@ -193,8 +211,11 @@ function showEditBannerModal(bannerId) {
                         <input type="text" id="bannerTitle" value="${banner.title}" style="width:100%;padding:8px 12px;border:1px solid #e2e8f0;border-radius:6px;font-size:13px;outline:none;" onfocus="this.style.borderColor='#4f6ef7'" />
                     </div>
                     <div style="grid-column:span 2;">
-                        <label style="display:block;font-size:13px;color:#64748b;margin-bottom:4px;">图片地址</label>
-                        <input type="text" id="bannerImage" value="${banner.image}" style="width:100%;padding:8px 12px;border:1px solid #e2e8f0;border-radius:6px;font-size:13px;outline:none;" onfocus="this.style.borderColor='#4f6ef7'" />
+                        <label style="display:block;font-size:13px;color:#64748b;margin-bottom:4px;">轮播图片 <span style="color:#ef4444;">*</span></label>
+                        <input type="file" id="bannerImageFile" accept="image/*" onchange="uploadBannerImage(this)" style="width:100%;padding:8px;border:1px solid #e2e8f0;border-radius:6px;font-size:13px;background:#fff;" />
+                        <input type="hidden" id="bannerImage" value="${banner.image}" />
+                        <div id="bannerUploadStatus" style="min-height:20px;margin-top:6px;font-size:12px;color:#64748b;"></div>
+                        <img id="bannerImagePreview" src="${banner.image}" alt="轮播图预览" style="display:block;width:100%;height:150px;object-fit:cover;border:1px solid #e2e8f0;border-radius:6px;" />
                     </div>
                     <div>
                         <label style="display:block;font-size:13px;color:#64748b;margin-bottom:4px;">链接类型</label>
@@ -249,8 +270,11 @@ function showAddBannerModal() {
                         <input type="text" id="bannerTitle" placeholder="请输入轮播图标题" style="width:100%;padding:8px 12px;border:1px solid #e2e8f0;border-radius:6px;font-size:13px;outline:none;" onfocus="this.style.borderColor='#4f6ef7'" />
                     </div>
                     <div style="grid-column:span 2;">
-                        <label style="display:block;font-size:13px;color:#64748b;margin-bottom:4px;">图片地址</label>
-                        <input type="text" id="bannerImage" placeholder="请输入图片URL" style="width:100%;padding:8px 12px;border:1px solid #e2e8f0;border-radius:6px;font-size:13px;outline:none;" onfocus="this.style.borderColor='#4f6ef7'" />
+                        <label style="display:block;font-size:13px;color:#64748b;margin-bottom:4px;">轮播图片 <span style="color:#ef4444;">*</span></label>
+                        <input type="file" id="bannerImageFile" accept="image/*" onchange="uploadBannerImage(this)" style="width:100%;padding:8px;border:1px solid #e2e8f0;border-radius:6px;font-size:13px;background:#fff;" />
+                        <input type="hidden" id="bannerImage" />
+                        <div id="bannerUploadStatus" style="min-height:20px;margin-top:6px;font-size:12px;color:#64748b;"></div>
+                        <img id="bannerImagePreview" alt="轮播图预览" style="display:none;width:100%;height:150px;object-fit:cover;border:1px solid #e2e8f0;border-radius:6px;" />
                     </div>
                     <div>
                         <label style="display:block;font-size:13px;color:#64748b;margin-bottom:4px;">链接类型</label>
@@ -289,6 +313,50 @@ function showAddBannerModal() {
     document.body.insertAdjacentHTML('beforeend', modalContent);
 }
 
+async function uploadBannerImage(input) {
+    const file = input.files && input.files[0];
+    if (!file) return;
+
+    const imageInput = document.getElementById('bannerImage');
+    const preview = document.getElementById('bannerImagePreview');
+    const status = document.getElementById('bannerUploadStatus');
+    const previousImage = imageInput.value;
+
+    if (!file.type.startsWith('image/')) {
+        input.value = '';
+        status.textContent = '请选择图片文件';
+        status.style.color = '#ef4444';
+        return;
+    }
+
+    input.disabled = true;
+    status.textContent = '图片上传中...';
+    status.style.color = '#64748b';
+
+    try {
+        const result = await apiUpload(API_CONFIG.homepage.uploadImage, file, 'file');
+        const imageUrl = typeof result === 'string'
+            ? result
+            : result.url || result.imageUrl || result.image_url || result.fileUrl || result.file_url || result.path
+                || result.data?.url || result.data?.imageUrl || result.data?.image_url;
+        if (!imageUrl) throw new Error('上传成功，但接口未返回图片地址');
+
+        imageInput.value = imageUrl;
+        preview.src = imageUrl;
+        preview.style.display = 'block';
+        status.textContent = '上传成功';
+        status.style.color = '#16a34a';
+    } catch (error) {
+        imageInput.value = previousImage;
+        input.value = '';
+        status.textContent = error instanceof Error ? error.message : '图片上传失败，请重试';
+        status.style.color = '#ef4444';
+        showToast(status.textContent, 'error');
+    } finally {
+        input.disabled = false;
+    }
+}
+
 async function saveBanner(bannerId = null) {
     const title = document.getElementById('bannerTitle').value.trim();
     const image = document.getElementById('bannerImage').value.trim();
@@ -297,16 +365,16 @@ async function saveBanner(bannerId = null) {
     const sort = parseInt(document.getElementById('bannerSort').value) || bannerData.length + 1;
     const status = document.getElementById('bannerStatus').value;
     
-    if (!title) {
-        showToast('请输入标题', 'error');
+    if (!image) {
+        showToast('请先选择并上传轮播图片', 'error');
         return;
     }
     
+    const linkTypeValue = ({ none: 0, goods: 1, activity: 2, category: 3, external: 4 })[linkType] ?? 0;
     const data = {
-        title: title,
-        image: image,
-        linkType: linkType,
-        link: link,
+        imageUrl: image,
+        linkUrl: link,
+        linkType: linkTypeValue,
         sort: sort,
         status: status === 'active' ? 1 : 0
     };
@@ -314,7 +382,7 @@ async function saveBanner(bannerId = null) {
     try {
         if (bannerId) {
             await apiPut(API_CONFIG.homepage.editBanner, data, { id: bannerId });
-            const banner = bannerData.find(b => b.id === bannerId);
+            const banner = bannerData.find(b => String(b.id) === String(bannerId));
             if (banner) {
                 banner.title = title;
                 banner.image = image;
@@ -326,9 +394,9 @@ async function saveBanner(bannerId = null) {
             showToast('轮播图已更新！', 'success');
         } else {
             const response = await apiPost(API_CONFIG.homepage.addBanner, data);
-            if (response && response.data) {
+            if (response) {
                 bannerData.push({
-                    id: response.data.ID || response.data.id,
+                    id: response.ID || response.id,
                     image: image,
                     title: title,
                     linkType: linkType,
@@ -356,9 +424,18 @@ function closeHomepageModal() {
     document.querySelectorAll('.modal-overlay, .modal-content').forEach(el => el.remove());
 }
 
-function showEditRecommendModal(recId) {
-    const rec = recommendData.find(r => r.id === recId);
+async function showEditRecommendModal(recId) {
+    const rec = recommendData.find(r => String(r.id) === String(recId));
     if (!rec) return;
+    try {
+        const response = await apiGet(API_CONFIG.homepage.recommendProducts, {}, { id: recId });
+        const products = Array.isArray(response) ? response : (response && response.list ? response.list : []);
+        rec.goods = products.map(item => item.productId || item.product_id || item.ID || item.id).filter(Boolean);
+    } catch (error) {
+        console.error('Failed to load recommendation products:', error);
+        showToast(error instanceof Error ? error.message : '推荐位商品加载失败，请重试', 'error');
+        return;
+    }
     
     const selectedGoods = homepageGoodsData.filter(g => rec.goods.includes(g.id));
     const availableGoods = homepageGoodsData.filter(g => !rec.goods.includes(g.id));
@@ -416,26 +493,32 @@ function showEditRecommendModal(recId) {
     document.body.insertAdjacentHTML('beforeend', modalContent);
 }
 
-function addRecommendGood(recId, goodsId) {
-    const rec = recommendData.find(r => r.id === recId);
-    if (rec && !rec.goods.includes(goodsId)) {
-        rec.goods.push(goodsId);
-        closeHomepageModal();
-        showEditRecommendModal(recId);
+async function addRecommendGood(recId, goodsId) {
+    const rec = recommendData.find(r => String(r.id) === String(recId));
+    if (rec && !rec.goods.some(id => String(id) === String(goodsId))) {
+        try {
+            await apiPost(API_CONFIG.homepage.addRecommendProduct, { productId: Number(goodsId) || goodsId }, { id: recId });
+            showToast('商品已添加到推荐位！', 'success');
+            closeHomepageModal();
+            await showEditRecommendModal(recId);
+        } catch (error) {
+            console.error('Failed to add recommendation product:', error);
+            showToast(error instanceof Error ? error.message : '添加推荐商品失败，请重试', 'error');
+        }
     }
 }
 
 function removeRecommendGood(recId, goodsId) {
-    const rec = recommendData.find(r => r.id === recId);
+    const rec = recommendData.find(r => String(r.id) === String(recId));
     if (rec) {
-        rec.goods = rec.goods.filter(g => g !== goodsId);
+        rec.goods = rec.goods.filter(g => String(g) !== String(goodsId));
         closeHomepageModal();
         showEditRecommendModal(recId);
     }
 }
 
 function saveRecommendGoods(recId) {
-    const rec = recommendData.find(r => r.id === recId);
+    const rec = recommendData.find(r => String(r.id) === String(recId));
     if (rec) {
         showToast(`推荐位 ${rec.name} 商品已更新！`, 'success');
         closeHomepageModal();
@@ -476,7 +559,7 @@ function showAddRecommendModal() {
     document.body.insertAdjacentHTML('beforeend', modalContent);
 }
 
-function saveRecommend() {
+async function saveRecommend() {
     const name = document.getElementById('recommendName').value.trim();
     const status = document.getElementById('recommendStatus').value;
     
@@ -491,17 +574,25 @@ function saveRecommend() {
         return;
     }
     
-    recommendData.push({
-        id: 'rec-' + Date.now(),
-        name: name,
-        status: status,
-        goods: [],
-        createTime: new Date().toISOString().substring(0, 10)
-    });
-    
-    showToast('推荐位创建成功！', 'success');
-    closeHomepageModal();
-    refreshHomepagePage();
+    try {
+        const response = await apiPost(API_CONFIG.homepage.addRecommendation, {
+            name: name,
+            status: status === 'active' ? 1 : 0
+        });
+        recommendData.push({
+            id: response.ID || response.id,
+            name: response.name || name,
+            status: Number(response.status) === 1 ? 'active' : 'inactive',
+            goods: [],
+            createTime: response.CreatedAt || response.createdAt || new Date().toISOString().substring(0, 10)
+        });
+        showToast('推荐位创建成功！', 'success');
+        closeHomepageModal();
+        refreshHomepagePage();
+    } catch (error) {
+        console.error('Failed to create recommendation:', error);
+        showToast(error instanceof Error ? error.message : '推荐位创建失败，请重试', 'error');
+    }
 }
 
 function refreshHomepagePage() {

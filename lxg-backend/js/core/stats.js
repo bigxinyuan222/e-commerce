@@ -6,46 +6,65 @@ function getStatsDate(value, ...fallbacks) {
     return String(candidate || '');
 }
 
+function getLocalDateKey(date = new Date()) {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+}
+
+function isRevenueOrder(order) {
+    return !['pending_payment', 'cancelled', 'unknown'].includes(order.status);
+}
+
+function getPaidAmount(order) {
+    return Number(order.payAmount ?? order.pay_amount ?? 0) || 0;
+}
+
 // 获取角色特定的统计数据
 function getRoleSpecificStats() {
     const activeUser = typeof window.currentUser !== 'undefined' && window.currentUser ? window.currentUser : null;
     const role = activeUser ? activeUser.role : 'super_admin';
     const now = new Date();
-    const todayStr = now.toISOString().split('T')[0];  // 获取今日日期字符串
+    const todayStr = getLocalDateKey(now);
     
     // 收集各模块数据（处理未定义情况）
     let stats = {
         orders: Array.isArray(window.legacyOrderSnapshot) ? window.legacyOrderSnapshot : [],
         returns: Array.isArray(window.legacyRefundSnapshot) ? window.legacyRefundSnapshot : [],
         reviews: (typeof reviewsData !== 'undefined' && Array.isArray(reviewsData)) ? reviewsData : [],
-        stock: (typeof stockData !== 'undefined' && Array.isArray(stockData)) ? stockData : [],
-        users: (typeof usersData !== 'undefined' && Array.isArray(usersData)) ? usersData : []
+        stock: Array.isArray(window.statsStockSnapshot) ? window.statsStockSnapshot : ((typeof stockData !== 'undefined' && Array.isArray(stockData)) ? stockData : []),
+        users: Array.isArray(window.statsUsersSnapshot) ? window.statsUsersSnapshot : ((typeof usersData !== 'undefined' && Array.isArray(usersData)) ? usersData : [])
     };
     
     // 门店用户只看自己门店的数据
     if (activeUser && activeUser.storeId) {
-        stats.orders = stats.orders.filter(o => o.storeId === activeUser.storeId);
-        stats.returns = stats.returns.filter(r => r.storeId === activeUser.storeId);
+        stats.orders = stats.orders.filter(o => String(o.storeId) === String(activeUser.storeId));
+        stats.returns = stats.returns.filter(r => String(r.storeId) === String(activeUser.storeId));
     }
     
     // 计算今日订单和已支付订单
     const todayOrders = stats.orders.filter(o => getStatsDate(o.createTime, o.create_time, o.createdAt, o.created_at).startsWith(todayStr));
-    const paidOrders = stats.orders.filter(o => o.status !== 'pending_payment');
+    const paidOrders = stats.orders.filter(isRevenueOrder);
+    const todayPaidOrders = todayOrders.filter(isRevenueOrder);
     
     return {
         orders: stats.orders,
         todayOrderCount: todayOrders.length,                    // 今日订单数
-        todaySales: todayOrders.reduce((sum, o) => sum + (o.payAmount || o.totalAmount), 0),  // 今日销售额
+        todaySales: todayPaidOrders.reduce((sum, o) => sum + getPaidAmount(o), 0),
         pendingPayment: stats.orders.filter(o => o.status === 'pending_payment').length,  // 待支付
         pendingDelivery: stats.orders.filter(o => o.status === 'pending_delivery').length,  // 待发货
         pendingPickup: stats.orders.filter(o => o.status === 'pending_pickup').length,      // 待自提
         pendingRefunds: stats.returns.filter(r => r.status === 'pending').length,           // 待退款
         pendingReviews: stats.reviews.filter(r => r.status === 'pending').length,           // 待审核评价
-        lowStock: stats.stock.filter(s => s.stock <= s.threshold).length,                   // 库存预警
+        lowStock: stats.stock.length,
         newUsers: stats.users.filter(u => getStatsDate(u.registerTime, u.register_time, u.createdAt, u.created_at).startsWith(todayStr)).length,     // 今日新用户
-        avgOrderValue: paidOrders.length > 0 ? Math.round(paidOrders.reduce((sum, o) => sum + (o.payAmount || o.totalAmount), 0) / paidOrders.length) : 0,  // 客单价
+        avgOrderValue: paidOrders.length > 0 ? Math.round(paidOrders.reduce((sum, o) => sum + getPaidAmount(o), 0) / paidOrders.length) : 0,
         totalOrders: stats.orders.length,                     // 总订单数
-        totalSales: paidOrders.reduce((sum, o) => sum + (o.payAmount || o.totalAmount), 0), // 总销售额
+        totalSales: paidOrders.reduce((sum, o) => sum + getPaidAmount(o), 0),
+        grouping: stats.orders.filter(o => o.status === 'grouping').length,
+        completed: stats.orders.filter(o => o.status === 'completed').length,
+        cancelled: stats.orders.filter(o => o.status === 'cancelled').length,
         role: role
     };
 }
@@ -56,12 +75,12 @@ function getStoreSalesRanking() {
     const orders = Array.isArray(window.legacyOrderSnapshot) ? window.legacyOrderSnapshot : [];
     
     // 按门店汇总销售额
-    orders.forEach(o => {
+    orders.filter(isRevenueOrder).forEach(o => {
         const store = o.storeName || o.storeId || '未知门店';
         if (!storeSales[store]) {
             storeSales[store] = 0;
         }
-        storeSales[store] += (o.payAmount || o.totalAmount || 0);
+        storeSales[store] += getPaidAmount(o);
     });
     
     // 排序并取前6名
@@ -95,10 +114,10 @@ function getGoodsSalesRanking() {
     const orders = Array.isArray(window.legacyOrderSnapshot) ? window.legacyOrderSnapshot : [];
     
     // 按商品汇总销量和销售额
-    orders.forEach(o => {
+    orders.filter(isRevenueOrder).forEach(o => {
         if (o.items && Array.isArray(o.items)) {
             o.items.forEach(item => {
-                const goodsName = item.goodsName || item.name || '未知商品';
+                const goodsName = item.goodsName || item.productName || item.product_name || item.name || '未知商品';
                 if (!goodsSales[goodsName]) {
                     goodsSales[goodsName] = { sales: 0, amount: 0 };
                 }
@@ -223,6 +242,7 @@ function generateChartData(range) {
     const now = new Date();
     const data = [];
     const labels = [];
+    const orderStats = getRoleSpecificStats();
     
     // 从过去倒数生成日期标签和数据
     for (let i = days - 1; i >= 0; i--) {
@@ -237,10 +257,9 @@ function generateChartData(range) {
         }
         
         // 统计当日销售额
-        const dateStr = date.toISOString().split('T')[0];
-        const stats = getRoleSpecificStats();
-        const dayOrders = stats.orders.filter(o => getStatsDate(o.createTime, o.create_time, o.createdAt, o.created_at).startsWith(dateStr));
-        const daySales = dayOrders.reduce((sum, o) => sum + (Number(o.payAmount) || Number(o.totalAmount) || 0), 0);
+        const dateStr = getLocalDateKey(date);
+        const dayOrders = orderStats.orders.filter(o => getStatsDate(o.createTime, o.create_time, o.createdAt, o.created_at).startsWith(dateStr));
+        const daySales = dayOrders.filter(isRevenueOrder).reduce((sum, o) => sum + getPaidAmount(o), 0);
         
         data.push(daySales);
     }
@@ -336,6 +355,9 @@ function statsPage() {
     const stats = getRoleSpecificStats();
     const todos = getTodoItems();
     const chartData = generateChartData(currentStatsRange);
+    let storedRole = '';
+    try { storedRole = JSON.parse(localStorage.getItem('lexiangou_admin_user') || '{}').role || ''; } catch (e) {}
+    const statsLocked = Boolean(window.statsAccessDenied || window.currentUser?.role === 'goods_op' || storedRole === 'goods_op');
     
     // 根据角色确定页面标题
     const roleTitle = {
@@ -408,8 +430,16 @@ function statsPage() {
                         </div>
                     </div>
                     <div class="card-body">
-                        <div class="chart-placeholder">
-                            ${chartData.bars.map((h,i) => {
+                        <div class="chart-placeholder ${statsLocked ? 'stats-chart-locked' : ''}">
+                            ${statsLocked ? `
+                                <div class="stats-permission-overlay">
+                                    <div class="stats-permission-card">
+                                        <i class="fas fa-lock"></i>
+                                        <strong>暂无权限查看交易概况</strong>
+                                        <span>当前管理员身份无法访问订单统计数据</span>
+                                    </div>
+                                </div>
+                            ` : chartData.bars.map((h,i) => {
                                 const val = chartData.data[i];
                                 const displayVal = val >= 10000 ? (val / 10000).toFixed(1) + '万' : val > 0 ? '¥' + val.toLocaleString() : '-';
                                 return `<div class="bar-group"><div class="bar-value">${displayVal}</div><div class="bar" style="height:${h}px;"></div><div class="bar-label">${chartData.labels[i]}</div></div>`;
@@ -450,9 +480,11 @@ function statsPage() {
                     <div class="card-body">
                         <div style="display:flex;flex-direction:column;gap:10px;">
                             <div><div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px;"><span>待付款</span><span style="font-weight:600;">${stats.pendingPayment}</span></div><div style="height:14px;background:#e2e8f0;border-radius:7px;overflow:hidden;"><div style="width:${stats.totalOrders > 0 ? (stats.pendingPayment / stats.totalOrders * 100) : 0}%;height:100%;background:linear-gradient(90deg,#f59e0b,#fbbf24);border-radius:7px;"></div></div></div>
+                            <div><div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px;"><span>拼团中</span><span style="font-weight:600;">${stats.grouping}</span></div><div style="height:14px;background:#e2e8f0;border-radius:7px;overflow:hidden;"><div style="width:${stats.totalOrders > 0 ? (stats.grouping / stats.totalOrders * 100) : 0}%;height:100%;background:#fb923c;border-radius:7px;"></div></div></div>
                             <div><div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px;"><span>待发货</span><span style="font-weight:600;">${stats.pendingDelivery}</span></div><div style="height:14px;background:#e2e8f0;border-radius:7px;overflow:hidden;"><div style="width:${stats.totalOrders > 0 ? (stats.pendingDelivery / stats.totalOrders * 100) : 0}%;height:100%;background:linear-gradient(90deg,#4f6ef7,#667eea);border-radius:7px;"></div></div></div>
                             <div><div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px;"><span>待自提</span><span style="font-weight:600;">${stats.pendingPickup}</span></div><div style="height:14px;background:#e2e8f0;border-radius:7px;overflow:hidden;"><div style="width:${stats.totalOrders > 0 ? (stats.pendingPickup / stats.totalOrders * 100) : 0}%;height:100%;background:linear-gradient(90deg,#22c55e,#4ade80);border-radius:7px;"></div></div></div>
-                            <div><div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px;"><span>已完成</span><span style="font-weight:600;">${stats.orders.filter(o => o.status === 'completed').length}</span></div><div style="height:14px;background:#e2e8f0;border-radius:7px;overflow:hidden;"><div style="width:${stats.totalOrders > 0 ? (stats.orders.filter(o => o.status === 'completed').length / stats.totalOrders * 100) : 0}%;height:100%;background:linear-gradient(90deg,#94a3b8,#cbd5e1);border-radius:7px;"></div></div></div>
+                            <div><div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px;"><span>已完成</span><span style="font-weight:600;">${stats.completed}</span></div><div style="height:14px;background:#e2e8f0;border-radius:7px;overflow:hidden;"><div style="width:${stats.totalOrders > 0 ? (stats.completed / stats.totalOrders * 100) : 0}%;height:100%;background:#94a3b8;border-radius:7px;"></div></div></div>
+                            <div><div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px;"><span>已取消</span><span style="font-weight:600;">${stats.cancelled}</span></div><div style="height:14px;background:#e2e8f0;border-radius:7px;overflow:hidden;"><div style="width:${stats.totalOrders > 0 ? (stats.cancelled / stats.totalOrders * 100) : 0}%;height:100%;background:#cbd5e1;border-radius:7px;"></div></div></div>
                         </div>
                         <div style="margin-top:16px;padding-top:16px;border-top:1px solid #f1f4f9;">
                             <div style="display:flex;justify-content:space-between;font-size:13px;">
@@ -491,6 +523,10 @@ function handleQuickAction(action, subAction) {
 
 function refreshStats(range) {
     currentStatsRange = range;
+    if (typeof window.refreshStatsView === 'function') {
+        window.refreshStatsView();
+        return;
+    }
     renderAllPages();
     switchPage('stats');
 }

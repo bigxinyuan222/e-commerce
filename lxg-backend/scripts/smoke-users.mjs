@@ -5,7 +5,7 @@ const browser = await chromium.launch({
   executablePath: 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe',
   headless: true,
 })
-const page = await browser.newPage({ viewport: { width: 1440, height: 900 } })
+const page = await browser.newPage({ viewport: { width: Number(process.env.LXG_VIEWPORT_WIDTH) || 1440, height: Number(process.env.LXG_VIEWPORT_HEIGHT) || 900 } })
 const listQueries = []
 const toggleQueries = []
 let enabled = 1
@@ -41,6 +41,7 @@ try {
   const row = page.locator('#panel-users tbody tr').first()
   await row.getByText('测试用户').waitFor()
 
+  if (process.env.LXG_SCREENSHOT) await page.screenshot({ path: process.env.LXG_SCREENSHOT, fullPage: true })
   const nextResponse = page.waitForResponse(response => response.url().includes('/api/v1/get/users?page=2'))
   await page.locator('#panel-users .stock-pagination-actions button').last().click()
   await nextResponse
@@ -52,10 +53,11 @@ try {
   await toggleResponse
   await reloadResponse
 
-  if (JSON.stringify(listQueries[0]) !== JSON.stringify({ page: '1', size: '10' })) {
+  const userPageQueries = listQueries.filter(query => query.size === '10')
+  if (JSON.stringify(userPageQueries[0]) !== JSON.stringify({ page: '1', size: '10' })) {
     throw new Error(`用户列表参数不符合预期: ${JSON.stringify(listQueries[0])}`)
   }
-  if (JSON.stringify(listQueries[1]) !== JSON.stringify({ page: '2', size: '10' })) {
+  if (JSON.stringify(userPageQueries[1]) !== JSON.stringify({ page: '2', size: '10' })) {
     throw new Error(`用户分页参数不符合预期: ${JSON.stringify(listQueries[1])}`)
   }
   if (JSON.stringify(toggleQueries[0]) !== JSON.stringify({ method: 'POST', query: { id: '100' } })) {
