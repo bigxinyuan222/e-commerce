@@ -82,16 +82,13 @@ const StoresPage: React.FC = () => {
     }
   };
 
-  // 注册触底事件
-  useEffect(() => {
-    Taro.useReachBottom(() => {
-      onReachBottom();
-    });
-    Taro.usePullDownRefresh(() => {
-      handlePullDownRefresh();
-    });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [hasMore, loadingMore, loading, page, storeList.length]);
+  // Taro 生命周期钩子必须在组件顶层调用，不能放在 useEffect 内
+  Taro.useReachBottom(() => {
+    onReachBottom();
+  });
+  Taro.usePullDownRefresh(() => {
+    handlePullDownRefresh();
+  });
 
   const handleCallStore = (phone: string) => {
     if (!phone) {

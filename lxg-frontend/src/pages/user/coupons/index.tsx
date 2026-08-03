@@ -156,8 +156,8 @@ const MyCouponsPage: React.FC = () => {
                 <Text className={styles.emptyText}>加载中...</Text>
               </View>
             ) : currentList.length > 0 ? (
-              currentList.map((coupon) => (
-                <View key={coupon.id} className={`${styles.couponCard} ${getStatusColor(coupon.status)}`}>
+              currentList.map((coupon, idx) => (
+                <View key={coupon.id || `mine-${idx}`} className={`${styles.couponCard} ${getStatusColor(coupon.status)}`}>
                   <View className={styles.couponContent}>
                     <View className={styles.couponLeft}>
                       <Text className={styles.couponValue}>
@@ -196,12 +196,12 @@ const MyCouponsPage: React.FC = () => {
               <Text className={styles.emptyText}>加载中...</Text>
             </View>
           ) : availableCoupons.length > 0 ? (
-            availableCoupons.map((coupon) => {
+            availableCoupons.map((coupon, idx) => {
               const claimed = coupons.some(c => c.id === coupon.id);
               const soldOut = coupon.totalCount > 0 && coupon.remainCount <= 0;
               const disabled = claimed || soldOut || claimingId === coupon.id;
               return (
-                <View key={coupon.id} className={`${styles.couponCard} ${styles.available}`}>
+                <View key={coupon.id || `avail-${idx}`} className={`${styles.couponCard} ${styles.available}`}>
                   <View className={styles.couponContent}>
                     <View className={styles.couponLeft}>
                       <Text className={styles.couponValue}>

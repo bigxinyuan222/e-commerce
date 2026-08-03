@@ -11,7 +11,14 @@ const DEFAULT_PLACEHOLDER = 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_
 const PLACEHOLDER_DOMAINS = [
   'placeholder.com',
   'test.com',
-  'demo.com'
+  'demo.com',
+  'example.com',
+  'example.cn',
+  'xxx.com',
+  'xxx.cn',
+  'xxx.yyy',
+  'demo.example.com',
+  'test.example.com',
 ];
 
 /**
@@ -57,30 +64,144 @@ export function getImageUrls(urls: string[] | null | undefined): string[] {
 }
 
 /**
+ * 规范化单个 SKU 数据
+ * 兼容 snake_case、camelCase、PascalCase 字段命名
+ */
+function normalizeSku(sku: any): any {
+  if (!sku) return sku;
+  const result: any = { ...sku };
+
+  // 规格字段兼容：spec_values / SpecValues / specValue / specs / Specs / spec
+  const specs = sku.specs ?? sku.spec_values ?? sku.SpecValues ?? sku.specValue ?? sku.SpecValue ?? sku.Specs ?? sku.spec ?? {};
+  result.specs = specs;
+
+  // ID 兼容：id / ID / skuId / SkuId / sku_id
+  result.id = String(sku.id ?? sku.ID ?? sku.skuId ?? sku.SkuId ?? sku.sku_id ?? '');
+
+  // 价格兼容：price / Price / skuPrice / SkuPrice
+  result.price = Number(sku.price ?? sku.Price ?? sku.skuPrice ?? sku.SkuPrice ?? 0);
+
+  // 库存兼容：stock / Stock / skuStock / SkuStock / inventory / Inventory
+  result.stock = Number(sku.stock ?? sku.Stock ?? sku.skuStock ?? sku.SkuStock ?? sku.inventory ?? sku.Inventory ?? 0);
+
+  // 图片兼容：image / Image / skuImage / SkuImage / sku_image
+  result.image = sku.image ? getImageUrl(sku.image)
+    : sku.Image ? getImageUrl(sku.Image)
+    : sku.skuImage ? getImageUrl(sku.skuImage)
+    : sku.SkuImage ? getImageUrl(sku.SkuImage)
+    : sku.sku_image ? getImageUrl(sku.sku_image)
+    : '';
+
+  // SKU 名称兼容：name / Name / skuName / SkuName / sku_name / title / Title
+  let name = sku.name ?? sku.Name ?? sku.skuName ?? sku.SkuName ?? sku.sku_name ?? sku.title ?? sku.Title ?? '';
+  // 如果没有 name，从规格值拼接（格式：颜色 值 存储容量 值）
+  if (!name && result.specs && typeof result.specs === 'object') {
+    name = Object.entries(result.specs)
+      .map(([, v]) => v)
+      .filter(Boolean)
+      .join(' ');
+  }
+  // 再兜底用 skuCode
+  if (!name) {
+    name = sku.skuCode ?? sku.SkuCode ?? sku.sku_code ?? '';
+  }
+  result.name = name;
+
+  return result;
+}
+
+/**
  * 规范化商品图片数据
  * 处理后端返回的商品图片，确保所有图片都是有效的URL
+ * 同时规范化 SKU 字段（spec_values → specs，补全 name 等）
+ * 以及品牌、分类、价格、库存等字段命名兼容
  */
 export function normalizeProductImages(product: any): any {
   if (!product) return product;
   
   const normalized = { ...product };
   
+  // ====== 图片字段处理 ======
   // 处理images数组
   if (normalized.images && Array.isArray(normalized.images)) {
     normalized.images = normalized.images.map((url: string) => getImageUrl(url));
+  }
+  // 兼容 Images / imageList / ImageList / images_list
+  else if (normalized.Images && Array.isArray(normalized.Images)) {
+    normalized.images = normalized.Images.map((url: string) => getImageUrl(url));
+  } else if (normalized.imageList && Array.isArray(normalized.imageList)) {
+    normalized.images = normalized.imageList.map((url: string) => getImageUrl(url));
+  } else if (normalized.ImageList && Array.isArray(normalized.ImageList)) {
+    normalized.images = normalized.ImageList.map((url: string) => getImageUrl(url));
+  } else if (normalized.images_list && Array.isArray(normalized.images_list)) {
+    normalized.images = normalized.images_list.map((url: string) => getImageUrl(url));
   }
   
   // 处理单图字段
   if (normalized.image) {
     normalized.image = getImageUrl(normalized.image);
+  } else if (normalized.Image) {
+    normalized.image = getImageUrl(normalized.Image);
   }
-  
-  // 处理SKU图片
-  if (normalized.skus && Array.isArray(normalized.skus)) {
-    normalized.skus = normalized.skus.map((sku: any) => ({
-      ...sku,
-      image: sku.image ? getImageUrl(sku.image) : ''
-    }));
+
+  // ====== 品牌字段处理 ======
+  // brandId：brand_id / BrandId / brand.ID / brand.id / brandId
+  normalized.brandId = String(
+    normalized.brandId ?? normalized.BrandId
+    ?? normalized.brand_id ?? normalized.brand_id
+    ?? normalized.brand?.ID ?? normalized.brand?.id ?? ''
+  );
+  // brandName：brand_name / BrandName / brand.name / brand.Name / brandName
+  normalized.brandName = normalized.brandName ?? normalized.BrandName
+    ?? normalized.brand_name ?? normalized.brand?.name ?? normalized.brand?.Name ?? '';
+
+  // ====== 分类字段处理 ======
+  // categoryId：category_id / CategoryId / category.ID / category.id / categoryId
+  normalized.categoryId = String(
+    normalized.categoryId ?? normalized.CategoryId
+    ?? normalized.category_id ?? normalized.category_id
+    ?? normalized.category?.ID ?? normalized.category?.id ?? ''
+  );
+  // categoryName：category_name / CategoryName / category.name / category.Name / categoryName
+  normalized.categoryName = normalized.categoryName ?? normalized.CategoryName
+    ?? normalized.category_name ?? normalized.category?.name ?? normalized.category?.Name ?? '';
+
+  // ====== 价格字段处理 ======
+  normalized.price = Number(
+    normalized.price ?? normalized.Price
+    ?? normalized.salePrice ?? normalized.SalePrice ?? normalized.sale_price
+    ?? 0
+  );
+  // originalPrice：original_price / OriginalPrice / marketPrice / MarketPrice / market_price
+  if (normalized.originalPrice === undefined || normalized.originalPrice === null) {
+    normalized.originalPrice = Number(
+      normalized.originalPrice ?? normalized.OriginalPrice
+      ?? normalized.original_price ?? normalized.original_price
+      ?? normalized.marketPrice ?? normalized.MarketPrice ?? normalized.market_price
+      ?? normalized.price ?? 0
+    );
+  }
+
+  // ====== 库存 & 销量 ======
+  normalized.stock = Number(
+    normalized.stock ?? normalized.Stock
+    ?? normalized.totalStock ?? normalized.TotalStock ?? normalized.total_stock
+    ?? normalized.inventory ?? normalized.Inventory ?? 0
+  );
+  normalized.sales = Number(
+    normalized.sales ?? normalized.Sales
+    ?? normalized.soldCount ?? normalized.SoldCount ?? normalized.sold_count
+    ?? normalized.sold ?? normalized.Sold ?? 0
+  );
+
+  // ====== SKU 处理 ======
+  const skuList = normalized.skus ?? normalized.Skus ?? normalized.SKUs ?? normalized.skuList ?? normalized.SkuList ?? normalized.sku_list;
+  if (skuList && Array.isArray(skuList)) {
+    normalized.skus = skuList.map((sku: any) => normalizeSku(sku));
+  }
+  // 确保即使后端没返回 skus，也有一个空数组避免渲染报错
+  if (!normalized.skus || !Array.isArray(normalized.skus)) {
+    normalized.skus = [];
   }
   
   return normalized;
@@ -156,7 +277,17 @@ export function isValidBrandLogo(url: string | null | undefined): boolean {
     || hostname === 'example.cn'
     || hostname.endsWith('.example.cn')
     || hostname === 'placeholder.com'
-    || hostname.endsWith('.placeholder.com');
+    || hostname.endsWith('.placeholder.com')
+    || hostname === 'xxx.com'
+    || hostname.endsWith('.xxx.com')
+    || hostname === 'xxx.cn'
+    || hostname.endsWith('.xxx.cn')
+    || hostname === 'xxx.yyy'
+    || hostname.endsWith('.xxx.yyy')
+    || hostname === 'test.com'
+    || hostname.endsWith('.test.com')
+    || hostname === 'demo.com'
+    || hostname.endsWith('.demo.com');
   return !isPlaceholder;
 }
 

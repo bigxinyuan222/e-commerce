@@ -1,5 +1,28 @@
 import Taro from '@tarojs/taro';
 
+/**
+ * 将 ID 字段统一转换为数字类型
+ * 后端 Go 通常使用 uint64，要求 JSON 中的 ID 必须是数字而非字符串
+ */
+export function toNumericId(value: string | number | undefined | null): number {
+    if (value === undefined || value === null || value === '') return 0;
+    const num = Number(value);
+    return Number.isFinite(num) ? num : 0;
+}
+
+/**
+ * 批量转换 body 中指定字段为数字类型
+ */
+export function normalizeNumericFields(body: Record<string, any>, fields: string[]): Record<string, any> {
+    const result: Record<string, any> = { ...body };
+    for (const field of fields) {
+        if (field in result && result[field] !== undefined && result[field] !== null) {
+            result[field] = toNumericId(result[field]);
+        }
+    }
+    return result;
+}
+
 function getAuthToken(): string {
     try {
         const user = JSON.parse(Taro.getStorageSync('lxg_user') || '{}');
@@ -17,13 +40,59 @@ function replaceUrlParams(url: string, params: Record<string, string | number>):
     return result;
 }
 
+// 判断是否为认证相关错误
+function isAuthError(message: string, statusCode?: number, code?: number): boolean {
+    const authErrorKeywords = [
+        '缺少认证信息',
+        '未登录',
+        '登录已失效',
+        'token',
+        'Token',
+        '未授权',
+        'unauthorized',
+        'Unauthorized',
+        '请先登录',
+        'auth',
+        '认证失败',
+    ];
+    if (statusCode === 401 || statusCode === 403) return true;
+    if (code === 401 || code === 403) return true;
+    return authErrorKeywords.some(keyword => message.includes(keyword));
+}
+
+// 处理认证错误
+function handleAuthError(message: string): void {
+    // 检查当前是否有 token（区分"从未登录"和"登录失效"）
+    const hasToken = !!getAuthToken();
+
+    if (hasToken) {
+        // 有 token 但认证失败 = token 过期，清理登录态
+        try {
+            Taro.removeStorageSync('lxg_user');
+            Taro.removeStorageSync('userInfo');
+        } catch { /* ignore */ }
+    }
+
+    // 提示用户并跳转登录页
+    Taro.showModal({
+        title: hasToken ? '登录已失效' : '请先登录',
+        content: hasToken ? (message || '请重新登录') : '此操作需要登录账号',
+        showCancel: false,
+        confirmText: '去登录',
+        success: () => {
+            Taro.navigateTo({ url: '/pages/user/login/index' });
+        }
+    });
+}
+
 async function apiRequest(url: string, options: {
     method?: string;
     data?: any;
     headers?: Record<string, string>;
+    silent?: boolean;
 } = {}): Promise<any> {
     const defaultHeaders: Record<string, string> = {
-        'Content-Type': 'application/json',
+        'Content-Type': 'application/x-www-form-urlencoded',
     };
     
     const token = getAuthToken();
@@ -51,17 +120,23 @@ async function apiRequest(url: string, options: {
         console.log('[API Response]', { url, statusCode: response.statusCode, data: response.data });
 
         if (response.statusCode === 401) {
-            Taro.removeStorageSync('lxg_user');
-            Taro.navigateTo({ url: '/pages/user/login/index' });
+            handleAuthError('登录已失效，请重新登录');
             throw new Error('登录已失效，请重新登录');
         }
 
-        if (response.statusCode !== 200) {
+        // 接受 2xx 系列成功状态码：200 OK、201 Created、202 Accepted、204 No Content
+        if (response.statusCode < 200 || response.statusCode >= 300) {
             // 读取后端返回的 message 字段，方便定位错误
             const backendMsg = (response.data as any)?.message || (response.data as any)?.msg;
             const err = new Error(backendMsg || `HTTP error! status: ${response.statusCode}`);
             (err as any).statusCode = response.statusCode;
             (err as any).response = response.data;
+
+            // 如果是认证相关错误，处理登录失效
+            if (isAuthError(err.message, response.statusCode)) {
+                handleAuthError(err.message);
+            }
+
             throw err;
         }
 
@@ -72,40 +147,58 @@ async function apiRequest(url: string, options: {
             const err = new Error(backendMsg);
             (err as any).code = respData.code;
             (err as any).response = respData;
+
+            // 如果是认证相关错误，处理登录失效
+            if (isAuthError(err.message, undefined, respData.code)) {
+                handleAuthError(err.message);
+            }
+
             throw err;
         }
 
         return response.data;
     } catch (error) {
-        console.error('API Request Error:', error);
+        // 处理 Taro.request 本身抛出的错误（如网络错误、CORS 错误等）
+        if (error instanceof Error) {
+            // 如果错误消息包含认证相关关键词，也处理登录失效
+            if (isAuthError(error.message)) {
+                handleAuthError(error.message);
+            }
+        }
+        if (!options.silent) {
+            console.error('API Request Error:', error);
+        }
         throw error;
     }
 }
 
-export async function apiGet(url: string, params: Record<string, any> = {}, pathParams: Record<string, string | number> = {}): Promise<any> {
+export async function apiGet(url: string, params: Record<string, any> = {}, pathParams: Record<string, string | number> = {}, silent: boolean = false): Promise<any> {
     const resolvedUrl = replaceUrlParams(url, pathParams);
     const searchParams = new URLSearchParams(params);
     const fullUrl = resolvedUrl + (searchParams.toString() ? '?' + searchParams.toString() : '');
-    return apiRequest(fullUrl, { method: 'GET' });
+    return apiRequest(fullUrl, { method: 'GET', silent });
 }
 
-export async function apiPost(url: string, data: Record<string, any> = {}, pathParams: Record<string, string | number> = {}, queryParams: Record<string, any> = {}, useFormUrlEncoded: boolean = false): Promise<any> {
+export async function apiPost(url: string, data: Record<string, any> = {}, pathParams: Record<string, string | number> = {}, queryParams: Record<string, string | number> = {}, useFormUrlEncoded: boolean = true, silent: boolean = false): Promise<any> {
     const resolvedUrl = replaceUrlParams(url, pathParams);
     const searchParams = new URLSearchParams(queryParams);
     const fullUrl = resolvedUrl + (searchParams.toString() ? '?' + searchParams.toString() : '');
-    
+
     const headers: Record<string, string> = {};
     let requestData: any = data;
-    
+
     if (useFormUrlEncoded) {
         headers['Content-Type'] = 'application/x-www-form-urlencoded';
         requestData = new URLSearchParams(data as any).toString();
+    } else {
+        headers['Content-Type'] = 'application/json';
     }
-    
+
     return apiRequest(fullUrl, {
         method: 'POST',
         data: requestData,
-        headers
+        headers,
+        silent
     });
 }
 

@@ -20,11 +20,11 @@ const categoryIconMap: { keywords: string[]; icon: string }[] = [
 
 export function getCategoryIcon(categoryName: string, fallbackIcon?: string): string {
   if (!categoryName) return fallbackIcon || '';
-  
+
   const nameLower = categoryName.toLowerCase();
   const matched = categoryIconMap.find(item =>
     item.keywords.some(kw => nameLower.includes(kw.toLowerCase()))
   );
-  
+
   return matched ? matched.icon : (fallbackIcon || phoneIcon);
 }

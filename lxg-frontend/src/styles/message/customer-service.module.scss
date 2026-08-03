@@ -44,6 +44,8 @@
   .headerStatus {
     font-size: 22rpx;
     margin-top: 4rpx;
+    cursor: default;
+    transition: opacity 0.2s;
 
     &.ws-open {
       color: #52c41a;
@@ -52,12 +54,25 @@
       color: #faad14;
     }
     &.ws-closed {
-      color: #ff4d4f;
+      color: #999;
     }
     &.ws-closing,
     &.ws-idle {
       color: $color-text-tertiary;
     }
+  }
+
+  .headerStatusRow {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .reconnectHint {
+    font-size: 20rpx;
+    margin-left: 4rpx;
+    color: $color-primary;
+    cursor: pointer;
   }
 
   .headerRight {
@@ -142,36 +157,39 @@
   flex-shrink: 0;
 }
 
-.messageWrap.other .avatar {
-  margin-right: 20rpx;
-}
-
 .messageWrap.me .avatar {
   margin-left: 20rpx;
+}
+
+.messageWrap.other .avatar {
+  margin-right: 20rpx;
 }
 
 .messageContent {
   max-width: 70%;
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
 }
 
 .me .messageContent {
   align-items: flex-end;
 }
 
+.other .messageContent {
+  align-items: flex-start;
+}
+
 .me .messageText {
   background-color: $color-primary;
   color: #ffffff;
   border-radius: 24rpx 24rpx 0 24rpx;
+  box-shadow: $shadow-card;
 }
 
 .other .messageText {
   background-color: $color-bg-card;
   color: $color-text-primary;
   border-radius: 24rpx 24rpx 24rpx 0;
-  box-shadow: $shadow-card;
 }
 
 .messageText {

@@ -46,7 +46,7 @@ const CartItemComponent = React.memo(({
       <Text className={styles.itemSpecs}>{item.skuName}</Text>
       <View className={styles.itemBottom}>
         <View className={styles.priceWrap}>
-          <Text className={styles.itemPrice}>{item.seckillPrice ?? item.price}</Text>
+          <Text className={styles.itemPrice}>¥{item.seckillPrice ?? item.price}</Text>
           {item.isSeckill && (
             <Text className={styles.seckillTag}>秒杀价</Text>
           )}
@@ -247,7 +247,7 @@ const CartPage: React.FC = () => {
                 <View className={styles.totalInfo}>
                   <View className={styles.totalAmount}>
                     <Text className={styles.amountLabel}>合计:</Text>
-                    <Text className={styles.amountValue}>{totalAmount}</Text>
+                    <Text className={styles.amountValue}>¥{totalAmount}</Text>
                   </View>
                   <View 
                     className={`${styles.checkoutBtn} ${selectedCount === 0 ? styles.disabled : ''}`}

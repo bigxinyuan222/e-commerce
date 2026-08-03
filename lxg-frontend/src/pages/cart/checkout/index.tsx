@@ -3,7 +3,7 @@ import { View, Text, Image, Input } from '@tarojs/components';
 import Taro from '@tarojs/taro';
 import { useAppContext } from '@/store/AppContext';
 import { apiGet } from '@/api/common';
-import { submitOrder, batchDeleteCartItem } from '@/api/cart';
+import { submitOrder, addToCartAPI, batchDeleteCartItem, fetchCartList } from '@/api/cart';
 import { fetchMyCoupons } from '@/api/user';
 import { getImageUrl, lazyImgProps } from '@/utils/image';
 import styles from '@/styles/cart/checkout.module.scss';
@@ -38,7 +38,7 @@ interface Coupon {
 }
 
 const CheckoutPage: React.FC = () => {
-  const { cartItems, getCartTotal, currentStore, setCartItems } = useAppContext();
+  const { cartItems, getCartTotal, currentStore, setCartItems, userInfo } = useAppContext();
   const [paymentMethod, setPaymentMethod] = useState<'wechat' | 'alipay'>('wechat');
   const [coupons, setCoupons] = useState<Coupon[]>([]);
   const [selectedCouponId, setSelectedCouponId] = useState<string | null>(null);
@@ -107,10 +107,10 @@ const CheckoutPage: React.FC = () => {
 
   const hasSpecialItem = selectedItems.some(item => item.isSeckill);
 
-  const goodsAmount = selectedItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
+  const goodsAmount = Number((selectedItems.reduce((sum, item) => sum + item.price * item.quantity, 0)).toFixed(2));
   const freightAmount = 0;
   const couponAmount = hasSpecialItem ? 0 : (selectedCoupon ? selectedCoupon.value : 0);
-  const finalAmount = goodsAmount + freightAmount - couponAmount;
+  const finalAmount = Number((goodsAmount + freightAmount - couponAmount).toFixed(2));
 
   const handleSubmitOrder = async () => {
     if (loadingData) {
@@ -118,54 +118,171 @@ const CheckoutPage: React.FC = () => {
       return;
     }
 
+    // 步骤1: 检查登录状态
+    if (!userInfo.isLoggedIn) {
+      Taro.showModal({
+        title: '请先登录',
+        content: '提交订单需要登录账号',
+        confirmText: '去登录',
+        success: (res) => {
+          if (res.confirm) {
+            Taro.navigateTo({ url: '/pages/user/login/index' });
+          }
+        }
+      });
+      return;
+    }
+
+    // 步骤2: 前端校验 - 空列表拦截
+    const currentSelectedItems = getCheckoutItems();
+    if (currentSelectedItems.length === 0) {
+      Taro.showToast({ title: '请选择要结算的商品', icon: 'none' });
+      return;
+    }
+
     Taro.showLoading({ title: '提交中...' });
 
     try {
-      const orderItems: OrderItem[] = selectedItems.map((item) => ({
-        productId: item.productId,
-        productName: item.productName,
-        skuId: item.skuId || item.productId,
-        skuName: item.skuName,
-        price: item.price,
-        quantity: item.quantity,
-        image: item.image
-      }));
+      // 步骤3: 区分购物车结算和立即购买场景
+      const isBuyNow = currentSelectedItems.some(item => item.id?.toString().startsWith('buyNow-'));
 
-      const storeInfo = currentStore ? {
-        name: currentStore.name,
-        phone: currentStore.phone,
-        address: currentStore.address,
-        businessHours: currentStore.hours
-      } : undefined;
+      let realCartIds: number[] = [];
+
+      if (isBuyNow) {
+        // buyNow 场景：先添加到购物车，再获取真实后端ID
+        for (const item of currentSelectedItems) {
+          if (item.id?.toString().startsWith('buyNow-')) {
+            const addRes = await addToCartAPI({
+              productId: item.productId,
+              skuId: item.skuId || item.productId,
+              quantity: item.quantity,
+            });
+            if (addRes?.code === 200 || addRes?.message === 'created' || addRes?.message === 'success') {
+              // 从后端获取最新购物车列表，匹配商品
+              const listRes = await fetchCartList();
+              if (listRes?.data && Array.isArray(listRes.data)) {
+                const matchedItem = listRes.data.find(
+                  (cartItem: any) =>
+                    cartItem.productId?.toString() === item.productId?.toString() &&
+                    cartItem.skuId?.toString() === (item.skuId || item.productId)?.toString() &&
+                    cartItem.quantity === item.quantity
+                );
+                if (matchedItem) {
+                  realCartIds.push(Number(matchedItem.id));
+                }
+              }
+            }
+          }
+        }
+      } else {
+        // 步骤4: 购物车结算场景 - 同步刷新获取真实后端ID
+        // 重新拉取最新购物车数据，防止本地缓存旧数据
+        const latestCartRes = await fetchCartList();
+
+        if (!latestCartRes?.data || !Array.isArray(latestCartRes.data) || latestCartRes.data.length === 0) {
+          // 后端购物车为空，说明商品已被删除/失效
+          Taro.hideLoading();
+          Taro.showModal({
+            title: '购物车已更新',
+            content: '您的购物车可能已被其他设备修改，请刷新后重试',
+            showCancel: false,
+            success: () => {
+              setCartItems([]);
+              Taro.navigateBack();
+            }
+          });
+          return;
+        }
+
+        // 用 productId + skuId + quantity 匹配真实后端购物车 ID
+        const invalidItems: string[] = [];
+        for (const item of currentSelectedItems) {
+          const matchedBackendItem = latestCartRes.data.find(
+            (cartItem: any) =>
+              cartItem.productId?.toString() === item.productId?.toString() &&
+              cartItem.skuId?.toString() === item.skuId?.toString() &&
+              Number(cartItem.quantity) === Number(item.quantity)
+          );
+          if (matchedBackendItem && matchedBackendItem.id) {
+            realCartIds.push(Number(matchedBackendItem.id));
+          } else {
+            // 本地购物车项在后端不存在，说明已失效
+            invalidItems.push(`${item.productName || item.productId}`);
+          }
+        }
+        // 汇总打印一次警告，避免批量失效时刷屏
+        if (invalidItems.length > 0) {
+          console.warn(`[checkout] 检测到 ${invalidItems.length} 个失效商品:`, invalidItems.join('、'));
+        }
+
+        // 如果有匹配不到的商品，提示用户
+        if (realCartIds.length === 0) {
+          Taro.hideLoading();
+          Taro.showModal({
+            title: '商品已失效',
+            content: '部分商品可能已下架或库存不足，已为您刷新购物车',
+            showCancel: false,
+            success: () => {
+              // 用最新的后端数据更新本地购物车
+              setCartItems(latestCartRes.data.map((item: any) => ({
+                id: item.id,
+                productId: item.productId,
+                productName: item.productName,
+                skuId: item.skuId,
+                skuName: item.skuName,
+                price: item.price,
+                quantity: item.quantity,
+                image: item.image,
+                selected: true,
+                stock: item.stock,
+              })));
+              Taro.navigateBack();
+            }
+          });
+          return;
+        } else if (invalidItems.length > 0) {
+          // 部分商品失效，提示用户后继续提交有效商品
+          Taro.showToast({
+            title: `${invalidItems.length} 件商品已失效，已自动移出`,
+            icon: 'none',
+            duration: 2000,
+          });
+        }
+      }
+
+      if (realCartIds.length === 0) {
+        throw new Error('购物车项不能为空');
+      }
+
+      // 步骤5: 提交订单
+      const storeId = currentStore?.id || 0;
+      const userCouponId = selectedCouponId || null;
 
       const submitData = {
-        items: orderItems,
-        totalAmount: goodsAmount,
-        freightAmount: 0,
-        couponId: selectedCouponId,
-        couponAmount: couponAmount,
-        payAmount: finalAmount,
-        store: storeInfo,
-        address: address || undefined,
-        paymentMethod: paymentMethod === 'wechat' ? 'wechat' : 'alipay',
+        cartIds: realCartIds,
+        storeId: Number(storeId),
+        userCouponId: userCouponId ? Number(userCouponId) : null,
         remark
       };
+
+      console.log('[SubmitOrder] Payload:', JSON.stringify(submitData));
 
       const res = await submitOrder(submitData);
 
       Taro.hideLoading();
 
       if (res?.data) {
-        if (!buyNowItem) {
-          const selectedIds = selectedItems.map(item => item.id);
-          const remainingItems = cartItems.filter(item => !selectedIds.includes(item.id));
+        // 清理已结算的购物车项
+        if (!isBuyNow) {
+          const remainingItems = cartItems.filter(item => !realCartIds.includes(Number(item.id)));
           setCartItems(remainingItems);
-          batchDeleteCartItem(selectedIds).catch(() => null);
+          batchDeleteCartItem(realCartIds).catch(() => null);
         }
 
+        // 步骤6: 提交成功跳转
         Taro.showModal({
           title: '订单提交成功',
-          content: '订单已提交，请前往订单页面支付',
+          content: `订单号：${res.data.orderNo || res.data.orderId || ''}\n请前往订单页面支付`,
           showCancel: false,
           success: () => {
             Taro.navigateTo({ url: '/pages/cart/order/list/index?status=pending_payment' });
@@ -175,10 +292,46 @@ const CheckoutPage: React.FC = () => {
     } catch (error: any) {
       Taro.hideLoading();
       console.error('Submit order failed:', error);
-      Taro.showToast({
-        title: error?.message || '提交失败，请重试',
-        icon: 'none'
-      });
+
+      // 步骤7: 异常兜底 - 检测购物车项失效错误
+      const errorMsg = error?.message || '';
+      if (errorMsg.includes('未找到匹配的购物车项') || errorMsg.includes('购物车项不能为空')) {
+        Taro.showModal({
+          title: '商品已失效',
+          content: '部分商品可能已下架或库存不足，购物车已为您刷新',
+          showCancel: false,
+          success: async () => {
+            // 刷新购物车列表
+            try {
+              const refreshed = await fetchCartList();
+              if (refreshed?.data && Array.isArray(refreshed.data)) {
+                setCartItems(refreshed.data.map((item: any) => ({
+                  id: item.id,
+                  productId: item.productId,
+                  productName: item.productName,
+                  skuId: item.skuId,
+                  skuName: item.skuName,
+                  price: item.price,
+                  quantity: item.quantity,
+                  image: item.image,
+                  selected: true,
+                  stock: item.stock,
+                })));
+              } else {
+                setCartItems([]);
+              }
+            } catch {
+              setCartItems([]);
+            }
+            Taro.navigateBack();
+          }
+        });
+      } else {
+        Taro.showToast({
+          title: errorMsg || '提交失败，请重试',
+          icon: 'none'
+        });
+      }
     }
   };
 
@@ -313,17 +466,17 @@ const CheckoutPage: React.FC = () => {
       <View className={styles.amountSection}>
         <View className={styles.amountRow}>
           <Text className={styles.amountLabel}>商品金额</Text>
-          <Text className={styles.amountValue}>¥{goodsAmount}</Text>
+          <Text className={styles.amountValue}>¥{goodsAmount.toFixed(2)}</Text>
         </View>
         {couponAmount > 0 && (
           <View className={styles.amountRow}>
             <Text className={styles.amountLabel}>优惠券</Text>
-            <Text className={styles.amountValue}>-¥{couponAmount}</Text>
+            <Text className={styles.amountValue}>-¥{couponAmount.toFixed(2)}</Text>
           </View>
         )}
         <View className={`${styles.amountRow} ${styles.highlight}`}>
           <Text className={styles.amountLabel}>应付总额</Text>
-          <Text className={styles.amountValue}>¥{finalAmount}</Text>
+          <Text className={styles.amountValue}>¥{finalAmount.toFixed(2)}</Text>
         </View>
       </View>
 
@@ -331,7 +484,7 @@ const CheckoutPage: React.FC = () => {
       <View className={styles.bottomBar}>
         <View className={styles.totalAmount}>
           <Text className={styles.amountLabel}>合计:</Text>
-          <Text className={styles.amountValue}>¥{finalAmount}</Text>
+          <Text className={styles.amountValue}>¥{finalAmount.toFixed(2)}</Text>
         </View>
         <View className={styles.submitBtn} onClick={handleSubmitOrder}>
           提交订单

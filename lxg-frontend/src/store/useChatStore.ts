@@ -112,6 +112,7 @@ interface ChatStoreActions {
   addMessage: (msg: ChatMessage) => void;
   updateMessage: (conversationId: string, msgId: string, patch: Partial<ChatMessage>) => void;
   getMessages: (conversationId: string) => ChatMessage[];
+  _sendViaHttp: (conversationId: string, payload: { type: string; content: string; extra?: any }, tempId: string) => void;
 
   // ---------- 未读数 ----------
   getTotalUnread: () => number;
@@ -144,13 +145,100 @@ function normalizeConversation(raw: any): ChatConversation {
   };
 }
 
+// ---------- 当前用户信息获取 ----------
+function _getCurrentUserId(): string | null {
+  try {
+    const userInfoStr = localStorage.getItem('userInfo');
+    if (userInfoStr) {
+      const info = JSON.parse(userInfoStr);
+      return String(info.id ?? info.userId ?? info.user_id ?? info.ID ?? '');
+    }
+  } catch {}
+  return null;
+}
+
+// 客服/服务端发送者的识别关键词
+const SERVICE_SENDER_KEYWORDS = ['service', 'agent', 'admin', 'cs', 'customer_service', 'customer-service', 'customerService', 'staff', 'operator', 'kefu', '客服', '客服小乐', '小乐', 'ai客服', 'robot', 'bot', 'assistant', 'support'];
+const SERVICE_NAME_KEYWORDS = ['客服', '小乐', 'AI客服', '客服小乐', '乐享购', '官方客服'];
+// 用户发送者的识别关键词（用于反向排除）
+const USER_SENDER_KEYWORDS = ['user', 'customer', 'client', 'buyer', 'member', 'visitor', 'guest', '用户', '客户'];
+
+function _isServiceSender(raw: any): boolean {
+  const currentUserId = _getCurrentUserId();
+
+  // ===== 策略1：基于用户ID比较（最可靠）=====
+  // 检查消息的发送者ID是否与当前用户ID匹配 → 匹配则是用户
+  if (currentUserId) {
+    const msgSenderId = String(
+      raw.senderId ?? raw.SenderId ?? raw.sender_id ?? raw.userId ?? raw.user_id ?? raw.UserId ?? raw.createdBy ?? raw.created_by ?? raw.CreatedBy ?? ''
+    ).trim();
+    if (msgSenderId && msgSenderId === currentUserId) {
+      console.log('[ChatStore] _isServiceSender: 通过用户ID匹配为用户消息', { msgSenderId, currentUserId });
+      return false;
+    }
+    // 如果消息有 senderId 但不匹配当前用户 → 可能是客服
+    if (msgSenderId && msgSenderId !== currentUserId) {
+      console.log('[ChatStore] _isServiceSender: senderId 不匹配当前用户，判定为客服消息', { msgSenderId, currentUserId });
+      return true;
+    }
+  }
+
+  // ===== 策略2：检查 sender 字段关键词 =====
+  const senderRaw = String(raw.sender ?? raw.Sender ?? raw.senderType ?? raw.role ?? raw.sender_role ?? '').toLowerCase().trim();
+  
+  // 先检查是否明确为用户关键词
+  if (senderRaw && USER_SENDER_KEYWORDS.some(kw => senderRaw === kw || senderRaw.includes(kw))) {
+    return false;
+  }
+  
+  // 再检查是否明确为客服关键词
+  if (senderRaw && SERVICE_SENDER_KEYWORDS.some(kw => senderRaw === kw || senderRaw.includes(kw))) {
+    return true;
+  }
+
+  // ===== 策略3：检查 senderName 名称关键词 =====
+  const nameRaw = String(raw.senderName ?? raw.SenderName ?? raw.sender_name ?? raw.name ?? '').toLowerCase().trim();
+  if (nameRaw) {
+    if (SERVICE_NAME_KEYWORDS.some(kw => nameRaw.includes(kw.toLowerCase()))) {
+      return true;
+    }
+    if (USER_SENDER_KEYWORDS.some(kw => nameRaw.includes(kw))) {
+      return false;
+    }
+  }
+
+  // ===== 策略4：检查头像 URL 关键词 =====
+  const avatarRaw = String(raw.senderAvatar ?? raw.SenderAvatar ?? raw.sender_avatar ?? raw.avatar ?? '').toLowerCase();
+  if (avatarRaw && SERVICE_SENDER_KEYWORDS.some(kw => avatarRaw.includes(kw))) {
+    return true;
+  }
+
+  // ===== 策略5：检查 userType / UserType 数值枚举 =====
+  // 后端可能用 0=用户, 1=客服 等数字枚举
+  const userType = raw.userType ?? raw.UserType ?? raw.user_type ?? raw.sender_type;
+  if (userType !== undefined && userType !== null) {
+    const numType = Number(userType);
+    if (!isNaN(numType)) {
+      // 常见枚举：0=用户, 1=客服/管理员
+      if (numType === 0 || numType === 2) return false; // 用户
+      if (numType === 1 || numType === 3 || numType === 9) return true; // 客服
+    }
+  }
+
+  // 无法确定时，默认当作用户（user），并打印警告
+  console.warn('[ChatStore] _isServiceSender: 无法确定 sender 类型，默认当作 user', {
+    senderRaw,
+    nameRaw,
+    userType,
+    rawKeys: Object.keys(raw || {}),
+    raw,
+  });
+  return false;
+}
+
 function normalizeMessage(raw: any, conversationId?: string): ChatMessage {
-  const senderRaw: string = String(raw.sender ?? raw.Sender ?? raw.senderType ?? raw.role ?? '');
-  const sender: ChatSender = senderRaw === 'service' || senderRaw === 'agent' || senderRaw === 'admin'
-    ? 'service'
-    : senderRaw === 'system'
-      ? 'system'
-      : 'user';
+  const isServiceSender = _isServiceSender(raw);
+  const sender: ChatSender = isServiceSender ? 'service' : 'user';
 
   const ts = raw.timestamp ?? raw.Timestamp ?? raw.createTime ?? raw.CreateTime ?? raw.created_at ?? raw.createdAt ?? Date.now();
 
@@ -160,7 +248,7 @@ function normalizeMessage(raw: any, conversationId?: string): ChatMessage {
     type: (['text', 'image', 'order', 'product', 'system'].includes(raw.type ?? raw.Type) ? (raw.type ?? raw.Type) : 'text') as ChatMessageType,
     content: String(raw.content ?? raw.Content ?? raw.message ?? raw.text ?? ''),
     sender,
-    senderId: raw.senderId ?? raw.SenderId ?? raw.sender_id,
+    senderId: raw.senderId ?? raw.SenderId ?? raw.sender_id ?? raw.userId ?? raw.user_id,
     senderName: raw.senderName ?? raw.SenderName ?? raw.sender_name,
     senderAvatar: raw.senderAvatar ?? raw.SenderAvatar ?? raw.sender_avatar ?? raw.avatar,
     createTime: typeof ts === 'number' ? formatTime(ts) : String(ts),
@@ -347,9 +435,24 @@ export const useChatStore = create<ChatStore>((set, get) => ({
       const res = await apiGet(chatApi.messages, {}, { id: conversationId });
       const data = res?.data ?? res?.result ?? res ?? [];
       const rawList = Array.isArray(data) ? data : data?.list ?? data?.records ?? [];
+      
+      // 调试日志：打印后端返回的原始消息结构
+      console.log('[ChatStore] fetchMessages 原始数据:', {
+        conversationId,
+        count: rawList.length,
+        firstRaw: rawList[0] ? JSON.stringify(rawList[0], null, 2) : null,
+        allSenderFields: rawList.map((m: any) => ({
+          sender: m.sender ?? m.Sender ?? m.senderType ?? m.role ?? m.sender_role ?? m.userType ?? m.UserType ?? '(无)',
+          senderName: m.senderName ?? m.SenderName ?? m.sender_name ?? m.name ?? '(无)',
+          keys: Object.keys(m || {}),
+        })),
+      });
+      
       const list: ChatMessage[] = rawList
         .map((raw) => normalizeMessage(raw, conversationId))
         .sort((a, b) => (a.timestamp ?? 0) - (b.timestamp ?? 0));
+      
+      console.log('[ChatStore] fetchMessages 标准化后:', list.map(m => ({ id: m.id, sender: m.sender, content: m.content?.slice(0, 20) })));
 
       set((s) => ({
         messagesMap: { ...s.messagesMap, [key]: list },
@@ -390,7 +493,12 @@ export const useChatStore = create<ChatStore>((set, get) => ({
       chatWS.connect();
     }
 
-    // 3. 通过 WebSocket 发送消息（chatWS 内部有发送队列，未连接时会暂存）
+    // 3. 如果 WebSocket 未连接，同时通过 HTTP API 发送作为兜底
+    if (!get().wsConnected) {
+      this._sendViaHttp(conversationId, payload, tempId);
+    }
+
+    // 4. 通过 WebSocket 发送消息（chatWS 内部有发送队列，未连接时会暂存）
     const wsPayload = {
       type: 'message/send' as const,
       data: {
@@ -404,7 +512,7 @@ export const useChatStore = create<ChatStore>((set, get) => ({
 
     chatWS.send(wsPayload);
 
-    // 4. 等待最多 8 秒确认：通过 WS 推送的新消息视为 ACK；超时则乐观设为 sent
+    // 5. 等待最多 8 秒确认：通过 WS 推送的新消息视为 ACK；超时则乐观设为 sent
     return new Promise((resolve) => {
       let resolved = false;
       let unsubListener: (() => void) | null = null;
@@ -436,8 +544,7 @@ export const useChatStore = create<ChatStore>((set, get) => ({
         // 后端广播了新的 user 消息
         if (type === 'message/new' && data) {
           const inConvId = String(data.conversationId ?? data.conv_id ?? '');
-          const inSender = String(data.sender ?? data.Sender ?? data.senderType ?? data.role ?? '');
-          const isUserSender = inSender !== 'service' && inSender !== 'agent' && inSender !== 'admin' && inSender !== 'system';
+          const isUserSender = !_isServiceSender(data);
           const inContent = String(data.content ?? data.Content ?? data.message ?? data.text ?? '');
           if (inConvId === conversationId && isUserSender && inContent === optimisticMsg.content) {
             // 回推消息 ID 与临时 ID 不同：用服务端消息替换本地乐观消息
@@ -509,6 +616,29 @@ export const useChatStore = create<ChatStore>((set, get) => ({
     });
   },
 
+  /**
+   * 通过 HTTP API 发送消息（作为 WebSocket 的兜底方案）
+   */
+  _sendViaHttp(conversationId: string, payload: { type: string; content: string; extra?: any }, tempId: string) {
+    console.log('[ChatStore] _sendViaHttp: 通过 HTTP 发送消息兜底');
+    apiPost(chatApi.sendMessage, {
+      type: payload.type,
+      content: payload.content,
+    }, { id: conversationId }, {}, true)
+      .then((res: any) => {
+        console.log('[ChatStore] _sendViaHttp: HTTP 发送成功', res);
+        // 更新消息状态为 sent
+        get().updateMessage(conversationId, tempId, { status: 'sent' });
+        // 刷新消息列表
+        get().fetchMessages(conversationId, true).catch(() => {});
+      })
+      .catch((err: any) => {
+        console.error('[ChatStore] _sendViaHttp: HTTP 发送失败', err);
+        get().updateMessage(conversationId, tempId, { status: 'failed' });
+        Taro.showToast({ title: '消息发送失败', icon: 'none' });
+      });
+  },
+
   getMessages(conversationId) {
     return get().messagesMap[conversationId] ?? [];
   },
@@ -559,7 +689,17 @@ function _handleWSMessage(msg: WSInboundMessage) {
     case 'message/new': {
       if (!data) return;
       const conversationId = String(data.conversationId ?? data.conv_id ?? store.currentConversationId ?? '');
+      
+      // 调试日志：打印 WS 推送的消息结构
+      console.log('[ChatStore] WS message/new 原始数据:', {
+        dataKeys: Object.keys(data || {}),
+        sender: data.sender ?? data.Sender ?? data.senderType ?? data.role ?? data.sender_role ?? data.userType ?? '(无)',
+        senderName: data.senderName ?? data.SenderName ?? data.sender_name ?? data.name ?? '(无)',
+        raw: JSON.stringify(data).slice(0, 300),
+      });
+      
       const chatMsg = normalizeMessage(data, conversationId);
+      console.log('[ChatStore] WS message/new 标准化后:', { id: chatMsg.id, sender: chatMsg.sender, content: chatMsg.content?.slice(0, 30) });
       store.addMessage(chatMsg);
       // 如果不在当前会话 → 刷新未读（addMessage 内部已处理）
       break;

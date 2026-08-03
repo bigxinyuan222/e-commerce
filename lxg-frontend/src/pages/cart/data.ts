@@ -21,7 +21,7 @@ export function saveCartItems(items: CartItem[]): void {
 // 计算购物车总价
 export function calculateCartTotal(items: CartItem[]): CartState {
   const selectedItems = items.filter(item => item.selected);
-  const totalPrice = selectedItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
+  const totalPrice = Number((selectedItems.reduce((sum, item) => sum + item.price * item.quantity, 0)).toFixed(2));
   const totalCount = items.reduce((sum, item) => sum + item.quantity, 0);
   const selectedCount = selectedItems.reduce((sum, item) => sum + item.quantity, 0);
   const selectedPrice = totalPrice;

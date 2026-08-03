@@ -2,6 +2,7 @@ import React, { useState, useCallback, useEffect, useRef, useMemo } from 'react'
 import { View, Text, Input, ScrollView, Image } from '@tarojs/components';
 import Taro, { useDidShow, useDidHide, useRouter } from '@tarojs/taro';
 import useChatStore, { ChatMessage } from '@/store/useChatStore';
+import chatWS from '@/utils/chatWS';
 import { getImageUrl } from '@/utils/image';
 import styles from '@/styles/message/customer-service.module.scss';
 
@@ -41,7 +42,6 @@ const CustomerServicePage: React.FC = () => {
   const messages: ChatMessage[] = conversationId ? (messagesMap[conversationId] ?? []) : [];
   const messagesLoading = conversationId ? !!messagesLoadingMap[conversationId] : false;
 
-  // ========== 初始化 ==========
   useEffect(() => {
     init();
     bootstrap();
@@ -63,12 +63,10 @@ const CustomerServicePage: React.FC = () => {
 
   const bootstrap = async () => {
     try {
-      // 拉一次会话列表，确定当前会话存在性
       if (!conversations.length) await fetchConversations(true);
 
       let cid = queryId;
 
-      // 无 id → 创建新会话
       if (!cid) {
         const conv = await createConversation({ title: '乐享购官方客服' });
         cid = conv?.id ?? null;
@@ -86,7 +84,6 @@ const CustomerServicePage: React.FC = () => {
     }
   };
 
-  // ========== 滚动 ==========
   const scrollToBottom = useCallback(() => {
     if (!autoScrollRef.current) return;
     try {
@@ -99,23 +96,18 @@ const CustomerServicePage: React.FC = () => {
         })
         .exec();
     } catch (e) {
-      // 兜底
       Taro.pageScrollTo({ scrollTop: 99999, duration: 150 });
     }
   }, []);
 
-  // 新消息自动滚底
   useEffect(() => {
     if (messages.length > 0) setTimeout(scrollToBottom, 50);
   }, [messages.length, scrollToBottom]);
 
-  // 监听滚动：手动上滑则停止自动滚底，滑到底部则恢复
   const onScroll = (e: any) => {
     // TODO: 根据实际 scrollTop/clientHeight/scrollHeight 计算
-    // 简化：保持默认 autoScroll true
   };
 
-  // ========== 发送 ==========
   const handleSend = useCallback(async () => {
     if (!conversationId) {
       Taro.showToast({ title: '会话未就绪，请稍候', icon: 'none' });
@@ -127,8 +119,10 @@ const CustomerServicePage: React.FC = () => {
     setInputValue('');
     autoScrollRef.current = true;
 
-    // 确保连接
-    if (!wsConnected) connectWS();
+    if (!wsConnected) {
+      Taro.showToast({ title: '正在连接...', icon: 'none' });
+      connectWS();
+    }
 
     const result = await sendMessage(conversationId, { type: 'text', content });
     void result;
@@ -139,7 +133,12 @@ const CustomerServicePage: React.FC = () => {
     setInputValue(e.detail.value ?? e.target?.value ?? '');
   }, []);
 
-  // ========== UI ==========
+  const handleReconnect = useCallback(() => {
+    chatWS.resetReconnect();
+    connectWS();
+    Taro.showToast({ title: '正在重新连接...', icon: 'none' });
+  }, [connectWS]);
+
   const conversationTitle = useMemo(() => {
     return currentConversation?.title
       ?? currentConversation?.name
@@ -148,6 +147,7 @@ const CustomerServicePage: React.FC = () => {
 
   const statusText = useMemo(() => {
     switch (wsStatus) {
+      case 'idle': return '点击连接';
       case 'connecting': return '🔗 连接中...';
       case 'open': return '✓ 在线';
       case 'closing': return '断开中...';
@@ -156,7 +156,15 @@ const CustomerServicePage: React.FC = () => {
     }
   }, [wsStatus]);
 
-  // 渲染消息气泡
+  const statusColor = useMemo(() => {
+    switch (wsStatus) {
+      case 'open': return '#52c41a';
+      case 'connecting': return '#faad14';
+      case 'closed': return '#999';
+      default: return '#999';
+    }
+  }, [wsStatus]);
+
   const renderMessage = (msg: ChatMessage) => {
     const isMe = msg.sender === 'user';
     const avatar = isMe
@@ -168,6 +176,7 @@ const CustomerServicePage: React.FC = () => {
         {msg.status === 'sending' && '发送中...'}
         {msg.status === 'failed' && <Text style={{ color: '#ef4444' }}>发送失败</Text>}
         {msg.status === 'read' && '已读'}
+        {msg.status === 'sent' && '已送达'}
       </Text>
     ) : null;
 
@@ -211,9 +220,18 @@ const CustomerServicePage: React.FC = () => {
         }}>←</Text>
         <View className={styles.headerCenter}>
           <Text className={styles.headerTitle}>{conversationTitle}</Text>
-          {statusText ? (
-            <Text className={`${styles.headerStatus} ws-${wsStatus}`}>{statusText}</Text>
-          ) : null}
+          <View className={styles.headerStatusRow}>
+            <Text
+              className={`${styles.headerStatus} ws-${wsStatus}`}
+              style={{ color: statusColor }}
+              onClick={wsStatus === 'closed' || wsStatus === 'idle' ? handleReconnect : undefined}
+            >
+              {statusText}
+              {(wsStatus === 'closed' || wsStatus === 'idle') && (
+                <Text className={styles.reconnectHint}>（点击重连）</Text>
+              )}
+            </Text>
+          </View>
         </View>
         <View className={styles.headerRight}></View>
       </View>
@@ -226,7 +244,6 @@ const CustomerServicePage: React.FC = () => {
         ref={scrollRef}
         onScroll={onScroll}
       >
-        {/* 时间分割线 */}
         <View className={styles.dateDivider}>
           <Text className={styles.dateText}>今天</Text>
         </View>

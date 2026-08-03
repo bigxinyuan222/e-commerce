@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { View, Text, Image, ScrollView } from '@tarojs/components';
 import Taro from '@tarojs/taro';
-import { fetchOrderList, cancelOrder, payOrder, confirmOrder, paymentCallback, fetchOrderPaymentStatus } from '@/api/cart';
+import { fetchOrderList, fetchRefundList, cancelOrder, payOrder, confirmOrder, paymentCallback, fetchOrderPaymentStatus } from '@/api/cart';
 import { getImageUrl, lazyImgProps } from '@/utils/image';
 import styles from '@/styles/cart/order-list.module.scss';
 
@@ -14,6 +14,17 @@ const statusCodeMap: { [key: number]: string } = {
   5: 'refunding',
   6: 'refund_rejected',
   7: 'refunded',
+};
+
+const statusCodeReverseMap: { [key: string]: number } = {
+  'pending_payment': 0,
+  'pending_delivery': 1,
+  'pending_pickup': 2,
+  'completed': 3,
+  'cancelled': 4,
+  'refunding': 5,
+  'refund_rejected': 6,
+  'refunded': 7,
 };
 
 const statusMap: { [key: string]: string } = {
@@ -44,6 +55,8 @@ const statusColorMap: { [key: string]: string } = {
   'refunded': '#52c41a',
 };
 
+
+
 function transformOrderItem(item: any): any {
   return {
     id: item.id || item.ID || '',
@@ -54,6 +67,26 @@ function transformOrderItem(item: any): any {
     price: item.price != null ? item.price : (item.Price || 0),
     quantity: item.quantity != null ? item.quantity : (item.Quantity || 0),
     image: getImageUrl(item.image || item.Image || ''),
+  };
+}
+
+function transformRefund(refund: any): any {
+  const items = (refund.items || []).map((item: any) => ({
+    ...transformOrderItem(item),
+    image: getImageUrl(item.image || item.Image || ''),
+  }));
+
+  return {
+    id: refund.id || '',
+    orderId: refund.orderId || '',
+    orderNo: refund.refundNo || refund.orderNo || '',
+    status: refund.status || 'unknown',
+    statusText: refund.statusText || '',
+    createTime: refund.applyTime || '',
+    payAmount: refund.amount || refund.payAmount || 0,
+    totalAmount: refund.amount || 0,
+    items,
+    isRefundRecord: true,
   };
 }
 
@@ -134,8 +167,7 @@ const OrderCard = React.memo(({
   onConfirmDelivery,
   onConfirmPickup,
   onRefund,
-  onReview,
-  onRefundStatusChange
+  onReview
 }: {
   order: any;
   onDetail: (id: string) => void;
@@ -145,13 +177,12 @@ const OrderCard = React.memo(({
   onConfirmPickup: (id: string) => void;
   onRefund: (id: string) => void;
   onReview: (id: string) => void;
-  onRefundStatusChange: (orderId: string, status: string) => void;
 }) => {
-  const canCancel = order.status === 'pending_payment';
+  const canCancel = order.status === 'pending_payment' || order.status === 'pending_delivery' || order.status === 'pending_pickup';
   const canPay = order.status === 'pending_payment';
   const canConfirmDelivery = order.status === 'pending_delivery';
   const canConfirmPickup = order.status === 'pending_pickup';
-  const canRefund = order.status === 'pending_delivery' || order.status === 'pending_pickup' || order.status === 'completed' || order.status === 'pending_review';
+  const canRefund = order.status === 'completed' || order.status === 'pending_review';
   const canReview = order.status === 'completed' || order.status === 'pending_review';
   const isRefundOrder = order.status === 'refunding' || order.status === 'refund_rejected' || order.status === 'refunded';
 
@@ -188,7 +219,7 @@ const OrderCard = React.memo(({
           <OrderProductItem
             key={`${order.id}-${product.productId}-${index}`}
             product={product}
-            onClick={() => onDetail(order.id)}
+            onClick={() => order.isRefundRecord ? undefined : onDetail(order.id)}
           />
         ))}
       </View>
@@ -236,36 +267,13 @@ const OrderCard = React.memo(({
           )}
           {canReview && (
             <OrderActionButton
-              text="评价晒单"
+              text="待评价"
               type="primary"
               onClick={() => onReview(order.id)}
             />
           )}
         </View>
       </View>
-
-      {isRefundOrder && (
-        <View className={styles.refundStatusActions}>
-          <View
-            className={`${styles.refundStatusBtn} ${order.status === 'refunding' ? styles.active : ''}`}
-            onClick={() => onRefundStatusChange(order.id, 'refunding')}
-          >
-            <Text>退款中</Text>
-          </View>
-          <View
-            className={`${styles.refundStatusBtn} ${order.status === 'refund_rejected' ? styles.active : ''}`}
-            onClick={() => onRefundStatusChange(order.id, 'refund_rejected')}
-          >
-            <Text>商家已拒绝</Text>
-          </View>
-          <View
-            className={`${styles.refundStatusBtn} ${order.status === 'refunded' ? styles.active : ''}`}
-            onClick={() => onRefundStatusChange(order.id, 'refunded')}
-          >
-            <Text>已退款</Text>
-          </View>
-        </View>
-      )}
     </View>
   );
 });
@@ -307,17 +315,25 @@ const OrderListPage: React.FC = () => {
   const loadOrders = useCallback(async (status?: string) => {
     setLoading(true);
     try {
+      if (status === 'refunding') {
+        const res = await fetchRefundList({ page: 1, size: 50 });
+        const list = Array.isArray(res?.data) ? res.data : [];
+        setOrders(list.map(transformRefund));
+        return;
+      }
+
       const params: Record<string, any> = { page: 1, size: 50 };
-      if (status && status !== 'all' && status !== 'refunding' && status !== 'pending_review' && status !== 'reviewed') {
-        params.status = status;
+      if (status && status !== 'all' && status !== 'pending_review' && status !== 'reviewed') {
+        const statusCode = statusCodeReverseMap[status];
+        if (statusCode !== undefined) {
+          params.status = statusCode;
+        }
       }
       const res = await fetchOrderList(params);
       const list = Array.isArray(res?.data) ? res.data : [];
       const transformed = list.map(transformOrder);
 
-      if (status === 'refunding') {
-        setOrders(transformed.filter((o: any) => ['refunding', 'refund_rejected', 'refunded'].includes(o.status)));
-      } else if (status === 'pending_review') {
+      if (status === 'pending_review') {
         setOrders(transformed.filter((o: any) => o.status === 'completed' || o.status === 'pending_review'));
       } else if (status === 'reviewed') {
         setOrders(transformed.filter((o: any) => o.status === 'reviewed' || o.status === 'cancelled'));
@@ -458,16 +474,6 @@ const OrderListPage: React.FC = () => {
     Taro.navigateTo({ url: `/pages/cart/order/review/index?id=${orderId}` });
   }, []);
 
-  const handleRefundStatusChange = useCallback((_orderId: string, status: string) => {
-    const statusTextMap: { [key: string]: string } = {
-      'refunding': '退款中',
-      'refund_rejected': '商家已拒绝',
-      'refunded': '已退款',
-    };
-    Taro.showToast({ title: `状态已更新为${statusTextMap[status]}`, icon: 'success' });
-    loadOrders(activeTab);
-  }, [loadOrders, activeTab]);
-
   const activeTabIndex = useMemo(() => {
     return tabs.findIndex(tab => tab.key === activeTab);
   }, [activeTab, tabs]);
@@ -524,7 +530,6 @@ const OrderListPage: React.FC = () => {
               onConfirmPickup={handleConfirmPickup}
               onRefund={handleApplyRefund}
               onReview={handleReviewOrder}
-              onRefundStatusChange={handleRefundStatusChange}
             />
           ))}
         </ScrollView>

@@ -136,11 +136,6 @@
             font-size: $font-size-xl;
             font-weight: $font-weight-bold;
             color: $color-price;
-            
-            &::before {
-              content: '¥';
-              font-size: $font-size-sm;
-            }
           }
           
           .seckillTag {
@@ -345,11 +340,6 @@
         font-size: $font-size-xxl;
         font-weight: $font-weight-bold;
         color: $color-price;
-        
-        &::before {
-          content: '¥';
-          font-size: $font-size-md;
-        }
       }
     }
     

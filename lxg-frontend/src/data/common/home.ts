@@ -138,52 +138,7 @@ export const seckillActivity = {
   startTime: now.toISOString().replace('T', ' ').slice(0, 19),
   endTime: endTimeStr,
   status: 'active' as const,
-  products: [
-    {
-      id: 'sk-1',
-      productId: 'product-1',
-      productName: 'iPhone 15 Pro Max 256GB',
-      image: 'https://picsum.photos/id/1/300/300',
-      originalPrice: 9999,
-      seckillPrice: 7999,
-      stock: 50,
-      soldCount: 23,
-      limitCount: 1
-    },
-    {
-      id: 'sk-2',
-      productId: 'product-2',
-      productName: '华为 Mate 60 Pro',
-      image: 'https://picsum.photos/id/2/300/300',
-      originalPrice: 6999,
-      seckillPrice: 5499,
-      stock: 100,
-      soldCount: 67,
-      limitCount: 2
-    },
-    {
-      id: 'sk-3',
-      productId: 'product-3',
-      productName: 'AirPods Pro 2代',
-      image: 'https://picsum.photos/id/3/300/300',
-      originalPrice: 1899,
-      seckillPrice: 1399,
-      stock: 200,
-      soldCount: 156,
-      limitCount: 3
-    },
-    {
-      id: 'sk-4',
-      productId: 'product-4',
-      productName: '小米手环 8 Pro',
-      image: 'https://picsum.photos/id/8/300/300',
-      originalPrice: 399,
-      seckillPrice: 299,
-      stock: 500,
-      soldCount: 234,
-      limitCount: 5
-    }
-  ]
+  products: []
 };
 
 // 热门搜索关键词

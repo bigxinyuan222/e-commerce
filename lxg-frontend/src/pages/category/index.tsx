@@ -77,10 +77,8 @@ const RecommendProduct = React.memo(({
     <View className={styles.productInfo}>
       <Text className={styles.productName}>{product.name}</Text>
       <View className={styles.productPrice}>
-        <Text className={styles.price}>¥{product.price}</Text>
-        {product.originalPrice > product.price && (
-          <Text className={styles.originalPrice}>¥{product.originalPrice}</Text>
-        )}
+        <Text className={styles.priceSymbol}>¥</Text>
+        <Text className={styles.price}>{product.price}</Text>
       </View>
     </View>
   </View>
