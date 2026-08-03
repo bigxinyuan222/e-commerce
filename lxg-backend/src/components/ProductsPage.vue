@@ -125,11 +125,12 @@ const editorForm = reactive({ name: '', parentId: '' as number | string, valuesT
 const createOpen = ref(false)
 const createStep = ref(1)
 const createLoading = ref(false)
+const imageUploading = ref(false)
+const createImages = ref<string[]>([])
 const createError = ref('')
 const createForm = reactive({
   name: '',
   description: '',
-  imageText: '',
   brandId: '' as number | '',
   firstCategoryName: '',
   categoryId: '' as number | '',
@@ -566,9 +567,10 @@ async function deleteResource(resource: ResourceName, item: CategoryItem | Brand
 
 function resetCreateForm() {
   Object.assign(createForm, {
-    name: '', description: '', imageText: '', brandId: '', firstCategoryName: '', categoryId: '',
+    name: '', description: '', brandId: '', firstCategoryName: '', categoryId: '',
     originalPrice: '', status: 0, selectedSpecs: {}, skus: [],
   })
+  createImages.value = []
   specifications.value.forEach((spec) => { createForm.selectedSpecs[spec.name] = [] })
   createStep.value = 1
   createError.value = ''
@@ -580,8 +582,50 @@ function openCreateProduct() {
 }
 
 function closeCreateProduct() {
-  if (createLoading.value) return
+  if (createLoading.value || imageUploading.value) return
   createOpen.value = false
+}
+
+function uploadImageUrl(payload: any): string {
+  const data = payload?.data ?? payload
+  if (typeof data === 'string') return data
+  return data?.url || data?.imageUrl || data?.image_url || data?.fileUrl || data?.file_url || data?.path || ''
+}
+
+async function uploadProductImages(event: Event) {
+  const input = event.target as HTMLInputElement
+  const files = Array.from(input.files || [])
+  input.value = ''
+  if (!files.length) return
+  if (files.some(file => !file.type.startsWith('image/'))) {
+    createError.value = '请选择图片文件'
+    return
+  }
+
+  imageUploading.value = true
+  createError.value = ''
+  try {
+    for (const file of files) {
+      const formData = new FormData()
+      formData.append('file', file)
+      const payload = await requestJson('/api/v1/user/upload', {
+        method: 'POST', headers: authHeaders(), body: formData,
+      })
+      const url = uploadImageUrl(payload)
+      if (!url) throw new Error('上传成功，但接口未返回图片地址')
+      createImages.value.push(url)
+    }
+    notify('商品图片上传成功')
+  } catch (cause) {
+    createError.value = cause instanceof Error ? cause.message : '商品图片上传失败'
+    notify(createError.value, 'error')
+  } finally {
+    imageUploading.value = false
+  }
+}
+
+function removeProductImage(index: number) {
+  createImages.value.splice(index, 1)
 }
 
 function selectCreateCategory() {
@@ -627,7 +671,6 @@ async function createProduct() {
     createError.value = '请完整填写 SKU 售价和库存'
     return
   }
-  const images = createForm.imageText.split(/[，,\n]/).map(value => value.trim()).filter(Boolean)
   const categoryIdValue = Number(createForm.categoryId) || 0
   const brandIdValue = Number(createForm.brandId) || 0
   const specs = createSpecs.value.map(spec => ({ id: spec.id, name: spec.name, values: spec.values }))
@@ -644,7 +687,7 @@ async function createProduct() {
     category_id: categoryIdValue,
     original_price: Number(createForm.originalPrice) || 0,
     status: Number(createForm.status),
-    images,
+    images: [...createImages.value],
     specs,
     skus,
   }
@@ -773,7 +816,21 @@ onUnmounted(() => {
             <label><span>二级分类 <b>*</b></span><select v-model.number="createForm.categoryId" required :disabled="!selectedCreateCategory"><option value="">请选择二级分类</option><option v-for="child in selectedCreateCategory?.children || []" :key="child.id" :value="child.id">{{ child.name }}</option></select></label>
             <label><span>商品原价 <b>*</b></span><input v-model.number="createForm.originalPrice" type="number" min="0.01" step="0.01" required placeholder="0.00" /></label>
             <label><span>初始状态 <b>*</b></span><select v-model.number="createForm.status" required><option :value="0">下架</option><option :value="1">上架</option></select></label>
-            <label class="full"><span>商品图片 URL</span><textarea v-model="createForm.imageText" rows="2" placeholder="多个图片地址使用逗号或换行分隔"></textarea></label>
+            <div class="full product-image-upload">
+              <span>商品图片</span>
+              <label class="product-image-picker" :class="{ disabled: imageUploading }">
+                <input type="file" accept="image/*" multiple :disabled="imageUploading" @change="uploadProductImages" />
+                <i :class="imageUploading ? 'fas fa-spinner fa-spin' : 'fas fa-cloud-upload-alt'"></i>
+                <strong>{{ imageUploading ? '图片上传中...' : '选择图片上传' }}</strong>
+                <small>支持一次选择多张图片</small>
+              </label>
+              <div v-if="createImages.length" class="product-image-previews">
+                <div v-for="(url, index) in createImages" :key="`${url}-${index}`" class="product-image-preview">
+                  <img :src="url" :alt="`商品图片 ${index + 1}`" />
+                  <button type="button" title="移除图片" :disabled="imageUploading" @click="removeProductImage(index)"><i class="fas fa-times"></i></button>
+                </div>
+              </div>
+            </div>
             <label class="full"><span>商品描述</span><textarea v-model="createForm.description" rows="4" maxlength="2000" placeholder="请输入商品描述"></textarea></label>
           </div>
           <div v-else-if="createStep === 2" class="product-spec-selector">
@@ -784,7 +841,7 @@ onUnmounted(() => {
             <div class="table-wrap"><table><thead><tr><th>规格组合</th><th>售价</th><th>库存</th><th>图片 URL</th></tr></thead><tbody><tr v-for="(sku, index) in createForm.skus" :key="index"><td><span v-if="Object.keys(sku.specValues).length" class="sku-spec-text">{{ Object.entries(sku.specValues).map(([name, value]) => `${name}: ${value}`).join(' / ') }}</span><span v-else class="sku-spec-text">默认规格</span></td><td><input v-model="sku.price" type="number" min="0.01" step="0.01" required /></td><td><input v-model.number="sku.stock" type="number" min="0" step="1" required /></td><td><input v-model="sku.image" placeholder="可选" /></td></tr></tbody></table></div>
           </div>
           <div v-if="createError" class="product-error product-create-error">{{ createError }}</div>
-          <div class="product-create-actions"><button v-if="createStep > 1" type="button" class="btn btn-outline" :disabled="createLoading" @click="previousCreateStep"><i class="fas fa-arrow-left"></i> 上一步</button><button type="button" class="btn btn-outline" :disabled="createLoading" @click="closeCreateProduct">取消</button><button v-if="createStep < 3" type="button" class="btn btn-primary" @click="nextCreateStep">下一步 <i class="fas fa-arrow-right"></i></button><button v-else type="submit" class="btn btn-primary" :disabled="createLoading"><i :class="createLoading ? 'fas fa-spinner fa-spin' : 'fas fa-save'"></i> {{ createLoading ? '创建中...' : '创建商品' }}</button></div>
+          <div class="product-create-actions"><button v-if="createStep > 1" type="button" class="btn btn-outline" :disabled="createLoading || imageUploading" @click="previousCreateStep"><i class="fas fa-arrow-left"></i> 上一步</button><button type="button" class="btn btn-outline" :disabled="createLoading || imageUploading" @click="closeCreateProduct">取消</button><button v-if="createStep < 3" type="button" class="btn btn-primary" :disabled="imageUploading" @click="nextCreateStep">下一步 <i class="fas fa-arrow-right"></i></button><button v-else type="submit" class="btn btn-primary" :disabled="createLoading || imageUploading"><i :class="createLoading ? 'fas fa-spinner fa-spin' : 'fas fa-save'"></i> {{ createLoading ? '创建中...' : '创建商品' }}</button></div>
         </form>
       </div>
     </div>

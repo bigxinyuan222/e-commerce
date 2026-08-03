@@ -53,12 +53,14 @@ const API_CONFIG = {
     // 评价模块
     reviews: {
         list: `${API_BASE_URL}/admin/review/list`,                 // 获取管理端评价列表
-        detail: `${API_BASE_URL}/reviews/:id`,                     // 获取评价详情
-        audit: `${API_BASE_URL}/reviews/:id/audit`,                // 审核评价
-        reply: `${API_BASE_URL}/reviews/:id/reply`,                // 回复评价
-        summaries: `${API_BASE_URL}/review-summaries`,             // 获取评价汇总列表
-        auditSummary: `${API_BASE_URL}/review-summaries/:id/audit`, // 审核评价汇总
-        editSummary: `${API_BASE_URL}/review-summaries/:id`,       // 编辑评价汇总
+        detail: `${API_BASE_URL}/admin/review/detail`,             // 获取管理端评价详情
+        audit: `${API_BASE_URL}/admin/review/audit`,               // 审核评价
+        hide: `${API_BASE_URL}/admin/review/hide`,                 // 隐藏评价
+        reply: `${API_BASE_URL}/admin/review/reply`,               // 管理员回复评价
+        deleteReply: `${API_BASE_URL}/admin/delete/reply`,         // 删除用户回复
+        summaries: `${API_BASE_URL}/admin/review/ailist`,          // 获取 AI 摘要列表
+        auditSummary: `${API_BASE_URL}/admin/audit/summary`,        // 审核 AI 摘要
+        editSummary: `${API_BASE_URL}/admin/edit/review`,          // 编辑 AI 摘要
         generateSummary: `${API_BASE_URL}/review-summaries/generate` // 生成评价汇总
     },
     // 门店模块

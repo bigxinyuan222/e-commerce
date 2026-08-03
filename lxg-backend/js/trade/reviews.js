@@ -7,6 +7,25 @@ let aiSummaryData = [];
 let currentReviewSearchKeyword = '';
 let currentReviewStatusFilter = 'all';
 let currentReviewRatingFilter = 'all';
+let currentReviewPage = 1;
+const reviewPageSize = 10;
+let currentSummaryState = '';
+let currentSummaryPage = 1;
+const summaryPageSize = 10;
+
+function reviewListQuery() {
+    return {
+        page: currentReviewPage,
+        size: reviewPageSize,
+        keyword: currentReviewSearchKeyword,
+        // API: 1 = good, 2 = bad. "all" is represented by an empty value.
+        review_type: currentReviewRatingFilter === 'good' ? '1' : currentReviewRatingFilter === 'bad' ? '2' : '',
+        // API: 0 pending, 1 visible, 2 rejected, 3 hidden.
+        status: currentReviewStatusFilter === 'pending' ? '0' : currentReviewStatusFilter === 'approved' ? '1' : currentReviewStatusFilter === 'hidden' ? '3' : '',
+        start_date: '',
+        end_date: ''
+    };
+}
 
 // 获取评价状态标签HTML
 function getStatusBadge(status) {
@@ -48,38 +67,42 @@ function getRatingStars(rating) {
     return stars;
 }
 
+function normalizeReview(item) {
+    return {
+        id: item.ID || item.id,
+        goodsId: item.productId || item.product_id || item.goodsId || item.product?.id || '',
+        goodsName: item.productName || item.product_name || item.goodsName || item.product?.name || '',
+        userId: item.userId || item.user_id || item.user?.id || '',
+        userName: item.userName || item.user_name || item.user?.nickname || item.user?.name || item.name || '',
+        phone: item.phone || item.user?.phone || '',
+        rating: Number(item.rating || item.score || 0),
+        content: item.content || '',
+        images: item.images || [],
+        likes: item.likes || item.likeCount || item.like_count || 0,
+        status: item.status === 1 ? 'approved' : item.status === 0 ? 'pending' : 'hidden',
+        createTime: item.createdAt || item.created_at || item.CreatedAt || '',
+        reply: (item.adminReply || item.admin_reply) ? {
+            content: (item.adminReply || item.admin_reply).content || '',
+            time: (item.adminReply || item.admin_reply).time || (item.adminReply || item.admin_reply).createdAt || (item.adminReply || item.admin_reply).created_at || ''
+        } : null,
+        replies: (item.replies || []).map(r => ({
+            id: r.id || '',
+            userName: r.userName || r.user_name || r.user?.nickname || '',
+            content: r.content || '',
+            time: r.createdAt || r.created_at || r.time || '',
+            likes: r.likes || r.like_count || 0
+        }))
+    };
+}
+
 // 加载评价列表
 async function loadReviews() {
     try {
-        const response = await apiGet(API_CONFIG.reviews.list);
+        const response = await apiGet(API_CONFIG.reviews.list, reviewListQuery());
         const dataList = Array.isArray(response)
             ? response
             : response?.list ?? response?.items ?? response?.records ?? response?.reviews ?? [];
-        reviewsData = dataList.map(item => ({
-            id: item.ID || item.id,
-            goodsId: item.productId || item.product_id || item.goodsId || item.product?.id || '',
-            goodsName: item.productName || item.product_name || item.goodsName || item.product?.name || '',
-            userId: item.userId || item.user_id || item.user?.id || '',
-            userName: item.userName || item.user_name || item.user?.nickname || item.user?.name || item.name || '',
-            phone: item.phone || item.user?.phone || '',
-            rating: Number(item.rating || item.score || 0),
-            content: item.content || '',
-            images: item.images || [],
-            likes: item.likes || item.likeCount || item.like_count || 0,
-            status: item.status === 1 ? 'approved' : item.status === 0 ? 'pending' : 'hidden',
-            createTime: item.createdAt || item.created_at || item.CreatedAt || '',
-            reply: (item.adminReply || item.admin_reply) ? {
-                content: (item.adminReply || item.admin_reply).content || '',
-                time: (item.adminReply || item.admin_reply).time || (item.adminReply || item.admin_reply).createdAt || (item.adminReply || item.admin_reply).created_at || ''
-            } : null,
-            replies: (item.replies || []).map(r => ({
-                id: r.id || '',
-                userName: r.userName || '',
-                content: r.content || '',
-                time: r.createdAt || r.time || '',
-                likes: r.likes || 0
-            }))
-        }));
+        reviewsData = dataList.map(normalizeReview);
         refreshReviewsPage();
     } catch (error) {
         console.error('Failed to load reviews:', error);
@@ -89,17 +112,22 @@ async function loadReviews() {
 // 加载AI评价总结列表
 async function loadSummaries() {
     try {
-        const response = await apiGet(API_CONFIG.reviews.summaries);
-        if (response && response.data) {
-            aiSummaryData = response.data.map(item => ({
+        const params = { page: currentSummaryPage, size: summaryPageSize };
+        if (currentSummaryState !== '') params.state = currentSummaryState;
+        const response = await apiGet(API_CONFIG.reviews.summaries, params);
+        const dataList = Array.isArray(response)
+            ? response
+            : response?.list ?? response?.items ?? response?.records ?? response?.ai_list ?? response?.summaries ?? [];
+        if (dataList.length) {
+            aiSummaryData = dataList.map(item => ({
                 id: item.ID || item.id,
-                goodsId: item.productId || item.goodsId || '',
-                goodsName: item.productName || item.goodsName || '',
-                content: item.summary || item.content || '',
-                reviewCount: item.reviewCount || 0,
-                status: item.status === 1 ? 'approved' : item.status === 0 ? 'pending' : 'rejected',
-                createTime: item.createdAt || item.CreatedAt || '',
-                updateTime: item.updatedAt || item.updateTime || ''
+                goodsId: item.productId || item.product_id || item.goodsId || item.product?.id || '',
+                goodsName: item.productName || item.product_name || item.goodsName || item.product?.name || '',
+                content: item.summary || item.summary_content || item.content || '',
+                reviewCount: item.reviewCount || item.review_count || 0,
+                status: Number(item.state ?? item.status) === 1 ? 'approved' : Number(item.state ?? item.status) === 0 ? 'pending' : 'rejected',
+                createTime: item.createdAt || item.created_at || item.CreatedAt || '',
+                updateTime: item.updatedAt || item.updated_at || item.updateTime || ''
             }));
         } else {
             aiSummaryData = [];
@@ -137,35 +165,42 @@ function searchReviews() {
     const input = document.getElementById('reviewSearchInput');
     if (input) {
         currentReviewSearchKeyword = input.value.trim();
-        refreshReviewsPage();
+        currentReviewPage = 1;
+        loadReviews();
     }
 }
 
 function switchReviewStatus(status) {
     currentReviewStatusFilter = status;
-    refreshReviewsPage();
+    currentReviewPage = 1;
+    loadReviews();
 }
 
 function switchReviewRating(rating) {
     currentReviewRatingFilter = rating;
-    refreshReviewsPage();
+    currentReviewPage = 1;
+    loadReviews();
 }
 
 async function handleReviewAction(reviewId, action) {
-    const review = reviewsData.find(r => r.id === reviewId);
+    const review = reviewsData.find(r => String(r.id) === String(reviewId));
     if (!review) return;
     
     try {
         if (action === 'approve') {
-            await apiPut(API_CONFIG.reviews.audit, { status: 1 }, { id: reviewId });
+            await apiPost(API_CONFIG.reviews.audit, { id: Number(reviewId), status: 1 });
             review.status = 'approved';
         } else if (action === 'reject') {
-            await apiPut(API_CONFIG.reviews.audit, { status: 2 }, { id: reviewId });
+            await apiPost(API_CONFIG.reviews.audit, { id: Number(reviewId), status: 2 });
             review.status = 'hidden';
         } else if (action === 'toggle') {
-            const newStatus = review.status === 'approved' ? 2 : 1;
-            await apiPut(API_CONFIG.reviews.audit, { status: newStatus }, { id: reviewId });
-            review.status = review.status === 'approved' ? 'hidden' : 'approved';
+            if (review.status === 'approved') {
+                await apiPost(API_CONFIG.reviews.hide, { id: Number(reviewId) });
+                review.status = 'hidden';
+            } else {
+                await apiPost(API_CONFIG.reviews.audit, { id: Number(reviewId), status: 1 });
+                review.status = 'approved';
+            }
         }
         refreshReviewsPage();
     } catch (error) {
@@ -175,20 +210,26 @@ async function handleReviewAction(reviewId, action) {
 }
 
 async function handleSummaryAction(summaryId, action) {
-    const summary = aiSummaryData.find(s => s.id === summaryId);
+    const summary = aiSummaryData.find(s => String(s.id) === String(summaryId));
     if (!summary) return;
     
     try {
         if (action === 'approve') {
-            await apiPut(API_CONFIG.reviews.auditSummary, { status: 1 }, { id: summaryId });
+            await apiPost(API_CONFIG.reviews.auditSummary, { id: Number(summaryId), action: 0 });
             summary.status = 'approved';
             summary.updateTime = new Date().toISOString().replace('T', ' ').substring(0, 19);
             showToast('AI评价摘要已发布！', 'success');
         } else if (action === 'reject') {
-            showConfirm('确定拒绝此摘要并重新生成吗？', async function() {
-                await apiPut(API_CONFIG.reviews.auditSummary, { status: 2 }, { id: summaryId });
-                summary.status = 'rejected';
-                refreshReviewsPage();
+            showConfirm('确定删除此 AI 摘要吗？', async function() {
+                try {
+                    await apiPost(API_CONFIG.reviews.auditSummary, { id: Number(summaryId), action: 1 });
+                    aiSummaryData = aiSummaryData.filter(item => String(item.id) !== String(summaryId));
+                    showToast('AI评价摘要已删除！', 'success');
+                    refreshReviewsPage();
+                } catch (error) {
+                    console.error('Failed to delete summary:', error);
+                    showToast(error instanceof Error ? error.message : '删除 AI 摘要失败，请重试', 'error');
+                }
             });
         }
         refreshReviewsPage();
@@ -198,9 +239,23 @@ async function handleSummaryAction(summaryId, action) {
     }
 }
 
-function showReviewDetail(reviewId) {
-    const review = reviewsData.find(r => r.id === reviewId);
+async function showReviewDetail(reviewId) {
+    let review = reviewsData.find(r => String(r.id) === String(reviewId));
     if (!review) return;
+
+    try {
+        const response = await apiGet(API_CONFIG.reviews.detail, { id: Number(reviewId) });
+        const detail = response?.review ?? response?.detail ?? response;
+        if (detail && typeof detail === 'object') {
+            review = normalizeReview({ ...review, ...detail });
+            const index = reviewsData.findIndex(r => String(r.id) === String(reviewId));
+            if (index >= 0) reviewsData[index] = review;
+        }
+    } catch (error) {
+        console.error('Failed to load review detail:', error);
+        showToast(error instanceof Error ? error.message : '评价详情加载失败，请重试', 'error');
+        return;
+    }
     
     const modalContent = `
         <div class="modal-overlay" onclick="closeReviewModal()"></div>
@@ -335,21 +390,17 @@ async function submitReply(reviewId) {
     }
     
     try {
-        const response = await apiPut(API_CONFIG.reviews.reply, { content: content }, { id: reviewId });
-        if (response.code === 200) {
-            const review = reviewsData.find(r => r.id === reviewId);
-            if (review) {
-                review.reply = {
-                    content: content,
-                    time: new Date().toISOString().replace('T', ' ').substring(0, 19)
-                };
-            }
-            showToast('回复成功！', 'success');
-            closeReviewModal();
-            refreshReviewsPage();
-        } else {
-            showToast(response.message || '回复失败', 'error');
+        await apiPost(API_CONFIG.reviews.reply, { id: Number(reviewId), content });
+        const review = reviewsData.find(r => String(r.id) === String(reviewId));
+        if (review) {
+            review.reply = {
+                content: content,
+                time: new Date().toISOString().replace('T', ' ').substring(0, 19)
+            };
         }
+        showToast('回复成功！', 'success');
+        closeReviewModal();
+        refreshReviewsPage();
     } catch (error) {
         console.error('Failed to submit reply:', error);
         showToast('回复失败，请重试', 'error');
@@ -383,18 +434,45 @@ function deleteReply(reviewId) {
 }
 
 function deleteUserReply(reviewId, replyId) {
-    showConfirm('确定删除此用户回复吗？', function() {
-        const review = reviewsData.find(r => r.id === reviewId);
-        if (review && review.replies) {
-            const reply = review.replies.find(r => r.id === replyId);
-            if (reply) {
-                reply.content = '该回复已被删除';
-                showToast('回复已处理！', 'success');
-                closeReviewModal();
-                refreshReviewsPage();
+    showConfirm('确定删除此用户回复吗？', async function() {
+        try {
+            await apiPost(API_CONFIG.reviews.deleteReply, { id: Number(replyId) });
+            const review = reviewsData.find(r => String(r.id) === String(reviewId));
+            if (review && review.replies) {
+                review.replies = review.replies.filter(r => String(r.id) !== String(replyId));
             }
+            showToast('用户回复已删除！', 'success');
+            closeReviewModal();
+            refreshReviewsPage();
+        } catch (error) {
+            console.error('Failed to delete user reply:', error);
+            showToast(error instanceof Error ? error.message : '删除用户回复失败，请重试', 'error');
         }
     });
+}
+
+async function editSummary(summaryId) {
+    const summary = aiSummaryData.find(item => String(item.id) === String(summaryId));
+    if (!summary) return;
+
+    const content = prompt('请输入编辑后的 AI 摘要内容', summary.content);
+    if (content === null) return;
+    const normalizedContent = content.trim();
+    if (!normalizedContent) {
+        showToast('摘要内容不能为空', 'error');
+        return;
+    }
+
+    try {
+        await apiPost(API_CONFIG.reviews.editSummary, { id: Number(summaryId), content: normalizedContent });
+        summary.content = normalizedContent;
+        summary.updateTime = new Date().toISOString().replace('T', ' ').substring(0, 19);
+        showToast('AI评价摘要已更新！', 'success');
+        refreshReviewsPage();
+    } catch (error) {
+        console.error('Failed to edit summary:', error);
+        showToast(error instanceof Error ? error.message : '编辑 AI 摘要失败，请重试', 'error');
+    }
 }
 
 function closeReviewModal() {
@@ -494,10 +572,10 @@ function reviewsPage() {
                                         <td>
                                             ${summary.status === 'pending' ? `
                                             <button class="btn btn-sm btn-success" onclick="handleSummaryAction('${summary.id}', 'approve')"><i class="fas fa-check"></i> 通过</button>
-                                            <button class="btn btn-sm btn-danger" onclick="handleSummaryAction('${summary.id}', 'reject')"><i class="fas fa-times"></i> 拒绝</button>
-                                            <button class="btn btn-sm btn-outline"><i class="fas fa-edit"></i> 编辑</button>
+                                            <button class="btn btn-sm btn-danger" onclick="handleSummaryAction('${summary.id}', 'reject')"><i class="fas fa-trash"></i> 删除</button>
+                                            <button class="btn btn-sm btn-outline" onclick="editSummary('${summary.id}')"><i class="fas fa-edit"></i> 编辑</button>
                                             ` : summary.status === 'approved' ? `
-                                            <button class="btn btn-sm btn-outline"><i class="fas fa-edit"></i> 编辑</button>
+                                            <button class="btn btn-sm btn-outline" onclick="editSummary('${summary.id}')"><i class="fas fa-edit"></i> 编辑</button>
                                             <button class="btn btn-sm btn-outline"><i class="fas fa-sync-alt"></i> 重新生成</button>
                                             ` : `
                                             <button class="btn btn-sm btn-success" onclick="handleSummaryAction('${summary.id}', 'approve')"><i class="fas fa-check"></i> 通过</button>

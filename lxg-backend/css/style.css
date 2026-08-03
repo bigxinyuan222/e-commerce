@@ -1616,11 +1616,8 @@ body.show-main {
 .coupon-detail-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:14px; padding:20px; }
 .coupon-detail-grid span { display:block; color:#64748b; font-size:12px; margin-bottom:4px; }
 .coupon-detail-grid strong { color:#1e293b; font-weight:600; word-break:break-word; }
-.coupon-detail-scope { grid-column:1 / -1; }
-.coupon-detail-scope pre { margin:0; padding:10px; background:#f8fafc; white-space:pre-wrap; word-break:break-word; }
-.coupon-detail-scope pre { display:none; }
 .coupon-scope-text { position:fixed; z-index:1001; left:50%; transform:translateX(-50%); top:calc(50% + 145px); width:min(680px,calc(100% - 72px)); margin:0; padding:12px 20px 22px; color:#334155; font-weight:600; background:transparent; }
-@media (max-width: 700px) { .coupon-scope-text { top:calc(50% + 180px); width:calc(100% - 48px); } }
+@media (max-width: 700px) { .coupon-scope-text { top:calc(50% + 180px); width:calc(100% - 8px); } }
 .coupon-create-button { flex:0 0 auto; }
 .coupon-create-modal { max-width:720px; width:calc(100% - 32px); }
 .coupon-create-form { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:14px; padding:20px; }
@@ -1628,7 +1625,7 @@ body.show-main {
 .coupon-create-form input, .coupon-create-form select { min-height:36px; padding:7px 9px; border:1px solid #cbd5e1; border-radius:4px; }
 .coupon-create-form .coupon-error, .coupon-create-form .modal-actions { grid-column:1 / -1; }
 .modal-actions { display:flex; justify-content:flex-end; gap:8px; }
-.coupon-detail-actions { position:fixed; z-index:1002; left:50%; transform:translateX(-50%); top:calc(50% + 185px); width:min(680px,calc(100% - 72px)); display:flex; justify-content:flex-end; gap:8px; }
+.coupon-detail-actions { position:fixed; z-index:1002; left:50%; transform:translateX(-50%) translateY(-90%);top:calc(50% + 185px); width:min(680px,calc(100% - 72px)); display:flex; justify-content:flex-end; gap:8px; }
 .btn-danger { color:#fff; background:#dc2626; border-color:#dc2626; }
 .coupon-pagination { display:flex; align-items:center; justify-content:flex-end; gap:12px; padding:14px 16px; border-top:1px solid #e2e8f0; color:#64748b; font-size:13px; }
 @media (max-width: 1200px) { .coupon-dashboard { grid-template-columns:1fr; } .coupon-insights { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); } }
@@ -1686,6 +1683,18 @@ body.show-main {
 .product-create-grid textarea { resize:vertical; }
 .product-create-grid input:focus, .product-create-grid select:focus, .product-create-grid textarea:focus, .product-sku-editor input:focus { border-color:#4f6ef7; box-shadow:0 0 0 3px rgba(79,110,247,.12); }
 .product-create-grid select:disabled { background:#f1f5f9; color:#94a3b8; cursor:not-allowed; }
+.product-image-upload { display:flex; flex-direction:column; gap:7px; color:#334155; font-size:13px; font-weight:600; }
+.product-image-picker { min-height:92px; display:flex !important; align-items:center; justify-content:center; flex-direction:column !important; gap:5px !important; border:1px dashed #9db0ff; border-radius:6px; background:#f8faff; color:#4f6ef7 !important; cursor:pointer; }
+.product-image-picker:hover { border-color:#4f6ef7; background:#f1f5ff; }
+.product-image-picker.disabled { cursor:wait; opacity:.7; }
+.product-image-picker input { position:absolute; width:1px; height:1px; opacity:0; pointer-events:none; }
+.product-image-picker i { font-size:20px; }
+.product-image-picker small { color:#94a3b8; font-weight:400; }
+.product-image-previews { display:grid; grid-template-columns:repeat(auto-fill,minmax(88px,1fr)); gap:10px; }
+.product-image-preview { position:relative; aspect-ratio:1; overflow:hidden; border:1px solid #dbe3ee; border-radius:6px; background:#f8fafc; }
+.product-image-preview img { width:100%; height:100%; display:block; object-fit:cover; }
+.product-image-preview button { position:absolute; top:5px; right:5px; width:24px; height:24px; padding:0; border:0; border-radius:50%; background:rgba(15,23,42,.78); color:#fff; cursor:pointer; }
+.product-image-preview button:disabled { cursor:not-allowed; opacity:.55; }
 .product-spec-selector { display:flex; flex-direction:column; gap:12px; }
 .product-spec-option { padding:14px 16px; border:1px solid #e2e8f0; border-radius:6px; }
 .product-spec-option h4 { margin-bottom:11px; color:#1e293b; font-size:14px; }

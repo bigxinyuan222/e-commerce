@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
 
-interface Coupon { id: string | number; name?: string; type?: number | string; coupon_type?: number | string; status?: number | string; value?: number | string; face_value?: number | string; threshold?: number | string; threshold_amount?: number | string; totalQuantity?: number; receivedQuantity?: number; usedQuantity?: number; startDate?: string; endDate?: string; start_time?: string; end_time?: string }
+interface Coupon { id: string | number; name?: string; type?: number | string; coupon_type?: number | string; status?: number | string; value?: number | string; face_value?: number | string; threshold?: number | string; threshold_amount?: number | string; totalQuantity?: number; receivedQuantity?: number; usedQuantity?: number; startDate?: string; endDate?: string; start_time?: string; end_time?: string; scope?: unknown }
 interface Props { token?: string }
 const props = defineProps<Props>()
 const coupons = ref<Coupon[]>([])
@@ -128,7 +128,12 @@ function periodText(item: Coupon) { return `${dateOnly(item.startDate)} ~ ${date
 function discountText(item: Coupon) {
   return Number(item.type) === 1 ? `满${Number(item.threshold || 0)}减${Number(item.value || 0)}` : `¥${Number(item.value || 0)}`
 }
-function rangeText(item: Coupon) { return scopeTypeLabel((item as any).scope_type ?? (item as any).scopeType ?? (item as any).apply_type ?? 0) }
+function rangeText(item: Coupon) {
+  const value: any = item as any
+  const scopes = Array.isArray(value.scope) ? value.scope : []
+  if (scopes.length) return scopeText(scopes)
+  return scopeTypeLabel(value.scope_type ?? value.scopeType ?? value.apply_type ?? value.applyType ?? 0)
+}
 function scopeTypeLabel(value: unknown) {
   if (Number(value) === 1) return '指定商品'
   if (Number(value) === 2) return '指定分类'
@@ -138,8 +143,9 @@ function scopeTypeLabel(value: unknown) {
 function scopeText(scope: unknown) {
   if (!Array.isArray(scope) || !scope.length) return '全场通用'
   return scope.map((item: any) => {
-    const label = scopeTypeLabel(item.scope_type)
-    return item.target_name ? `${label}：${item.target_name}` : label
+    const label = scopeTypeLabel(item.scope_type ?? item.scopeType ?? item.apply_type ?? item.applyType)
+    const targetName = item.target_name ?? item.targetName ?? item.name
+    return targetName ? `${label}：${targetName}` : label
   }).join('、')
 }
 async function loadCoupons() {
@@ -151,7 +157,15 @@ async function loadCoupons() {
   try {
     const data = await request(`/api/v1/admin/coupons?${params}`)
     const rows = Array.isArray(data) ? data : (data?.list || data?.items || data?.data || [])
-    coupons.value = rows.map(normalize)
+    const normalizedRows: Coupon[] = rows.map((row: Record<string, unknown>) => normalize(row))
+    const detailResults = await Promise.allSettled(normalizedRows.map((item: Coupon) =>
+      request(`/api/v1/admin/coupons/${encodeURIComponent(String(item.id))}`),
+    ))
+    coupons.value = normalizedRows.map((item: Coupon, index: number) => {
+      const result = detailResults[index]
+      if (result.status !== 'fulfilled') return item
+      return { ...item, scope: Array.isArray(result.value?.scope) ? result.value.scope : [] }
+    })
     total.value = Number(data?.total ?? data?.total_count ?? coupons.value.length)
   } catch (err) { error.value = err instanceof Error ? err.message : 'Failed to load coupons' }
   finally { loading.value = false }
@@ -191,7 +205,7 @@ onUnmounted(() => {
       <div class="card coupon-card"><div class="coupon-section-title"><span><i class="fas fa-ticket-alt"></i> 优惠券列表</span></div><div class="card-body no-pad"><div v-if="loading" class="coupon-loading">正在加载优惠券...</div><div v-else class="coupon-table-wrap"><table><thead><tr><th>名称</th><th>类型</th><th>优惠</th><th>门槛</th><th>有效期</th><th>适用范围</th><th>发放数量</th><th>已使用</th><th>状态</th><th>操作</th></tr></thead><tbody><tr v-for="coupon in coupons" :key="coupon.id" @click="loadDetail(coupon.id)"><td class="coupon-name-cell">{{ coupon.name || '-' }}</td><td><span class="coupon-type-tag" :class="Number(coupon.type) === 2 ? 'is-voucher' : 'is-discount'">{{ typeLabel(coupon.type) }}</span></td><td class="coupon-benefit">{{ discountText(coupon) }}</td><td>{{ Number(coupon.threshold || 0) ? `¥${coupon.threshold}` : '无门槛' }}</td><td>{{ periodText(coupon) }}</td><td><span class="coupon-scope-tag">{{ rangeText(coupon) }}</span></td><td>{{ coupon.receivedQuantity ?? 0 }}/{{ coupon.totalQuantity ?? 0 }}</td><td>{{ coupon.usedQuantity ?? 0 }}</td><td><span v-if="isExpired(coupon)" class="status-badge gray"><span class="dot"></span>已过期</span><span v-else class="status-badge" :class="Number(coupon.status) === 1 ? 'green' : 'gray'"><span class="dot"></span>{{ statusLabel(coupon.status) }}</span></td><td><div class="coupon-row-actions"><button v-if="Number(coupon.status) === 0 && !isExpired(coupon)" class="btn btn-xs btn-outline" @click.stop="editCouponItem(coupon)"><i class="fas fa-edit"></i> 编辑</button><button class="btn btn-xs" :class="Number(coupon.status) === 1 ? 'btn-danger' : 'btn-primary'" @click.stop="toggleCouponItem(coupon)"><i :class="Number(coupon.status) === 1 ? 'fas fa-times' : 'fas fa-play'"></i> {{ Number(coupon.status) === 1 ? '停用' : '启用' }}</button></div></td></tr><tr v-if="!coupons.length"><td colspan="10" class="coupon-empty">暂无优惠券数据</td></tr></tbody></table></div></div><div class="coupon-pagination"><span>共 {{ total }} 条</span><button class="btn btn-sm btn-outline" :disabled="page <= 1" @click="page--">上一页</button><span>第 {{ page }} 页</span><button class="btn btn-sm btn-outline" :disabled="page * pageSize >= total" @click="page++">下一页</button></div></div>
       <aside class="coupon-insights"><div class="card coupon-insight-card"><div class="coupon-section-title"><span><i class="fas fa-chart-bar"></i> 优惠券类型分布</span></div><div class="coupon-insight-body"><div class="coupon-progress-label"><span><i class="fas fa-percent"></i> 满减券</span><strong>{{ discountRate }}%</strong></div><div class="coupon-progress"><span :style="{ width: `${discountRate}%` }"></span></div><div class="coupon-progress-label voucher"><span><i class="fas fa-ticket-alt"></i> 抵扣券</span><strong>{{ voucherRate }}%</strong></div><div class="coupon-progress voucher"><span :style="{ width: `${voucherRate}%` }"></span></div></div></div><div class="card coupon-insight-card"><div class="coupon-section-title"><span><i class="fas fa-info-circle"></i> 发放统计</span></div><div class="coupon-issue-stats"><div><span>已发放总量</span><strong>{{ issuedCount }}</strong></div><div><span>已使用数量</span><strong class="green">{{ usedCount }}</strong></div><div><span>未使用数量</span><strong>{{ unusedCount }}</strong></div></div></div></aside>
     </div>
-    <div v-if="detail || detailLoading || detailError" class="modal-overlay" @click.self="detail = null"><div class="modal-content coupon-detail-modal"><div class="modal-header"><h3>优惠券详情</h3><button class="icon-btn" @click="detail = null"><i class="fas fa-times"></i></button></div><div v-if="detailLoading" class="coupon-loading">正在加载优惠券详情...</div><div v-else-if="detailError" class="coupon-error">{{ detailError }}</div><div v-else-if="detail" class="coupon-detail-grid"><div><span>ID</span><strong>{{ detail.id }}</strong></div><div><span>名称</span><strong>{{ detail.name }}</strong></div><div><span>类型</span><strong>{{ typeLabel(detail.type) }}</strong></div><div><span>面值</span><strong>{{ detail.value }}</strong></div><div><span>门槛</span><strong>{{ detail.threshold }}</strong></div><div><span>状态</span><strong>{{ statusLabel(detail.status) }}</strong></div><div class="coupon-detail-scope"><span>适用范围</span><pre>{{ JSON.stringify(detail.scope ?? [], null, 2) }}</pre></div></div></div></div>
+    <div v-if="detail || detailLoading || detailError" class="modal-overlay" @click.self="detail = null"><div class="modal-content coupon-detail-modal"><div class="modal-header"><h3>优惠券详情</h3><button class="icon-btn" @click="detail = null"><i class="fas fa-times"></i></button></div><div v-if="detailLoading" class="coupon-loading">正在加载优惠券详情...</div><div v-else-if="detailError" class="coupon-error">{{ detailError }}</div><div v-else-if="detail" class="coupon-detail-grid"><div><span>ID</span><strong>{{ detail.id }}</strong></div><div><span>名称</span><strong>{{ detail.name }}</strong></div><div><span>类型</span><strong>{{ typeLabel(detail.type) }}</strong></div><div><span>面值</span><strong>{{ detail.value }}</strong></div><div><span>门槛</span><strong>{{ detail.threshold }}</strong></div><div><span>状态</span><strong>{{ statusLabel(detail.status) }}</strong></div></div></div></div>
   </div>
     <div v-if="createOpen" class="modal-overlay" @click.self="closeCreate"><div class="modal-content coupon-create-modal"><div class="modal-header"><h3>新增优惠券</h3><button class="icon-btn" @click="closeCreate"><i class="fas fa-times"></i></button></div><form class="coupon-create-form" @submit.prevent="createCoupon"><label>名称<input v-model="form.name" required maxlength="100" /></label><label>优惠券类型<select v-model.number="form.couponType"><option :value="1">满减券</option><option :value="2">抵扣券</option></select></label><label>适用类型<select v-model.number="form.type"><option :value="1">指定商品</option><option :value="2">指定分类</option></select></label><label>面值<input v-model.number="form.faceValue" type="number" min="0" step="0.01" required /></label><label>使用门槛<input v-model.number="form.thresholdAmount" type="number" min="0" step="0.01" required /></label><label>开始时间<input v-model="form.startTime" type="datetime-local" required /></label><label>结束时间<input v-model="form.endTime" type="datetime-local" required /></label><label>发放总量<input v-model.number="form.totalCount" type="number" min="1" required /></label><label>每人限领<input v-model.number="form.perPersonLimit" type="number" min="1" required /></label><div v-if="createError" class="coupon-error">{{ createError }}</div><div class="modal-actions"><button type="button" class="btn btn-outline" @click="closeCreate">取消</button><button type="submit" class="btn btn-primary" :disabled="createLoading">{{ createLoading ? '提交中...' : '创建优惠券' }}</button></div></form></div></div>
     <div v-if="detail" class="coupon-scope-text">适用范围：{{ scopeText(detail.scope) }}</div>
