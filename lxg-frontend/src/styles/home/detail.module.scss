@@ -103,11 +103,6 @@
       font-size: 56rpx;
       font-weight: $font-weight-bold;
       color: $color-primary;
-      
-      &::before {
-        content: '¥';
-        font-size: $font-size-xl;
-      }
     }
     
     .originalPrice {
@@ -115,10 +110,6 @@
       color: $color-text-tertiary;
       text-decoration: line-through;
       margin-left: 16rpx;
-      
-      &::before {
-        content: '¥';
-      }
     }
     
     .discount {
@@ -350,11 +341,6 @@
         font-weight: $font-weight-bold;
         color: $color-primary;
         margin-bottom: 8rpx;
-        
-        &::before {
-          content: '¥';
-          font-size: $font-size-xs;
-        }
       }
       
       .skuStock {
@@ -682,6 +668,88 @@
           }
         }
       }
+    }
+  }
+
+  // 评价统计栏
+  .statsBar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: linear-gradient(135deg, #fff5f5 0%, #fff 100%);
+    border-radius: $radius-md;
+    padding: 24rpx;
+    margin-bottom: 20rpx;
+
+    .statsScore {
+      display: flex;
+      align-items: center;
+      gap: 12rpx;
+
+      .statsScoreVal {
+        font-size: 48rpx;
+        font-weight: $font-weight-bold;
+        color: $color-primary;
+        line-height: 1;
+      }
+
+      .statsStars {
+        display: flex;
+        gap: 2rpx;
+
+        .statsStarActive {
+          color: $color-warning;
+          font-size: 28rpx;
+        }
+
+        .statsStarInactive {
+          color: #ddd;
+          font-size: 28rpx;
+        }
+      }
+
+      .statsGoodRate {
+        font-size: $font-size-sm;
+        color: $color-text-secondary;
+      }
+    }
+
+    .statsCounts {
+      .statsCountItem {
+        display: flex;
+        align-items: baseline;
+        gap: 4rpx;
+
+        .statsCountNum {
+          font-size: 36rpx;
+          font-weight: $font-weight-bold;
+          color: $color-text-primary;
+        }
+
+        .statsCountLabel {
+          font-size: $font-size-xs;
+          color: $color-text-tertiary;
+        }
+      }
+    }
+  }
+
+  // 暂无评价
+  .noEval {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 60rpx 0;
+    gap: 16rpx;
+
+    .noEvalIcon {
+      font-size: 64rpx;
+      opacity: 0.6;
+    }
+
+    .noEvalText {
+      font-size: $font-size-sm;
+      color: $color-text-tertiary;
     }
   }
 }
@@ -1135,11 +1203,6 @@
           font-weight: $font-weight-bold;
           color: $color-primary;
           margin-bottom: 8rpx;
-          
-          &::before {
-            content: '¥';
-            font-size: $font-size-sm;
-          }
         }
         
         .selectedStock {

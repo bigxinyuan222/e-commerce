@@ -76,48 +76,72 @@
 .categoryNavWrap {
   padding: 0 $page-padding;
   margin: $spacing-xl 0;
-  
+
+  // 分类项公共样式：图标、文字居中
+  .categoryNavInner {
+    padding: $spacing-xl $page-padding;
+    background-color: $color-bg-card;
+    border-radius: $radius-xl;
+    box-shadow: $shadow-card;
+
+    .categoryItem {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+
+      .categoryIcon {
+        width: 64rpx;
+        height: 64rpx;
+        border-radius: 50%;
+        background: linear-gradient(135deg, $color-primary 0%, $color-primary-light 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: $spacing-sm;
+        box-shadow: 0 8rpx 20rpx rgba(226, 35, 26, 0.25);
+
+        .categoryIconImg {
+          width: 32rpx;
+          height: 32rpx;
+          background: transparent;
+        }
+      }
+
+      .categoryName {
+        font-size: $font-size-xs;
+        color: $color-text-secondary;
+        font-weight: $font-weight-medium;
+      }
+    }
+  }
+
+  // 分类数量较多时：横向滚动
   .categoryNav {
     white-space: nowrap;
-    
+
     .categoryNavInner {
       display: inline-flex;
       gap: $spacing-xl;
-      padding: $spacing-xl $page-padding;
-      background-color: $color-bg-card;
-      border-radius: $radius-xl;
-      box-shadow: $shadow-card;
-      
+
       .categoryItem {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
         min-width: 120rpx;
         flex-shrink: 0;
-        
-        .categoryIcon {
-          width: 64rpx;
-          height: 64rpx;
-          border-radius: 50%;
-          background: linear-gradient(135deg, $color-primary 0%, $color-primary-light 100%);
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          margin-bottom: $spacing-sm;
-          box-shadow: 0 8rpx 20rpx rgba(226, 35, 26, 0.25);
-          
-          .categoryIconImg {
-            width: 32rpx;
-            height: 32rpx;
-            background: transparent;
-          }
-        }
-        
-        .categoryName {
-          font-size: $font-size-xs;
-          color: $color-text-secondary;
-          font-weight: $font-weight-medium;
-        }
+      }
+    }
+  }
+
+  // 分类数量较少时：均分占满整行，右侧不留空白
+  .categoryNavFill {
+    .categoryNavInner {
+      display: flex;
+      justify-content: space-between;
+      width: 100%;
+      gap: $spacing-md;
+
+      .categoryItem {
+        flex: 1;
+        min-width: 0;
+        flex-shrink: 1;
       }
     }
   }
@@ -166,26 +190,18 @@
   }
 
   .brandsList {
-    white-space: nowrap;
+    // 响应式网格：品牌横向排满，跟随页面宽度自适应列数，右侧无空白
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(130rpx, 1fr));
+    gap: $spacing-md;
 
     .brandItem {
-      display: inline-block;
-      margin-right: $spacing-lg;
       text-align: center;
       background-color: $color-bg-card;
       border-radius: $radius-lg;
       box-shadow: $shadow-card;
       overflow: hidden;
-      width: 180rpx;
-      vertical-align: top;
-
-      &:first-child {
-        margin-left: $page-padding;
-      }
-
-      &:last-child {
-        margin-right: $page-padding;
-      }
+      min-width: 0;
 
       // 图片区域：1:1 正方形，logo 居中铺满
       .brandIconWrap {
@@ -376,21 +392,12 @@
           font-weight: $font-weight-bold;
           color: $color-primary;
           margin-bottom: $spacing-xs;
-          
-          &::before {
-            content: '¥';
-            font-size: $font-size-sm;
-          }
         }
         
         .originalPrice {
           font-size: $font-size-sm;
           color: $color-text-tertiary;
           text-decoration: line-through;
-          
-          &::before {
-            content: '¥';
-          }
         }
       }
       
@@ -408,6 +415,18 @@
         margin-top: $spacing-md;
         box-shadow: $shadow-btn;
       }
+    }
+  }
+
+  .seckillEmpty {
+    padding: $spacing-xl 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    .seckillEmptyText {
+      font-size: $font-size-sm;
+      color: rgba(255, 255, 255, 0.8);
     }
   }
 }
@@ -554,15 +573,17 @@
         display: flex;
         align-items: baseline;
         
+        .priceSymbol {
+          font-size: $font-size-xl;
+          font-weight: $font-weight-bold;
+          color: $color-price;
+          margin-right: 2rpx;
+        }
+        
         .currentPrice {
           font-size: $font-size-xl;
           font-weight: $font-weight-bold;
           color: $color-price;
-          
-          &::before {
-            content: '¥';
-            font-size: $font-size-sm;
-          }
         }
         
         .originalPrice {
@@ -570,10 +591,6 @@
           color: $color-text-tertiary;
           text-decoration: line-through;
           margin-left: $spacing-md;
-          
-          &::before {
-            content: '¥';
-          }
         }
       }
       

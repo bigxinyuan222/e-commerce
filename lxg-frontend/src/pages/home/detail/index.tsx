@@ -2,8 +2,8 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { View, Text, Image, Swiper, SwiperItem, ScrollView, Input } from '@tarojs/components';
 import Taro from '@tarojs/taro';
 import { useAppContext } from '@/store/AppContext';
-import { apiGet, apiPost } from '@/api/common';
-import { productApi, reviewApi } from '@/api/home';
+import { apiGet } from '@/api/common';
+import { productApi, fetchReviewList, fetchReviewStats, fetchReviewAiSummary, likeReview, replyToReview, fetchReviewReplies } from '@/api/home';
 import { addToCartAPI } from '@/api/cart';
 import { fetchProductSeckillActivity, createSeckillPurchase, pollSeckillPurchaseResult } from '@/api/seckill';
 import { getImageUrl, normalizeProductImages, lazyImgProps } from '@/utils/image';
@@ -54,7 +54,7 @@ const EvaluationItem = React.memo(({
       />
       <View className={styles.userInfo}>
         <Text className={styles.userName}>{evaluation.userName}</Text>
-        <Text className={styles.evaluateTime}>{evaluation.createTime}</Text>
+        <Text className={styles.evaluateTime}>{evaluation.createdAt || evaluation.createTime}</Text>
       </View>
     </View>
     <Text className={styles.evaluateContent}>{evaluation.content}</Text>
@@ -158,16 +158,27 @@ const ProductDetailPage: React.FC = () => {
   }, [product, specSelections]);
 
   const selectSpec = useCallback((specName: string, specValue: string) => {
-    const newSelections = { ...specSelections, [specName]: specValue };
-    setSpecSelections(newSelections);
-    
-    const matchedSku = product?.skus.find(sku => {
-      return Object.entries(newSelections).every(([key, value]) => sku.specs[key] === value);
+    // 构建新选择：设置当前规格，保留其他兼容的规格
+    const newSelections: { [key: string]: string } = { [specName]: specValue };
+
+    Object.entries(specSelections).forEach(([key, value]) => {
+      if (key === specName) return;
+      // 检查该规格值与新选择是否至少有一个匹配的 SKU
+      const hasAnyMatch = product?.skus.some(sku =>
+        sku.specs[key] === value && sku.specs[specName] === specValue
+      );
+      if (hasAnyMatch) {
+        newSelections[key] = value;
+      }
     });
-    
-    if (matchedSku) {
-      setSelectedSku(matchedSku);
-    }
+
+    // 查找是否有完全匹配的 SKU
+    const matchedSku = product?.skus.find(sku =>
+      Object.entries(newSelections).every(([key, value]) => sku.specs[key] === value)
+    );
+
+    setSpecSelections(newSelections);
+    setSelectedSku(matchedSku || null);
   }, [product, specSelections]);
 
   const decreaseQuantity = useCallback(() => {
@@ -177,7 +188,11 @@ const ProductDetailPage: React.FC = () => {
   }, [quantity]);
 
   const increaseQuantity = useCallback(() => {
-    if (selectedSku && quantity < selectedSku.stock) {
+    if (!selectedSku) {
+      Taro.showToast({ title: '请先选择规格', icon: 'none' });
+      return;
+    }
+    if (quantity < selectedSku.stock) {
       setQuantity(quantity + 1);
     } else {
       Taro.showToast({ title: '库存不足', icon: 'none' });
@@ -185,7 +200,11 @@ const ProductDetailPage: React.FC = () => {
   }, [selectedSku, quantity]);
 
   const handleAddToCart = useCallback(async () => {
-    if (!product || !selectedSku) return;
+    if (!product) return;
+    if (!selectedSku) {
+      Taro.showToast({ title: '请选择完整规格', icon: 'none' });
+      return;
+    }
     try {
       await addToCartAPI({
         productId: product.id,
@@ -268,7 +287,11 @@ const ProductDetailPage: React.FC = () => {
   }, [product, selectedSku, quantity, seckillActivityId, purchasing]);
 
   const handleBuyNow = useCallback(() => {
-    if (!product || !selectedSku) return;
+    if (!product) return;
+    if (!selectedSku) {
+      Taro.showToast({ title: '请选择完整规格', icon: 'none' });
+      return;
+    }
     setShowSkuModal(false);
     // 秒杀商品走秒杀购买流程
     if (isSeckill) {
@@ -343,7 +366,7 @@ const ProductDetailPage: React.FC = () => {
 
   const handleEvaluationLike = useCallback(async (evalId: string) => {
     try {
-      await apiPost(reviewApi.like, { reviewId: evalId });
+      await likeReview(evalId);
       setEvaluations(prev => {
         return prev.map(evalItem => {
           if (evalItem.id === evalId) {
@@ -365,9 +388,18 @@ const ProductDetailPage: React.FC = () => {
   const [currentEvaluation, setCurrentEvaluation] = useState<any>(null);
   const [commentInput, setCommentInput] = useState('');
 
-  const openCommentModal = useCallback((evaluation: any) => {
-    setCurrentEvaluation(evaluation);
+  const openCommentModal = useCallback(async (evaluation: any) => {
+    setCurrentEvaluation({ ...evaluation, comments: [], loadingReplies: true });
     setShowCommentModal(true);
+    // 加载该评价的回复列表
+    try {
+      const res = await fetchReviewReplies({ reviewId: evaluation.id, page: 1, size: 50 });
+      const replies = Array.isArray(res?.data) ? res.data : [];
+      setCurrentEvaluation(prev => prev ? { ...prev, comments: replies, loadingReplies: false } : prev);
+    } catch (error) {
+      console.error('Failed to load review replies:', error);
+      setCurrentEvaluation(prev => prev ? { ...prev, comments: [], loadingReplies: false } : prev);
+    }
   }, []);
 
   const closeCommentModal = useCallback(() => {
@@ -381,16 +413,20 @@ const ProductDetailPage: React.FC = () => {
       Taro.showToast({ title: '请输入评论内容', icon: 'none' });
       return;
     }
+    if (!currentEvaluation?.id) {
+      Taro.showToast({ title: '评价信息异常', icon: 'none' });
+      return;
+    }
 
     try {
-      await apiPost(reviewApi.submit, {
-        reviewId: currentEvaluation?.id,
-        content: commentInput.trim()
+      await replyToReview({
+        reviewId: currentEvaluation.id,
+        content: commentInput.trim(),
       });
-      
+
       const newComment = {
         id: `comment-${Date.now()}`,
-        evaluationId: currentEvaluation.id,
+        reviewId: currentEvaluation.id,
         userId: 'user-current',
         userName: '我',
         userAvatar: '',
@@ -400,17 +436,10 @@ const ProductDetailPage: React.FC = () => {
         isLike: false
       };
 
-      setEvaluations(prev => {
-        return prev.map(evalItem => {
-          if (evalItem.id === currentEvaluation.id) {
-            return {
-              ...evalItem,
-              comments: [...evalItem.comments, newComment]
-            };
-          }
-          return evalItem;
-        });
-      });
+      setCurrentEvaluation(prev => prev ? {
+        ...prev,
+        comments: [...(prev.comments || []), newComment]
+      } : prev);
 
       setCommentInput('');
       Taro.showToast({ title: '评论成功', icon: 'success' });
@@ -437,11 +466,29 @@ const ProductDetailPage: React.FC = () => {
     const loadProduct = async () => {
       setLoading(true);
       try {
+        // 并行加载：商品详情、评价列表、评价统计、AI评价摘要
         const requestList: Promise<any>[] = [
-          apiGet(productApi.detail, { id }).catch(() => null),
-          apiGet(reviewApi.list, { page: 1, size: 2 }, { id }).catch(() => null),
-          apiGet(reviewApi.stats, {}, { id }).catch(() => null),
+          apiGet(productApi.detail, { id }).catch((err: any) => {
+            console.error('[商品详情] 加载失败:', err?.message || err);
+            return null;
+          }),
+          // 商品评论列表 GET /api/v1/review/list
+          fetchReviewList({ productId: id, page: 1, size: 2 }).catch((err: any) => {
+            console.error('[商品评价] 加载失败:', err?.message || err);
+            return null;
+          }),
+          // 评价统计 GET /api/v1/review/state
+          fetchReviewStats(id).catch((err: any) => {
+            console.error('[评价统计] 加载失败:', err?.message || err);
+            return null;
+          }),
+          // AI评价摘要 GET /api/v1/review/ai
+          fetchReviewAiSummary(id).catch((err: any) => {
+            console.error('[AI评价摘要] 加载失败:', err?.message || err);
+            return null;
+          }),
         ];
+
         // 秒杀商品：额外获取指定商品秒杀活动信息
         if (isSeckillPage) {
           requestList.push(
@@ -449,48 +496,72 @@ const ProductDetailPage: React.FC = () => {
           );
         }
 
-        const [productRes, reviewRes, statsRes, seckillRes] = await Promise.all(requestList);
+        const [productRes, reviewRes, statsRes, aiRes, seckillRes] = await Promise.all(requestList);
 
         if (productRes?.data) {
           const productData = normalizeProductImages(productRes.data);
           setProduct(productData);
 
           if (productData.skus && productData.skus.length > 0) {
-            setSelectedSku(productData.skus[0]);
-
+            // 只预填第一个规格维度，其他维度留空
+            // 避免全预填导致的规格联动锁定问题
+            const firstSpecKey = productData.skus[0].specs
+              ? Object.keys(productData.skus[0].specs)[0]
+              : '';
             const initialSelections: { [key: string]: string } = {};
-            if (productData.skus[0].specs) {
-              Object.keys(productData.skus[0].specs).forEach(key => {
-                initialSelections[key] = productData.skus[0].specs[key];
-              });
+            if (firstSpecKey) {
+              initialSelections[firstSpecKey] = productData.skus[0].specs[firstSpecKey];
             }
             setSpecSelections(initialSelections);
+
+            // 如果只有一个规格维度，直接匹配完整 SKU
+            if (Object.keys(initialSelections).length === Object.keys(productData.skus[0].specs || {}).length) {
+              setSelectedSku(productData.skus[0]);
+            } else {
+              setSelectedSku(null);
+            }
           }
         }
 
-        if (reviewRes?.data) {
-          const reviewData = Array.isArray(reviewRes.data) ? reviewRes.data : reviewRes.data?.list || [];
-          setEvaluations(reviewData.slice(0, 2));
+        // 解析评价列表（fetchReviewList 已做规范化）
+        if (reviewRes?.data && Array.isArray(reviewRes.data)) {
+          const reviewList = reviewRes.data;
+          if (reviewList.length > 0) {
+            console.log('[商品评价] 加载成功，共', reviewList.length, '条评价');
+            setEvaluations(reviewList.slice(0, 2));
+          } else {
+            console.warn('[商品评价] 接口返回但数据为空');
+          }
         }
 
+        // 解析评价统计（fetchReviewStats 已做规范化）
         if (statsRes?.data) {
+          console.log('[评价统计] 加载成功:', statsRes.data);
           setEvalStats(statsRes.data);
-          if (statsRes.data.aiSummary) {
-            setAiSummary(statsRes.data.aiSummary);
-          } else if (statsRes.data.summary) {
-            setAiSummary(statsRes.data.summary);
-          }
+        }
+
+        // 解析 AI 评价摘要（fetchReviewAiSummary 已做规范化）
+        if (aiRes?.data && (aiRes.data.overall || aiRes.data.strengths?.length || aiRes.data.weaknesses?.length)) {
+          console.log('[AI评价摘要] 加载成功:', aiRes.data);
+          setAiSummary(aiRes.data);
         }
 
         // 处理秒杀活动信息
         if (seckillRes?.data) {
-          const data = seckillRes.data;
-          // fetchProductSeckillActivity 可能返回活动对象（含 products）或单个商品活动
-          if (data.products || data.endTime) {
-            setSeckillInfo(data);
-            if (data.id) setSeckillActivityId(String(data.id));
-          } else if (data.seckillPrice !== undefined) {
-            setSeckillInfo(data);
+          let data = seckillRes.data;
+          // 如果返回的是数组，取第一个元素
+          if (Array.isArray(data) && data.length > 0) {
+            data = data[0];
+          }
+          if (data && typeof data === 'object') {
+            // fetchProductSeckillActivity 可能返回活动对象（含 products）或单个商品活动
+            if (data.products || data.endTime) {
+              setSeckillInfo(data);
+              if (data.id) setSeckillActivityId(String(data.id));
+            } else if (data.seckillPrice !== undefined || data.seckill_price !== undefined) {
+              setSeckillInfo(data);
+              if (data.activityId) setSeckillActivityId(String(data.activityId));
+            }
           }
         }
       } catch (error) {
@@ -629,12 +700,32 @@ const ProductDetailPage: React.FC = () => {
           </View>
         </View>
 
-        {evaluations.length > 0 && (
-          <View className={styles.evaluateSection}>
+        <View className={styles.evaluateSection}>
             <View className={styles.sectionHeader}>
               <Text className={styles.sectionTitle}>商品评价</Text>
               <Text className={styles.viewAll} onClick={goToEvaluations}>查看全部</Text>
             </View>
+
+            {/* 评价统计栏：评分、好评率、评价总数 */}
+            {evalStats && (
+              <View className={styles.statsBar}>
+                <View className={styles.statsScore}>
+                  <Text className={styles.statsScoreVal}>{Number(evalStats.averageRating || 0).toFixed(1)}</Text>
+                  <View className={styles.statsStars}>
+                    {[5, 4, 3, 2, 1].map(star => (
+                      <Text key={star} className={star <= Math.round(Number(evalStats.averageRating || 0)) ? styles.statsStarActive : styles.statsStarInactive}>★</Text>
+                    ))}
+                  </View>
+                  <Text className={styles.statsGoodRate}>好评率 {evalStats.goodRate || 100}%</Text>
+                </View>
+                <View className={styles.statsCounts}>
+                  <Text className={styles.statsCountItem}>
+                    <Text className={styles.statsCountNum}>{evalStats.total || 0}</Text>
+                    <Text className={styles.statsCountLabel}>条评价</Text>
+                  </Text>
+                </View>
+              </View>
+            )}
             
             {aiSummary && (
               <View className={styles.aiSummarySection}>
@@ -670,18 +761,24 @@ const ProductDetailPage: React.FC = () => {
               </View>
             )}
 
-            <View className={styles.evaluateList}>
-              {evaluations.map((evaluation) => (
-                <EvaluationItem 
-                  key={evaluation.id} 
-                  evaluation={evaluation}
-                  onLike={handleEvaluationLike}
-                  onComment={openCommentModal}
-                />
-              ))}
-            </View>
+            {evaluations.length > 0 ? (
+              <View className={styles.evaluateList}>
+                {evaluations.map((evaluation) => (
+                  <EvaluationItem 
+                    key={evaluation.id} 
+                    evaluation={evaluation}
+                    onLike={handleEvaluationLike}
+                    onComment={openCommentModal}
+                  />
+                ))}
+              </View>
+            ) : (
+              <View className={styles.noEval}>
+                <Text className={styles.noEvalIcon}>📝</Text>
+                <Text className={styles.noEvalText}>暂无评价，期待您的首次评价</Text>
+              </View>
+            )}
           </View>
-        )}
 
         <View className={styles.detailSection}>
           <Text className={styles.sectionTitle}>商品详情</Text>
@@ -807,7 +904,7 @@ const ProductDetailPage: React.FC = () => {
                       <View className={styles.commentContent}>
                         <View className={styles.commentHeader}>
                           <Text className={styles.commentUserName}>{comment.userName}</Text>
-                          <Text className={styles.commentTime}>{comment.createTime}</Text>
+                          <Text className={styles.commentTime}>{comment.createdAt || comment.createTime}</Text>
                         </View>
                         <Text className={styles.commentText}>{comment.content}</Text>
                       </View>

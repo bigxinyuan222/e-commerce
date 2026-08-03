@@ -1,8 +1,7 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { View, Text, Image, ScrollView } from '@tarojs/components';
 import Taro from '@tarojs/taro';
-import { fetchSeckillActivities } from '@/api/seckill';
-import { seckillProducts } from '@/data/common/home';
+import { fetchSeckillActivities, fetchProductSeckillActivity } from '@/api/seckill';
 import { getImageUrl, lazyImgProps } from '@/utils/image';
 import styles from '@/styles/home/seckill.module.scss';
 
@@ -15,7 +14,7 @@ interface ActivityItem {
   products: any[];
 }
 
-// 兜底：当接口未返回数据时，使用本地 mock 包装成单个活动
+// 兜底：当接口未返回数据时，返回空活动框架
 function buildFallbackActivities(): ActivityItem[] {
   const now = new Date();
   const endTime = new Date(now.getTime() + 12 * 60 * 60 * 1000);
@@ -26,7 +25,7 @@ function buildFallbackActivities(): ActivityItem[] {
     startTime: fmt(now),
     endTime: fmt(endTime),
     status: 'active',
-    products: seckillProducts,
+    products: [],
   }];
 }
 
@@ -37,6 +36,26 @@ const SeckillPage: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
+  // 加载指定活动的商品
+  const loadActivityProducts = useCallback(async (activityId: string) => {
+    try {
+      const res = await fetchProductSeckillActivity({ activityId });
+      if (res?.data && Array.isArray(res.data) && res.data.length > 0) {
+        const products = res.data;
+        setActivities(prev => {
+          const next = [...prev];
+          const idx = next.findIndex(a => String(a.id) === String(activityId));
+          if (idx >= 0) {
+            next[idx] = { ...next[idx], products };
+          }
+          return next;
+        });
+      }
+    } catch (error) {
+      console.error('Failed to load activity products:', error);
+    }
+  }, []);
+
   // 加载秒杀活动列表
   const loadActivities = useCallback(async () => {
     setLoading(true);
@@ -45,6 +64,12 @@ const SeckillPage: React.FC = () => {
       const list = Array.isArray(res?.data) ? res.data : [];
       if (list.length > 0) {
         setActivities(list as ActivityItem[]);
+        // 为所有活动并行加载商品数据
+        list.forEach((activity: ActivityItem) => {
+          if (activity.id) {
+            loadActivityProducts(String(activity.id));
+          }
+        });
       } else {
         // 接口返回空，使用兜底数据
         setActivities(buildFallbackActivities());
@@ -56,7 +81,7 @@ const SeckillPage: React.FC = () => {
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [loadActivityProducts]);
 
   useEffect(() => {
     loadActivities();

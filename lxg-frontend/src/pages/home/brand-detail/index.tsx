@@ -246,7 +246,8 @@ const BrandDetailPage: React.FC = () => {
               <View className={styles.productInfo}>
                 <Text className={styles.productName}>{product.name}</Text>
                 <View className={styles.productPriceWrap}>
-                  <Text className={styles.productPrice}>¥{product.price}</Text>
+                  <Text className={styles.priceSymbol}>¥</Text>
+                  <Text className={styles.productPrice}>{product.price}</Text>
                   {product.originalPrice > product.price && (
                     <Text className={styles.productOriginalPrice}>¥{product.originalPrice}</Text>
                   )}

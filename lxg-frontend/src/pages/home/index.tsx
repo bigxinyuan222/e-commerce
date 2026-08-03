@@ -4,6 +4,7 @@ import Taro from '@tarojs/taro';
 import { apiGet } from '@/api/common';
 import { homeApi, categoryApi, brandApi, productApi } from '@/api/home';
 import { fetchSeckillActivities } from '@/api/seckill';
+import { seckillActivity as mockSeckillActivity } from '@/data/common/home';
 import { getImageUrl, normalizeProductListImages, lazyImgProps, getBrandIcon } from '@/utils/image';
 import { getCategoryIcon } from '@/utils/categoryIcons';
 import styles from '@/styles/home/home.module.scss';
@@ -27,9 +28,10 @@ const ProductCard = React.memo(({ product, onClick }: { product: any; onClick: (
         ))}
       </View>
       <View className={styles.productPrice}>
-        {product.price > 0 && <Text className={styles.currentPrice}>{product.price}</Text>}
+        <Text className={styles.priceSymbol}>¥</Text>
+        <Text className={styles.currentPrice}>{product.price}</Text>
         {product.originalPrice > 0 && product.originalPrice !== product.price && (
-          <Text className={styles.originalPrice}>{product.originalPrice}</Text>
+          <Text className={styles.originalPrice}>¥{product.originalPrice}</Text>
         )}
       </View>
       <Text className={styles.salesInfo}>已售 {product.sales || 0} 件</Text>
@@ -70,10 +72,10 @@ const SeckillProductCard = React.memo(({ product, onClick }: { product: any; onC
     />
     <View className={styles.seckillPriceArea}>
       {(product.seckillPrice || product.price) > 0 && (
-        <View className={styles.seckillPrice}>{product.seckillPrice || product.price}</View>
+        <View className={styles.seckillPrice}>¥{product.seckillPrice || product.price}</View>
       )}
       {product.originalPrice > 0 && product.originalPrice !== (product.seckillPrice || product.price) && (
-        <View className={styles.originalPrice}>{product.originalPrice}</View>
+        <View className={styles.originalPrice}>¥{product.originalPrice}</View>
       )}
     </View>
     <View className={styles.seckillBtn}>抢</View>
@@ -197,7 +199,7 @@ async function enrichRecommendSlots(slots: any[]): Promise<any[]> {
   // 批量请求商品详情（并发，单个失败不影响其他）
   const detailResults = await Promise.all(
     [...new Set(productIdsToFetch)].map(pid =>
-      apiGet(productApi.detail, { id: pid })
+      apiGet(productApi.detail, { id: pid }, {}, true)
         .then(res => ({ pid, data: res?.data || null }))
         .catch(() => ({ pid, data: null }))
     )
@@ -319,12 +321,19 @@ const HomePage: React.FC = () => {
         }
 
         if (seckillRes?.data && Array.isArray(seckillRes.data) && seckillRes.data.length > 0) {
-          // 首页取第一个活动展示
+          // 接口返回有效活动，取第一个展示
           const seckillData = seckillRes.data[0];
           setSeckillActivity({
             id: seckillData.id || '',
             products: seckillData.products || [],
             endTime: seckillData.endTime || new Date(Date.now() + 3600000).toISOString()
+          });
+        } else {
+          // 接口无活动数据，使用本地 mock 兜底，保证首页秒杀板块始终展示
+          setSeckillActivity({
+            id: mockSeckillActivity.id || '',
+            products: mockSeckillActivity.products || [],
+            endTime: mockSeckillActivity.endTime || new Date(Date.now() + 3600000).toISOString()
           });
         }
 
@@ -335,7 +344,9 @@ const HomePage: React.FC = () => {
             const id = item.id ?? item.ID ?? item.brandId ?? item.BrandId ?? item.code ?? item.Code ?? '';
             const name = item.name ?? item.Name ?? item.brandName ?? item.BrandName ?? '';
             const logo = item.logo ?? item.Logo ?? item.icon ?? item.Icon ?? item.image ?? item.Image ?? '';
-            return { id: String(id), name, logo: getImageUrl(logo) };
+            // 保留原始 logo，交由 getBrandIcon 判断占位符域名并回退到本地 SVG 图标
+            // 若先用 getImageUrl 处理，占位符域名会被替换成无效的默认占位图 URL，导致本地 SVG 兜底失效
+            return { id: String(id), name, logo };
           }).filter((b: any) => b.id && b.name);
           setHotBrands(normalized.slice(0, 10));
         }
@@ -482,17 +493,31 @@ const HomePage: React.FC = () => {
 
         {displayCategories.length > 0 && (
           <View className={styles.categoryNavWrap}>
-            <ScrollView scrollX className={styles.categoryNav} showScrollbar={false}>
-              <View className={styles.categoryNavInner}>
-                {displayCategories.map((category) => (
-                  <CategoryNavItem 
-                    key={category.id} 
-                    category={category}
-                    onClick={goToCategory}
-                  />
-                ))}
+            {displayCategories.length > 5 ? (
+              <ScrollView scrollX className={styles.categoryNav} showScrollbar={false}>
+                <View className={styles.categoryNavInner}>
+                  {displayCategories.map((category) => (
+                    <CategoryNavItem
+                      key={category.id}
+                      category={category}
+                      onClick={goToCategory}
+                    />
+                  ))}
+                </View>
+              </ScrollView>
+            ) : (
+              <View className={styles.categoryNavFill}>
+                <View className={styles.categoryNavInner}>
+                  {displayCategories.map((category) => (
+                    <CategoryNavItem
+                      key={category.id}
+                      category={category}
+                      onClick={goToCategory}
+                    />
+                  ))}
+                </View>
               </View>
-            </ScrollView>
+            )}
           </View>
         )}
 
@@ -505,40 +530,40 @@ const HomePage: React.FC = () => {
               </View>
               <Text className={styles.brandsMore}>更多 ›</Text>
             </View>
-            <ScrollView scrollX className={styles.brandsList} showScrollbar={false}>
+            <View className={styles.brandsList}>
               {hotBrands.map((brand) => (
-                <BrandCard 
+                <BrandCard
                   key={brand.id}
                   brand={brand}
                   onClick={goToBrandDetail}
                 />
               ))}
-            </ScrollView>
+            </View>
           </View>
         )}
 
-        {seckillActivity.products.length > 0 && (
-          <View className={styles.activitySection}>
-            <View className={styles.seckillArea}>
-              <View className={styles.seckillHeader}>
-                <View>
-                  <Text className={styles.seckillTitle}>限时秒杀</Text>
-                  <Text className={styles.seckillSubtitle}>爆款限时抢</Text>
+        <View className={styles.activitySection}>
+          <View className={styles.seckillArea}>
+            <View className={styles.seckillHeader}>
+              <View>
+                <Text className={styles.seckillTitle}>限时秒杀</Text>
+                <Text className={styles.seckillSubtitle}>爆款限时抢</Text>
+              </View>
+              <View className={styles.seckillHeaderRight}>
+                <View className={styles.countdown}>
+                  <Text>距结束</Text>
+                  <Text className={styles.countdownItem}>{countdown.hours}</Text>
+                  <Text>:</Text>
+                  <Text className={styles.countdownItem}>{countdown.minutes}</Text>
+                  <Text>:</Text>
+                  <Text className={styles.countdownItem}>{countdown.seconds}</Text>
                 </View>
-                <View className={styles.seckillHeaderRight}>
-                  <View className={styles.countdown}>
-                    <Text>距结束</Text>
-                    <Text className={styles.countdownItem}>{countdown.hours}</Text>
-                    <Text>:</Text>
-                    <Text className={styles.countdownItem}>{countdown.minutes}</Text>
-                    <Text>:</Text>
-                    <Text className={styles.countdownItem}>{countdown.seconds}</Text>
-                  </View>
-                  <View className={styles.seckillArrow} onClick={goToSeckill}>
-                    <Text className={styles.arrowIcon}>›</Text>
-                  </View>
+                <View className={styles.seckillArrow} onClick={goToSeckill}>
+                  <Text className={styles.arrowIcon}>›</Text>
                 </View>
               </View>
+            </View>
+            {seckillActivity.products.length > 0 ? (
               <ScrollView scrollX className={styles.seckillProducts} showScrollbar={false}>
                 {seckillActivity.products.map((product) => (
                   <SeckillProductCard
@@ -548,9 +573,13 @@ const HomePage: React.FC = () => {
                   />
                 ))}
               </ScrollView>
-            </View>
+            ) : (
+              <View className={styles.seckillEmpty}>
+                <Text className={styles.seckillEmptyText}>暂无秒杀商品</Text>
+              </View>
+            )}
           </View>
-        )}
+        </View>
 
         <View className={styles.recommendSection}>
             <View className={styles.recommendHeader}>

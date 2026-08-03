@@ -70,8 +70,11 @@ export function normalizeCoupon(raw: any): Record<string, any> {
     const nestedKeys = ['coupon', 'couponInfo', 'coupon_info', 'data', 'info', 'item', 'detail'];
     for (const k of nestedKeys) {
         if (raw[k] && typeof raw[k] === 'object' && !Array.isArray(raw[k])) {
-            // 嵌套对象包含至少一个字段才视为有效
-            if (Object.keys(raw[k]).length >= 2) {
+            // coupon 类嵌套对象即使只有1个字段也合并（后端常将门槛字段嵌套在 coupon 内）
+            // 其他通用嵌套键要求至少2个字段以避免误合并
+            const isCouponKey = k === 'coupon' || k === 'couponInfo' || k === 'coupon_info';
+            const minKeys = isCouponKey ? 1 : 2;
+            if (Object.keys(raw[k]).length >= minKeys) {
                 data = { ...raw, ...raw[k] };
                 break;
             }
@@ -237,7 +240,8 @@ export function normalizeCoupon(raw: any): Record<string, any> {
     if (process.env.NODE_ENV !== 'production') {
         const missingFields: string[] = [];
         if (!result.value) missingFields.push(`value(rawValue=${couponValue})`);
-        if (!result.minAmount && couponMinAmount !== 0) missingFields.push(`minAmount(raw=${couponMinAmount})`);
+        // 0 是合法值（无门槛券），用 toNumber 统一比较以兼容字符串 "0.00"
+        if (!result.minAmount && toNumber(couponMinAmount) !== 0) missingFields.push(`minAmount(raw=${couponMinAmount})`);
         if (!result.name) missingFields.push('name');
         if (missingFields.length > 0) {
             console.warn('[normalizeCoupon] 字段可能未正确匹配:', missingFields.join(', '), '原始数据:', data);
@@ -275,12 +279,6 @@ function extractCouponList(res: any): any[] {
 
     for (const c of candidates) {
         if (Array.isArray(c) && c.length > 0) {
-            console.log('[coupon] 提取列表命中路径:', Object.keys({
-                0: 'res.data', 1: 'res.data.list', 2: 'res.data.items', 3: 'res.data.coupons',
-                4: 'res.data.data', 5: 'res.data.data.list', 6: 'res.data.data.items',
-                7: 'res.data.data.coupons', 8: 'res.data.result', 9: 'res.data.records',
-                10: 'res.data.rows', 11: 'res.data.list.data', 12: 'res.data.items.data'
-            })[candidates.indexOf(c)]);
             return c;
         }
     }
@@ -289,7 +287,6 @@ function extractCouponList(res: any): any[] {
     if (d && typeof d === 'object') {
         for (const key of Object.keys(d)) {
             if (Array.isArray(d[key]) && d[key].length > 0) {
-                console.log('[coupon] 兜底提取列表:', key, '长度:', d[key].length);
                 return d[key];
             }
         }
@@ -319,13 +316,7 @@ export async function fetchAvailableCoupons(params: { page?: number; size?: numb
  */
 export async function fetchMyCoupons(params: { status?: string; page?: number; size?: number } = {}) {
     const res = await apiGet(couponApi.mine, params);
-    // 调试日志：打印原始响应结构
-    console.log('[coupon/mine] 原始响应:', JSON.stringify(res, null, 2));
     const list = extractCouponList(res);
-    if (list.length > 0) {
-        console.log('[coupon/mine] 第一条原始数据:', list[0]);
-        console.log('[coupon/mine] 第一条数据的所有键:', Object.keys(list[0]));
-    }
     return {
         ...res,
         data: list.map(normalizeCoupon),

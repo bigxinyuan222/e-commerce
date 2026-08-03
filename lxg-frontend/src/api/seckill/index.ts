@@ -7,7 +7,7 @@
 //   GET  /api/v1/seckill/purchases              获取购买秒杀商品的结果
 // ============================================
 
-import { apiGet, apiPost } from '@/api/common';
+import { apiGet, apiPost, toNumericId } from '@/api/common';
 
 // H5 端使用相对路径，通过 devServer proxy 转发，避免跨域
 // 小程序端不受 CORS 限制，直接使用完整后端地址
@@ -32,23 +32,57 @@ export const seckillApi = {
  * 秒杀商品数据规范化：兼容 snake_case / PascalCase / camelCase 字段名
  */
 export function normalizeSeckillProduct(raw: any): Record<string, any> {
+    // 处理图片：兼容单个 image 字段和 images 数组
+    let image = raw.image ?? raw.Image ?? raw.imageUrl ?? raw.image_url ?? raw.ImageUrl ?? raw.pic ?? raw.Pic ?? '';
+    if (!image && Array.isArray(raw.images) && raw.images.length > 0) {
+        image = raw.images[0];
+    }
+    if (!image && Array.isArray(raw.Images) && raw.Images.length > 0) {
+        image = raw.Images[0];
+    }
+
+    // 兼容更多价格字段
+    const originalPrice = Number(raw.originalPrice ?? raw.original_price ?? raw.OriginalPrice
+        ?? raw.marketPrice ?? raw.market_price ?? raw.MarketPrice
+        ?? raw.original_price_cents ?? raw.price_original
+        ?? raw.minPrice ?? raw.min_price ?? raw.MinPrice
+        ?? 0);
+
+    const seckillPrice = Number(raw.seckillPrice ?? raw.seckill_price ?? raw.SeckillPrice
+        ?? raw.price ?? raw.Price ?? raw.salePrice ?? raw.sale_price
+        ?? raw.seckill_price_cents ?? raw.price_seckill
+        ?? raw.currentPrice ?? raw.current_price
+        ?? raw.discountPrice ?? raw.discount_price
+        ?? 0);
+
+    const stock = Number(raw.stock ?? raw.Stock ?? raw.totalStock ?? raw.total_stock ?? raw.TotalStock
+        ?? raw.inventory ?? raw.inventory ?? raw.Inventory
+        ?? raw.availableStock ?? raw.available_stock
+        ?? 0);
+
+    const soldCount = Number(raw.soldCount ?? raw.sold_count ?? raw.SoldCount ?? raw.sold ?? raw.Sold
+        ?? raw.sales ?? raw.salesVolume ?? raw.sales_volume
+        ?? 0);
+
+    // 已售百分比（后端没返回时本地计算）
+    const soldPercent = raw.soldPercent ?? raw.sold_percent ?? raw.SoldPercent
+        ?? (stock > 0 ? Math.round((soldCount / stock) * 100) : 0);
+
     return {
         id: raw.id ?? raw.Id ?? raw.ID ?? raw.productId ?? raw.product_id ?? raw.ProductId ?? '',
         productId: raw.productId ?? raw.product_id ?? raw.ProductId ?? raw.ProductID ?? raw.pid ?? raw.Pid ?? raw.id ?? '',
         productName: raw.productName ?? raw.product_name ?? raw.ProductName ?? raw.name ?? raw.Name ?? raw.title ?? raw.Title ?? '',
-        image: raw.image ?? raw.Image ?? raw.imageUrl ?? raw.image_url ?? raw.ImageUrl ?? raw.pic ?? raw.Pic ?? '',
-        originalPrice: Number(raw.originalPrice ?? raw.original_price ?? raw.OriginalPrice ?? raw.marketPrice ?? raw.market_price ?? raw.MarketPrice ?? 0),
-        seckillPrice: Number(raw.seckillPrice ?? raw.seckill_price ?? raw.SeckillPrice ?? raw.price ?? raw.Price ?? raw.salePrice ?? raw.sale_price ?? 0),
-        stock: Number(raw.stock ?? raw.Stock ?? raw.totalStock ?? raw.total_stock ?? raw.TotalStock ?? 0),
-        soldCount: Number(raw.soldCount ?? raw.sold_count ?? raw.SoldCount ?? raw.sold ?? raw.Sold ?? 0),
+        image,
+        originalPrice,
+        seckillPrice,
+        stock,
+        soldCount,
+        soldPercent,
         limitCount: Number(raw.limitCount ?? raw.limit_count ?? raw.LimitCount ?? raw.buyLimit ?? raw.buy_limit ?? raw.BuyLimit ?? 1),
         skuId: raw.skuId ?? raw.sku_id ?? raw.SkuId ?? raw.skuID ?? '',
         activityId: raw.activityId ?? raw.activity_id ?? raw.ActivityId ?? '',
-        // 已售百分比（后端没返回时本地计算）
-        soldPercent: raw.soldPercent ?? raw.sold_percent ?? raw.SoldPercent
-            ?? (Number(raw.stock ?? raw.Stock ?? 0) > 0
-                ? Math.round((Number(raw.soldCount ?? raw.sold_count ?? raw.SoldCount ?? raw.sold ?? 0) / Number(raw.stock ?? raw.Stock ?? 0)) * 100)
-                : 0),
+        // 附加原始数据，供页面需要时使用
+        raw,
     };
 }
 
@@ -157,14 +191,23 @@ export async function fetchSeckillActivities(params: { status?: string; page?: n
 /**
  * 获取指定商品的秒杀活动
  * GET /api/v1/seckill/activities/products
- * @param params productId 商品ID（必填），activityId 活动ID（可选）
+ * @param params productId 商品ID（可选），activityId 活动ID（可选）
+ * 至少需要一个参数
  */
 export async function fetchProductSeckillActivity(params: {
-    productId: string | number;
+    productId?: string | number;
     activityId?: string | number;
 }) {
-    const query: Record<string, any> = { productId: params.productId };
-    if (params.activityId !== undefined) query.activityId = params.activityId;
+    const query: Record<string, any> = {};
+    // 兼容 camelCase 和 snake_case 参数名
+    if (params.productId !== undefined && params.productId !== '' && params.productId !== null) {
+        query.productId = params.productId;
+        query.product_id = params.productId;
+    }
+    if (params.activityId !== undefined && params.activityId !== '' && params.activityId !== null) {
+        query.activityId = params.activityId;
+        query.activity_id = params.activityId;
+    }
 
     const res = await apiGet(seckillApi.activityProducts, query);
     if (res?.data) {
@@ -197,12 +240,12 @@ export async function createSeckillPurchase(payload: {
     [key: string]: any;
 }) {
     const body: Record<string, any> = {
-        activityId: payload.activityId,
-        productId: payload.productId,
+        activityId: toNumericId(payload.activityId),
+        productId: toNumericId(payload.productId),
         quantity: payload.quantity,
     };
-    if (payload.skuId !== undefined) body.skuId = payload.skuId;
-    if (payload.addressId !== undefined) body.addressId = payload.addressId;
+    if (payload.skuId !== undefined) body.skuId = toNumericId(payload.skuId);
+    if (payload.addressId !== undefined) body.addressId = toNumericId(payload.addressId);
     if (payload.paymentMethod !== undefined) body.paymentMethod = payload.paymentMethod;
 
     const res = await apiPost(seckillApi.purchases, body);

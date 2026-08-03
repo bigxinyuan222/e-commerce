@@ -1,6 +1,6 @@
 // H5 端使用相对路径，通过 devServer proxy 转发，避免跨域
 // 小程序端不受 CORS 限制，直接使用完整后端地址
-import { apiGet, apiPost, apiPut, apiDelete } from '@/api/common';
+import { apiGet, apiPost, apiPut, apiDelete, toNumericId, normalizeNumericFields } from '@/api/common';
 
 const BACKEND_HOST = 'http://192.168.10.7:8089';
 const API_BASE_URL = process.env.TARO_ENV === 'h5'
@@ -36,6 +36,7 @@ export const paymentApi = {
 
 export const refundApi = {
     reasonList: `${API_BASE_URL}/refund-reasons`,
+    list: `${API_BASE_URL}/refunds`,
     apply: `${API_BASE_URL}/refunds`,
     detail: `${API_BASE_URL}/refunds/:id`,
 };
@@ -119,14 +120,14 @@ export async function addToCartAPI(payload: {
     remark?: string;
 }) {
     const body: Record<string, any> = {
-        productId: payload.productId,
-        skuId: payload.skuId,
+        productId: toNumericId(payload.productId),
+        skuId: toNumericId(payload.skuId),
         quantity: payload.quantity,
     };
-    if (payload.storeId !== undefined && payload.storeId !== null) body.storeId = payload.storeId;
+    if (payload.storeId !== undefined && payload.storeId !== null) body.storeId = toNumericId(payload.storeId);
     if (payload.remark) body.remark = payload.remark;
 
-    const res = await apiPost(cartApi.add, body);
+    const res = await apiPost(cartApi.add, body, {}, {}, false);
     return res;
 }
 
@@ -169,9 +170,45 @@ export async function batchDeleteCartItem(ids: Array<string | number>) {
 /**
  * 提交订单
  * POST /api/v1/orders
+ * 后端契约: { cartIds: uint64[], storeId: uint64, userCouponId: uint64|null, remark: string }
  */
 export async function submitOrder(payload: Record<string, any>) {
-    const res = await apiPost(orderApi.submit, payload);
+    // 根据后端 Go 结构体构建请求
+    // cartIds: 购物车ID列表（从购物车结算时传递）
+    // storeId: 自提门店ID
+    // userCouponId: 用户优惠券ID（可选）
+    // remark: 订单备注
+
+    const requestBody: Record<string, any> = {};
+
+    // 处理购物车 ID 列表
+    if (Array.isArray(payload.cartIds)) {
+        requestBody.cartIds = payload.cartIds.map((id: any) => toNumericId(id));
+    } else if (Array.isArray(payload.items)) {
+        // 如果传递的是商品列表而非购物车 ID，从中提取 ID
+        requestBody.cartIds = payload.items
+            .filter((item: any) => item.id)
+            .map((item: any) => toNumericId(item.id));
+    } else {
+        requestBody.cartIds = [];
+    }
+
+    // 处理门店 ID
+    requestBody.storeId = toNumericId(payload.storeId);
+
+    // 处理优惠券 ID（可选）
+    if (payload.userCouponId !== undefined && payload.userCouponId !== null && payload.userCouponId !== 0) {
+        requestBody.userCouponId = toNumericId(payload.userCouponId);
+    } else {
+        requestBody.userCouponId = null;
+    }
+
+    // 处理备注
+    requestBody.remark = payload.remark || '';
+
+    console.log('[SubmitOrder API] Sending payload:', JSON.stringify(requestBody));
+
+    const res = await apiPost(orderApi.submit, requestBody, {}, {}, false);
     return res;
 }
 
@@ -413,6 +450,7 @@ export function normalizeRefund(raw: any): Record<string, any> {
         'approved': '已同意',
         'rejected': '已拒绝',
         'refunding': '退款中',
+        'refund_rejected': '商家已拒绝',
         'refunded': '已退款',
         'cancelled': '已取消',
         'completed': '已完成',
@@ -433,10 +471,10 @@ export function normalizeRefund(raw: any): Record<string, any> {
             1: 'processing',
             2: 'approved',
             3: 'rejected',
-            4: 'refunding',
-            5: 'refunded',
-            6: 'cancelled',
-            7: 'completed',
+            4: 'cancelled',
+            5: 'refunding',
+            6: 'refund_rejected',
+            7: 'refunded',
         };
         status = numericMap[rawStatus] || 'pending';
     }

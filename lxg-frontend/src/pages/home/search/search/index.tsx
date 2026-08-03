@@ -117,8 +117,9 @@ const SearchPage: React.FC = () => {
                       ))}
                     </View>
                     <View className={styles.productPrice}>
+                      <Text className={styles.priceSymbol}>¥</Text>
                       <Text className={styles.currentPrice}>{product.price}</Text>
-                      <Text className={styles.originalPrice}>{product.originalPrice}</Text>
+                      <Text className={styles.originalPrice}>¥{product.originalPrice}</Text>
                     </View>
                     <Text className={styles.salesInfo}>已售 {product.sales > 10000 ? `${(product.sales / 10000).toFixed(1)}万` : product.sales} 件</Text>
                   </View>
