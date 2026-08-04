@@ -7,6 +7,7 @@
   \****************************************************************************************************************************/
 /***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
+/* harmony import */ var D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_typeof_js__WEBPACK_IMPORTED_MODULE_17__ = __webpack_require__(/*! ./node_modules/@babel/runtime/helpers/esm/typeof.js */ "./node_modules/@babel/runtime/helpers/esm/typeof.js");
 /* harmony import */ var D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(/*! ./node_modules/@babel/runtime/helpers/esm/regenerator.js */ "./node_modules/@babel/runtime/helpers/esm/regenerator.js");
 /* harmony import */ var D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(/*! ./node_modules/@babel/runtime/helpers/esm/asyncToGenerator.js */ "./node_modules/@babel/runtime/helpers/esm/asyncToGenerator.js");
 /* harmony import */ var D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_defineProperty_js__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! ./node_modules/@babel/runtime/helpers/esm/defineProperty.js */ "./node_modules/@babel/runtime/helpers/esm/defineProperty.js");
@@ -26,6 +27,7 @@
 /* harmony import */ var _utils_image__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! @/utils/image */ "./src/utils/image.ts");
 /* harmony import */ var _styles_home_detail_module_scss__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! @/styles/home/detail.module.scss */ "./src/styles/home/detail.module.scss");
 /* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/cjs/react-jsx-runtime.production.min.js");
+
 
 
 
@@ -825,12 +827,19 @@ var ProductDetailPage = function ProductDetailPage() {
 
               // 处理秒杀活动信息
               if (seckillRes !== null && seckillRes !== void 0 && seckillRes.data) {
-                data = seckillRes.data; // fetchProductSeckillActivity 可能返回活动对象（含 products）或单个商品活动
-                if (data.products || data.endTime) {
-                  setSeckillInfo(data);
-                  if (data.id) setSeckillActivityId(String(data.id));
-                } else if (data.seckillPrice !== undefined) {
-                  setSeckillInfo(data);
+                data = seckillRes.data; // 如果返回的是数组，取第一个元素
+                if (Array.isArray(data) && data.length > 0) {
+                  data = data[0];
+                }
+                if (data && (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_typeof_js__WEBPACK_IMPORTED_MODULE_17__["default"])(data) === 'object') {
+                  // fetchProductSeckillActivity 可能返回活动对象（含 products）或单个商品活动
+                  if (data.products || data.endTime) {
+                    setSeckillInfo(data);
+                    if (data.id) setSeckillActivityId(String(data.id));
+                  } else if (data.seckillPrice !== undefined || data.seckill_price !== undefined) {
+                    setSeckillInfo(data);
+                    if (data.activityId) setSeckillActivityId(String(data.activityId));
+                  }
                 }
               }
               _context6.n = 4;
@@ -944,12 +953,12 @@ var ProductDetailPage = function ProductDetailPage() {
         className: _styles_home_detail_module_scss__WEBPACK_IMPORTED_MODULE_8__["default"].priceSection,
         children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_10__.View, {
           className: _styles_home_detail_module_scss__WEBPACK_IMPORTED_MODULE_8__["default"].priceRow,
-          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_10__.Text, {
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_10__.Text, {
             className: _styles_home_detail_module_scss__WEBPACK_IMPORTED_MODULE_8__["default"].currentPrice,
-            children: (selectedSku === null || selectedSku === void 0 ? void 0 : selectedSku.price) || product.price
-          }), product.originalPrice && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_10__.Text, {
+            children: ["\xA5", (selectedSku === null || selectedSku === void 0 ? void 0 : selectedSku.price) || product.price]
+          }), product.originalPrice && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_10__.Text, {
             className: _styles_home_detail_module_scss__WEBPACK_IMPORTED_MODULE_8__["default"].originalPrice,
-            children: product.originalPrice
+            children: ["\xA5", product.originalPrice]
           }), isSeckill && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_10__.View, {
             className: _styles_home_detail_module_scss__WEBPACK_IMPORTED_MODULE_8__["default"].seckillBadge,
             children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_10__.Text, {
@@ -1031,7 +1040,7 @@ var ProductDetailPage = function ProductDetailPage() {
             }), "\u62E8\u6253\u7535\u8BDD"]
           })]
         })]
-      }), evaluations.length > 0 && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_10__.View, {
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_10__.View, {
         className: _styles_home_detail_module_scss__WEBPACK_IMPORTED_MODULE_8__["default"].evaluateSection,
         children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_10__.View, {
           className: _styles_home_detail_module_scss__WEBPACK_IMPORTED_MODULE_8__["default"].sectionHeader,
@@ -1042,6 +1051,38 @@ var ProductDetailPage = function ProductDetailPage() {
             className: _styles_home_detail_module_scss__WEBPACK_IMPORTED_MODULE_8__["default"].viewAll,
             onClick: goToEvaluations,
             children: "\u67E5\u770B\u5168\u90E8"
+          })]
+        }), evalStats && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_10__.View, {
+          className: _styles_home_detail_module_scss__WEBPACK_IMPORTED_MODULE_8__["default"].statsBar,
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_10__.View, {
+            className: _styles_home_detail_module_scss__WEBPACK_IMPORTED_MODULE_8__["default"].statsScore,
+            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_10__.Text, {
+              className: _styles_home_detail_module_scss__WEBPACK_IMPORTED_MODULE_8__["default"].statsScoreVal,
+              children: Number(evalStats.averageRating || 0).toFixed(1)
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_10__.View, {
+              className: _styles_home_detail_module_scss__WEBPACK_IMPORTED_MODULE_8__["default"].statsStars,
+              children: [5, 4, 3, 2, 1].map(function (star) {
+                return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_10__.Text, {
+                  className: star <= Math.round(Number(evalStats.averageRating || 0)) ? _styles_home_detail_module_scss__WEBPACK_IMPORTED_MODULE_8__["default"].statsStarActive : _styles_home_detail_module_scss__WEBPACK_IMPORTED_MODULE_8__["default"].statsStarInactive,
+                  children: "\u2605"
+                }, star);
+              })
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_10__.Text, {
+              className: _styles_home_detail_module_scss__WEBPACK_IMPORTED_MODULE_8__["default"].statsGoodRate,
+              children: ["\u597D\u8BC4\u7387 ", evalStats.goodRate || 100, "%"]
+            })]
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_10__.View, {
+            className: _styles_home_detail_module_scss__WEBPACK_IMPORTED_MODULE_8__["default"].statsCounts,
+            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_10__.Text, {
+              className: _styles_home_detail_module_scss__WEBPACK_IMPORTED_MODULE_8__["default"].statsCountItem,
+              children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_10__.Text, {
+                className: _styles_home_detail_module_scss__WEBPACK_IMPORTED_MODULE_8__["default"].statsCountNum,
+                children: evalStats.total || 0
+              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_10__.Text, {
+                className: _styles_home_detail_module_scss__WEBPACK_IMPORTED_MODULE_8__["default"].statsCountLabel,
+                children: "\u6761\u8BC4\u4EF7"
+              })]
+            })
           })]
         }), aiSummary && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_10__.View, {
           className: _styles_home_detail_module_scss__WEBPACK_IMPORTED_MODULE_8__["default"].aiSummarySection,
@@ -1095,7 +1136,7 @@ var ProductDetailPage = function ProductDetailPage() {
               })
             })]
           })]
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_10__.View, {
+        }), evaluations.length > 0 ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_10__.View, {
           className: _styles_home_detail_module_scss__WEBPACK_IMPORTED_MODULE_8__["default"].evaluateList,
           children: evaluations.map(function (evaluation) {
             return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(EvaluationItem, {
@@ -1104,6 +1145,15 @@ var ProductDetailPage = function ProductDetailPage() {
               onComment: openCommentModal
             }, evaluation.id);
           })
+        }) : /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_10__.View, {
+          className: _styles_home_detail_module_scss__WEBPACK_IMPORTED_MODULE_8__["default"].noEval,
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_10__.Text, {
+            className: _styles_home_detail_module_scss__WEBPACK_IMPORTED_MODULE_8__["default"].noEvalIcon,
+            children: "\uD83D\uDCDD"
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_10__.Text, {
+            className: _styles_home_detail_module_scss__WEBPACK_IMPORTED_MODULE_8__["default"].noEvalText,
+            children: "\u6682\u65E0\u8BC4\u4EF7\uFF0C\u671F\u5F85\u60A8\u7684\u9996\u6B21\u8BC4\u4EF7"
+          })]
         })]
       }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_10__.View, {
         className: _styles_home_detail_module_scss__WEBPACK_IMPORTED_MODULE_8__["default"].detailSection,
@@ -1192,9 +1242,9 @@ var ProductDetailPage = function ProductDetailPage() {
             mode: "aspectFill"
           }, (0,_utils_image__WEBPACK_IMPORTED_MODULE_7__.lazyImgProps)())), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_10__.View, {
             className: _styles_home_detail_module_scss__WEBPACK_IMPORTED_MODULE_8__["default"].selectedInfo,
-            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_10__.Text, {
+            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_10__.Text, {
               className: _styles_home_detail_module_scss__WEBPACK_IMPORTED_MODULE_8__["default"].selectedPrice,
-              children: (selectedSku === null || selectedSku === void 0 ? void 0 : selectedSku.price) || product.price
+              children: ["\xA5", (selectedSku === null || selectedSku === void 0 ? void 0 : selectedSku.price) || product.price]
             }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_10__.Text, {
               className: _styles_home_detail_module_scss__WEBPACK_IMPORTED_MODULE_8__["default"].selectedStock,
               children: ["\u5E93\u5B58: ", (selectedSku === null || selectedSku === void 0 ? void 0 : selectedSku.stock) || 0, " \u4EF6"]
@@ -1364,7 +1414,7 @@ var inst = Page(taroOption)
 /***/ (function(__unused_webpack_module, __webpack_exports__) {
 
 // extracted by mini-css-extract-plugin
-/* harmony default export */ __webpack_exports__["default"] = ({"productDetailPage":"detail-module__productDetailPage___JE7Vw","bannerWrap":"detail-module__bannerWrap___APuBB","shareBtn":"detail-module__shareBtn___Y0bcl","shareIcon":"detail-module__shareIcon___s3BFn","productBanner":"detail-module__productBanner___hNVW7","productBannerFallback":"detail-module__productBannerFallback___XJhvi","bannerIndicator":"detail-module__bannerIndicator___Ei2vt","priceSection":"detail-module__priceSection___Be4KP","priceRow":"detail-module__priceRow___xvrqd","seckillBadge":"detail-module__seckillBadge___Xkv9C","seckillBadgeText":"detail-module__seckillBadgeText___Iy7j0","seckillBadgeTime":"detail-module__seckillBadgeTime___NAxbE","currentPrice":"detail-module__currentPrice___tAvrm","originalPrice":"detail-module__originalPrice___ztI4F","discount":"detail-module__discount___Desjh","seckillCountdown":"detail-module__seckillCountdown___H9iwb","countdownLabel":"detail-module__countdownLabel___NYlhh","countdownValue":"detail-module__countdownValue___TkGKR","salesRow":"detail-module__salesRow___EDnH4","salesValue":"detail-module__salesValue___JY3eY","salesLabel":"detail-module__salesLabel___WJsCo","activityTags":"detail-module__activityTags___PCl43","tag":"detail-module__tag___pvR5t","couponTags":"detail-module__couponTags___R8Pjk","couponTag":"detail-module__couponTag___JeYe7","couponTagValue":"detail-module__couponTagValue___rRNjo","couponTagDesc":"detail-module__couponTagDesc___sxdU5","couponTagBtn":"detail-module__couponTagBtn___n4Sj6","infoSection":"detail-module__infoSection___PQ1vb","productName":"detail-module__productName___Bqs4W","productTags":"detail-module__productTags___gUFNg","baseInfo":"detail-module__baseInfo___CkQ8V","infoItem":"detail-module__infoItem___UWk9M","infoValue":"detail-module__infoValue___BDvRH","infoLabel":"detail-module__infoLabel___sodaS","promotionSection":"detail-module__promotionSection___tJ5fp","sectionTitle":"detail-module__sectionTitle___XIEQf","promotionItem":"detail-module__promotionItem____zEyT","promotionTag":"detail-module__promotionTag___nwwfP","promotionText":"detail-module__promotionText___hHxFn","skuSection":"detail-module__skuSection___GW7ap","selectedSku":"detail-module__selectedSku___uUoZO","skuImage":"detail-module__skuImage___DCwvF","skuInfo":"detail-module__skuInfo___AUToH","skuPrice":"detail-module__skuPrice___GHtPx","skuStock":"detail-module__skuStock___L6XZ9","skuName":"detail-module__skuName___pn0Sh","selectBtn":"detail-module__selectBtn___LPrRQ","skuOptions":"detail-module__skuOptions___Nln4x","skuOptionGroup":"detail-module__skuOptionGroup___qJD_x","optionLabel":"detail-module__optionLabel___JgYyq","optionValues":"detail-module__optionValues___cdoeZ","optionValue":"detail-module__optionValue___jJJir","active":"detail-module__active___Tcmk5","disabled":"detail-module__disabled___My2Th","aiSummarySection":"detail-module__aiSummarySection___h4YJ1","aiSummaryHeader":"detail-module__aiSummaryHeader___Y1ZvU","aiIcon":"detail-module__aiIcon___sTvqn","aiSummaryTitle":"detail-module__aiSummaryTitle___RmTP1","aiScore":"detail-module__aiScore____PBTZ","scoreValue":"detail-module__scoreValue___ZmW65","scoreLabel":"detail-module__scoreLabel___A8qoz","aiOverall":"detail-module__aiOverall___esGgu","aiStrengths":"detail-module__aiStrengths___EUs3u","aiWeaknesses":"detail-module__aiWeaknesses___Na0Ec","aiLabel":"detail-module__aiLabel___EsU5V","aiTags":"detail-module__aiTags___kZDGD","aiTag":"detail-module__aiTag___OEMsx","weakTag":"detail-module__weakTag___AMI6B","evaluateSection":"detail-module__evaluateSection___ZILhm","sectionHeader":"detail-module__sectionHeader___ELsy4","viewAll":"detail-module__viewAll___eVj4c","evaluateStats":"detail-module__evaluateStats___sSJCQ","score":"detail-module__score___olUNm","evaluateTags":"detail-module__evaluateTags___miZPi","evaluateList":"detail-module__evaluateList___fYRCR","evaluateItem":"detail-module__evaluateItem___B8oxy","evaluateHeader":"detail-module__evaluateHeader___yF8Hy","userAvatar":"detail-module__userAvatar___oEpcl","userInfo":"detail-module__userInfo___ukEmj","userName":"detail-module__userName___EeGbN","evaluateTime":"detail-module__evaluateTime___O9InG","rating":"detail-module__rating___JE1YE","evaluateContent":"detail-module__evaluateContent___Ubxy8","evaluateImages":"detail-module__evaluateImages___nRU7i","evaluateActions":"detail-module__evaluateActions___Vdr0j","actionItem":"detail-module__actionItem___GnVMK","liked":"detail-module__liked___KNu_R","actionIcon":"detail-module__actionIcon___WZ5GA","actionText":"detail-module__actionText___p7Ek6","commentModal":"detail-module__commentModal___8c8D3","modalMask":"detail-module__modalMask___Iezj8","commentModalContent":"detail-module__commentModalContent___PXjvt","commentModalHeader":"detail-module__commentModalHeader___PehIP","commentModalTitle":"detail-module__commentModalTitle___W0UEH","commentModalClose":"detail-module__commentModalClose___g_jiN","commentModalBody":"detail-module__commentModalBody___lwIW3","emptyComment":"detail-module__emptyComment___RMMg3","commentList":"detail-module__commentList___J2Agm","commentItem":"detail-module__commentItem___RFANE","commentAvatar":"detail-module__commentAvatar___C5H9r","commentContent":"detail-module__commentContent___BF34s","commentHeader":"detail-module__commentHeader___ciGUG","commentUserName":"detail-module__commentUserName___q5zER","commentTime":"detail-module__commentTime___UWap0","commentText":"detail-module__commentText___UjETJ","commentLike":"detail-module__commentLike___N3H5q","commentLikeCount":"detail-module__commentLikeCount___jvfwG","commentModalFooter":"detail-module__commentModalFooter___Ko2SM","commentInput":"detail-module__commentInput____amTj","commentSendBtn":"detail-module__commentSendBtn___x6X_4","detailSection":"detail-module__detailSection___ViyAI","detailContent":"detail-module__detailContent___XzYrq","storeSection":"detail-module__storeSection___SGP5F","storeHeader":"detail-module__storeHeader___hDqhU","switchStoreBtn":"detail-module__switchStoreBtn___Ntg9S","storeInfo":"detail-module__storeInfo___zp9Ah","storeAvatar":"detail-module__storeAvatar___A25x5","storeDetails":"detail-module__storeDetails___ZW0Av","storeName":"detail-module__storeName___c71J4","storeAddress":"detail-module__storeAddress___cqMUY","storeHours":"detail-module__storeHours___L2pXr","storeAction":"detail-module__storeAction___acibm","phoneIcon":"detail-module__phoneIcon___ZjX22","bottomBar":"detail-module__bottomBar___sf9nD","actionIcons":"detail-module__actionIcons___qk2ZK","icon":"detail-module__icon___zEFp1","actionButtons":"detail-module__actionButtons___l5Noj","addCartBtn":"detail-module__addCartBtn___bNq9w","buyNowBtn":"detail-module__buyNowBtn____mEjm","buyBtnText":"detail-module__buyBtnText___fxjct","btnCountdown":"detail-module__btnCountdown___GUQ8w","skuModal":"detail-module__skuModal___EeV1v","modalContent":"detail-module__modalContent___Mwt32","modalHeader":"detail-module__modalHeader___BjBzo","selectedImage":"detail-module__selectedImage___NG19G","selectedInfo":"detail-module__selectedInfo___c5awI","selectedPrice":"detail-module__selectedPrice___StJe4","selectedStock":"detail-module__selectedStock___syp8V","selectedName":"detail-module__selectedName___tiPfT","closeBtn":"detail-module__closeBtn___BoAm0","modalBody":"detail-module__modalBody___fzeHv","optionGroup":"detail-module__optionGroup___Rcw2H","quantityRow":"detail-module__quantityRow____EsXu","quantityLabel":"detail-module__quantityLabel___dWodf","quantityControl":"detail-module__quantityControl___GFvJ3","quantityBtn":"detail-module__quantityBtn___nVTHw","quantityNum":"detail-module__quantityNum___LohOs","modalFooter":"detail-module__modalFooter___NAM7d","confirmBtn":"detail-module__confirmBtn___JxvgD"});
+/* harmony default export */ __webpack_exports__["default"] = ({"productDetailPage":"detail-module__productDetailPage___JE7Vw","bannerWrap":"detail-module__bannerWrap___APuBB","shareBtn":"detail-module__shareBtn___Y0bcl","shareIcon":"detail-module__shareIcon___s3BFn","productBanner":"detail-module__productBanner___hNVW7","productBannerFallback":"detail-module__productBannerFallback___XJhvi","bannerIndicator":"detail-module__bannerIndicator___Ei2vt","priceSection":"detail-module__priceSection___Be4KP","priceRow":"detail-module__priceRow___xvrqd","seckillBadge":"detail-module__seckillBadge___Xkv9C","seckillBadgeText":"detail-module__seckillBadgeText___Iy7j0","seckillBadgeTime":"detail-module__seckillBadgeTime___NAxbE","currentPrice":"detail-module__currentPrice___tAvrm","originalPrice":"detail-module__originalPrice___ztI4F","discount":"detail-module__discount___Desjh","seckillCountdown":"detail-module__seckillCountdown___H9iwb","countdownLabel":"detail-module__countdownLabel___NYlhh","countdownValue":"detail-module__countdownValue___TkGKR","salesRow":"detail-module__salesRow___EDnH4","salesValue":"detail-module__salesValue___JY3eY","salesLabel":"detail-module__salesLabel___WJsCo","activityTags":"detail-module__activityTags___PCl43","tag":"detail-module__tag___pvR5t","couponTags":"detail-module__couponTags___R8Pjk","couponTag":"detail-module__couponTag___JeYe7","couponTagValue":"detail-module__couponTagValue___rRNjo","couponTagDesc":"detail-module__couponTagDesc___sxdU5","couponTagBtn":"detail-module__couponTagBtn___n4Sj6","infoSection":"detail-module__infoSection___PQ1vb","productName":"detail-module__productName___Bqs4W","productTags":"detail-module__productTags___gUFNg","baseInfo":"detail-module__baseInfo___CkQ8V","infoItem":"detail-module__infoItem___UWk9M","infoValue":"detail-module__infoValue___BDvRH","infoLabel":"detail-module__infoLabel___sodaS","promotionSection":"detail-module__promotionSection___tJ5fp","sectionTitle":"detail-module__sectionTitle___XIEQf","promotionItem":"detail-module__promotionItem____zEyT","promotionTag":"detail-module__promotionTag___nwwfP","promotionText":"detail-module__promotionText___hHxFn","skuSection":"detail-module__skuSection___GW7ap","selectedSku":"detail-module__selectedSku___uUoZO","skuImage":"detail-module__skuImage___DCwvF","skuInfo":"detail-module__skuInfo___AUToH","skuPrice":"detail-module__skuPrice___GHtPx","skuStock":"detail-module__skuStock___L6XZ9","skuName":"detail-module__skuName___pn0Sh","selectBtn":"detail-module__selectBtn___LPrRQ","skuOptions":"detail-module__skuOptions___Nln4x","skuOptionGroup":"detail-module__skuOptionGroup___qJD_x","optionLabel":"detail-module__optionLabel___JgYyq","optionValues":"detail-module__optionValues___cdoeZ","optionValue":"detail-module__optionValue___jJJir","active":"detail-module__active___Tcmk5","disabled":"detail-module__disabled___My2Th","aiSummarySection":"detail-module__aiSummarySection___h4YJ1","aiSummaryHeader":"detail-module__aiSummaryHeader___Y1ZvU","aiIcon":"detail-module__aiIcon___sTvqn","aiSummaryTitle":"detail-module__aiSummaryTitle___RmTP1","aiScore":"detail-module__aiScore____PBTZ","scoreValue":"detail-module__scoreValue___ZmW65","scoreLabel":"detail-module__scoreLabel___A8qoz","aiOverall":"detail-module__aiOverall___esGgu","aiStrengths":"detail-module__aiStrengths___EUs3u","aiWeaknesses":"detail-module__aiWeaknesses___Na0Ec","aiLabel":"detail-module__aiLabel___EsU5V","aiTags":"detail-module__aiTags___kZDGD","aiTag":"detail-module__aiTag___OEMsx","weakTag":"detail-module__weakTag___AMI6B","evaluateSection":"detail-module__evaluateSection___ZILhm","sectionHeader":"detail-module__sectionHeader___ELsy4","viewAll":"detail-module__viewAll___eVj4c","evaluateStats":"detail-module__evaluateStats___sSJCQ","score":"detail-module__score___olUNm","evaluateTags":"detail-module__evaluateTags___miZPi","evaluateList":"detail-module__evaluateList___fYRCR","evaluateItem":"detail-module__evaluateItem___B8oxy","evaluateHeader":"detail-module__evaluateHeader___yF8Hy","userAvatar":"detail-module__userAvatar___oEpcl","userInfo":"detail-module__userInfo___ukEmj","userName":"detail-module__userName___EeGbN","evaluateTime":"detail-module__evaluateTime___O9InG","rating":"detail-module__rating___JE1YE","evaluateContent":"detail-module__evaluateContent___Ubxy8","evaluateImages":"detail-module__evaluateImages___nRU7i","evaluateActions":"detail-module__evaluateActions___Vdr0j","actionItem":"detail-module__actionItem___GnVMK","liked":"detail-module__liked___KNu_R","actionIcon":"detail-module__actionIcon___WZ5GA","actionText":"detail-module__actionText___p7Ek6","statsBar":"detail-module__statsBar___bOEIM","statsScore":"detail-module__statsScore___NhRg1","statsScoreVal":"detail-module__statsScoreVal___aFjuy","statsStars":"detail-module__statsStars___HJ1P_","statsStarActive":"detail-module__statsStarActive___NlPtw","statsStarInactive":"detail-module__statsStarInactive___gY8YV","statsGoodRate":"detail-module__statsGoodRate___yojua","statsCounts":"detail-module__statsCounts___DzLE5","statsCountItem":"detail-module__statsCountItem___lHJmN","statsCountNum":"detail-module__statsCountNum___mlQDw","statsCountLabel":"detail-module__statsCountLabel___Vqq2f","noEval":"detail-module__noEval___gnVL5","noEvalIcon":"detail-module__noEvalIcon___RBuCx","noEvalText":"detail-module__noEvalText___Aw2Zc","commentModal":"detail-module__commentModal___8c8D3","modalMask":"detail-module__modalMask___Iezj8","commentModalContent":"detail-module__commentModalContent___PXjvt","commentModalHeader":"detail-module__commentModalHeader___PehIP","commentModalTitle":"detail-module__commentModalTitle___W0UEH","commentModalClose":"detail-module__commentModalClose___g_jiN","commentModalBody":"detail-module__commentModalBody___lwIW3","emptyComment":"detail-module__emptyComment___RMMg3","commentList":"detail-module__commentList___J2Agm","commentItem":"detail-module__commentItem___RFANE","commentAvatar":"detail-module__commentAvatar___C5H9r","commentContent":"detail-module__commentContent___BF34s","commentHeader":"detail-module__commentHeader___ciGUG","commentUserName":"detail-module__commentUserName___q5zER","commentTime":"detail-module__commentTime___UWap0","commentText":"detail-module__commentText___UjETJ","commentLike":"detail-module__commentLike___N3H5q","commentLikeCount":"detail-module__commentLikeCount___jvfwG","commentModalFooter":"detail-module__commentModalFooter___Ko2SM","commentInput":"detail-module__commentInput____amTj","commentSendBtn":"detail-module__commentSendBtn___x6X_4","detailSection":"detail-module__detailSection___ViyAI","detailContent":"detail-module__detailContent___XzYrq","storeSection":"detail-module__storeSection___SGP5F","storeHeader":"detail-module__storeHeader___hDqhU","switchStoreBtn":"detail-module__switchStoreBtn___Ntg9S","storeInfo":"detail-module__storeInfo___zp9Ah","storeAvatar":"detail-module__storeAvatar___A25x5","storeDetails":"detail-module__storeDetails___ZW0Av","storeName":"detail-module__storeName___c71J4","storeAddress":"detail-module__storeAddress___cqMUY","storeHours":"detail-module__storeHours___L2pXr","storeAction":"detail-module__storeAction___acibm","phoneIcon":"detail-module__phoneIcon___ZjX22","bottomBar":"detail-module__bottomBar___sf9nD","actionIcons":"detail-module__actionIcons___qk2ZK","icon":"detail-module__icon___zEFp1","actionButtons":"detail-module__actionButtons___l5Noj","addCartBtn":"detail-module__addCartBtn___bNq9w","buyNowBtn":"detail-module__buyNowBtn____mEjm","buyBtnText":"detail-module__buyBtnText___fxjct","btnCountdown":"detail-module__btnCountdown___GUQ8w","skuModal":"detail-module__skuModal___EeV1v","modalContent":"detail-module__modalContent___Mwt32","modalHeader":"detail-module__modalHeader___BjBzo","selectedImage":"detail-module__selectedImage___NG19G","selectedInfo":"detail-module__selectedInfo___c5awI","selectedPrice":"detail-module__selectedPrice___StJe4","selectedStock":"detail-module__selectedStock___syp8V","selectedName":"detail-module__selectedName___tiPfT","closeBtn":"detail-module__closeBtn___BoAm0","modalBody":"detail-module__modalBody___fzeHv","optionGroup":"detail-module__optionGroup___Rcw2H","quantityRow":"detail-module__quantityRow____EsXu","quantityLabel":"detail-module__quantityLabel___dWodf","quantityControl":"detail-module__quantityControl___GFvJ3","quantityBtn":"detail-module__quantityBtn___nVTHw","quantityNum":"detail-module__quantityNum___LohOs","modalFooter":"detail-module__modalFooter___NAM7d","confirmBtn":"detail-module__confirmBtn___JxvgD"});
 
 /***/ })
 

@@ -1,30 +1,25 @@
-import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import { View, Text, Image, ScrollView } from '@tarojs/components';
 import Taro from '@tarojs/taro';
-import { fetchOrderList, fetchRefundList, cancelOrder, payOrder, confirmOrder, paymentCallback, fetchOrderPaymentStatus } from '@/api/cart';
+import { fetchOrderList, fetchRefundList, cancelOrder, payOrder, confirmOrder, confirmPickupOrder, paymentCallback, fetchOrderPaymentStatus } from '@/api/cart';
 import { getImageUrl, lazyImgProps } from '@/utils/image';
 import styles from '@/styles/cart/order-list.module.scss';
 
+// 后端订单状态码：0=待支付 2=待发货 3=待自提 4=已完成 5=已取消
 const statusCodeMap: { [key: number]: string } = {
   0: 'pending_payment',
-  1: 'pending_delivery',
-  2: 'pending_pickup',
-  3: 'completed',
-  4: 'cancelled',
-  5: 'refunding',
-  6: 'refund_rejected',
-  7: 'refunded',
+  2: 'pending_delivery',
+  3: 'pending_pickup',
+  4: 'completed',
+  5: 'cancelled',
 };
 
 const statusCodeReverseMap: { [key: string]: number } = {
   'pending_payment': 0,
-  'pending_delivery': 1,
-  'pending_pickup': 2,
-  'completed': 3,
-  'cancelled': 4,
-  'refunding': 5,
-  'refund_rejected': 6,
-  'refunded': 7,
+  'pending_delivery': 2,
+  'pending_pickup': 3,
+  'completed': 4,
+  'cancelled': 5,
 };
 
 const statusMap: { [key: string]: string } = {
@@ -57,18 +52,62 @@ const statusColorMap: { [key: string]: string } = {
 
 
 
+function pickFirstValid(...candidates: any[]): string {
+  for (const value of candidates) {
+    if (value !== undefined && value !== null && value !== '' && value !== 0 && value !== '0') {
+      return String(value);
+    }
+  }
+  return '';
+}
+
 function transformOrderItem(item: any): any {
+  // 处理 specValues：后端返回对象 {"颜色":"红色"}
+  let skuName = item.skuName || item.SkuName || '';
+  if (!skuName && item.specValues && typeof item.specValues === 'object') {
+    skuName = Object.values(item.specValues).join('/') || '';
+  }
+
+  // 处理 image：后端可能返回 JSON 字符串 '["url"]'
+  let image = item.image || item.Image || '';
+  if (typeof image === 'string' && image.startsWith('[')) {
+    try {
+      const parsed = JSON.parse(image);
+      if (Array.isArray(parsed) && parsed.length > 0) {
+        image = parsed[0].replace(/^`|`$/g, '');
+      }
+    } catch { /* ignore */ }
+  }
+
   return {
-    id: item.id || item.ID || '',
-    productId: item.productId || item.ProductID || '',
+    id: pickFirstValid(item.id, item.ID, item.productId, item.ProductID),
+    productId: pickFirstValid(item.productId, item.ProductID),
     productName: item.productName || item.ProductName || '',
-    skuId: item.skuId || item.SkuID || '',
-    skuName: item.skuName || item.SkuName || '',
+    skuId: pickFirstValid(item.skuId, item.SkuID),
+    skuName,
     price: item.price != null ? item.price : (item.Price || 0),
     quantity: item.quantity != null ? item.quantity : (item.Quantity || 0),
-    image: getImageUrl(item.image || item.Image || ''),
+    image: getImageUrl(image),
   };
 }
+
+// 退款记录专用的状态文本映射（覆盖退款自身状态 + 兼容后端可能返回的订单状态）
+const refundStatusTextMap: { [key: string]: string } = {
+  'pending': '待处理',
+  'processing': '处理中',
+  'approved': '已同意',
+  'rejected': '已拒绝',
+  'refunding': '退款中',
+  'refund_rejected': '商家已拒绝',
+  'refunded': '已退款',
+  'cancelled': '已取消',
+  'completed': '已完成',
+  // 后端可能复用订单状态码，统一映射为退款语义
+  'pending_payment': '待处理',
+  'pending_delivery': '处理中',
+  'pending_pickup': '处理中',
+  'paid': '处理中',
+};
 
 function transformRefund(refund: any): any {
   const items = (refund.items || []).map((item: any) => ({
@@ -76,12 +115,15 @@ function transformRefund(refund: any): any {
     image: getImageUrl(item.image || item.Image || ''),
   }));
 
+  const status = refund.status || 'pending';
+  const statusText = refundStatusTextMap[status] || refund.statusText || '待处理';
+
   return {
     id: refund.id || '',
     orderId: refund.orderId || '',
     orderNo: refund.refundNo || refund.orderNo || '',
-    status: refund.status || 'unknown',
-    statusText: refund.statusText || '',
+    status,
+    statusText,
     createTime: refund.applyTime || '',
     payAmount: refund.amount || refund.payAmount || 0,
     totalAmount: refund.amount || 0,
@@ -97,31 +139,33 @@ function transformOrder(order: any): any {
 
   const items = (order.items || order.Items || []).map(transformOrderItem);
 
-  const store = order.store || order.Store
-    ? {
-        name: order.store?.name || order.Store?.Name || '',
-        address: order.store?.address || order.Store?.Address || '',
-      }
-    : undefined;
+  // store 可能是嵌套对象
+  const rawStore = order.store || order.Store;
+  const store = rawStore ? {
+    name: rawStore.name || rawStore.Name || '',
+    address: rawStore.address || rawStore.Address || '',
+    phone: rawStore.phone || rawStore.Phone || '',
+    businessHours: rawStore.businessHours || rawStore.BusinessHours || rawStore.hours || '',
+  } : undefined;
 
   return {
-    id: order.id || order.ID || order.orderNo || order.OrderNo || '',
-    orderNo: order.orderNo || order.OrderNo || '',
+    id: pickFirstValid(order.id, order.ID, order.orderId, order.order_id, order.OrderId, order.OrderID),
+    orderNo: pickFirstValid(order.orderNo, order.order_no, order.OrderNo, order.OrderNO),
     status,
     statusText: order.statusText || order.StatusText || statusMap[status] || '',
-    createTime: order.createTime || order.CreateTime || '',
+    createTime: order.createTime || order.CreateTime || order.CreatedAt || '',
     totalAmount: order.totalAmount ?? order.TotalAmount ?? 0,
     freightAmount: order.freightAmount ?? order.FreightAmount ?? 0,
-    couponAmount: order.couponAmount ?? order.CouponAmount ?? 0,
+    couponAmount: order.couponAmount ?? order.CouponAmount ?? order.discountAmount ?? 0,
     payAmount: order.payAmount ?? order.PayAmount ?? 0,
     items,
     store,
     address: order.address || order.Address || {},
     paymentMethod: order.paymentMethod || order.PaymentMethod || '',
-    payTime: order.payTime || order.PayTime || '',
-    deliverTime: order.deliverTime || order.DeliverTime || '',
-    completeTime: order.completeTime || order.CompleteTime || '',
-    cancelTime: order.cancelTime || order.CancelTime || '',
+    payTime: order.payTime || order.PayTime || order.paidAt || order.PaidAt || '',
+    deliverTime: order.deliverTime || order.DeliverTime || order.shippedAt || order.ShippedAt || '',
+    completeTime: order.completeTime || order.CompleteTime || order.confirmedAt || order.ConfirmedAt || '',
+    cancelTime: order.cancelTime || order.CancelTime || order.cancelledAt || order.CancelledAt || '',
     cancelReason: order.cancelReason || order.CancelReason || '',
   };
 }
@@ -178,24 +222,39 @@ const OrderCard = React.memo(({
   onRefund: (id: string) => void;
   onReview: (id: string) => void;
 }) => {
-  const canCancel = order.status === 'pending_payment' || order.status === 'pending_delivery' || order.status === 'pending_pickup';
-  const canPay = order.status === 'pending_payment';
-  const canConfirmDelivery = order.status === 'pending_delivery';
-  const canConfirmPickup = order.status === 'pending_pickup';
-  const canRefund = order.status === 'completed' || order.status === 'pending_review';
-  const canReview = order.status === 'completed' || order.status === 'pending_review';
-  const isRefundOrder = order.status === 'refunding' || order.status === 'refund_rejected' || order.status === 'refunded';
+  const isRefundOrder = !!order.isRefundRecord;
+  // 退款记录不显示订单操作按钮（取消、支付、确认发货/自提、评价等）
+  const canCancel = !isRefundOrder && (order.status === 'pending_payment' || order.status === 'pending_delivery' || order.status === 'pending_pickup');
+  const canPay = !isRefundOrder && order.status === 'pending_payment';
+  const canConfirmDelivery = !isRefundOrder && order.status === 'pending_delivery';
+  const canConfirmPickup = !isRefundOrder && order.status === 'pending_pickup';
+  const canRefund = !isRefundOrder && (order.status === 'completed' || order.status === 'pending_review');
+  const canReview = !isRefundOrder && (order.status === 'completed' || order.status === 'pending_review');
 
   const refundStatusMap = {
+    'pending': '待处理',
+    'processing': '处理中',
+    'approved': '已同意',
+    'rejected': '已拒绝',
     'refunding': '退款中',
     'refund_rejected': '商家已拒绝',
     'refunded': '已退款',
+    'cancelled': '已取消',
+    'completed': '已完成',
+    'pending_payment': '待处理',
   };
 
   const refundStatusColorMap = {
+    'pending': '#faad14',
+    'processing': '#1890ff',
+    'approved': '#52c41a',
+    'rejected': '#ff4d4f',
     'refunding': '#faad14',
     'refund_rejected': '#ff4d4f',
     'refunded': '#52c41a',
+    'cancelled': '#999',
+    'completed': '#52c41a',
+    'pending_payment': '#faad14',
   };
 
   return (
@@ -291,9 +350,20 @@ const EmptyOrder = React.memo(({ onGoShopping }: { onGoShopping: () => void }) =
 ));
 
 const OrderListPage: React.FC = () => {
-  const [activeTab, setActiveTab] = useState('all');
+  const [activeTab, setActiveTab] = useState(() => {
+    // 初始 tab 直接从 URL/路由参数读取，避免先以 'all' 加载再切换造成竞态
+    const params = Taro.getCurrentInstance()?.router?.params || {};
+    let status = params.status;
+    if (process.env.TARO_ENV === 'h5' && !status && typeof window !== 'undefined') {
+      const searchParams = new URLSearchParams(window.location.search);
+      status = searchParams.get('status') || undefined;
+    }
+    return status || 'all';
+  });
   const [orders, setOrders] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  // 记录最新请求的 tab，用于丢弃过期响应
+  const latestStatusRef = useRef(activeTab);
 
   const tabs = [
     { key: 'all', label: '全部' },
@@ -302,23 +372,50 @@ const OrderListPage: React.FC = () => {
     { key: 'pending_pickup', label: '待自提' },
     { key: 'completed', label: '已完成' },
     { key: 'pending_review', label: '评价' },
-    { key: 'reviewed', label: '已取消' },
+    { key: 'cancelled', label: '已取消' },
   ];
 
   useEffect(() => {
+    latestStatusRef.current = activeTab;
+  }, [activeTab]);
+
+  useEffect(() => {
     const params = Taro.getCurrentInstance()?.router?.params || {};
-    if (params.status) {
-      setActiveTab(params.status);
+    let status = params.status;
+    if (process.env.TARO_ENV === 'h5' && !status && typeof window !== 'undefined') {
+      const searchParams = new URLSearchParams(window.location.search);
+      status = searchParams.get('status') || undefined;
+    }
+    if (status && status !== activeTab) {
+      setActiveTab(status);
     }
   }, []);
+
+  // 退款有效状态白名单：只有这些状态的记录才允许出现在退款/售后列表
+  const validRefundStatuses = [
+    'pending', 'processing', 'approved', 'rejected',
+    'refunding', 'refund_rejected', 'refunded',
+    'cancelled', 'completed',
+  ];
+  // 退款相关状态：这些状态的订单不应出现在普通订单列表中
+  const refundRelatedStatuses = [
+    'refunding', 'refund_rejected', 'refunded',
+    'pending', 'processing', 'approved', 'rejected',
+  ];
 
   const loadOrders = useCallback(async (status?: string) => {
     setLoading(true);
     try {
       if (status === 'refunding') {
         const res = await fetchRefundList({ page: 1, size: 50 });
+        // 如果用户已切换 tab，丢弃过期响应
+        if (status !== latestStatusRef.current) return;
         const list = Array.isArray(res?.data) ? res.data : [];
-        setOrders(list.map(transformRefund));
+        // 过滤掉非退款状态的记录，确保退款/售后里只有真正的退款商品
+        const refundRecords = list
+          .map(transformRefund)
+          .filter((r: any) => validRefundStatuses.includes(r.status));
+        setOrders(refundRecords);
         return;
       }
 
@@ -330,22 +427,33 @@ const OrderListPage: React.FC = () => {
         }
       }
       const res = await fetchOrderList(params);
+      // 如果用户已切换 tab，丢弃过期响应
+      if (status !== latestStatusRef.current) return;
       const list = Array.isArray(res?.data) ? res.data : [];
-      const transformed = list.map(transformOrder);
+      // 过滤掉退款相关状态的订单，确保普通订单列表不混入退款订单
+      const transformed = list
+        .map(transformOrder)
+        .filter((o: any) => !refundRelatedStatuses.includes(o.status));
 
       if (status === 'pending_review') {
         setOrders(transformed.filter((o: any) => o.status === 'completed' || o.status === 'pending_review'));
-      } else if (status === 'reviewed') {
-        setOrders(transformed.filter((o: any) => o.status === 'reviewed' || o.status === 'cancelled'));
+      } else if (status === 'cancelled') {
+        setOrders(transformed.filter((o: any) => o.status === 'cancelled'));
+      } else if (status && status !== 'all') {
+        // 前端二次过滤，确保只显示对应状态的订单
+        setOrders(transformed.filter((o: any) => o.status === status));
       } else {
         setOrders(transformed);
       }
     } catch (error) {
+      if (status !== latestStatusRef.current) return;
       console.error('加载订单列表失败:', error);
       setOrders([]);
       Taro.showToast({ title: '加载失败', icon: 'none' });
     } finally {
-      setLoading(false);
+      if (status === latestStatusRef.current) {
+        setLoading(false);
+      }
     }
   }, []);
 
@@ -395,6 +503,10 @@ const OrderListPage: React.FC = () => {
   }, [loadOrders, activeTab]);
 
   const handlePayOrder = useCallback(async (orderId: string) => {
+    if (!orderId) {
+      Taro.showToast({ title: '订单ID异常，请刷新页面', icon: 'none' });
+      return;
+    }
     const orderInfo = orders.find((o) => o.id === orderId);
     Taro.showLoading({ title: '支付处理中...', mask: true });
     try {
@@ -437,7 +549,7 @@ const OrderListPage: React.FC = () => {
       success: async (res) => {
         if (res.confirm) {
           try {
-            await confirmOrder(orderId);
+            await confirmPickupOrder(orderId);
             Taro.showToast({ title: '已确认发货', icon: 'success' });
             loadOrders(activeTab);
           } catch (error: any) {

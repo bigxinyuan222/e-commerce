@@ -13,11 +13,13 @@
 /* harmony export */   batchDeleteCartItem: function() { return /* binding */ batchDeleteCartItem; },
 /* harmony export */   cancelOrder: function() { return /* binding */ cancelOrder; },
 /* harmony export */   confirmOrder: function() { return /* binding */ confirmOrder; },
+/* harmony export */   confirmPickupOrder: function() { return /* binding */ confirmPickupOrder; },
 /* harmony export */   deleteCartItem: function() { return /* binding */ deleteCartItem; },
 /* harmony export */   fetchCartList: function() { return /* binding */ fetchCartList; },
 /* harmony export */   fetchOrderDetail: function() { return /* binding */ fetchOrderDetail; },
 /* harmony export */   fetchOrderList: function() { return /* binding */ fetchOrderList; },
 /* harmony export */   fetchOrderPaymentStatus: function() { return /* binding */ fetchOrderPaymentStatus; },
+/* harmony export */   fetchRefundList: function() { return /* binding */ fetchRefundList; },
 /* harmony export */   fetchRefundReasons: function() { return /* binding */ fetchRefundReasons; },
 /* harmony export */   payOrder: function() { return /* binding */ payOrder; },
 /* harmony export */   paymentCallback: function() { return /* binding */ paymentCallback; },
@@ -26,11 +28,13 @@
 /* harmony export */   transformCartItem: function() { return /* binding */ transformCartItem; },
 /* harmony export */   updateCartItem: function() { return /* binding */ updateCartItem; }
 /* harmony export */ });
-/* unused harmony exports cartApi, orderApi, paymentApi, refundApi, transformOrderItem, normalizePaymentStatus, confirmPickupOrder, refundOrder, normalizeReview, fetchOrderReviews, normalizeRefundReason, normalizeRefund, fetchRefundList, fetchRefundDetail */
-/* harmony import */ var D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./node_modules/@babel/runtime/helpers/esm/regenerator.js */ "./node_modules/@babel/runtime/helpers/esm/regenerator.js");
-/* harmony import */ var D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./node_modules/@babel/runtime/helpers/esm/objectSpread2.js */ "./node_modules/@babel/runtime/helpers/esm/objectSpread2.js");
-/* harmony import */ var D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./node_modules/@babel/runtime/helpers/esm/asyncToGenerator.js */ "./node_modules/@babel/runtime/helpers/esm/asyncToGenerator.js");
+/* unused harmony exports cartApi, orderApi, paymentApi, refundApi, transformOrderItem, normalizePaymentStatus, refundOrder, normalizeReview, fetchOrderReviews, normalizeRefundReason, normalizeRefund, fetchRefundDetail */
+/* harmony import */ var D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./node_modules/@babel/runtime/helpers/esm/regenerator.js */ "./node_modules/@babel/runtime/helpers/esm/regenerator.js");
+/* harmony import */ var D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./node_modules/@babel/runtime/helpers/esm/objectSpread2.js */ "./node_modules/@babel/runtime/helpers/esm/objectSpread2.js");
+/* harmony import */ var D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./node_modules/@babel/runtime/helpers/esm/asyncToGenerator.js */ "./node_modules/@babel/runtime/helpers/esm/asyncToGenerator.js");
+/* harmony import */ var D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_typeof_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./node_modules/@babel/runtime/helpers/esm/typeof.js */ "./node_modules/@babel/runtime/helpers/esm/typeof.js");
 /* harmony import */ var _api_common__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @/api/common */ "./src/api/common/index.ts");
+
 
 
 
@@ -76,52 +80,99 @@ var refundApi = {
 /**
  * 转换购物车项：兼容后端可能返回的 snake_case / PascalCase / camelCase 字段名
  */
+function isEmptyValue(value) {
+  return value === undefined || value === null || value === '' || value === 0 || value === '0';
+}
+function normalizeEmptyId(value) {
+  if (isEmptyValue(value)) return '';
+  return String(value);
+}
+function pickFirstValidId() {
+  for (var _len = arguments.length, candidates = new Array(_len), _key = 0; _key < _len; _key++) {
+    candidates[_key] = arguments[_key];
+  }
+  for (var _i = 0, _candidates = candidates; _i < _candidates.length; _i++) {
+    var value = _candidates[_i];
+    if (!isEmptyValue(value)) {
+      return String(value);
+    }
+  }
+  return '';
+}
 function transformCartItem(raw) {
-  var _ref, _ref2, _ref3, _ref4, _raw$id, _ref5, _ref6, _ref7, _raw$productId, _ref8, _ref9, _ref0, _raw$productName, _ref1, _ref10, _ref11, _raw$skuId, _ref12, _ref13, _ref14, _raw$skuName, _ref15, _ref16, _ref17, _ref18, _raw$price, _ref19, _ref20, _ref21, _raw$quantity, _ref22, _ref23, _raw$stock, _ref24, _ref25, _ref26, _ref27, _raw$image, _ref28, _raw$selected, _ref29, _ref30, _raw$isSeckill, _ref31, _ref32, _raw$seckillPrice, _ref33, _ref34, _ref35, _raw$originalPrice, _ref36, _ref37, _raw$storeId, _ref38, _ref39, _raw$storeName, _ref40, _raw$checked, _ref41, _ref42, _raw$skuCode, _ref43, _ref44, _raw$productCode, _ref45, _ref46, _raw$createTime, _ref47, _ref48, _raw$updateTime;
+  var _ref, _ref2, _ref3, _raw$skuName, _ref4, _ref5, _ref6, _ref7, _raw$image, _ref8, _ref9, _ref0, _raw$productName, _ref1, _ref10, _ref11, _ref12, _ref13, _raw$price, _ref14, _ref15, _ref16, _raw$quantity, _ref17, _ref18, _raw$stock, _ref19, _raw$selected, _ref20, _ref21, _raw$isSeckill, _ref22, _ref23, _raw$seckillPrice, _ref24, _ref25, _ref26, _raw$originalPrice, _ref27, _ref28, _raw$storeId, _ref29, _ref30, _raw$storeName, _ref31, _raw$checked, _ref32, _ref33, _raw$skuCode, _ref34, _ref35, _raw$productCode, _ref36, _ref37, _ref38, _raw$createTime, _ref39, _ref40, _ref41, _raw$updateTime;
+  // 处理 specValues：后端返回对象 {"颜色":"红色"}，需要转为字符串
+  var skuName = (_ref = (_ref2 = (_ref3 = (_raw$skuName = raw.skuName) !== null && _raw$skuName !== void 0 ? _raw$skuName : raw.sku_name) !== null && _ref3 !== void 0 ? _ref3 : raw.SkuName) !== null && _ref2 !== void 0 ? _ref2 : raw.specName) !== null && _ref !== void 0 ? _ref : '';
+  if (!skuName && raw.specValues && (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_typeof_js__WEBPACK_IMPORTED_MODULE_1__["default"])(raw.specValues) === 'object') {
+    skuName = Object.values(raw.specValues).join('/') || '';
+  }
+
+  // 处理 image：后端可能返回 JSON 字符串 '["url"]' 或普通字符串
+  var image = (_ref4 = (_ref5 = (_ref6 = (_ref7 = (_raw$image = raw.image) !== null && _raw$image !== void 0 ? _raw$image : raw.imageUrl) !== null && _ref7 !== void 0 ? _ref7 : raw.image_url) !== null && _ref6 !== void 0 ? _ref6 : raw.Image) !== null && _ref5 !== void 0 ? _ref5 : raw.pic) !== null && _ref4 !== void 0 ? _ref4 : '';
+  if (typeof image === 'string' && image.startsWith('[')) {
+    try {
+      var parsed = JSON.parse(image);
+      if (Array.isArray(parsed) && parsed.length > 0) {
+        // 去除模板字符串的反引号
+        image = parsed[0].replace(/^`|`$/g, '');
+      }
+    } catch (_unused) {/* ignore */}
+  }
   return {
-    id: (_ref = (_ref2 = (_ref3 = (_ref4 = (_raw$id = raw.id) !== null && _raw$id !== void 0 ? _raw$id : raw.Id) !== null && _ref4 !== void 0 ? _ref4 : raw.cartId) !== null && _ref3 !== void 0 ? _ref3 : raw.cart_id) !== null && _ref2 !== void 0 ? _ref2 : raw.ID) !== null && _ref !== void 0 ? _ref : '',
-    productId: (_ref5 = (_ref6 = (_ref7 = (_raw$productId = raw.productId) !== null && _raw$productId !== void 0 ? _raw$productId : raw.product_id) !== null && _ref7 !== void 0 ? _ref7 : raw.ProductId) !== null && _ref6 !== void 0 ? _ref6 : raw.pid) !== null && _ref5 !== void 0 ? _ref5 : '',
+    id: pickFirstValidId(raw.id, raw.Id, raw.cartId, raw.cart_id, raw.cartItemId, raw.cart_item_id, raw.CartItemId, raw.cid, raw.itemId, raw.item_id, raw.ID),
+    productId: pickFirstValidId(raw.productId, raw.product_id, raw.ProductId, raw.pid, raw.productID),
     productName: (_ref8 = (_ref9 = (_ref0 = (_raw$productName = raw.productName) !== null && _raw$productName !== void 0 ? _raw$productName : raw.product_name) !== null && _ref0 !== void 0 ? _ref0 : raw.ProductName) !== null && _ref9 !== void 0 ? _ref9 : raw.name) !== null && _ref8 !== void 0 ? _ref8 : '',
-    skuId: (_ref1 = (_ref10 = (_ref11 = (_raw$skuId = raw.skuId) !== null && _raw$skuId !== void 0 ? _raw$skuId : raw.sku_id) !== null && _ref11 !== void 0 ? _ref11 : raw.SkuId) !== null && _ref10 !== void 0 ? _ref10 : raw.skuID) !== null && _ref1 !== void 0 ? _ref1 : '',
-    skuName: (_ref12 = (_ref13 = (_ref14 = (_raw$skuName = raw.skuName) !== null && _raw$skuName !== void 0 ? _raw$skuName : raw.sku_name) !== null && _ref14 !== void 0 ? _ref14 : raw.SkuName) !== null && _ref13 !== void 0 ? _ref13 : raw.specName) !== null && _ref12 !== void 0 ? _ref12 : '',
-    price: Number((_ref15 = (_ref16 = (_ref17 = (_ref18 = (_raw$price = raw.price) !== null && _raw$price !== void 0 ? _raw$price : raw.Price) !== null && _ref18 !== void 0 ? _ref18 : raw.salePrice) !== null && _ref17 !== void 0 ? _ref17 : raw.sale_price) !== null && _ref16 !== void 0 ? _ref16 : raw.discountPrice) !== null && _ref15 !== void 0 ? _ref15 : 0),
-    quantity: Number((_ref19 = (_ref20 = (_ref21 = (_raw$quantity = raw.quantity) !== null && _raw$quantity !== void 0 ? _raw$quantity : raw.Quantity) !== null && _ref21 !== void 0 ? _ref21 : raw.count) !== null && _ref20 !== void 0 ? _ref20 : raw.num) !== null && _ref19 !== void 0 ? _ref19 : 1),
-    stock: Number((_ref22 = (_ref23 = (_raw$stock = raw.stock) !== null && _raw$stock !== void 0 ? _raw$stock : raw.Stock) !== null && _ref23 !== void 0 ? _ref23 : raw.maxQuantity) !== null && _ref22 !== void 0 ? _ref22 : 999),
-    image: (_ref24 = (_ref25 = (_ref26 = (_ref27 = (_raw$image = raw.image) !== null && _raw$image !== void 0 ? _raw$image : raw.imageUrl) !== null && _ref27 !== void 0 ? _ref27 : raw.image_url) !== null && _ref26 !== void 0 ? _ref26 : raw.Image) !== null && _ref25 !== void 0 ? _ref25 : raw.pic) !== null && _ref24 !== void 0 ? _ref24 : '',
-    selected: (_ref28 = (_raw$selected = raw.selected) !== null && _raw$selected !== void 0 ? _raw$selected : raw.Selected) !== null && _ref28 !== void 0 ? _ref28 : true,
-    isSeckill: (_ref29 = (_ref30 = (_raw$isSeckill = raw.isSeckill) !== null && _raw$isSeckill !== void 0 ? _raw$isSeckill : raw.is_seckill) !== null && _ref30 !== void 0 ? _ref30 : raw.IsSeckill) !== null && _ref29 !== void 0 ? _ref29 : false,
-    seckillPrice: (_ref31 = (_ref32 = (_raw$seckillPrice = raw.seckillPrice) !== null && _raw$seckillPrice !== void 0 ? _raw$seckillPrice : raw.seckill_price) !== null && _ref32 !== void 0 ? _ref32 : raw.SeckillPrice) !== null && _ref31 !== void 0 ? _ref31 : null,
-    originalPrice: (_ref33 = (_ref34 = (_ref35 = (_raw$originalPrice = raw.originalPrice) !== null && _raw$originalPrice !== void 0 ? _raw$originalPrice : raw.original_price) !== null && _ref35 !== void 0 ? _ref35 : raw.OriginalPrice) !== null && _ref34 !== void 0 ? _ref34 : raw.marketPrice) !== null && _ref33 !== void 0 ? _ref33 : null,
-    storeId: (_ref36 = (_ref37 = (_raw$storeId = raw.storeId) !== null && _raw$storeId !== void 0 ? _raw$storeId : raw.store_id) !== null && _ref37 !== void 0 ? _ref37 : raw.StoreId) !== null && _ref36 !== void 0 ? _ref36 : null,
-    storeName: (_ref38 = (_ref39 = (_raw$storeName = raw.storeName) !== null && _raw$storeName !== void 0 ? _raw$storeName : raw.store_name) !== null && _ref39 !== void 0 ? _ref39 : raw.StoreName) !== null && _ref38 !== void 0 ? _ref38 : '',
-    checked: (_ref40 = (_raw$checked = raw.checked) !== null && _raw$checked !== void 0 ? _raw$checked : raw.Checked) !== null && _ref40 !== void 0 ? _ref40 : null,
-    skuCode: (_ref41 = (_ref42 = (_raw$skuCode = raw.skuCode) !== null && _raw$skuCode !== void 0 ? _raw$skuCode : raw.sku_code) !== null && _ref42 !== void 0 ? _ref42 : raw.SkuCode) !== null && _ref41 !== void 0 ? _ref41 : '',
-    productCode: (_ref43 = (_ref44 = (_raw$productCode = raw.productCode) !== null && _raw$productCode !== void 0 ? _raw$productCode : raw.product_code) !== null && _ref44 !== void 0 ? _ref44 : raw.ProductCode) !== null && _ref43 !== void 0 ? _ref43 : '',
-    createTime: (_ref45 = (_ref46 = (_raw$createTime = raw.createTime) !== null && _raw$createTime !== void 0 ? _raw$createTime : raw.create_time) !== null && _ref46 !== void 0 ? _ref46 : raw.CreateTime) !== null && _ref45 !== void 0 ? _ref45 : '',
-    updateTime: (_ref47 = (_ref48 = (_raw$updateTime = raw.updateTime) !== null && _raw$updateTime !== void 0 ? _raw$updateTime : raw.update_time) !== null && _ref48 !== void 0 ? _ref48 : raw.UpdateTime) !== null && _ref47 !== void 0 ? _ref47 : ''
+    skuId: pickFirstValidId(raw.skuId, raw.sku_id, raw.SkuId, raw.skuID),
+    skuName: skuName,
+    price: Number((_ref1 = (_ref10 = (_ref11 = (_ref12 = (_ref13 = (_raw$price = raw.price) !== null && _raw$price !== void 0 ? _raw$price : raw.Price) !== null && _ref13 !== void 0 ? _ref13 : raw.salePrice) !== null && _ref12 !== void 0 ? _ref12 : raw.sale_price) !== null && _ref11 !== void 0 ? _ref11 : raw.discountPrice) !== null && _ref10 !== void 0 ? _ref10 : raw.amount) !== null && _ref1 !== void 0 ? _ref1 : 0),
+    quantity: Number((_ref14 = (_ref15 = (_ref16 = (_raw$quantity = raw.quantity) !== null && _raw$quantity !== void 0 ? _raw$quantity : raw.Quantity) !== null && _ref16 !== void 0 ? _ref16 : raw.count) !== null && _ref15 !== void 0 ? _ref15 : raw.num) !== null && _ref14 !== void 0 ? _ref14 : 1),
+    stock: Number((_ref17 = (_ref18 = (_raw$stock = raw.stock) !== null && _raw$stock !== void 0 ? _raw$stock : raw.Stock) !== null && _ref18 !== void 0 ? _ref18 : raw.maxQuantity) !== null && _ref17 !== void 0 ? _ref17 : 999),
+    image: image,
+    selected: (_ref19 = (_raw$selected = raw.selected) !== null && _raw$selected !== void 0 ? _raw$selected : raw.Selected) !== null && _ref19 !== void 0 ? _ref19 : true,
+    isSeckill: (_ref20 = (_ref21 = (_raw$isSeckill = raw.isSeckill) !== null && _raw$isSeckill !== void 0 ? _raw$isSeckill : raw.is_seckill) !== null && _ref21 !== void 0 ? _ref21 : raw.IsSeckill) !== null && _ref20 !== void 0 ? _ref20 : false,
+    seckillPrice: (_ref22 = (_ref23 = (_raw$seckillPrice = raw.seckillPrice) !== null && _raw$seckillPrice !== void 0 ? _raw$seckillPrice : raw.seckill_price) !== null && _ref23 !== void 0 ? _ref23 : raw.SeckillPrice) !== null && _ref22 !== void 0 ? _ref22 : null,
+    originalPrice: (_ref24 = (_ref25 = (_ref26 = (_raw$originalPrice = raw.originalPrice) !== null && _raw$originalPrice !== void 0 ? _raw$originalPrice : raw.original_price) !== null && _ref26 !== void 0 ? _ref26 : raw.OriginalPrice) !== null && _ref25 !== void 0 ? _ref25 : raw.marketPrice) !== null && _ref24 !== void 0 ? _ref24 : null,
+    storeId: (_ref27 = (_ref28 = (_raw$storeId = raw.storeId) !== null && _raw$storeId !== void 0 ? _raw$storeId : raw.store_id) !== null && _ref28 !== void 0 ? _ref28 : raw.StoreId) !== null && _ref27 !== void 0 ? _ref27 : null,
+    storeName: (_ref29 = (_ref30 = (_raw$storeName = raw.storeName) !== null && _raw$storeName !== void 0 ? _raw$storeName : raw.store_name) !== null && _ref30 !== void 0 ? _ref30 : raw.StoreName) !== null && _ref29 !== void 0 ? _ref29 : '',
+    checked: (_ref31 = (_raw$checked = raw.checked) !== null && _raw$checked !== void 0 ? _raw$checked : raw.Checked) !== null && _ref31 !== void 0 ? _ref31 : null,
+    skuCode: (_ref32 = (_ref33 = (_raw$skuCode = raw.skuCode) !== null && _raw$skuCode !== void 0 ? _raw$skuCode : raw.sku_code) !== null && _ref33 !== void 0 ? _ref33 : raw.SkuCode) !== null && _ref32 !== void 0 ? _ref32 : '',
+    productCode: (_ref34 = (_ref35 = (_raw$productCode = raw.productCode) !== null && _raw$productCode !== void 0 ? _raw$productCode : raw.product_code) !== null && _ref35 !== void 0 ? _ref35 : raw.ProductCode) !== null && _ref34 !== void 0 ? _ref34 : '',
+    createTime: (_ref36 = (_ref37 = (_ref38 = (_raw$createTime = raw.createTime) !== null && _raw$createTime !== void 0 ? _raw$createTime : raw.create_time) !== null && _ref38 !== void 0 ? _ref38 : raw.CreateTime) !== null && _ref37 !== void 0 ? _ref37 : raw.CreatedAt) !== null && _ref36 !== void 0 ? _ref36 : '',
+    updateTime: (_ref39 = (_ref40 = (_ref41 = (_raw$updateTime = raw.updateTime) !== null && _raw$updateTime !== void 0 ? _raw$updateTime : raw.update_time) !== null && _ref41 !== void 0 ? _ref41 : raw.UpdateTime) !== null && _ref40 !== void 0 ? _ref40 : raw.UpdatedAt) !== null && _ref39 !== void 0 ? _ref39 : ''
   };
 }
 
 /**
  * 转换订单列表项
  */
+// 后端订单状态码：0=待支付 2=待发货 3=待自提 4=已完成 5=已取消
+var orderStatusCodeMap = {
+  0: 'pending_payment',
+  2: 'pending_delivery',
+  3: 'pending_pickup',
+  4: 'completed',
+  5: 'cancelled'
+};
 function transformOrderItem(raw) {
-  var _ref49, _ref50, _ref51, _raw$id2, _ref52, _ref53, _ref54, _raw$orderNo, _ref55, _ref56, _raw$status, _ref57, _ref58, _raw$totalAmount, _ref59, _ref60, _raw$payAmount, _ref61, _ref62, _raw$freightAmount, _ref63, _ref64, _raw$couponAmount, _ref65, _ref66, _raw$itemCount, _ref67, _ref68, _ref69, _raw$createdAt, _ref70, _ref71, _raw$payAt, _ref72, _raw$address, _ref73, _ref74, _raw$storeName2, _ref75, _raw$remark;
+  var _ref42, _ref43, _raw$status, _orderStatusCodeMap$r, _ref44, _ref45, _raw$totalAmount, _ref46, _ref47, _raw$payAmount, _ref48, _ref49, _raw$freightAmount, _ref50, _ref51, _ref52, _ref53, _raw$couponAmount, _ref54, _ref55, _raw$itemCount, _ref56, _ref57, _ref58, _ref59, _raw$createdAt, _ref60, _ref61, _ref62, _ref63, _raw$payAt, _ref64, _raw$address, _ref65, _ref66, _ref67, _raw$storeName2, _raw$store, _ref68, _raw$store2, _ref69, _raw$remark;
+  var rawStatus = (_ref42 = (_ref43 = (_raw$status = raw.status) !== null && _raw$status !== void 0 ? _raw$status : raw.Status) !== null && _ref43 !== void 0 ? _ref43 : raw.orderStatus) !== null && _ref42 !== void 0 ? _ref42 : '';
+  var status = typeof rawStatus === 'number' ? (_orderStatusCodeMap$r = orderStatusCodeMap[rawStatus]) !== null && _orderStatusCodeMap$r !== void 0 ? _orderStatusCodeMap$r : String(rawStatus) : rawStatus;
   return {
-    id: (_ref49 = (_ref50 = (_ref51 = (_raw$id2 = raw.id) !== null && _raw$id2 !== void 0 ? _raw$id2 : raw.Id) !== null && _ref51 !== void 0 ? _ref51 : raw.orderId) !== null && _ref50 !== void 0 ? _ref50 : raw.order_id) !== null && _ref49 !== void 0 ? _ref49 : '',
-    orderNo: (_ref52 = (_ref53 = (_ref54 = (_raw$orderNo = raw.orderNo) !== null && _raw$orderNo !== void 0 ? _raw$orderNo : raw.order_no) !== null && _ref54 !== void 0 ? _ref54 : raw.OrderNo) !== null && _ref53 !== void 0 ? _ref53 : raw.OrderNO) !== null && _ref52 !== void 0 ? _ref52 : '',
-    status: (_ref55 = (_ref56 = (_raw$status = raw.status) !== null && _raw$status !== void 0 ? _raw$status : raw.Status) !== null && _ref56 !== void 0 ? _ref56 : raw.orderStatus) !== null && _ref55 !== void 0 ? _ref55 : '',
-    totalAmount: Number((_ref57 = (_ref58 = (_raw$totalAmount = raw.totalAmount) !== null && _raw$totalAmount !== void 0 ? _raw$totalAmount : raw.total_amount) !== null && _ref58 !== void 0 ? _ref58 : raw.TotalAmount) !== null && _ref57 !== void 0 ? _ref57 : 0),
-    payAmount: Number((_ref59 = (_ref60 = (_raw$payAmount = raw.payAmount) !== null && _raw$payAmount !== void 0 ? _raw$payAmount : raw.pay_amount) !== null && _ref60 !== void 0 ? _ref60 : raw.PayAmount) !== null && _ref59 !== void 0 ? _ref59 : 0),
-    freightAmount: Number((_ref61 = (_ref62 = (_raw$freightAmount = raw.freightAmount) !== null && _raw$freightAmount !== void 0 ? _raw$freightAmount : raw.freight_amount) !== null && _ref62 !== void 0 ? _ref62 : raw.FreightAmount) !== null && _ref61 !== void 0 ? _ref61 : 0),
-    couponAmount: Number((_ref63 = (_ref64 = (_raw$couponAmount = raw.couponAmount) !== null && _raw$couponAmount !== void 0 ? _raw$couponAmount : raw.coupon_amount) !== null && _ref64 !== void 0 ? _ref64 : raw.CouponAmount) !== null && _ref63 !== void 0 ? _ref63 : 0),
-    itemCount: Number((_ref65 = (_ref66 = (_raw$itemCount = raw.itemCount) !== null && _raw$itemCount !== void 0 ? _raw$itemCount : raw.item_count) !== null && _ref66 !== void 0 ? _ref66 : raw.ItemCount) !== null && _ref65 !== void 0 ? _ref65 : 0),
-    createdAt: (_ref67 = (_ref68 = (_ref69 = (_raw$createdAt = raw.createdAt) !== null && _raw$createdAt !== void 0 ? _raw$createdAt : raw.created_at) !== null && _ref69 !== void 0 ? _ref69 : raw.createTime) !== null && _ref68 !== void 0 ? _ref68 : raw.CreatedAt) !== null && _ref67 !== void 0 ? _ref67 : '',
-    payAt: (_ref70 = (_ref71 = (_raw$payAt = raw.payAt) !== null && _raw$payAt !== void 0 ? _raw$payAt : raw.pay_at) !== null && _ref71 !== void 0 ? _ref71 : raw.PayAt) !== null && _ref70 !== void 0 ? _ref70 : '',
+    id: pickFirstValidId(raw.id, raw.Id, raw.ID, raw.orderId, raw.order_id),
+    orderNo: pickFirstValidId(raw.orderNo, raw.order_no, raw.OrderNo, raw.OrderNO),
+    status: status,
+    totalAmount: Number((_ref44 = (_ref45 = (_raw$totalAmount = raw.totalAmount) !== null && _raw$totalAmount !== void 0 ? _raw$totalAmount : raw.total_amount) !== null && _ref45 !== void 0 ? _ref45 : raw.TotalAmount) !== null && _ref44 !== void 0 ? _ref44 : 0),
+    payAmount: Number((_ref46 = (_ref47 = (_raw$payAmount = raw.payAmount) !== null && _raw$payAmount !== void 0 ? _raw$payAmount : raw.pay_amount) !== null && _ref47 !== void 0 ? _ref47 : raw.PayAmount) !== null && _ref46 !== void 0 ? _ref46 : 0),
+    freightAmount: Number((_ref48 = (_ref49 = (_raw$freightAmount = raw.freightAmount) !== null && _raw$freightAmount !== void 0 ? _raw$freightAmount : raw.freight_amount) !== null && _ref49 !== void 0 ? _ref49 : raw.FreightAmount) !== null && _ref48 !== void 0 ? _ref48 : 0),
+    couponAmount: Number((_ref50 = (_ref51 = (_ref52 = (_ref53 = (_raw$couponAmount = raw.couponAmount) !== null && _raw$couponAmount !== void 0 ? _raw$couponAmount : raw.coupon_amount) !== null && _ref53 !== void 0 ? _ref53 : raw.CouponAmount) !== null && _ref52 !== void 0 ? _ref52 : raw.discountAmount) !== null && _ref51 !== void 0 ? _ref51 : raw.discount_amount) !== null && _ref50 !== void 0 ? _ref50 : 0),
+    itemCount: Number((_ref54 = (_ref55 = (_raw$itemCount = raw.itemCount) !== null && _raw$itemCount !== void 0 ? _raw$itemCount : raw.item_count) !== null && _ref55 !== void 0 ? _ref55 : raw.ItemCount) !== null && _ref54 !== void 0 ? _ref54 : Array.isArray(raw.items) ? raw.items.length : 0),
+    createdAt: (_ref56 = (_ref57 = (_ref58 = (_ref59 = (_raw$createdAt = raw.createdAt) !== null && _raw$createdAt !== void 0 ? _raw$createdAt : raw.created_at) !== null && _ref59 !== void 0 ? _ref59 : raw.createTime) !== null && _ref58 !== void 0 ? _ref58 : raw.CreateTime) !== null && _ref57 !== void 0 ? _ref57 : raw.CreatedAt) !== null && _ref56 !== void 0 ? _ref56 : '',
+    payAt: (_ref60 = (_ref61 = (_ref62 = (_ref63 = (_raw$payAt = raw.payAt) !== null && _raw$payAt !== void 0 ? _raw$payAt : raw.pay_at) !== null && _ref63 !== void 0 ? _ref63 : raw.PayAt) !== null && _ref62 !== void 0 ? _ref62 : raw.paidAt) !== null && _ref61 !== void 0 ? _ref61 : raw.PaidAt) !== null && _ref60 !== void 0 ? _ref60 : '',
     items: Array.isArray(raw.items) ? raw.items.map(transformCartItem) : [],
-    address: (_ref72 = (_raw$address = raw.address) !== null && _raw$address !== void 0 ? _raw$address : raw.Address) !== null && _ref72 !== void 0 ? _ref72 : null,
-    storeName: (_ref73 = (_ref74 = (_raw$storeName2 = raw.storeName) !== null && _raw$storeName2 !== void 0 ? _raw$storeName2 : raw.store_name) !== null && _ref74 !== void 0 ? _ref74 : raw.StoreName) !== null && _ref73 !== void 0 ? _ref73 : '',
-    remark: (_ref75 = (_raw$remark = raw.remark) !== null && _raw$remark !== void 0 ? _raw$remark : raw.Remark) !== null && _ref75 !== void 0 ? _ref75 : ''
+    address: (_ref64 = (_raw$address = raw.address) !== null && _raw$address !== void 0 ? _raw$address : raw.Address) !== null && _ref64 !== void 0 ? _ref64 : null,
+    storeName: (_ref65 = (_ref66 = (_ref67 = (_raw$storeName2 = raw.storeName) !== null && _raw$storeName2 !== void 0 ? _raw$storeName2 : raw.store_name) !== null && _ref67 !== void 0 ? _ref67 : raw.StoreName) !== null && _ref66 !== void 0 ? _ref66 : (_raw$store = raw.store) === null || _raw$store === void 0 ? void 0 : _raw$store.name) !== null && _ref65 !== void 0 ? _ref65 : '',
+    store: (_ref68 = (_raw$store2 = raw.store) !== null && _raw$store2 !== void 0 ? _raw$store2 : raw.Store) !== null && _ref68 !== void 0 ? _ref68 : null,
+    remark: (_ref69 = (_raw$remark = raw.remark) !== null && _raw$remark !== void 0 ? _raw$remark : raw.Remark) !== null && _ref69 !== void 0 ? _ref69 : ''
   };
 }
 
@@ -140,13 +191,13 @@ function fetchCartList() {
  * POST /api/v1/cart
  */
 function _fetchCartList() {
-  _fetchCartList = (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_1__["default"])(/*#__PURE__*/(0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_2__["default"])().m(function _callee() {
-    var _ref300, _res$data$list, _res$data, _res$data2;
+  _fetchCartList = (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_2__["default"])(/*#__PURE__*/(0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_3__["default"])().m(function _callee() {
+    var _ref294, _res$data$list, _res$data, _res$data2;
     var params,
       res,
       list,
       _args = arguments;
-    return (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_2__["default"])().w(function (_context) {
+    return (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_3__["default"])().w(function (_context) {
       while (1) switch (_context.n) {
         case 0:
           params = _args.length > 0 && _args[0] !== undefined ? _args[0] : {};
@@ -154,8 +205,11 @@ function _fetchCartList() {
           return (0,_api_common__WEBPACK_IMPORTED_MODULE_0__.apiGet)(cartApi.list, params);
         case 1:
           res = _context.v;
-          list = Array.isArray(res === null || res === void 0 ? void 0 : res.data) ? res.data : (_ref300 = (_res$data$list = res === null || res === void 0 || (_res$data = res.data) === null || _res$data === void 0 ? void 0 : _res$data.list) !== null && _res$data$list !== void 0 ? _res$data$list : res === null || res === void 0 || (_res$data2 = res.data) === null || _res$data2 === void 0 ? void 0 : _res$data2.items) !== null && _ref300 !== void 0 ? _ref300 : [];
-          return _context.a(2, (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_3__["default"])((0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_3__["default"])({}, res), {}, {
+          list = Array.isArray(res === null || res === void 0 ? void 0 : res.data) ? res.data : (_ref294 = (_res$data$list = res === null || res === void 0 || (_res$data = res.data) === null || _res$data === void 0 ? void 0 : _res$data.list) !== null && _res$data$list !== void 0 ? _res$data$list : res === null || res === void 0 || (_res$data2 = res.data) === null || _res$data2 === void 0 ? void 0 : _res$data2.items) !== null && _ref294 !== void 0 ? _ref294 : []; // 临时调试
+          if (list.length > 0) {
+            console.log('[fetchCartList] 后端原始第一条:', JSON.stringify(list[0], null, 2));
+          }
+          return _context.a(2, (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_4__["default"])((0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_4__["default"])({}, res), {}, {
             data: list.map(transformCartItem)
           }));
       }
@@ -172,9 +226,9 @@ function addToCartAPI(_x) {
  * PUT /api/v1/cart/{id}
  */
 function _addToCartAPI() {
-  _addToCartAPI = (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_1__["default"])(/*#__PURE__*/(0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_2__["default"])().m(function _callee2(payload) {
+  _addToCartAPI = (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_2__["default"])(/*#__PURE__*/(0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_3__["default"])().m(function _callee2(payload) {
     var body, res;
-    return (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_2__["default"])().w(function (_context2) {
+    return (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_3__["default"])().w(function (_context2) {
       while (1) switch (_context2.n) {
         case 0:
           body = {
@@ -203,19 +257,26 @@ function updateCartItem(_x2, _x3) {
  * DELETE /api/v1/cart/{id}
  */
 function _updateCartItem() {
-  _updateCartItem = (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_1__["default"])(/*#__PURE__*/(0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_2__["default"])().m(function _callee3(id, payload) {
-    var body, res;
-    return (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_2__["default"])().w(function (_context3) {
+  _updateCartItem = (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_2__["default"])(/*#__PURE__*/(0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_3__["default"])().m(function _callee3(id, payload) {
+    var numericId, body, res;
+    return (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_3__["default"])().w(function (_context3) {
       while (1) switch (_context3.n) {
         case 0:
+          numericId = (0,_api_common__WEBPACK_IMPORTED_MODULE_0__.toNumericId)(id);
+          if (numericId) {
+            _context3.n = 1;
+            break;
+          }
+          throw new Error('无效的购物车ID');
+        case 1:
           body = {};
           if (payload.quantity !== undefined) body.quantity = payload.quantity;
           if (payload.selected !== undefined) body.selected = payload.selected;
-          _context3.n = 1;
+          _context3.n = 2;
           return (0,_api_common__WEBPACK_IMPORTED_MODULE_0__.apiPut)(cartApi.update, body, {
-            id: id
+            id: numericId
           });
-        case 1:
+        case 2:
           res = _context3.v;
           return _context3.a(2, res);
       }
@@ -232,16 +293,23 @@ function deleteCartItem(_x4) {
  * POST /api/v1/cart/batch-delete
  */
 function _deleteCartItem() {
-  _deleteCartItem = (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_1__["default"])(/*#__PURE__*/(0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_2__["default"])().m(function _callee4(id) {
-    var res;
-    return (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_2__["default"])().w(function (_context4) {
+  _deleteCartItem = (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_2__["default"])(/*#__PURE__*/(0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_3__["default"])().m(function _callee4(id) {
+    var numericId, res;
+    return (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_3__["default"])().w(function (_context4) {
       while (1) switch (_context4.n) {
         case 0:
-          _context4.n = 1;
-          return (0,_api_common__WEBPACK_IMPORTED_MODULE_0__.apiDelete)(cartApi.delete, {}, {
-            id: id
-          });
+          numericId = (0,_api_common__WEBPACK_IMPORTED_MODULE_0__.toNumericId)(id);
+          if (numericId) {
+            _context4.n = 1;
+            break;
+          }
+          throw new Error('无效的购物车ID');
         case 1:
+          _context4.n = 2;
+          return (0,_api_common__WEBPACK_IMPORTED_MODULE_0__.apiDelete)(cartApi.delete, {}, {
+            id: numericId
+          });
+        case 2:
           res = _context4.v;
           return _context4.a(2, res);
       }
@@ -261,16 +329,23 @@ function batchDeleteCartItem(_x5) {
  * 后端契约: { cartIds: uint64[], storeId: uint64, userCouponId: uint64|null, remark: string }
  */
 function _batchDeleteCartItem() {
-  _batchDeleteCartItem = (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_1__["default"])(/*#__PURE__*/(0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_2__["default"])().m(function _callee5(ids) {
-    var res;
-    return (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_2__["default"])().w(function (_context5) {
+  _batchDeleteCartItem = (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_2__["default"])(/*#__PURE__*/(0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_3__["default"])().m(function _callee5(ids) {
+    var numericIds, res;
+    return (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_3__["default"])().w(function (_context5) {
       while (1) switch (_context5.n) {
         case 0:
-          _context5.n = 1;
-          return (0,_api_common__WEBPACK_IMPORTED_MODULE_0__.apiPost)(cartApi.batchDelete, {
-            ids: ids
-          });
+          numericIds = ids.map(_api_common__WEBPACK_IMPORTED_MODULE_0__.toNumericId).filter(Boolean);
+          if (!(numericIds.length === 0)) {
+            _context5.n = 1;
+            break;
+          }
+          throw new Error('无效的购物车ID');
         case 1:
+          _context5.n = 2;
+          return (0,_api_common__WEBPACK_IMPORTED_MODULE_0__.apiPost)(cartApi.batchDelete, {
+            ids: numericIds
+          }, {}, {}, false);
+        case 2:
           res = _context5.v;
           return _context5.a(2, res);
       }
@@ -287,9 +362,9 @@ function submitOrder(_x6) {
  * GET /api/v1/orders
  */
 function _submitOrder() {
-  _submitOrder = (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_1__["default"])(/*#__PURE__*/(0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_2__["default"])().m(function _callee6(payload) {
+  _submitOrder = (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_2__["default"])(/*#__PURE__*/(0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_3__["default"])().m(function _callee6(payload) {
     var requestBody, res;
-    return (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_2__["default"])().w(function (_context6) {
+    return (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_3__["default"])().w(function (_context6) {
       while (1) switch (_context6.n) {
         case 0:
           // 根据后端 Go 结构体构建请求
@@ -345,13 +420,13 @@ function fetchOrderList() {
  * GET /api/v1/orders/{id}
  */
 function _fetchOrderList() {
-  _fetchOrderList = (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_1__["default"])(/*#__PURE__*/(0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_2__["default"])().m(function _callee7() {
-    var _ref301, _res$data$list2, _res$data3, _res$data4;
+  _fetchOrderList = (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_2__["default"])(/*#__PURE__*/(0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_3__["default"])().m(function _callee7() {
+    var _ref295, _res$data$list2, _res$data3, _res$data4;
     var params,
       res,
       list,
       _args7 = arguments;
-    return (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_2__["default"])().w(function (_context7) {
+    return (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_3__["default"])().w(function (_context7) {
       while (1) switch (_context7.n) {
         case 0:
           params = _args7.length > 0 && _args7[0] !== undefined ? _args7[0] : {};
@@ -359,8 +434,8 @@ function _fetchOrderList() {
           return (0,_api_common__WEBPACK_IMPORTED_MODULE_0__.apiGet)(orderApi.list, params);
         case 1:
           res = _context7.v;
-          list = Array.isArray(res === null || res === void 0 ? void 0 : res.data) ? res.data : (_ref301 = (_res$data$list2 = res === null || res === void 0 || (_res$data3 = res.data) === null || _res$data3 === void 0 ? void 0 : _res$data3.list) !== null && _res$data$list2 !== void 0 ? _res$data$list2 : res === null || res === void 0 || (_res$data4 = res.data) === null || _res$data4 === void 0 ? void 0 : _res$data4.items) !== null && _ref301 !== void 0 ? _ref301 : [];
-          return _context7.a(2, (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_3__["default"])((0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_3__["default"])({}, res), {}, {
+          list = Array.isArray(res === null || res === void 0 ? void 0 : res.data) ? res.data : (_ref295 = (_res$data$list2 = res === null || res === void 0 || (_res$data3 = res.data) === null || _res$data3 === void 0 ? void 0 : _res$data3.list) !== null && _res$data$list2 !== void 0 ? _res$data$list2 : res === null || res === void 0 || (_res$data4 = res.data) === null || _res$data4 === void 0 ? void 0 : _res$data4.items) !== null && _ref295 !== void 0 ? _ref295 : [];
+          return _context7.a(2, (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_4__["default"])((0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_4__["default"])({}, res), {}, {
             data: list.map(transformOrderItem)
           }));
       }
@@ -377,9 +452,9 @@ function fetchOrderDetail(_x7) {
  * PUT /api/v1/orders/{id}/cancel
  */
 function _fetchOrderDetail() {
-  _fetchOrderDetail = (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_1__["default"])(/*#__PURE__*/(0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_2__["default"])().m(function _callee8(id) {
+  _fetchOrderDetail = (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_2__["default"])(/*#__PURE__*/(0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_3__["default"])().m(function _callee8(id) {
     var res;
-    return (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_2__["default"])().w(function (_context8) {
+    return (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_3__["default"])().w(function (_context8) {
       while (1) switch (_context8.n) {
         case 0:
           _context8.n = 1;
@@ -392,7 +467,7 @@ function _fetchOrderDetail() {
             _context8.n = 2;
             break;
           }
-          return _context8.a(2, (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_3__["default"])((0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_3__["default"])({}, res), {}, {
+          return _context8.a(2, (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_4__["default"])((0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_4__["default"])({}, res), {}, {
             data: transformOrderItem(res.data)
           }));
         case 2:
@@ -412,9 +487,9 @@ function cancelOrder(_x8) {
  * payload 支持：paymentMethod(wechat/alipay) 等参数
  */
 function _cancelOrder() {
-  _cancelOrder = (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_1__["default"])(/*#__PURE__*/(0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_2__["default"])().m(function _callee9(id) {
+  _cancelOrder = (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_2__["default"])(/*#__PURE__*/(0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_3__["default"])().m(function _callee9(id) {
     var res;
-    return (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_2__["default"])().w(function (_context9) {
+    return (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_3__["default"])().w(function (_context9) {
       while (1) switch (_context9.n) {
         case 0:
           _context9.n = 1;
@@ -439,15 +514,15 @@ function payOrder(_x9, _x0) {
  * payload 支持：orderId、orderNo、transactionId、paymentMethod、amount 等
  */
 function _payOrder() {
-  _payOrder = (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_1__["default"])(/*#__PURE__*/(0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_2__["default"])().m(function _callee0(id, payload) {
+  _payOrder = (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_2__["default"])(/*#__PURE__*/(0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_3__["default"])().m(function _callee0(id, payload) {
     var res;
-    return (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_2__["default"])().w(function (_context0) {
+    return (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_3__["default"])().w(function (_context0) {
       while (1) switch (_context0.n) {
         case 0:
           _context0.n = 1;
           return (0,_api_common__WEBPACK_IMPORTED_MODULE_0__.apiPost)(orderApi.pay, payload || {}, {
             id: id
-          });
+          }, {}, false);
         case 1:
           res = _context0.v;
           return _context0.a(2, res);
@@ -464,9 +539,9 @@ function paymentCallback(_x1) {
  * 规范化订单支付状态：兼容 snake_case / PascalCase / camelCase 字段名
  */
 function _paymentCallback() {
-  _paymentCallback = (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_1__["default"])(/*#__PURE__*/(0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_2__["default"])().m(function _callee1(payload) {
+  _paymentCallback = (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_2__["default"])(/*#__PURE__*/(0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_3__["default"])().m(function _callee1(payload) {
     var body, res;
-    return (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_2__["default"])().w(function (_context1) {
+    return (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_3__["default"])().w(function (_context1) {
       while (1) switch (_context1.n) {
         case 0:
           body = {
@@ -477,7 +552,7 @@ function _paymentCallback() {
           if (payload.paymentMethod !== undefined) body.paymentMethod = payload.paymentMethod;
           if (payload.amount !== undefined) body.amount = payload.amount;
           _context1.n = 1;
-          return (0,_api_common__WEBPACK_IMPORTED_MODULE_0__.apiPost)(paymentApi.callback, body);
+          return (0,_api_common__WEBPACK_IMPORTED_MODULE_0__.apiPost)(paymentApi.callback, body, {}, {}, false);
         case 1:
           res = _context1.v;
           return _context1.a(2, res);
@@ -487,19 +562,19 @@ function _paymentCallback() {
   return _paymentCallback.apply(this, arguments);
 }
 function normalizePaymentStatus(raw) {
-  var _ref76, _ref77, _ref78, _ref79, _raw$status2, _ref80, _ref81, _ref82, _raw$orderId, _ref83, _ref84, _raw$orderNo2, _ref85, _ref86, _ref87, _ref88, _raw$paymentMethod, _ref89, _ref90, _ref91, _raw$transactionId, _ref92, _ref93, _ref94, _ref95, _raw$amount, _ref96, _ref97, _ref98, _ref99, _ref100, _raw$paidAt, _ref101, _ref102, _raw$message;
-  var status = (_ref76 = (_ref77 = (_ref78 = (_ref79 = (_raw$status2 = raw.status) !== null && _raw$status2 !== void 0 ? _raw$status2 : raw.Status) !== null && _ref79 !== void 0 ? _ref79 : raw.payStatus) !== null && _ref78 !== void 0 ? _ref78 : raw.pay_status) !== null && _ref77 !== void 0 ? _ref77 : raw.paymentStatus) !== null && _ref76 !== void 0 ? _ref76 : '';
+  var _ref70, _ref71, _ref72, _ref73, _raw$status2, _ref74, _ref75, _ref76, _raw$orderId, _ref77, _ref78, _raw$orderNo, _ref79, _ref80, _ref81, _ref82, _raw$paymentMethod, _ref83, _ref84, _ref85, _raw$transactionId, _ref86, _ref87, _ref88, _ref89, _raw$amount, _ref90, _ref91, _ref92, _ref93, _ref94, _raw$paidAt, _ref95, _ref96, _raw$message;
+  var status = (_ref70 = (_ref71 = (_ref72 = (_ref73 = (_raw$status2 = raw.status) !== null && _raw$status2 !== void 0 ? _raw$status2 : raw.Status) !== null && _ref73 !== void 0 ? _ref73 : raw.payStatus) !== null && _ref72 !== void 0 ? _ref72 : raw.pay_status) !== null && _ref71 !== void 0 ? _ref71 : raw.paymentStatus) !== null && _ref70 !== void 0 ? _ref70 : '';
   var isPaid = status === 'paid' || status === 'success' || status === 'SUCCESS' || status === 1 || status === '1' || raw.isPaid === true || raw.IsPaid === true || raw.is_paid === true;
   return {
-    orderId: (_ref80 = (_ref81 = (_ref82 = (_raw$orderId = raw.orderId) !== null && _raw$orderId !== void 0 ? _raw$orderId : raw.order_id) !== null && _ref82 !== void 0 ? _ref82 : raw.OrderId) !== null && _ref81 !== void 0 ? _ref81 : raw.OrderID) !== null && _ref80 !== void 0 ? _ref80 : '',
-    orderNo: (_ref83 = (_ref84 = (_raw$orderNo2 = raw.orderNo) !== null && _raw$orderNo2 !== void 0 ? _raw$orderNo2 : raw.order_no) !== null && _ref84 !== void 0 ? _ref84 : raw.OrderNo) !== null && _ref83 !== void 0 ? _ref83 : '',
+    orderId: (_ref74 = (_ref75 = (_ref76 = (_raw$orderId = raw.orderId) !== null && _raw$orderId !== void 0 ? _raw$orderId : raw.order_id) !== null && _ref76 !== void 0 ? _ref76 : raw.OrderId) !== null && _ref75 !== void 0 ? _ref75 : raw.OrderID) !== null && _ref74 !== void 0 ? _ref74 : '',
+    orderNo: (_ref77 = (_ref78 = (_raw$orderNo = raw.orderNo) !== null && _raw$orderNo !== void 0 ? _raw$orderNo : raw.order_no) !== null && _ref78 !== void 0 ? _ref78 : raw.OrderNo) !== null && _ref77 !== void 0 ? _ref77 : '',
     status: status,
     isPaid: isPaid,
-    paymentMethod: (_ref85 = (_ref86 = (_ref87 = (_ref88 = (_raw$paymentMethod = raw.paymentMethod) !== null && _raw$paymentMethod !== void 0 ? _raw$paymentMethod : raw.payment_method) !== null && _ref88 !== void 0 ? _ref88 : raw.PaymentMethod) !== null && _ref87 !== void 0 ? _ref87 : raw.payType) !== null && _ref86 !== void 0 ? _ref86 : raw.pay_type) !== null && _ref85 !== void 0 ? _ref85 : '',
-    transactionId: (_ref89 = (_ref90 = (_ref91 = (_raw$transactionId = raw.transactionId) !== null && _raw$transactionId !== void 0 ? _raw$transactionId : raw.transaction_id) !== null && _ref91 !== void 0 ? _ref91 : raw.TransactionId) !== null && _ref90 !== void 0 ? _ref90 : raw.TransactionID) !== null && _ref89 !== void 0 ? _ref89 : '',
-    amount: Number((_ref92 = (_ref93 = (_ref94 = (_ref95 = (_raw$amount = raw.amount) !== null && _raw$amount !== void 0 ? _raw$amount : raw.Amount) !== null && _ref95 !== void 0 ? _ref95 : raw.payAmount) !== null && _ref94 !== void 0 ? _ref94 : raw.pay_amount) !== null && _ref93 !== void 0 ? _ref93 : raw.PayAmount) !== null && _ref92 !== void 0 ? _ref92 : 0),
-    paidAt: (_ref96 = (_ref97 = (_ref98 = (_ref99 = (_ref100 = (_raw$paidAt = raw.paidAt) !== null && _raw$paidAt !== void 0 ? _raw$paidAt : raw.paid_at) !== null && _ref100 !== void 0 ? _ref100 : raw.PaidAt) !== null && _ref99 !== void 0 ? _ref99 : raw.payTime) !== null && _ref98 !== void 0 ? _ref98 : raw.pay_time) !== null && _ref97 !== void 0 ? _ref97 : raw.PayTime) !== null && _ref96 !== void 0 ? _ref96 : '',
-    message: (_ref101 = (_ref102 = (_raw$message = raw.message) !== null && _raw$message !== void 0 ? _raw$message : raw.Message) !== null && _ref102 !== void 0 ? _ref102 : raw.msg) !== null && _ref101 !== void 0 ? _ref101 : ''
+    paymentMethod: (_ref79 = (_ref80 = (_ref81 = (_ref82 = (_raw$paymentMethod = raw.paymentMethod) !== null && _raw$paymentMethod !== void 0 ? _raw$paymentMethod : raw.payment_method) !== null && _ref82 !== void 0 ? _ref82 : raw.PaymentMethod) !== null && _ref81 !== void 0 ? _ref81 : raw.payType) !== null && _ref80 !== void 0 ? _ref80 : raw.pay_type) !== null && _ref79 !== void 0 ? _ref79 : '',
+    transactionId: (_ref83 = (_ref84 = (_ref85 = (_raw$transactionId = raw.transactionId) !== null && _raw$transactionId !== void 0 ? _raw$transactionId : raw.transaction_id) !== null && _ref85 !== void 0 ? _ref85 : raw.TransactionId) !== null && _ref84 !== void 0 ? _ref84 : raw.TransactionID) !== null && _ref83 !== void 0 ? _ref83 : '',
+    amount: Number((_ref86 = (_ref87 = (_ref88 = (_ref89 = (_raw$amount = raw.amount) !== null && _raw$amount !== void 0 ? _raw$amount : raw.Amount) !== null && _ref89 !== void 0 ? _ref89 : raw.payAmount) !== null && _ref88 !== void 0 ? _ref88 : raw.pay_amount) !== null && _ref87 !== void 0 ? _ref87 : raw.PayAmount) !== null && _ref86 !== void 0 ? _ref86 : 0),
+    paidAt: (_ref90 = (_ref91 = (_ref92 = (_ref93 = (_ref94 = (_raw$paidAt = raw.paidAt) !== null && _raw$paidAt !== void 0 ? _raw$paidAt : raw.paid_at) !== null && _ref94 !== void 0 ? _ref94 : raw.PaidAt) !== null && _ref93 !== void 0 ? _ref93 : raw.payTime) !== null && _ref92 !== void 0 ? _ref92 : raw.pay_time) !== null && _ref91 !== void 0 ? _ref91 : raw.PayTime) !== null && _ref90 !== void 0 ? _ref90 : '',
+    message: (_ref95 = (_ref96 = (_raw$message = raw.message) !== null && _raw$message !== void 0 ? _raw$message : raw.Message) !== null && _ref96 !== void 0 ? _ref96 : raw.msg) !== null && _ref95 !== void 0 ? _ref95 : ''
   };
 }
 
@@ -512,13 +587,13 @@ function fetchOrderPaymentStatus(_x10) {
 }
 
 /**
- * 确认自提/确认收货
+ * 确认取货/确认收货（待自提→已完成）
  * PUT /api/v1/orders/{id}/confirm
  */
 function _fetchOrderPaymentStatus() {
-  _fetchOrderPaymentStatus = (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_1__["default"])(/*#__PURE__*/(0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_2__["default"])().m(function _callee10(id) {
+  _fetchOrderPaymentStatus = (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_2__["default"])(/*#__PURE__*/(0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_3__["default"])().m(function _callee10(id) {
     var res;
-    return (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_2__["default"])().w(function (_context10) {
+    return (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_3__["default"])().w(function (_context10) {
       while (1) switch (_context10.n) {
         case 0:
           _context10.n = 1;
@@ -531,7 +606,7 @@ function _fetchOrderPaymentStatus() {
             _context10.n = 2;
             break;
           }
-          return _context10.a(2, (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_3__["default"])((0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_3__["default"])({}, res), {}, {
+          return _context10.a(2, (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_4__["default"])((0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_4__["default"])({}, res), {}, {
             data: normalizePaymentStatus(res.data)
           }));
         case 2:
@@ -546,13 +621,13 @@ function confirmOrder(_x11) {
 }
 
 /**
- * 确认自提
+ * 确认发货/备货完成（待发货→待自提）
  * POST /api/v1/orders/{id}/pickup
  */
 function _confirmOrder() {
-  _confirmOrder = (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_1__["default"])(/*#__PURE__*/(0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_2__["default"])().m(function _callee11(id) {
+  _confirmOrder = (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_2__["default"])(/*#__PURE__*/(0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_3__["default"])().m(function _callee11(id) {
     var res;
-    return (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_2__["default"])().w(function (_context11) {
+    return (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_3__["default"])().w(function (_context11) {
       while (1) switch (_context11.n) {
         case 0:
           _context11.n = 1;
@@ -576,15 +651,15 @@ function confirmPickupOrder(_x12) {
  * POST /api/v1/orders/{id}/refund
  */
 function _confirmPickupOrder() {
-  _confirmPickupOrder = (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_1__["default"])(/*#__PURE__*/(0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_2__["default"])().m(function _callee12(id) {
+  _confirmPickupOrder = (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_2__["default"])(/*#__PURE__*/(0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_3__["default"])().m(function _callee12(id) {
     var res;
-    return (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_2__["default"])().w(function (_context12) {
+    return (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_3__["default"])().w(function (_context12) {
       while (1) switch (_context12.n) {
         case 0:
           _context12.n = 1;
           return (0,_api_common__WEBPACK_IMPORTED_MODULE_0__.apiPost)(orderApi.confirmPickup, {}, {
             id: id
-          });
+          }, {}, false);
         case 1:
           res = _context12.v;
           return _context12.a(2, res);
@@ -603,15 +678,15 @@ function refundOrder(_x13, _x14) {
  * 评价数据规范化：兼容 snake_case / PascalCase / camelCase
  */
 function _refundOrder() {
-  _refundOrder = (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_1__["default"])(/*#__PURE__*/(0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_2__["default"])().m(function _callee13(id, payload) {
+  _refundOrder = (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_2__["default"])(/*#__PURE__*/(0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_3__["default"])().m(function _callee13(id, payload) {
     var res;
-    return (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_2__["default"])().w(function (_context13) {
+    return (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_3__["default"])().w(function (_context13) {
       while (1) switch (_context13.n) {
         case 0:
           _context13.n = 1;
           return (0,_api_common__WEBPACK_IMPORTED_MODULE_0__.apiPost)(orderApi.refund, payload || {}, {
             id: id
-          });
+          }, {}, false);
         case 1:
           res = _context13.v;
           return _context13.a(2, res);
@@ -621,25 +696,25 @@ function _refundOrder() {
   return _refundOrder.apply(this, arguments);
 }
 function normalizeReview(raw) {
-  var _ref103, _ref104, _ref105, _ref106, _raw$id3, _ref107, _ref108, _ref109, _raw$orderId2, _ref110, _ref111, _ref112, _raw$productId2, _ref113, _ref114, _ref115, _raw$productName2, _ref116, _ref117, _ref118, _raw$skuId2, _ref119, _ref120, _ref121, _raw$skuName2, _ref122, _ref123, _ref124, _raw$rating, _ref125, _ref126, _raw$ratingType, _ref127, _ref128, _ref129, _ref130, _ref131, _raw$content, _ref132, _ref133, _ref134, _raw$anonymous, _ref135, _ref136, _ref137, _raw$createdAt2, _ref138, _ref139, _raw$userId, _ref140, _ref141, _ref142, _ref143, _raw$userName, _ref144, _ref145, _ref146, _ref147, _raw$userAvatar, _ref148, _ref149, _ref150, _raw$reply, _ref151, _ref152, _raw$replyAt;
+  var _ref97, _ref98, _ref99, _ref100, _raw$id, _ref101, _ref102, _ref103, _raw$orderId2, _ref104, _ref105, _ref106, _raw$productId, _ref107, _ref108, _ref109, _raw$productName2, _ref110, _ref111, _ref112, _raw$skuId, _ref113, _ref114, _ref115, _raw$skuName2, _ref116, _ref117, _ref118, _raw$rating, _ref119, _ref120, _raw$ratingType, _ref121, _ref122, _ref123, _ref124, _ref125, _raw$content, _ref126, _ref127, _ref128, _raw$anonymous, _ref129, _ref130, _ref131, _raw$createdAt2, _ref132, _ref133, _raw$userId, _ref134, _ref135, _ref136, _ref137, _raw$userName, _ref138, _ref139, _ref140, _ref141, _raw$userAvatar, _ref142, _ref143, _ref144, _raw$reply, _ref145, _ref146, _raw$replyAt;
   return {
-    id: (_ref103 = (_ref104 = (_ref105 = (_ref106 = (_raw$id3 = raw.id) !== null && _raw$id3 !== void 0 ? _raw$id3 : raw.Id) !== null && _ref106 !== void 0 ? _ref106 : raw.reviewId) !== null && _ref105 !== void 0 ? _ref105 : raw.review_id) !== null && _ref104 !== void 0 ? _ref104 : raw.ID) !== null && _ref103 !== void 0 ? _ref103 : '',
-    orderId: (_ref107 = (_ref108 = (_ref109 = (_raw$orderId2 = raw.orderId) !== null && _raw$orderId2 !== void 0 ? _raw$orderId2 : raw.order_id) !== null && _ref109 !== void 0 ? _ref109 : raw.OrderId) !== null && _ref108 !== void 0 ? _ref108 : raw.OrderID) !== null && _ref107 !== void 0 ? _ref107 : '',
-    productId: (_ref110 = (_ref111 = (_ref112 = (_raw$productId2 = raw.productId) !== null && _raw$productId2 !== void 0 ? _raw$productId2 : raw.product_id) !== null && _ref112 !== void 0 ? _ref112 : raw.ProductId) !== null && _ref111 !== void 0 ? _ref111 : raw.ProductID) !== null && _ref110 !== void 0 ? _ref110 : '',
-    productName: (_ref113 = (_ref114 = (_ref115 = (_raw$productName2 = raw.productName) !== null && _raw$productName2 !== void 0 ? _raw$productName2 : raw.product_name) !== null && _ref115 !== void 0 ? _ref115 : raw.ProductName) !== null && _ref114 !== void 0 ? _ref114 : raw.name) !== null && _ref113 !== void 0 ? _ref113 : '',
-    skuId: (_ref116 = (_ref117 = (_ref118 = (_raw$skuId2 = raw.skuId) !== null && _raw$skuId2 !== void 0 ? _raw$skuId2 : raw.sku_id) !== null && _ref118 !== void 0 ? _ref118 : raw.SkuId) !== null && _ref117 !== void 0 ? _ref117 : raw.SkuID) !== null && _ref116 !== void 0 ? _ref116 : '',
-    skuName: (_ref119 = (_ref120 = (_ref121 = (_raw$skuName2 = raw.skuName) !== null && _raw$skuName2 !== void 0 ? _raw$skuName2 : raw.sku_name) !== null && _ref121 !== void 0 ? _ref121 : raw.SkuName) !== null && _ref120 !== void 0 ? _ref120 : raw.specName) !== null && _ref119 !== void 0 ? _ref119 : '',
-    rating: Number((_ref122 = (_ref123 = (_ref124 = (_raw$rating = raw.rating) !== null && _raw$rating !== void 0 ? _raw$rating : raw.Rating) !== null && _ref124 !== void 0 ? _ref124 : raw.score) !== null && _ref123 !== void 0 ? _ref123 : raw.Score) !== null && _ref122 !== void 0 ? _ref122 : 5),
-    ratingType: (_ref125 = (_ref126 = (_raw$ratingType = raw.ratingType) !== null && _raw$ratingType !== void 0 ? _raw$ratingType : raw.rating_type) !== null && _ref126 !== void 0 ? _ref126 : raw.RatingType) !== null && _ref125 !== void 0 ? _ref125 : raw.rating >= 4 ? 'good' : raw.rating <= 2 ? 'bad' : 'neutral',
-    content: (_ref127 = (_ref128 = (_ref129 = (_ref130 = (_ref131 = (_raw$content = raw.content) !== null && _raw$content !== void 0 ? _raw$content : raw.Content) !== null && _ref131 !== void 0 ? _ref131 : raw.reviewContent) !== null && _ref130 !== void 0 ? _ref130 : raw.review_content) !== null && _ref129 !== void 0 ? _ref129 : raw.comment) !== null && _ref128 !== void 0 ? _ref128 : raw.Comment) !== null && _ref127 !== void 0 ? _ref127 : '',
+    id: (_ref97 = (_ref98 = (_ref99 = (_ref100 = (_raw$id = raw.id) !== null && _raw$id !== void 0 ? _raw$id : raw.Id) !== null && _ref100 !== void 0 ? _ref100 : raw.reviewId) !== null && _ref99 !== void 0 ? _ref99 : raw.review_id) !== null && _ref98 !== void 0 ? _ref98 : raw.ID) !== null && _ref97 !== void 0 ? _ref97 : '',
+    orderId: (_ref101 = (_ref102 = (_ref103 = (_raw$orderId2 = raw.orderId) !== null && _raw$orderId2 !== void 0 ? _raw$orderId2 : raw.order_id) !== null && _ref103 !== void 0 ? _ref103 : raw.OrderId) !== null && _ref102 !== void 0 ? _ref102 : raw.OrderID) !== null && _ref101 !== void 0 ? _ref101 : '',
+    productId: (_ref104 = (_ref105 = (_ref106 = (_raw$productId = raw.productId) !== null && _raw$productId !== void 0 ? _raw$productId : raw.product_id) !== null && _ref106 !== void 0 ? _ref106 : raw.ProductId) !== null && _ref105 !== void 0 ? _ref105 : raw.ProductID) !== null && _ref104 !== void 0 ? _ref104 : '',
+    productName: (_ref107 = (_ref108 = (_ref109 = (_raw$productName2 = raw.productName) !== null && _raw$productName2 !== void 0 ? _raw$productName2 : raw.product_name) !== null && _ref109 !== void 0 ? _ref109 : raw.ProductName) !== null && _ref108 !== void 0 ? _ref108 : raw.name) !== null && _ref107 !== void 0 ? _ref107 : '',
+    skuId: (_ref110 = (_ref111 = (_ref112 = (_raw$skuId = raw.skuId) !== null && _raw$skuId !== void 0 ? _raw$skuId : raw.sku_id) !== null && _ref112 !== void 0 ? _ref112 : raw.SkuId) !== null && _ref111 !== void 0 ? _ref111 : raw.SkuID) !== null && _ref110 !== void 0 ? _ref110 : '',
+    skuName: (_ref113 = (_ref114 = (_ref115 = (_raw$skuName2 = raw.skuName) !== null && _raw$skuName2 !== void 0 ? _raw$skuName2 : raw.sku_name) !== null && _ref115 !== void 0 ? _ref115 : raw.SkuName) !== null && _ref114 !== void 0 ? _ref114 : raw.specName) !== null && _ref113 !== void 0 ? _ref113 : '',
+    rating: Number((_ref116 = (_ref117 = (_ref118 = (_raw$rating = raw.rating) !== null && _raw$rating !== void 0 ? _raw$rating : raw.Rating) !== null && _ref118 !== void 0 ? _ref118 : raw.score) !== null && _ref117 !== void 0 ? _ref117 : raw.Score) !== null && _ref116 !== void 0 ? _ref116 : 5),
+    ratingType: (_ref119 = (_ref120 = (_raw$ratingType = raw.ratingType) !== null && _raw$ratingType !== void 0 ? _raw$ratingType : raw.rating_type) !== null && _ref120 !== void 0 ? _ref120 : raw.RatingType) !== null && _ref119 !== void 0 ? _ref119 : raw.rating >= 4 ? 'good' : raw.rating <= 2 ? 'bad' : 'neutral',
+    content: (_ref121 = (_ref122 = (_ref123 = (_ref124 = (_ref125 = (_raw$content = raw.content) !== null && _raw$content !== void 0 ? _raw$content : raw.Content) !== null && _ref125 !== void 0 ? _ref125 : raw.reviewContent) !== null && _ref124 !== void 0 ? _ref124 : raw.review_content) !== null && _ref123 !== void 0 ? _ref123 : raw.comment) !== null && _ref122 !== void 0 ? _ref122 : raw.Comment) !== null && _ref121 !== void 0 ? _ref121 : '',
     images: Array.isArray(raw.images) ? raw.images : Array.isArray(raw.Images) ? raw.Images : Array.isArray(raw.pics) ? raw.pics : Array.isArray(raw.imageList) ? raw.imageList : [],
-    anonymous: (_ref132 = (_ref133 = (_ref134 = (_raw$anonymous = raw.anonymous) !== null && _raw$anonymous !== void 0 ? _raw$anonymous : raw.Anonymous) !== null && _ref134 !== void 0 ? _ref134 : raw.isAnonymous) !== null && _ref133 !== void 0 ? _ref133 : raw.is_anonymous) !== null && _ref132 !== void 0 ? _ref132 : false,
-    createdAt: (_ref135 = (_ref136 = (_ref137 = (_raw$createdAt2 = raw.createdAt) !== null && _raw$createdAt2 !== void 0 ? _raw$createdAt2 : raw.created_at) !== null && _ref137 !== void 0 ? _ref137 : raw.CreateTime) !== null && _ref136 !== void 0 ? _ref136 : raw.createTime) !== null && _ref135 !== void 0 ? _ref135 : '',
-    userId: (_ref138 = (_ref139 = (_raw$userId = raw.userId) !== null && _raw$userId !== void 0 ? _raw$userId : raw.user_id) !== null && _ref139 !== void 0 ? _ref139 : raw.UserId) !== null && _ref138 !== void 0 ? _ref138 : '',
-    userName: (_ref140 = (_ref141 = (_ref142 = (_ref143 = (_raw$userName = raw.userName) !== null && _raw$userName !== void 0 ? _raw$userName : raw.user_name) !== null && _ref143 !== void 0 ? _ref143 : raw.UserName) !== null && _ref142 !== void 0 ? _ref142 : raw.nickname) !== null && _ref141 !== void 0 ? _ref141 : raw.NickName) !== null && _ref140 !== void 0 ? _ref140 : '',
-    userAvatar: (_ref144 = (_ref145 = (_ref146 = (_ref147 = (_raw$userAvatar = raw.userAvatar) !== null && _raw$userAvatar !== void 0 ? _raw$userAvatar : raw.user_avatar) !== null && _ref147 !== void 0 ? _ref147 : raw.UserAvatar) !== null && _ref146 !== void 0 ? _ref146 : raw.avatar) !== null && _ref145 !== void 0 ? _ref145 : raw.Avatar) !== null && _ref144 !== void 0 ? _ref144 : '',
-    reply: (_ref148 = (_ref149 = (_ref150 = (_raw$reply = raw.reply) !== null && _raw$reply !== void 0 ? _raw$reply : raw.Reply) !== null && _ref150 !== void 0 ? _ref150 : raw.replyContent) !== null && _ref149 !== void 0 ? _ref149 : raw.reply_content) !== null && _ref148 !== void 0 ? _ref148 : '',
-    replyAt: (_ref151 = (_ref152 = (_raw$replyAt = raw.replyAt) !== null && _raw$replyAt !== void 0 ? _raw$replyAt : raw.reply_at) !== null && _ref152 !== void 0 ? _ref152 : raw.ReplyAt) !== null && _ref151 !== void 0 ? _ref151 : ''
+    anonymous: (_ref126 = (_ref127 = (_ref128 = (_raw$anonymous = raw.anonymous) !== null && _raw$anonymous !== void 0 ? _raw$anonymous : raw.Anonymous) !== null && _ref128 !== void 0 ? _ref128 : raw.isAnonymous) !== null && _ref127 !== void 0 ? _ref127 : raw.is_anonymous) !== null && _ref126 !== void 0 ? _ref126 : false,
+    createdAt: (_ref129 = (_ref130 = (_ref131 = (_raw$createdAt2 = raw.createdAt) !== null && _raw$createdAt2 !== void 0 ? _raw$createdAt2 : raw.created_at) !== null && _ref131 !== void 0 ? _ref131 : raw.CreateTime) !== null && _ref130 !== void 0 ? _ref130 : raw.createTime) !== null && _ref129 !== void 0 ? _ref129 : '',
+    userId: (_ref132 = (_ref133 = (_raw$userId = raw.userId) !== null && _raw$userId !== void 0 ? _raw$userId : raw.user_id) !== null && _ref133 !== void 0 ? _ref133 : raw.UserId) !== null && _ref132 !== void 0 ? _ref132 : '',
+    userName: (_ref134 = (_ref135 = (_ref136 = (_ref137 = (_raw$userName = raw.userName) !== null && _raw$userName !== void 0 ? _raw$userName : raw.user_name) !== null && _ref137 !== void 0 ? _ref137 : raw.UserName) !== null && _ref136 !== void 0 ? _ref136 : raw.nickname) !== null && _ref135 !== void 0 ? _ref135 : raw.NickName) !== null && _ref134 !== void 0 ? _ref134 : '',
+    userAvatar: (_ref138 = (_ref139 = (_ref140 = (_ref141 = (_raw$userAvatar = raw.userAvatar) !== null && _raw$userAvatar !== void 0 ? _raw$userAvatar : raw.user_avatar) !== null && _ref141 !== void 0 ? _ref141 : raw.UserAvatar) !== null && _ref140 !== void 0 ? _ref140 : raw.avatar) !== null && _ref139 !== void 0 ? _ref139 : raw.Avatar) !== null && _ref138 !== void 0 ? _ref138 : '',
+    reply: (_ref142 = (_ref143 = (_ref144 = (_raw$reply = raw.reply) !== null && _raw$reply !== void 0 ? _raw$reply : raw.Reply) !== null && _ref144 !== void 0 ? _ref144 : raw.replyContent) !== null && _ref143 !== void 0 ? _ref143 : raw.reply_content) !== null && _ref142 !== void 0 ? _ref142 : '',
+    replyAt: (_ref145 = (_ref146 = (_raw$replyAt = raw.replyAt) !== null && _raw$replyAt !== void 0 ? _raw$replyAt : raw.reply_at) !== null && _ref146 !== void 0 ? _ref146 : raw.ReplyAt) !== null && _ref145 !== void 0 ? _ref145 : ''
   };
 }
 
@@ -657,9 +732,9 @@ function submitOrderReview(_x15, _x16) {
  * GET /api/v1/orders/{id}/reviews
  */
 function _submitOrderReview() {
-  _submitOrderReview = (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_1__["default"])(/*#__PURE__*/(0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_2__["default"])().m(function _callee14(id, payload) {
+  _submitOrderReview = (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_2__["default"])(/*#__PURE__*/(0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_3__["default"])().m(function _callee14(id, payload) {
     var body, res;
-    return (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_2__["default"])().w(function (_context14) {
+    return (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_3__["default"])().w(function (_context14) {
       while (1) switch (_context14.n) {
         case 0:
           body = {};
@@ -672,7 +747,7 @@ function _submitOrderReview() {
           _context14.n = 1;
           return (0,_api_common__WEBPACK_IMPORTED_MODULE_0__.apiPost)(orderApi.review, body, {
             id: id
-          });
+          }, {}, false);
         case 1:
           res = _context14.v;
           return _context14.a(2, res);
@@ -691,10 +766,10 @@ function fetchOrderReviews(_x17) {
  * 退货原因数据规范化：兼容 snake_case / PascalCase / camelCase
  */
 function _fetchOrderReviews() {
-  _fetchOrderReviews = (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_1__["default"])(/*#__PURE__*/(0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_2__["default"])().m(function _callee15(id) {
-    var _ref302, _res$data$list3, _res$data5, _res$data6;
+  _fetchOrderReviews = (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_2__["default"])(/*#__PURE__*/(0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_3__["default"])().m(function _callee15(id) {
+    var _ref296, _res$data$list3, _res$data5, _res$data6;
     var res, list;
-    return (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_2__["default"])().w(function (_context15) {
+    return (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_3__["default"])().w(function (_context15) {
       while (1) switch (_context15.n) {
         case 0:
           _context15.n = 1;
@@ -703,8 +778,8 @@ function _fetchOrderReviews() {
           });
         case 1:
           res = _context15.v;
-          list = Array.isArray(res === null || res === void 0 ? void 0 : res.data) ? res.data : (_ref302 = (_res$data$list3 = res === null || res === void 0 || (_res$data5 = res.data) === null || _res$data5 === void 0 ? void 0 : _res$data5.list) !== null && _res$data$list3 !== void 0 ? _res$data$list3 : res === null || res === void 0 || (_res$data6 = res.data) === null || _res$data6 === void 0 ? void 0 : _res$data6.items) !== null && _ref302 !== void 0 ? _ref302 : [];
-          return _context15.a(2, (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_3__["default"])((0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_3__["default"])({}, res), {}, {
+          list = Array.isArray(res === null || res === void 0 ? void 0 : res.data) ? res.data : (_ref296 = (_res$data$list3 = res === null || res === void 0 || (_res$data5 = res.data) === null || _res$data5 === void 0 ? void 0 : _res$data5.list) !== null && _res$data$list3 !== void 0 ? _res$data$list3 : res === null || res === void 0 || (_res$data6 = res.data) === null || _res$data6 === void 0 ? void 0 : _res$data6.items) !== null && _ref296 !== void 0 ? _ref296 : [];
+          return _context15.a(2, (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_4__["default"])((0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_4__["default"])({}, res), {}, {
             data: list.map(normalizeReview)
           }));
       }
@@ -713,13 +788,13 @@ function _fetchOrderReviews() {
   return _fetchOrderReviews.apply(this, arguments);
 }
 function normalizeRefundReason(raw) {
-  var _ref153, _ref154, _ref155, _ref156, _ref157, _raw$id4, _ref158, _ref159, _ref160, _ref161, _ref162, _ref163, _ref164, _raw$name, _ref165, _ref166, _ref167, _ref168, _ref169, _raw$sort, _ref170, _ref171, _ref172, _ref173, _ref174, _raw$enabled, _ref175, _ref176, _ref177, _ref178, _ref179, _raw$description;
+  var _ref147, _ref148, _ref149, _ref150, _ref151, _raw$id2, _ref152, _ref153, _ref154, _ref155, _ref156, _ref157, _ref158, _raw$name, _ref159, _ref160, _ref161, _ref162, _ref163, _raw$sort, _ref164, _ref165, _ref166, _ref167, _ref168, _raw$enabled, _ref169, _ref170, _ref171, _ref172, _ref173, _raw$description;
   return {
-    id: (_ref153 = (_ref154 = (_ref155 = (_ref156 = (_ref157 = (_raw$id4 = raw.id) !== null && _raw$id4 !== void 0 ? _raw$id4 : raw.Id) !== null && _ref157 !== void 0 ? _ref157 : raw.reasonId) !== null && _ref156 !== void 0 ? _ref156 : raw.reason_id) !== null && _ref155 !== void 0 ? _ref155 : raw.ID) !== null && _ref154 !== void 0 ? _ref154 : raw.code) !== null && _ref153 !== void 0 ? _ref153 : '',
-    name: (_ref158 = (_ref159 = (_ref160 = (_ref161 = (_ref162 = (_ref163 = (_ref164 = (_raw$name = raw.name) !== null && _raw$name !== void 0 ? _raw$name : raw.Name) !== null && _ref164 !== void 0 ? _ref164 : raw.reasonName) !== null && _ref163 !== void 0 ? _ref163 : raw.reason_name) !== null && _ref162 !== void 0 ? _ref162 : raw.title) !== null && _ref161 !== void 0 ? _ref161 : raw.Title) !== null && _ref160 !== void 0 ? _ref160 : raw.label) !== null && _ref159 !== void 0 ? _ref159 : raw.Label) !== null && _ref158 !== void 0 ? _ref158 : '',
-    sort: Number((_ref165 = (_ref166 = (_ref167 = (_ref168 = (_ref169 = (_raw$sort = raw.sort) !== null && _raw$sort !== void 0 ? _raw$sort : raw.Sort) !== null && _ref169 !== void 0 ? _ref169 : raw.order) !== null && _ref168 !== void 0 ? _ref168 : raw.Order) !== null && _ref167 !== void 0 ? _ref167 : raw.seq) !== null && _ref166 !== void 0 ? _ref166 : raw.Seq) !== null && _ref165 !== void 0 ? _ref165 : 0),
-    enabled: (_ref170 = (_ref171 = (_ref172 = (_ref173 = (_ref174 = (_raw$enabled = raw.enabled) !== null && _raw$enabled !== void 0 ? _raw$enabled : raw.Enabled) !== null && _ref174 !== void 0 ? _ref174 : raw.status) !== null && _ref173 !== void 0 ? _ref173 : raw.Status) !== null && _ref172 !== void 0 ? _ref172 : raw.active) !== null && _ref171 !== void 0 ? _ref171 : raw.Active) !== null && _ref170 !== void 0 ? _ref170 : true,
-    description: (_ref175 = (_ref176 = (_ref177 = (_ref178 = (_ref179 = (_raw$description = raw.description) !== null && _raw$description !== void 0 ? _raw$description : raw.Description) !== null && _ref179 !== void 0 ? _ref179 : raw.desc) !== null && _ref178 !== void 0 ? _ref178 : raw.Desc) !== null && _ref177 !== void 0 ? _ref177 : raw.remark) !== null && _ref176 !== void 0 ? _ref176 : raw.Remark) !== null && _ref175 !== void 0 ? _ref175 : ''
+    id: (_ref147 = (_ref148 = (_ref149 = (_ref150 = (_ref151 = (_raw$id2 = raw.id) !== null && _raw$id2 !== void 0 ? _raw$id2 : raw.Id) !== null && _ref151 !== void 0 ? _ref151 : raw.reasonId) !== null && _ref150 !== void 0 ? _ref150 : raw.reason_id) !== null && _ref149 !== void 0 ? _ref149 : raw.ID) !== null && _ref148 !== void 0 ? _ref148 : raw.code) !== null && _ref147 !== void 0 ? _ref147 : '',
+    name: (_ref152 = (_ref153 = (_ref154 = (_ref155 = (_ref156 = (_ref157 = (_ref158 = (_raw$name = raw.name) !== null && _raw$name !== void 0 ? _raw$name : raw.Name) !== null && _ref158 !== void 0 ? _ref158 : raw.reasonName) !== null && _ref157 !== void 0 ? _ref157 : raw.reason_name) !== null && _ref156 !== void 0 ? _ref156 : raw.title) !== null && _ref155 !== void 0 ? _ref155 : raw.Title) !== null && _ref154 !== void 0 ? _ref154 : raw.label) !== null && _ref153 !== void 0 ? _ref153 : raw.Label) !== null && _ref152 !== void 0 ? _ref152 : '',
+    sort: Number((_ref159 = (_ref160 = (_ref161 = (_ref162 = (_ref163 = (_raw$sort = raw.sort) !== null && _raw$sort !== void 0 ? _raw$sort : raw.Sort) !== null && _ref163 !== void 0 ? _ref163 : raw.order) !== null && _ref162 !== void 0 ? _ref162 : raw.Order) !== null && _ref161 !== void 0 ? _ref161 : raw.seq) !== null && _ref160 !== void 0 ? _ref160 : raw.Seq) !== null && _ref159 !== void 0 ? _ref159 : 0),
+    enabled: (_ref164 = (_ref165 = (_ref166 = (_ref167 = (_ref168 = (_raw$enabled = raw.enabled) !== null && _raw$enabled !== void 0 ? _raw$enabled : raw.Enabled) !== null && _ref168 !== void 0 ? _ref168 : raw.status) !== null && _ref167 !== void 0 ? _ref167 : raw.Status) !== null && _ref166 !== void 0 ? _ref166 : raw.active) !== null && _ref165 !== void 0 ? _ref165 : raw.Active) !== null && _ref164 !== void 0 ? _ref164 : true,
+    description: (_ref169 = (_ref170 = (_ref171 = (_ref172 = (_ref173 = (_raw$description = raw.description) !== null && _raw$description !== void 0 ? _raw$description : raw.Description) !== null && _ref173 !== void 0 ? _ref173 : raw.desc) !== null && _ref172 !== void 0 ? _ref172 : raw.Desc) !== null && _ref171 !== void 0 ? _ref171 : raw.remark) !== null && _ref170 !== void 0 ? _ref170 : raw.Remark) !== null && _ref169 !== void 0 ? _ref169 : ''
   };
 }
 
@@ -727,14 +802,15 @@ function normalizeRefundReason(raw) {
  * 退款数据规范化：兼容 snake_case / PascalCase / camelCase
  */
 function normalizeRefund(raw) {
-  var _ref180, _ref181, _raw$status3, _ref182, _ref183, _ref184, _ref185, _raw$type, _ref186, _ref187, _ref188, _ref189, _raw$id5, _ref190, _ref191, _ref192, _ref193, _ref194, _ref195, _ref196, _raw$refundNo, _ref197, _ref198, _ref199, _ref200, _ref201, _ref202, _raw$orderId3, _ref203, _ref204, _ref205, _raw$orderNo3, _ref206, _ref207, _ref208, _raw$userId2, _ref209, _ref210, _ref211, _typeTextMap, _ref212, _ref213, _ref214, _ref215, _raw$statusText, _ref216, _ref217, _ref218, _raw$reason, _ref219, _ref220, _ref221, _raw$reasonId, _ref222, _ref223, _ref224, _ref225, _ref226, _ref227, _raw$amount2, _ref228, _ref229, _ref230, _ref231, _ref232, _raw$payAmount2, _ref233, _ref234, _raw$freightAmount2, _ref235, _ref236, _raw$couponAmount2, _ref237, _ref238, _ref239, _ref240, _ref241, _raw$quantity2, _ref242, _ref243, _ref244, _ref245, _ref246, _raw$description2, _ref247, _ref248, _ref249, _ref250, _ref251, _ref252, _ref253, _ref254, _raw$applyTime, _ref255, _ref256, _ref257, _ref258, _ref259, _raw$auditTime, _ref260, _ref261, _ref262, _ref263, _ref264, _raw$auditRemark, _ref265, _ref266, _ref267, _ref268, _ref269, _raw$refundTime, _ref270, _ref271, _ref272, _ref273, _ref274, _ref275, _ref276, _ref277, _raw$trackingNo, _ref278, _ref279, _ref280, _ref281, _ref282, _ref283, _ref284, _ref285, _raw$trackingCompany, _ref286, _ref287, _ref288, _ref289, _raw$receiverName, _ref290, _ref291, _ref292, _ref293, _ref294, _ref295, _raw$receiverPhone, _ref296, _ref297, _ref298, _ref299, _raw$receiverAddress;
-  var rawStatus = (_ref180 = (_ref181 = (_raw$status3 = raw.status) !== null && _raw$status3 !== void 0 ? _raw$status3 : raw.Status) !== null && _ref181 !== void 0 ? _ref181 : raw.refundStatus) !== null && _ref180 !== void 0 ? _ref180 : raw.refund_status;
+  var _ref174, _ref175, _raw$status3, _ref176, _ref177, _ref178, _ref179, _raw$type, _ref180, _ref181, _ref182, _ref183, _raw$id3, _ref184, _ref185, _ref186, _ref187, _ref188, _ref189, _ref190, _raw$refundNo, _ref191, _ref192, _ref193, _ref194, _ref195, _ref196, _raw$orderId3, _ref197, _ref198, _ref199, _raw$orderNo2, _ref200, _ref201, _ref202, _raw$userId2, _ref203, _ref204, _ref205, _typeTextMap, _ref206, _ref207, _ref208, _ref209, _raw$statusText, _ref210, _ref211, _ref212, _raw$reason, _ref213, _ref214, _ref215, _raw$reasonId, _ref216, _ref217, _ref218, _ref219, _ref220, _ref221, _raw$amount2, _ref222, _ref223, _ref224, _ref225, _ref226, _raw$payAmount2, _ref227, _ref228, _raw$freightAmount2, _ref229, _ref230, _raw$couponAmount2, _ref231, _ref232, _ref233, _ref234, _ref235, _raw$quantity2, _ref236, _ref237, _ref238, _ref239, _ref240, _raw$description2, _ref241, _ref242, _ref243, _ref244, _ref245, _ref246, _ref247, _ref248, _raw$applyTime, _ref249, _ref250, _ref251, _ref252, _ref253, _raw$auditTime, _ref254, _ref255, _ref256, _ref257, _ref258, _raw$auditRemark, _ref259, _ref260, _ref261, _ref262, _ref263, _raw$refundTime, _ref264, _ref265, _ref266, _ref267, _ref268, _ref269, _ref270, _ref271, _raw$trackingNo, _ref272, _ref273, _ref274, _ref275, _ref276, _ref277, _ref278, _ref279, _raw$trackingCompany, _ref280, _ref281, _ref282, _ref283, _raw$receiverName, _ref284, _ref285, _ref286, _ref287, _ref288, _ref289, _raw$receiverPhone, _ref290, _ref291, _ref292, _ref293, _raw$receiverAddress;
+  var rawStatus = (_ref174 = (_ref175 = (_raw$status3 = raw.status) !== null && _raw$status3 !== void 0 ? _raw$status3 : raw.Status) !== null && _ref175 !== void 0 ? _ref175 : raw.refundStatus) !== null && _ref174 !== void 0 ? _ref174 : raw.refund_status;
   var statusTextMap = {
     'pending': '待处理',
     'processing': '处理中',
     'approved': '已同意',
     'rejected': '已拒绝',
     'refunding': '退款中',
+    'refund_rejected': '商家已拒绝',
     'refunded': '已退款',
     'cancelled': '已取消',
     'completed': '已完成'
@@ -754,14 +830,14 @@ function normalizeRefund(raw) {
       1: 'processing',
       2: 'approved',
       3: 'rejected',
-      4: 'refunding',
-      5: 'refunded',
-      6: 'cancelled',
-      7: 'completed'
+      4: 'cancelled',
+      5: 'refunding',
+      6: 'refund_rejected',
+      7: 'refunded'
     };
     status = numericMap[rawStatus] || 'pending';
   }
-  var rawType = (_ref182 = (_ref183 = (_ref184 = (_ref185 = (_raw$type = raw.type) !== null && _raw$type !== void 0 ? _raw$type : raw.Type) !== null && _ref185 !== void 0 ? _ref185 : raw.refundType) !== null && _ref184 !== void 0 ? _ref184 : raw.refund_type) !== null && _ref183 !== void 0 ? _ref183 : raw.applyType) !== null && _ref182 !== void 0 ? _ref182 : raw.apply_type;
+  var rawType = (_ref176 = (_ref177 = (_ref178 = (_ref179 = (_raw$type = raw.type) !== null && _raw$type !== void 0 ? _raw$type : raw.Type) !== null && _ref179 !== void 0 ? _ref179 : raw.refundType) !== null && _ref178 !== void 0 ? _ref178 : raw.refund_type) !== null && _ref177 !== void 0 ? _ref177 : raw.applyType) !== null && _ref176 !== void 0 ? _ref176 : raw.apply_type;
   var type = rawType;
   if (typeof rawType === 'number') {
     var typeNumericMap = {
@@ -772,35 +848,35 @@ function normalizeRefund(raw) {
   }
   var items = Array.isArray(raw.items) ? raw.items.map(transformCartItem) : Array.isArray(raw.Items) ? raw.Items.map(transformCartItem) : Array.isArray(raw.refundItems) ? raw.refundItems.map(transformCartItem) : Array.isArray(raw.goodsList) ? raw.goodsList.map(transformCartItem) : [];
   return {
-    id: (_ref186 = (_ref187 = (_ref188 = (_ref189 = (_raw$id5 = raw.id) !== null && _raw$id5 !== void 0 ? _raw$id5 : raw.Id) !== null && _ref189 !== void 0 ? _ref189 : raw.refundId) !== null && _ref188 !== void 0 ? _ref188 : raw.refund_id) !== null && _ref187 !== void 0 ? _ref187 : raw.ID) !== null && _ref186 !== void 0 ? _ref186 : '',
-    refundNo: (_ref190 = (_ref191 = (_ref192 = (_ref193 = (_ref194 = (_ref195 = (_ref196 = (_raw$refundNo = raw.refundNo) !== null && _raw$refundNo !== void 0 ? _raw$refundNo : raw.refund_no) !== null && _ref196 !== void 0 ? _ref196 : raw.RefundNo) !== null && _ref195 !== void 0 ? _ref195 : raw.RefundNO) !== null && _ref194 !== void 0 ? _ref194 : raw.sn) !== null && _ref193 !== void 0 ? _ref193 : raw.SN) !== null && _ref192 !== void 0 ? _ref192 : raw.code) !== null && _ref191 !== void 0 ? _ref191 : raw.Code) !== null && _ref190 !== void 0 ? _ref190 : '',
-    orderId: (_ref197 = (_ref198 = (_ref199 = (_ref200 = (_ref201 = (_ref202 = (_raw$orderId3 = raw.orderId) !== null && _raw$orderId3 !== void 0 ? _raw$orderId3 : raw.order_id) !== null && _ref202 !== void 0 ? _ref202 : raw.OrderId) !== null && _ref201 !== void 0 ? _ref201 : raw.OrderID) !== null && _ref200 !== void 0 ? _ref200 : raw.orderNo) !== null && _ref199 !== void 0 ? _ref199 : raw.order_no) !== null && _ref198 !== void 0 ? _ref198 : raw.OrderNo) !== null && _ref197 !== void 0 ? _ref197 : '',
-    orderNo: (_ref203 = (_ref204 = (_ref205 = (_raw$orderNo3 = raw.orderNo) !== null && _raw$orderNo3 !== void 0 ? _raw$orderNo3 : raw.order_no) !== null && _ref205 !== void 0 ? _ref205 : raw.OrderNo) !== null && _ref204 !== void 0 ? _ref204 : raw.OrderNO) !== null && _ref203 !== void 0 ? _ref203 : '',
-    userId: (_ref206 = (_ref207 = (_ref208 = (_raw$userId2 = raw.userId) !== null && _raw$userId2 !== void 0 ? _raw$userId2 : raw.user_id) !== null && _ref208 !== void 0 ? _ref208 : raw.UserId) !== null && _ref207 !== void 0 ? _ref207 : raw.UserID) !== null && _ref206 !== void 0 ? _ref206 : '',
+    id: (_ref180 = (_ref181 = (_ref182 = (_ref183 = (_raw$id3 = raw.id) !== null && _raw$id3 !== void 0 ? _raw$id3 : raw.Id) !== null && _ref183 !== void 0 ? _ref183 : raw.refundId) !== null && _ref182 !== void 0 ? _ref182 : raw.refund_id) !== null && _ref181 !== void 0 ? _ref181 : raw.ID) !== null && _ref180 !== void 0 ? _ref180 : '',
+    refundNo: (_ref184 = (_ref185 = (_ref186 = (_ref187 = (_ref188 = (_ref189 = (_ref190 = (_raw$refundNo = raw.refundNo) !== null && _raw$refundNo !== void 0 ? _raw$refundNo : raw.refund_no) !== null && _ref190 !== void 0 ? _ref190 : raw.RefundNo) !== null && _ref189 !== void 0 ? _ref189 : raw.RefundNO) !== null && _ref188 !== void 0 ? _ref188 : raw.sn) !== null && _ref187 !== void 0 ? _ref187 : raw.SN) !== null && _ref186 !== void 0 ? _ref186 : raw.code) !== null && _ref185 !== void 0 ? _ref185 : raw.Code) !== null && _ref184 !== void 0 ? _ref184 : '',
+    orderId: (_ref191 = (_ref192 = (_ref193 = (_ref194 = (_ref195 = (_ref196 = (_raw$orderId3 = raw.orderId) !== null && _raw$orderId3 !== void 0 ? _raw$orderId3 : raw.order_id) !== null && _ref196 !== void 0 ? _ref196 : raw.OrderId) !== null && _ref195 !== void 0 ? _ref195 : raw.OrderID) !== null && _ref194 !== void 0 ? _ref194 : raw.orderNo) !== null && _ref193 !== void 0 ? _ref193 : raw.order_no) !== null && _ref192 !== void 0 ? _ref192 : raw.OrderNo) !== null && _ref191 !== void 0 ? _ref191 : '',
+    orderNo: (_ref197 = (_ref198 = (_ref199 = (_raw$orderNo2 = raw.orderNo) !== null && _raw$orderNo2 !== void 0 ? _raw$orderNo2 : raw.order_no) !== null && _ref199 !== void 0 ? _ref199 : raw.OrderNo) !== null && _ref198 !== void 0 ? _ref198 : raw.OrderNO) !== null && _ref197 !== void 0 ? _ref197 : '',
+    userId: (_ref200 = (_ref201 = (_ref202 = (_raw$userId2 = raw.userId) !== null && _raw$userId2 !== void 0 ? _raw$userId2 : raw.user_id) !== null && _ref202 !== void 0 ? _ref202 : raw.UserId) !== null && _ref201 !== void 0 ? _ref201 : raw.UserID) !== null && _ref200 !== void 0 ? _ref200 : '',
     type: type,
-    typeText: (_ref209 = (_ref210 = (_ref211 = (_typeTextMap = typeTextMap[type]) !== null && _typeTextMap !== void 0 ? _typeTextMap : raw.typeText) !== null && _ref211 !== void 0 ? _ref211 : raw.type_text) !== null && _ref210 !== void 0 ? _ref210 : raw.TypeText) !== null && _ref209 !== void 0 ? _ref209 : type === 'return_refund' ? '退货退款' : '仅退款',
+    typeText: (_ref203 = (_ref204 = (_ref205 = (_typeTextMap = typeTextMap[type]) !== null && _typeTextMap !== void 0 ? _typeTextMap : raw.typeText) !== null && _ref205 !== void 0 ? _ref205 : raw.type_text) !== null && _ref204 !== void 0 ? _ref204 : raw.TypeText) !== null && _ref203 !== void 0 ? _ref203 : type === 'return_refund' ? '退货退款' : '仅退款',
     status: status,
     statusCode: statusCode,
-    statusText: (_ref212 = (_ref213 = (_ref214 = (_ref215 = (_raw$statusText = raw.statusText) !== null && _raw$statusText !== void 0 ? _raw$statusText : raw.status_text) !== null && _ref215 !== void 0 ? _ref215 : raw.StatusText) !== null && _ref214 !== void 0 ? _ref214 : statusTextMap[status]) !== null && _ref213 !== void 0 ? _ref213 : status) !== null && _ref212 !== void 0 ? _ref212 : '',
-    reason: (_ref216 = (_ref217 = (_ref218 = (_raw$reason = raw.reason) !== null && _raw$reason !== void 0 ? _raw$reason : raw.Reason) !== null && _ref218 !== void 0 ? _ref218 : raw.refundReason) !== null && _ref217 !== void 0 ? _ref217 : raw.refund_reason) !== null && _ref216 !== void 0 ? _ref216 : '',
-    reasonId: (_ref219 = (_ref220 = (_ref221 = (_raw$reasonId = raw.reasonId) !== null && _raw$reasonId !== void 0 ? _raw$reasonId : raw.reason_id) !== null && _ref221 !== void 0 ? _ref221 : raw.ReasonId) !== null && _ref220 !== void 0 ? _ref220 : raw.ReasonID) !== null && _ref219 !== void 0 ? _ref219 : '',
-    amount: Number((_ref222 = (_ref223 = (_ref224 = (_ref225 = (_ref226 = (_ref227 = (_raw$amount2 = raw.amount) !== null && _raw$amount2 !== void 0 ? _raw$amount2 : raw.Amount) !== null && _ref227 !== void 0 ? _ref227 : raw.refundAmount) !== null && _ref226 !== void 0 ? _ref226 : raw.refund_amount) !== null && _ref225 !== void 0 ? _ref225 : raw.totalAmount) !== null && _ref224 !== void 0 ? _ref224 : raw.total_amount) !== null && _ref223 !== void 0 ? _ref223 : raw.TotalAmount) !== null && _ref222 !== void 0 ? _ref222 : 0),
-    payAmount: Number((_ref228 = (_ref229 = (_ref230 = (_ref231 = (_ref232 = (_raw$payAmount2 = raw.payAmount) !== null && _raw$payAmount2 !== void 0 ? _raw$payAmount2 : raw.pay_amount) !== null && _ref232 !== void 0 ? _ref232 : raw.PayAmount) !== null && _ref231 !== void 0 ? _ref231 : raw.orderAmount) !== null && _ref230 !== void 0 ? _ref230 : raw.order_amount) !== null && _ref229 !== void 0 ? _ref229 : raw.OrderAmount) !== null && _ref228 !== void 0 ? _ref228 : 0),
-    freightAmount: Number((_ref233 = (_ref234 = (_raw$freightAmount2 = raw.freightAmount) !== null && _raw$freightAmount2 !== void 0 ? _raw$freightAmount2 : raw.freight_amount) !== null && _ref234 !== void 0 ? _ref234 : raw.FreightAmount) !== null && _ref233 !== void 0 ? _ref233 : 0),
-    couponAmount: Number((_ref235 = (_ref236 = (_raw$couponAmount2 = raw.couponAmount) !== null && _raw$couponAmount2 !== void 0 ? _raw$couponAmount2 : raw.coupon_amount) !== null && _ref236 !== void 0 ? _ref236 : raw.CouponAmount) !== null && _ref235 !== void 0 ? _ref235 : 0),
-    quantity: Number((_ref237 = (_ref238 = (_ref239 = (_ref240 = (_ref241 = (_raw$quantity2 = raw.quantity) !== null && _raw$quantity2 !== void 0 ? _raw$quantity2 : raw.Quantity) !== null && _ref241 !== void 0 ? _ref241 : raw.count) !== null && _ref240 !== void 0 ? _ref240 : raw.Count) !== null && _ref239 !== void 0 ? _ref239 : raw.num) !== null && _ref238 !== void 0 ? _ref238 : raw.Num) !== null && _ref237 !== void 0 ? _ref237 : 0),
-    description: (_ref242 = (_ref243 = (_ref244 = (_ref245 = (_ref246 = (_raw$description2 = raw.description) !== null && _raw$description2 !== void 0 ? _raw$description2 : raw.Description) !== null && _ref246 !== void 0 ? _ref246 : raw.remark) !== null && _ref245 !== void 0 ? _ref245 : raw.Remark) !== null && _ref244 !== void 0 ? _ref244 : raw.desc) !== null && _ref243 !== void 0 ? _ref243 : raw.Desc) !== null && _ref242 !== void 0 ? _ref242 : '',
+    statusText: (_ref206 = (_ref207 = (_ref208 = (_ref209 = (_raw$statusText = raw.statusText) !== null && _raw$statusText !== void 0 ? _raw$statusText : raw.status_text) !== null && _ref209 !== void 0 ? _ref209 : raw.StatusText) !== null && _ref208 !== void 0 ? _ref208 : statusTextMap[status]) !== null && _ref207 !== void 0 ? _ref207 : status) !== null && _ref206 !== void 0 ? _ref206 : '',
+    reason: (_ref210 = (_ref211 = (_ref212 = (_raw$reason = raw.reason) !== null && _raw$reason !== void 0 ? _raw$reason : raw.Reason) !== null && _ref212 !== void 0 ? _ref212 : raw.refundReason) !== null && _ref211 !== void 0 ? _ref211 : raw.refund_reason) !== null && _ref210 !== void 0 ? _ref210 : '',
+    reasonId: (_ref213 = (_ref214 = (_ref215 = (_raw$reasonId = raw.reasonId) !== null && _raw$reasonId !== void 0 ? _raw$reasonId : raw.reason_id) !== null && _ref215 !== void 0 ? _ref215 : raw.ReasonId) !== null && _ref214 !== void 0 ? _ref214 : raw.ReasonID) !== null && _ref213 !== void 0 ? _ref213 : '',
+    amount: Number((_ref216 = (_ref217 = (_ref218 = (_ref219 = (_ref220 = (_ref221 = (_raw$amount2 = raw.amount) !== null && _raw$amount2 !== void 0 ? _raw$amount2 : raw.Amount) !== null && _ref221 !== void 0 ? _ref221 : raw.refundAmount) !== null && _ref220 !== void 0 ? _ref220 : raw.refund_amount) !== null && _ref219 !== void 0 ? _ref219 : raw.totalAmount) !== null && _ref218 !== void 0 ? _ref218 : raw.total_amount) !== null && _ref217 !== void 0 ? _ref217 : raw.TotalAmount) !== null && _ref216 !== void 0 ? _ref216 : 0),
+    payAmount: Number((_ref222 = (_ref223 = (_ref224 = (_ref225 = (_ref226 = (_raw$payAmount2 = raw.payAmount) !== null && _raw$payAmount2 !== void 0 ? _raw$payAmount2 : raw.pay_amount) !== null && _ref226 !== void 0 ? _ref226 : raw.PayAmount) !== null && _ref225 !== void 0 ? _ref225 : raw.orderAmount) !== null && _ref224 !== void 0 ? _ref224 : raw.order_amount) !== null && _ref223 !== void 0 ? _ref223 : raw.OrderAmount) !== null && _ref222 !== void 0 ? _ref222 : 0),
+    freightAmount: Number((_ref227 = (_ref228 = (_raw$freightAmount2 = raw.freightAmount) !== null && _raw$freightAmount2 !== void 0 ? _raw$freightAmount2 : raw.freight_amount) !== null && _ref228 !== void 0 ? _ref228 : raw.FreightAmount) !== null && _ref227 !== void 0 ? _ref227 : 0),
+    couponAmount: Number((_ref229 = (_ref230 = (_raw$couponAmount2 = raw.couponAmount) !== null && _raw$couponAmount2 !== void 0 ? _raw$couponAmount2 : raw.coupon_amount) !== null && _ref230 !== void 0 ? _ref230 : raw.CouponAmount) !== null && _ref229 !== void 0 ? _ref229 : 0),
+    quantity: Number((_ref231 = (_ref232 = (_ref233 = (_ref234 = (_ref235 = (_raw$quantity2 = raw.quantity) !== null && _raw$quantity2 !== void 0 ? _raw$quantity2 : raw.Quantity) !== null && _ref235 !== void 0 ? _ref235 : raw.count) !== null && _ref234 !== void 0 ? _ref234 : raw.Count) !== null && _ref233 !== void 0 ? _ref233 : raw.num) !== null && _ref232 !== void 0 ? _ref232 : raw.Num) !== null && _ref231 !== void 0 ? _ref231 : 0),
+    description: (_ref236 = (_ref237 = (_ref238 = (_ref239 = (_ref240 = (_raw$description2 = raw.description) !== null && _raw$description2 !== void 0 ? _raw$description2 : raw.Description) !== null && _ref240 !== void 0 ? _ref240 : raw.remark) !== null && _ref239 !== void 0 ? _ref239 : raw.Remark) !== null && _ref238 !== void 0 ? _ref238 : raw.desc) !== null && _ref237 !== void 0 ? _ref237 : raw.Desc) !== null && _ref236 !== void 0 ? _ref236 : '',
     images: Array.isArray(raw.images) ? raw.images : Array.isArray(raw.Images) ? raw.Images : Array.isArray(raw.pics) ? raw.pics : Array.isArray(raw.vouchers) ? raw.vouchers : Array.isArray(raw.imageList) ? raw.imageList : [],
     items: items,
-    applyTime: (_ref247 = (_ref248 = (_ref249 = (_ref250 = (_ref251 = (_ref252 = (_ref253 = (_ref254 = (_raw$applyTime = raw.applyTime) !== null && _raw$applyTime !== void 0 ? _raw$applyTime : raw.apply_time) !== null && _ref254 !== void 0 ? _ref254 : raw.ApplyTime) !== null && _ref253 !== void 0 ? _ref253 : raw.createTime) !== null && _ref252 !== void 0 ? _ref252 : raw.create_time) !== null && _ref251 !== void 0 ? _ref251 : raw.CreateTime) !== null && _ref250 !== void 0 ? _ref250 : raw.createdAt) !== null && _ref249 !== void 0 ? _ref249 : raw.created_at) !== null && _ref248 !== void 0 ? _ref248 : raw.CreatedAt) !== null && _ref247 !== void 0 ? _ref247 : '',
-    auditTime: (_ref255 = (_ref256 = (_ref257 = (_ref258 = (_ref259 = (_raw$auditTime = raw.auditTime) !== null && _raw$auditTime !== void 0 ? _raw$auditTime : raw.audit_time) !== null && _ref259 !== void 0 ? _ref259 : raw.AuditTime) !== null && _ref258 !== void 0 ? _ref258 : raw.reviewTime) !== null && _ref257 !== void 0 ? _ref257 : raw.review_time) !== null && _ref256 !== void 0 ? _ref256 : raw.ReviewTime) !== null && _ref255 !== void 0 ? _ref255 : '',
-    auditRemark: (_ref260 = (_ref261 = (_ref262 = (_ref263 = (_ref264 = (_raw$auditRemark = raw.auditRemark) !== null && _raw$auditRemark !== void 0 ? _raw$auditRemark : raw.audit_remark) !== null && _ref264 !== void 0 ? _ref264 : raw.AuditRemark) !== null && _ref263 !== void 0 ? _ref263 : raw.rejectReason) !== null && _ref262 !== void 0 ? _ref262 : raw.reject_reason) !== null && _ref261 !== void 0 ? _ref261 : raw.RejectReason) !== null && _ref260 !== void 0 ? _ref260 : '',
-    refundTime: (_ref265 = (_ref266 = (_ref267 = (_ref268 = (_ref269 = (_raw$refundTime = raw.refundTime) !== null && _raw$refundTime !== void 0 ? _raw$refundTime : raw.refund_time) !== null && _ref269 !== void 0 ? _ref269 : raw.RefundTime) !== null && _ref268 !== void 0 ? _ref268 : raw.completeTime) !== null && _ref267 !== void 0 ? _ref267 : raw.complete_time) !== null && _ref266 !== void 0 ? _ref266 : raw.CompleteTime) !== null && _ref265 !== void 0 ? _ref265 : '',
-    trackingNo: (_ref270 = (_ref271 = (_ref272 = (_ref273 = (_ref274 = (_ref275 = (_ref276 = (_ref277 = (_raw$trackingNo = raw.trackingNo) !== null && _raw$trackingNo !== void 0 ? _raw$trackingNo : raw.tracking_no) !== null && _ref277 !== void 0 ? _ref277 : raw.TrackingNo) !== null && _ref276 !== void 0 ? _ref276 : raw.expressNo) !== null && _ref275 !== void 0 ? _ref275 : raw.express_no) !== null && _ref274 !== void 0 ? _ref274 : raw.ExpressNo) !== null && _ref273 !== void 0 ? _ref273 : raw.logisticsNo) !== null && _ref272 !== void 0 ? _ref272 : raw.logistics_no) !== null && _ref271 !== void 0 ? _ref271 : raw.LogisticsNo) !== null && _ref270 !== void 0 ? _ref270 : '',
-    trackingCompany: (_ref278 = (_ref279 = (_ref280 = (_ref281 = (_ref282 = (_ref283 = (_ref284 = (_ref285 = (_raw$trackingCompany = raw.trackingCompany) !== null && _raw$trackingCompany !== void 0 ? _raw$trackingCompany : raw.tracking_company) !== null && _ref285 !== void 0 ? _ref285 : raw.TrackingCompany) !== null && _ref284 !== void 0 ? _ref284 : raw.expressCompany) !== null && _ref283 !== void 0 ? _ref283 : raw.express_company) !== null && _ref282 !== void 0 ? _ref282 : raw.ExpressCompany) !== null && _ref281 !== void 0 ? _ref281 : raw.logisticsCompany) !== null && _ref280 !== void 0 ? _ref280 : raw.logistics_company) !== null && _ref279 !== void 0 ? _ref279 : raw.LogisticsCompany) !== null && _ref278 !== void 0 ? _ref278 : '',
-    receiverName: (_ref286 = (_ref287 = (_ref288 = (_ref289 = (_raw$receiverName = raw.receiverName) !== null && _raw$receiverName !== void 0 ? _raw$receiverName : raw.receiver_name) !== null && _ref289 !== void 0 ? _ref289 : raw.ReceiverName) !== null && _ref288 !== void 0 ? _ref288 : raw.consignee) !== null && _ref287 !== void 0 ? _ref287 : raw.Consignee) !== null && _ref286 !== void 0 ? _ref286 : '',
-    receiverPhone: (_ref290 = (_ref291 = (_ref292 = (_ref293 = (_ref294 = (_ref295 = (_raw$receiverPhone = raw.receiverPhone) !== null && _raw$receiverPhone !== void 0 ? _raw$receiverPhone : raw.receiver_phone) !== null && _ref295 !== void 0 ? _ref295 : raw.ReceiverPhone) !== null && _ref294 !== void 0 ? _ref294 : raw.mobile) !== null && _ref293 !== void 0 ? _ref293 : raw.Mobile) !== null && _ref292 !== void 0 ? _ref292 : raw.phone) !== null && _ref291 !== void 0 ? _ref291 : raw.Phone) !== null && _ref290 !== void 0 ? _ref290 : '',
-    receiverAddress: (_ref296 = (_ref297 = (_ref298 = (_ref299 = (_raw$receiverAddress = raw.receiverAddress) !== null && _raw$receiverAddress !== void 0 ? _raw$receiverAddress : raw.receiver_address) !== null && _ref299 !== void 0 ? _ref299 : raw.ReceiverAddress) !== null && _ref298 !== void 0 ? _ref298 : raw.address) !== null && _ref297 !== void 0 ? _ref297 : raw.Address) !== null && _ref296 !== void 0 ? _ref296 : ''
+    applyTime: (_ref241 = (_ref242 = (_ref243 = (_ref244 = (_ref245 = (_ref246 = (_ref247 = (_ref248 = (_raw$applyTime = raw.applyTime) !== null && _raw$applyTime !== void 0 ? _raw$applyTime : raw.apply_time) !== null && _ref248 !== void 0 ? _ref248 : raw.ApplyTime) !== null && _ref247 !== void 0 ? _ref247 : raw.createTime) !== null && _ref246 !== void 0 ? _ref246 : raw.create_time) !== null && _ref245 !== void 0 ? _ref245 : raw.CreateTime) !== null && _ref244 !== void 0 ? _ref244 : raw.createdAt) !== null && _ref243 !== void 0 ? _ref243 : raw.created_at) !== null && _ref242 !== void 0 ? _ref242 : raw.CreatedAt) !== null && _ref241 !== void 0 ? _ref241 : '',
+    auditTime: (_ref249 = (_ref250 = (_ref251 = (_ref252 = (_ref253 = (_raw$auditTime = raw.auditTime) !== null && _raw$auditTime !== void 0 ? _raw$auditTime : raw.audit_time) !== null && _ref253 !== void 0 ? _ref253 : raw.AuditTime) !== null && _ref252 !== void 0 ? _ref252 : raw.reviewTime) !== null && _ref251 !== void 0 ? _ref251 : raw.review_time) !== null && _ref250 !== void 0 ? _ref250 : raw.ReviewTime) !== null && _ref249 !== void 0 ? _ref249 : '',
+    auditRemark: (_ref254 = (_ref255 = (_ref256 = (_ref257 = (_ref258 = (_raw$auditRemark = raw.auditRemark) !== null && _raw$auditRemark !== void 0 ? _raw$auditRemark : raw.audit_remark) !== null && _ref258 !== void 0 ? _ref258 : raw.AuditRemark) !== null && _ref257 !== void 0 ? _ref257 : raw.rejectReason) !== null && _ref256 !== void 0 ? _ref256 : raw.reject_reason) !== null && _ref255 !== void 0 ? _ref255 : raw.RejectReason) !== null && _ref254 !== void 0 ? _ref254 : '',
+    refundTime: (_ref259 = (_ref260 = (_ref261 = (_ref262 = (_ref263 = (_raw$refundTime = raw.refundTime) !== null && _raw$refundTime !== void 0 ? _raw$refundTime : raw.refund_time) !== null && _ref263 !== void 0 ? _ref263 : raw.RefundTime) !== null && _ref262 !== void 0 ? _ref262 : raw.completeTime) !== null && _ref261 !== void 0 ? _ref261 : raw.complete_time) !== null && _ref260 !== void 0 ? _ref260 : raw.CompleteTime) !== null && _ref259 !== void 0 ? _ref259 : '',
+    trackingNo: (_ref264 = (_ref265 = (_ref266 = (_ref267 = (_ref268 = (_ref269 = (_ref270 = (_ref271 = (_raw$trackingNo = raw.trackingNo) !== null && _raw$trackingNo !== void 0 ? _raw$trackingNo : raw.tracking_no) !== null && _ref271 !== void 0 ? _ref271 : raw.TrackingNo) !== null && _ref270 !== void 0 ? _ref270 : raw.expressNo) !== null && _ref269 !== void 0 ? _ref269 : raw.express_no) !== null && _ref268 !== void 0 ? _ref268 : raw.ExpressNo) !== null && _ref267 !== void 0 ? _ref267 : raw.logisticsNo) !== null && _ref266 !== void 0 ? _ref266 : raw.logistics_no) !== null && _ref265 !== void 0 ? _ref265 : raw.LogisticsNo) !== null && _ref264 !== void 0 ? _ref264 : '',
+    trackingCompany: (_ref272 = (_ref273 = (_ref274 = (_ref275 = (_ref276 = (_ref277 = (_ref278 = (_ref279 = (_raw$trackingCompany = raw.trackingCompany) !== null && _raw$trackingCompany !== void 0 ? _raw$trackingCompany : raw.tracking_company) !== null && _ref279 !== void 0 ? _ref279 : raw.TrackingCompany) !== null && _ref278 !== void 0 ? _ref278 : raw.expressCompany) !== null && _ref277 !== void 0 ? _ref277 : raw.express_company) !== null && _ref276 !== void 0 ? _ref276 : raw.ExpressCompany) !== null && _ref275 !== void 0 ? _ref275 : raw.logisticsCompany) !== null && _ref274 !== void 0 ? _ref274 : raw.logistics_company) !== null && _ref273 !== void 0 ? _ref273 : raw.LogisticsCompany) !== null && _ref272 !== void 0 ? _ref272 : '',
+    receiverName: (_ref280 = (_ref281 = (_ref282 = (_ref283 = (_raw$receiverName = raw.receiverName) !== null && _raw$receiverName !== void 0 ? _raw$receiverName : raw.receiver_name) !== null && _ref283 !== void 0 ? _ref283 : raw.ReceiverName) !== null && _ref282 !== void 0 ? _ref282 : raw.consignee) !== null && _ref281 !== void 0 ? _ref281 : raw.Consignee) !== null && _ref280 !== void 0 ? _ref280 : '',
+    receiverPhone: (_ref284 = (_ref285 = (_ref286 = (_ref287 = (_ref288 = (_ref289 = (_raw$receiverPhone = raw.receiverPhone) !== null && _raw$receiverPhone !== void 0 ? _raw$receiverPhone : raw.receiver_phone) !== null && _ref289 !== void 0 ? _ref289 : raw.ReceiverPhone) !== null && _ref288 !== void 0 ? _ref288 : raw.mobile) !== null && _ref287 !== void 0 ? _ref287 : raw.Mobile) !== null && _ref286 !== void 0 ? _ref286 : raw.phone) !== null && _ref285 !== void 0 ? _ref285 : raw.Phone) !== null && _ref284 !== void 0 ? _ref284 : '',
+    receiverAddress: (_ref290 = (_ref291 = (_ref292 = (_ref293 = (_raw$receiverAddress = raw.receiverAddress) !== null && _raw$receiverAddress !== void 0 ? _raw$receiverAddress : raw.receiver_address) !== null && _ref293 !== void 0 ? _ref293 : raw.ReceiverAddress) !== null && _ref292 !== void 0 ? _ref292 : raw.address) !== null && _ref291 !== void 0 ? _ref291 : raw.Address) !== null && _ref290 !== void 0 ? _ref290 : ''
   };
 }
 
@@ -817,14 +893,14 @@ function fetchRefundReasons() {
  * GET /api/v1/refunds
  */
 function _fetchRefundReasons() {
-  _fetchRefundReasons = (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_1__["default"])(/*#__PURE__*/(0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_2__["default"])().m(function _callee16() {
-    var _ref303, _ref304, _res$data$list4, _res$data7, _res$data8, _res$data9;
+  _fetchRefundReasons = (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_2__["default"])(/*#__PURE__*/(0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_3__["default"])().m(function _callee16() {
+    var _ref297, _ref298, _res$data$list4, _res$data7, _res$data8, _res$data9;
     var params,
       query,
       res,
       list,
       _args16 = arguments;
-    return (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_2__["default"])().w(function (_context16) {
+    return (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_3__["default"])().w(function (_context16) {
       while (1) switch (_context16.n) {
         case 0:
           params = _args16.length > 0 && _args16[0] !== undefined ? _args16[0] : {};
@@ -836,8 +912,8 @@ function _fetchRefundReasons() {
           return (0,_api_common__WEBPACK_IMPORTED_MODULE_0__.apiGet)(refundApi.reasonList, query);
         case 1:
           res = _context16.v;
-          list = Array.isArray(res === null || res === void 0 ? void 0 : res.data) ? res.data : (_ref303 = (_ref304 = (_res$data$list4 = res === null || res === void 0 || (_res$data7 = res.data) === null || _res$data7 === void 0 ? void 0 : _res$data7.list) !== null && _res$data$list4 !== void 0 ? _res$data$list4 : res === null || res === void 0 || (_res$data8 = res.data) === null || _res$data8 === void 0 ? void 0 : _res$data8.items) !== null && _ref304 !== void 0 ? _ref304 : res === null || res === void 0 || (_res$data9 = res.data) === null || _res$data9 === void 0 ? void 0 : _res$data9.records) !== null && _ref303 !== void 0 ? _ref303 : [];
-          return _context16.a(2, (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_3__["default"])((0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_3__["default"])({}, res), {}, {
+          list = Array.isArray(res === null || res === void 0 ? void 0 : res.data) ? res.data : (_ref297 = (_ref298 = (_res$data$list4 = res === null || res === void 0 || (_res$data7 = res.data) === null || _res$data7 === void 0 ? void 0 : _res$data7.list) !== null && _res$data$list4 !== void 0 ? _res$data$list4 : res === null || res === void 0 || (_res$data8 = res.data) === null || _res$data8 === void 0 ? void 0 : _res$data8.items) !== null && _ref298 !== void 0 ? _ref298 : res === null || res === void 0 || (_res$data9 = res.data) === null || _res$data9 === void 0 ? void 0 : _res$data9.records) !== null && _ref297 !== void 0 ? _ref297 : [];
+          return _context16.a(2, (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_4__["default"])((0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_4__["default"])({}, res), {}, {
             data: list.map(normalizeRefundReason)
           }));
       }
@@ -865,14 +941,14 @@ function fetchRefundList() {
  *   - trackingCompany: 退货物流公司
  */
 function _fetchRefundList() {
-  _fetchRefundList = (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_1__["default"])(/*#__PURE__*/(0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_2__["default"])().m(function _callee17() {
-    var _ref305, _ref306, _res$data$list5, _res$data0, _res$data1, _res$data10;
+  _fetchRefundList = (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_2__["default"])(/*#__PURE__*/(0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_3__["default"])().m(function _callee17() {
+    var _ref299, _ref300, _res$data$list5, _res$data0, _res$data1, _res$data10;
     var params,
       query,
       res,
       list,
       _args17 = arguments;
-    return (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_2__["default"])().w(function (_context17) {
+    return (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_3__["default"])().w(function (_context17) {
       while (1) switch (_context17.n) {
         case 0:
           params = _args17.length > 0 && _args17[0] !== undefined ? _args17[0] : {};
@@ -886,8 +962,8 @@ function _fetchRefundList() {
           return (0,_api_common__WEBPACK_IMPORTED_MODULE_0__.apiGet)(refundApi.list, query);
         case 1:
           res = _context17.v;
-          list = Array.isArray(res === null || res === void 0 ? void 0 : res.data) ? res.data : (_ref305 = (_ref306 = (_res$data$list5 = res === null || res === void 0 || (_res$data0 = res.data) === null || _res$data0 === void 0 ? void 0 : _res$data0.list) !== null && _res$data$list5 !== void 0 ? _res$data$list5 : res === null || res === void 0 || (_res$data1 = res.data) === null || _res$data1 === void 0 ? void 0 : _res$data1.items) !== null && _ref306 !== void 0 ? _ref306 : res === null || res === void 0 || (_res$data10 = res.data) === null || _res$data10 === void 0 ? void 0 : _res$data10.records) !== null && _ref305 !== void 0 ? _ref305 : [];
-          return _context17.a(2, (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_3__["default"])((0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_3__["default"])({}, res), {}, {
+          list = Array.isArray(res === null || res === void 0 ? void 0 : res.data) ? res.data : (_ref299 = (_ref300 = (_res$data$list5 = res === null || res === void 0 || (_res$data0 = res.data) === null || _res$data0 === void 0 ? void 0 : _res$data0.list) !== null && _res$data$list5 !== void 0 ? _res$data$list5 : res === null || res === void 0 || (_res$data1 = res.data) === null || _res$data1 === void 0 ? void 0 : _res$data1.items) !== null && _ref300 !== void 0 ? _ref300 : res === null || res === void 0 || (_res$data10 = res.data) === null || _res$data10 === void 0 ? void 0 : _res$data10.records) !== null && _ref299 !== void 0 ? _ref299 : [];
+          return _context17.a(2, (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_4__["default"])((0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_4__["default"])({}, res), {}, {
             data: list.map(normalizeRefund)
           }));
       }
@@ -904,9 +980,9 @@ function applyRefund(_x18) {
  * GET /api/v1/refunds/{id}
  */
 function _applyRefund() {
-  _applyRefund = (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_1__["default"])(/*#__PURE__*/(0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_2__["default"])().m(function _callee18(payload) {
+  _applyRefund = (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_2__["default"])(/*#__PURE__*/(0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_3__["default"])().m(function _callee18(payload) {
     var body, res;
-    return (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_2__["default"])().w(function (_context18) {
+    return (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_3__["default"])().w(function (_context18) {
       while (1) switch (_context18.n) {
         case 0:
           body = {
@@ -922,7 +998,7 @@ function _applyRefund() {
           if (payload.trackingNo !== undefined) body.trackingNo = payload.trackingNo;
           if (payload.trackingCompany !== undefined) body.trackingCompany = payload.trackingCompany;
           _context18.n = 1;
-          return (0,_api_common__WEBPACK_IMPORTED_MODULE_0__.apiPost)(refundApi.apply, body);
+          return (0,_api_common__WEBPACK_IMPORTED_MODULE_0__.apiPost)(refundApi.apply, body, {}, {}, false);
         case 1:
           res = _context18.v;
           return _context18.a(2, res);
@@ -935,9 +1011,9 @@ function fetchRefundDetail(_x19) {
   return _fetchRefundDetail.apply(this, arguments);
 }
 function _fetchRefundDetail() {
-  _fetchRefundDetail = (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_1__["default"])(/*#__PURE__*/(0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_2__["default"])().m(function _callee19(id) {
+  _fetchRefundDetail = (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_2__["default"])(/*#__PURE__*/(0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_3__["default"])().m(function _callee19(id) {
     var res;
-    return (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_2__["default"])().w(function (_context19) {
+    return (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_3__["default"])().w(function (_context19) {
       while (1) switch (_context19.n) {
         case 0:
           _context19.n = 1;
@@ -950,7 +1026,7 @@ function _fetchRefundDetail() {
             _context19.n = 2;
             break;
           }
-          return _context19.a(2, (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_3__["default"])((0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_3__["default"])({}, res), {}, {
+          return _context19.a(2, (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_4__["default"])((0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_4__["default"])({}, res), {}, {
             data: normalizeRefund(res.data)
           }));
         case 2:
@@ -1641,7 +1717,8 @@ function _fetchReviewList() {
           params = _args.length > 0 && _args[0] !== undefined ? _args[0] : {};
           query = {};
           if (params.productId !== undefined && params.productId !== null && params.productId !== '') {
-            query.productId = (0,_api_common__WEBPACK_IMPORTED_MODULE_0__.toNumericId)(params.productId);
+            // 后端要求参数名为 id（与 product/detail 接口一致）
+            query.id = (0,_api_common__WEBPACK_IMPORTED_MODULE_0__.toNumericId)(params.productId);
           }
           if (params.page !== undefined) query.page = params.page;
           if (params.size !== undefined) query.size = params.size;
@@ -1674,8 +1751,9 @@ function _fetchReviewStats() {
     return (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_2__["default"])().w(function (_context2) {
       while (1) switch (_context2.n) {
         case 0:
+          // 后端要求参数名为 id（与 product/detail 接口一致）
           query = {
-            productId: (0,_api_common__WEBPACK_IMPORTED_MODULE_0__.toNumericId)(productId)
+            id: (0,_api_common__WEBPACK_IMPORTED_MODULE_0__.toNumericId)(productId)
           };
           _context2.n = 1;
           return (0,_api_common__WEBPACK_IMPORTED_MODULE_0__.apiGet)(reviewApi.stats, query, {}, false);
@@ -1704,8 +1782,9 @@ function _fetchReviewAiSummary() {
     return (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_2__["default"])().w(function (_context3) {
       while (1) switch (_context3.n) {
         case 0:
+          // 后端要求参数名为 id（与 product/detail 接口一致）
           query = {
-            productId: (0,_api_common__WEBPACK_IMPORTED_MODULE_0__.toNumericId)(productId)
+            id: (0,_api_common__WEBPACK_IMPORTED_MODULE_0__.toNumericId)(productId)
           };
           _context3.n = 1;
           return (0,_api_common__WEBPACK_IMPORTED_MODULE_0__.apiGet)(reviewApi.ai, query, {}, false);
@@ -1742,7 +1821,8 @@ function _replyToReview() {
       while (1) switch (_context4.n) {
         case 0:
           body = {
-            reviewId: (0,_api_common__WEBPACK_IMPORTED_MODULE_0__.toNumericId)(payload.reviewId),
+            // 后端要求参数名为 id（与其他评价接口一致）
+            id: (0,_api_common__WEBPACK_IMPORTED_MODULE_0__.toNumericId)(payload.reviewId),
             content: payload.content
           };
           if (payload.parentId !== undefined && payload.parentId !== null && payload.parentId !== '') {
@@ -1765,6 +1845,7 @@ function fetchReviewReplies() {
 /**
  * 点赞/取消点赞一个评价
  * POST /api/v1/review/like
+ * 后端要求参数名为 review_id（snake_case），且必须使用 JSON 格式
  */
 function _fetchReviewReplies() {
   _fetchReviewReplies = (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_1__["default"])(/*#__PURE__*/(0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_2__["default"])().m(function _callee5() {
@@ -1778,8 +1859,9 @@ function _fetchReviewReplies() {
       while (1) switch (_context5.n) {
         case 0:
           params = _args5.length > 0 && _args5[0] !== undefined ? _args5[0] : {};
+          // 后端要求参数名为 id（与其他评价接口一致）
           query = {
-            reviewId: (0,_api_common__WEBPACK_IMPORTED_MODULE_0__.toNumericId)(params.reviewId)
+            id: (0,_api_common__WEBPACK_IMPORTED_MODULE_0__.toNumericId)(params.reviewId)
           };
           if (params.page !== undefined) query.page = params.page;
           if (params.size !== undefined) query.size = params.size;
@@ -1806,10 +1888,10 @@ function _likeReview() {
       while (1) switch (_context6.n) {
         case 0:
           body = {
-            reviewId: (0,_api_common__WEBPACK_IMPORTED_MODULE_0__.toNumericId)(reviewId)
-          };
+            review_id: (0,_api_common__WEBPACK_IMPORTED_MODULE_0__.toNumericId)(reviewId)
+          }; // use JSON format (useFormUrlEncoded = false)
           _context6.n = 1;
-          return (0,_api_common__WEBPACK_IMPORTED_MODULE_0__.apiPost)(reviewApi.like, body, {}, {}, false);
+          return (0,_api_common__WEBPACK_IMPORTED_MODULE_0__.apiPost)(reviewApi.like, body, {}, {}, false, false);
         case 1:
           res = _context6.v;
           return _context6.a(2, res);
@@ -1942,21 +2024,39 @@ var seckillApi = {
  * 秒杀商品数据规范化：兼容 snake_case / PascalCase / camelCase 字段名
  */
 function normalizeSeckillProduct(raw) {
-  var _ref, _ref2, _ref3, _ref4, _ref5, _raw$id, _ref6, _ref7, _ref8, _ref9, _ref0, _ref1, _raw$productId, _ref10, _ref11, _ref12, _ref13, _ref14, _ref15, _raw$productName, _ref16, _ref17, _ref18, _ref19, _ref20, _ref21, _raw$image, _ref22, _ref23, _ref24, _ref25, _ref26, _raw$originalPrice, _ref27, _ref28, _ref29, _ref30, _ref31, _ref32, _raw$seckillPrice, _ref33, _ref34, _ref35, _ref36, _raw$stock, _ref37, _ref38, _ref39, _ref40, _raw$soldCount, _ref41, _ref42, _ref43, _ref44, _ref45, _raw$limitCount, _ref46, _ref47, _ref48, _raw$skuId, _ref49, _ref50, _raw$activityId, _ref51, _ref52, _raw$soldPercent, _ref53, _raw$stock2, _ref54, _ref55, _ref56, _raw$soldCount2, _ref57, _raw$stock3;
+  var _ref, _ref2, _ref3, _ref4, _ref5, _ref6, _raw$image, _ref7, _ref8, _ref9, _ref0, _ref1, _ref10, _ref11, _ref12, _ref13, _ref14, _raw$originalPrice, _ref15, _ref16, _ref17, _ref18, _ref19, _ref20, _ref21, _ref22, _ref23, _ref24, _ref25, _ref26, _raw$seckillPrice, _ref27, _ref28, _ref29, _ref30, _ref31, _ref32, _ref33, _ref34, _ref35, _raw$stock, _ref36, _ref37, _ref38, _ref39, _ref40, _ref41, _ref42, _raw$soldCount, _ref43, _ref44, _raw$soldPercent, _ref45, _ref46, _ref47, _ref48, _ref49, _raw$id, _ref50, _ref51, _ref52, _ref53, _ref54, _ref55, _raw$productId, _ref56, _ref57, _ref58, _ref59, _ref60, _ref61, _raw$productName, _ref62, _ref63, _ref64, _ref65, _ref66, _raw$limitCount, _ref67, _ref68, _ref69, _raw$skuId, _ref70, _ref71, _raw$activityId;
+  // 处理图片：兼容单个 image 字段和 images 数组
+  var image = (_ref = (_ref2 = (_ref3 = (_ref4 = (_ref5 = (_ref6 = (_raw$image = raw.image) !== null && _raw$image !== void 0 ? _raw$image : raw.Image) !== null && _ref6 !== void 0 ? _ref6 : raw.imageUrl) !== null && _ref5 !== void 0 ? _ref5 : raw.image_url) !== null && _ref4 !== void 0 ? _ref4 : raw.ImageUrl) !== null && _ref3 !== void 0 ? _ref3 : raw.pic) !== null && _ref2 !== void 0 ? _ref2 : raw.Pic) !== null && _ref !== void 0 ? _ref : '';
+  if (!image && Array.isArray(raw.images) && raw.images.length > 0) {
+    image = raw.images[0];
+  }
+  if (!image && Array.isArray(raw.Images) && raw.Images.length > 0) {
+    image = raw.Images[0];
+  }
+
+  // 兼容更多价格字段
+  var originalPrice = Number((_ref7 = (_ref8 = (_ref9 = (_ref0 = (_ref1 = (_ref10 = (_ref11 = (_ref12 = (_ref13 = (_ref14 = (_raw$originalPrice = raw.originalPrice) !== null && _raw$originalPrice !== void 0 ? _raw$originalPrice : raw.original_price) !== null && _ref14 !== void 0 ? _ref14 : raw.OriginalPrice) !== null && _ref13 !== void 0 ? _ref13 : raw.marketPrice) !== null && _ref12 !== void 0 ? _ref12 : raw.market_price) !== null && _ref11 !== void 0 ? _ref11 : raw.MarketPrice) !== null && _ref10 !== void 0 ? _ref10 : raw.original_price_cents) !== null && _ref1 !== void 0 ? _ref1 : raw.price_original) !== null && _ref0 !== void 0 ? _ref0 : raw.minPrice) !== null && _ref9 !== void 0 ? _ref9 : raw.min_price) !== null && _ref8 !== void 0 ? _ref8 : raw.MinPrice) !== null && _ref7 !== void 0 ? _ref7 : 0);
+  var seckillPrice = Number((_ref15 = (_ref16 = (_ref17 = (_ref18 = (_ref19 = (_ref20 = (_ref21 = (_ref22 = (_ref23 = (_ref24 = (_ref25 = (_ref26 = (_raw$seckillPrice = raw.seckillPrice) !== null && _raw$seckillPrice !== void 0 ? _raw$seckillPrice : raw.seckill_price) !== null && _ref26 !== void 0 ? _ref26 : raw.SeckillPrice) !== null && _ref25 !== void 0 ? _ref25 : raw.price) !== null && _ref24 !== void 0 ? _ref24 : raw.Price) !== null && _ref23 !== void 0 ? _ref23 : raw.salePrice) !== null && _ref22 !== void 0 ? _ref22 : raw.sale_price) !== null && _ref21 !== void 0 ? _ref21 : raw.seckill_price_cents) !== null && _ref20 !== void 0 ? _ref20 : raw.price_seckill) !== null && _ref19 !== void 0 ? _ref19 : raw.currentPrice) !== null && _ref18 !== void 0 ? _ref18 : raw.current_price) !== null && _ref17 !== void 0 ? _ref17 : raw.discountPrice) !== null && _ref16 !== void 0 ? _ref16 : raw.discount_price) !== null && _ref15 !== void 0 ? _ref15 : 0);
+  var stock = Number((_ref27 = (_ref28 = (_ref29 = (_ref30 = (_ref31 = (_ref32 = (_ref33 = (_ref34 = (_ref35 = (_raw$stock = raw.stock) !== null && _raw$stock !== void 0 ? _raw$stock : raw.Stock) !== null && _ref35 !== void 0 ? _ref35 : raw.totalStock) !== null && _ref34 !== void 0 ? _ref34 : raw.total_stock) !== null && _ref33 !== void 0 ? _ref33 : raw.TotalStock) !== null && _ref32 !== void 0 ? _ref32 : raw.inventory) !== null && _ref31 !== void 0 ? _ref31 : raw.inventory) !== null && _ref30 !== void 0 ? _ref30 : raw.Inventory) !== null && _ref29 !== void 0 ? _ref29 : raw.availableStock) !== null && _ref28 !== void 0 ? _ref28 : raw.available_stock) !== null && _ref27 !== void 0 ? _ref27 : 0);
+  var soldCount = Number((_ref36 = (_ref37 = (_ref38 = (_ref39 = (_ref40 = (_ref41 = (_ref42 = (_raw$soldCount = raw.soldCount) !== null && _raw$soldCount !== void 0 ? _raw$soldCount : raw.sold_count) !== null && _ref42 !== void 0 ? _ref42 : raw.SoldCount) !== null && _ref41 !== void 0 ? _ref41 : raw.sold) !== null && _ref40 !== void 0 ? _ref40 : raw.Sold) !== null && _ref39 !== void 0 ? _ref39 : raw.sales) !== null && _ref38 !== void 0 ? _ref38 : raw.salesVolume) !== null && _ref37 !== void 0 ? _ref37 : raw.sales_volume) !== null && _ref36 !== void 0 ? _ref36 : 0);
+
+  // 已售百分比（后端没返回时本地计算）
+  var soldPercent = (_ref43 = (_ref44 = (_raw$soldPercent = raw.soldPercent) !== null && _raw$soldPercent !== void 0 ? _raw$soldPercent : raw.sold_percent) !== null && _ref44 !== void 0 ? _ref44 : raw.SoldPercent) !== null && _ref43 !== void 0 ? _ref43 : stock > 0 ? Math.round(soldCount / stock * 100) : 0;
   return {
-    id: (_ref = (_ref2 = (_ref3 = (_ref4 = (_ref5 = (_raw$id = raw.id) !== null && _raw$id !== void 0 ? _raw$id : raw.Id) !== null && _ref5 !== void 0 ? _ref5 : raw.ID) !== null && _ref4 !== void 0 ? _ref4 : raw.productId) !== null && _ref3 !== void 0 ? _ref3 : raw.product_id) !== null && _ref2 !== void 0 ? _ref2 : raw.ProductId) !== null && _ref !== void 0 ? _ref : '',
-    productId: (_ref6 = (_ref7 = (_ref8 = (_ref9 = (_ref0 = (_ref1 = (_raw$productId = raw.productId) !== null && _raw$productId !== void 0 ? _raw$productId : raw.product_id) !== null && _ref1 !== void 0 ? _ref1 : raw.ProductId) !== null && _ref0 !== void 0 ? _ref0 : raw.ProductID) !== null && _ref9 !== void 0 ? _ref9 : raw.pid) !== null && _ref8 !== void 0 ? _ref8 : raw.Pid) !== null && _ref7 !== void 0 ? _ref7 : raw.id) !== null && _ref6 !== void 0 ? _ref6 : '',
-    productName: (_ref10 = (_ref11 = (_ref12 = (_ref13 = (_ref14 = (_ref15 = (_raw$productName = raw.productName) !== null && _raw$productName !== void 0 ? _raw$productName : raw.product_name) !== null && _ref15 !== void 0 ? _ref15 : raw.ProductName) !== null && _ref14 !== void 0 ? _ref14 : raw.name) !== null && _ref13 !== void 0 ? _ref13 : raw.Name) !== null && _ref12 !== void 0 ? _ref12 : raw.title) !== null && _ref11 !== void 0 ? _ref11 : raw.Title) !== null && _ref10 !== void 0 ? _ref10 : '',
-    image: (_ref16 = (_ref17 = (_ref18 = (_ref19 = (_ref20 = (_ref21 = (_raw$image = raw.image) !== null && _raw$image !== void 0 ? _raw$image : raw.Image) !== null && _ref21 !== void 0 ? _ref21 : raw.imageUrl) !== null && _ref20 !== void 0 ? _ref20 : raw.image_url) !== null && _ref19 !== void 0 ? _ref19 : raw.ImageUrl) !== null && _ref18 !== void 0 ? _ref18 : raw.pic) !== null && _ref17 !== void 0 ? _ref17 : raw.Pic) !== null && _ref16 !== void 0 ? _ref16 : '',
-    originalPrice: Number((_ref22 = (_ref23 = (_ref24 = (_ref25 = (_ref26 = (_raw$originalPrice = raw.originalPrice) !== null && _raw$originalPrice !== void 0 ? _raw$originalPrice : raw.original_price) !== null && _ref26 !== void 0 ? _ref26 : raw.OriginalPrice) !== null && _ref25 !== void 0 ? _ref25 : raw.marketPrice) !== null && _ref24 !== void 0 ? _ref24 : raw.market_price) !== null && _ref23 !== void 0 ? _ref23 : raw.MarketPrice) !== null && _ref22 !== void 0 ? _ref22 : 0),
-    seckillPrice: Number((_ref27 = (_ref28 = (_ref29 = (_ref30 = (_ref31 = (_ref32 = (_raw$seckillPrice = raw.seckillPrice) !== null && _raw$seckillPrice !== void 0 ? _raw$seckillPrice : raw.seckill_price) !== null && _ref32 !== void 0 ? _ref32 : raw.SeckillPrice) !== null && _ref31 !== void 0 ? _ref31 : raw.price) !== null && _ref30 !== void 0 ? _ref30 : raw.Price) !== null && _ref29 !== void 0 ? _ref29 : raw.salePrice) !== null && _ref28 !== void 0 ? _ref28 : raw.sale_price) !== null && _ref27 !== void 0 ? _ref27 : 0),
-    stock: Number((_ref33 = (_ref34 = (_ref35 = (_ref36 = (_raw$stock = raw.stock) !== null && _raw$stock !== void 0 ? _raw$stock : raw.Stock) !== null && _ref36 !== void 0 ? _ref36 : raw.totalStock) !== null && _ref35 !== void 0 ? _ref35 : raw.total_stock) !== null && _ref34 !== void 0 ? _ref34 : raw.TotalStock) !== null && _ref33 !== void 0 ? _ref33 : 0),
-    soldCount: Number((_ref37 = (_ref38 = (_ref39 = (_ref40 = (_raw$soldCount = raw.soldCount) !== null && _raw$soldCount !== void 0 ? _raw$soldCount : raw.sold_count) !== null && _ref40 !== void 0 ? _ref40 : raw.SoldCount) !== null && _ref39 !== void 0 ? _ref39 : raw.sold) !== null && _ref38 !== void 0 ? _ref38 : raw.Sold) !== null && _ref37 !== void 0 ? _ref37 : 0),
-    limitCount: Number((_ref41 = (_ref42 = (_ref43 = (_ref44 = (_ref45 = (_raw$limitCount = raw.limitCount) !== null && _raw$limitCount !== void 0 ? _raw$limitCount : raw.limit_count) !== null && _ref45 !== void 0 ? _ref45 : raw.LimitCount) !== null && _ref44 !== void 0 ? _ref44 : raw.buyLimit) !== null && _ref43 !== void 0 ? _ref43 : raw.buy_limit) !== null && _ref42 !== void 0 ? _ref42 : raw.BuyLimit) !== null && _ref41 !== void 0 ? _ref41 : 1),
-    skuId: (_ref46 = (_ref47 = (_ref48 = (_raw$skuId = raw.skuId) !== null && _raw$skuId !== void 0 ? _raw$skuId : raw.sku_id) !== null && _ref48 !== void 0 ? _ref48 : raw.SkuId) !== null && _ref47 !== void 0 ? _ref47 : raw.skuID) !== null && _ref46 !== void 0 ? _ref46 : '',
-    activityId: (_ref49 = (_ref50 = (_raw$activityId = raw.activityId) !== null && _raw$activityId !== void 0 ? _raw$activityId : raw.activity_id) !== null && _ref50 !== void 0 ? _ref50 : raw.ActivityId) !== null && _ref49 !== void 0 ? _ref49 : '',
-    // 已售百分比（后端没返回时本地计算）
-    soldPercent: (_ref51 = (_ref52 = (_raw$soldPercent = raw.soldPercent) !== null && _raw$soldPercent !== void 0 ? _raw$soldPercent : raw.sold_percent) !== null && _ref52 !== void 0 ? _ref52 : raw.SoldPercent) !== null && _ref51 !== void 0 ? _ref51 : Number((_ref53 = (_raw$stock2 = raw.stock) !== null && _raw$stock2 !== void 0 ? _raw$stock2 : raw.Stock) !== null && _ref53 !== void 0 ? _ref53 : 0) > 0 ? Math.round(Number((_ref54 = (_ref55 = (_ref56 = (_raw$soldCount2 = raw.soldCount) !== null && _raw$soldCount2 !== void 0 ? _raw$soldCount2 : raw.sold_count) !== null && _ref56 !== void 0 ? _ref56 : raw.SoldCount) !== null && _ref55 !== void 0 ? _ref55 : raw.sold) !== null && _ref54 !== void 0 ? _ref54 : 0) / Number((_ref57 = (_raw$stock3 = raw.stock) !== null && _raw$stock3 !== void 0 ? _raw$stock3 : raw.Stock) !== null && _ref57 !== void 0 ? _ref57 : 0) * 100) : 0
+    id: (_ref45 = (_ref46 = (_ref47 = (_ref48 = (_ref49 = (_raw$id = raw.id) !== null && _raw$id !== void 0 ? _raw$id : raw.Id) !== null && _ref49 !== void 0 ? _ref49 : raw.ID) !== null && _ref48 !== void 0 ? _ref48 : raw.productId) !== null && _ref47 !== void 0 ? _ref47 : raw.product_id) !== null && _ref46 !== void 0 ? _ref46 : raw.ProductId) !== null && _ref45 !== void 0 ? _ref45 : '',
+    productId: (_ref50 = (_ref51 = (_ref52 = (_ref53 = (_ref54 = (_ref55 = (_raw$productId = raw.productId) !== null && _raw$productId !== void 0 ? _raw$productId : raw.product_id) !== null && _ref55 !== void 0 ? _ref55 : raw.ProductId) !== null && _ref54 !== void 0 ? _ref54 : raw.ProductID) !== null && _ref53 !== void 0 ? _ref53 : raw.pid) !== null && _ref52 !== void 0 ? _ref52 : raw.Pid) !== null && _ref51 !== void 0 ? _ref51 : raw.id) !== null && _ref50 !== void 0 ? _ref50 : '',
+    productName: (_ref56 = (_ref57 = (_ref58 = (_ref59 = (_ref60 = (_ref61 = (_raw$productName = raw.productName) !== null && _raw$productName !== void 0 ? _raw$productName : raw.product_name) !== null && _ref61 !== void 0 ? _ref61 : raw.ProductName) !== null && _ref60 !== void 0 ? _ref60 : raw.name) !== null && _ref59 !== void 0 ? _ref59 : raw.Name) !== null && _ref58 !== void 0 ? _ref58 : raw.title) !== null && _ref57 !== void 0 ? _ref57 : raw.Title) !== null && _ref56 !== void 0 ? _ref56 : '',
+    image: image,
+    originalPrice: originalPrice,
+    seckillPrice: seckillPrice,
+    stock: stock,
+    soldCount: soldCount,
+    soldPercent: soldPercent,
+    limitCount: Number((_ref62 = (_ref63 = (_ref64 = (_ref65 = (_ref66 = (_raw$limitCount = raw.limitCount) !== null && _raw$limitCount !== void 0 ? _raw$limitCount : raw.limit_count) !== null && _ref66 !== void 0 ? _ref66 : raw.LimitCount) !== null && _ref65 !== void 0 ? _ref65 : raw.buyLimit) !== null && _ref64 !== void 0 ? _ref64 : raw.buy_limit) !== null && _ref63 !== void 0 ? _ref63 : raw.BuyLimit) !== null && _ref62 !== void 0 ? _ref62 : 1),
+    skuId: (_ref67 = (_ref68 = (_ref69 = (_raw$skuId = raw.skuId) !== null && _raw$skuId !== void 0 ? _raw$skuId : raw.sku_id) !== null && _ref69 !== void 0 ? _ref69 : raw.SkuId) !== null && _ref68 !== void 0 ? _ref68 : raw.skuID) !== null && _ref67 !== void 0 ? _ref67 : '',
+    activityId: (_ref70 = (_ref71 = (_raw$activityId = raw.activityId) !== null && _raw$activityId !== void 0 ? _raw$activityId : raw.activity_id) !== null && _ref71 !== void 0 ? _ref71 : raw.ActivityId) !== null && _ref70 !== void 0 ? _ref70 : '',
+    // 附加原始数据，供页面需要时使用
+    raw: raw
   };
 }
 
@@ -1964,14 +2064,14 @@ function normalizeSeckillProduct(raw) {
  * 秒杀活动数据规范化：兼容 snake_case / PascalCase / camelCase 字段名
  */
 function normalizeSeckillActivity(raw) {
-  var _ref58, _ref59, _ref60, _ref61, _ref62, _raw$id2, _ref63, _ref64, _ref65, _ref66, _ref67, _ref68, _raw$name, _ref69, _ref70, _ref71, _raw$status, _ref72, _ref73, _ref74, _ref75, _raw$startTime, _ref76, _ref77, _ref78, _ref79, _raw$endTime;
+  var _ref72, _ref73, _ref74, _ref75, _ref76, _raw$id2, _ref77, _ref78, _ref79, _ref80, _ref81, _ref82, _raw$name, _ref83, _ref84, _ref85, _raw$status, _ref86, _ref87, _ref88, _ref89, _raw$startTime, _ref90, _ref91, _ref92, _ref93, _raw$endTime;
   var products = Array.isArray(raw.products) ? raw.products : Array.isArray(raw.Products) ? raw.Products : Array.isArray(raw.items) ? raw.items : Array.isArray(raw.productList) ? raw.productList : [];
   return {
-    id: (_ref58 = (_ref59 = (_ref60 = (_ref61 = (_ref62 = (_raw$id2 = raw.id) !== null && _raw$id2 !== void 0 ? _raw$id2 : raw.Id) !== null && _ref62 !== void 0 ? _ref62 : raw.ID) !== null && _ref61 !== void 0 ? _ref61 : raw.activityId) !== null && _ref60 !== void 0 ? _ref60 : raw.activity_id) !== null && _ref59 !== void 0 ? _ref59 : raw.ActivityId) !== null && _ref58 !== void 0 ? _ref58 : '',
-    name: (_ref63 = (_ref64 = (_ref65 = (_ref66 = (_ref67 = (_ref68 = (_raw$name = raw.name) !== null && _raw$name !== void 0 ? _raw$name : raw.Name) !== null && _ref68 !== void 0 ? _ref68 : raw.title) !== null && _ref67 !== void 0 ? _ref67 : raw.Title) !== null && _ref66 !== void 0 ? _ref66 : raw.activityName) !== null && _ref65 !== void 0 ? _ref65 : raw.activity_name) !== null && _ref64 !== void 0 ? _ref64 : raw.ActivityName) !== null && _ref63 !== void 0 ? _ref63 : '限时秒杀',
-    status: (_ref69 = (_ref70 = (_ref71 = (_raw$status = raw.status) !== null && _raw$status !== void 0 ? _raw$status : raw.Status) !== null && _ref71 !== void 0 ? _ref71 : raw.activityStatus) !== null && _ref70 !== void 0 ? _ref70 : raw.activity_status) !== null && _ref69 !== void 0 ? _ref69 : 'active',
-    startTime: (_ref72 = (_ref73 = (_ref74 = (_ref75 = (_raw$startTime = raw.startTime) !== null && _raw$startTime !== void 0 ? _raw$startTime : raw.start_time) !== null && _ref75 !== void 0 ? _ref75 : raw.StartTime) !== null && _ref74 !== void 0 ? _ref74 : raw.beginTime) !== null && _ref73 !== void 0 ? _ref73 : raw.begin_time) !== null && _ref72 !== void 0 ? _ref72 : '',
-    endTime: (_ref76 = (_ref77 = (_ref78 = (_ref79 = (_raw$endTime = raw.endTime) !== null && _raw$endTime !== void 0 ? _raw$endTime : raw.end_time) !== null && _ref79 !== void 0 ? _ref79 : raw.EndTime) !== null && _ref78 !== void 0 ? _ref78 : raw.finishTime) !== null && _ref77 !== void 0 ? _ref77 : raw.finish_time) !== null && _ref76 !== void 0 ? _ref76 : '',
+    id: (_ref72 = (_ref73 = (_ref74 = (_ref75 = (_ref76 = (_raw$id2 = raw.id) !== null && _raw$id2 !== void 0 ? _raw$id2 : raw.Id) !== null && _ref76 !== void 0 ? _ref76 : raw.ID) !== null && _ref75 !== void 0 ? _ref75 : raw.activityId) !== null && _ref74 !== void 0 ? _ref74 : raw.activity_id) !== null && _ref73 !== void 0 ? _ref73 : raw.ActivityId) !== null && _ref72 !== void 0 ? _ref72 : '',
+    name: (_ref77 = (_ref78 = (_ref79 = (_ref80 = (_ref81 = (_ref82 = (_raw$name = raw.name) !== null && _raw$name !== void 0 ? _raw$name : raw.Name) !== null && _ref82 !== void 0 ? _ref82 : raw.title) !== null && _ref81 !== void 0 ? _ref81 : raw.Title) !== null && _ref80 !== void 0 ? _ref80 : raw.activityName) !== null && _ref79 !== void 0 ? _ref79 : raw.activity_name) !== null && _ref78 !== void 0 ? _ref78 : raw.ActivityName) !== null && _ref77 !== void 0 ? _ref77 : '限时秒杀',
+    status: (_ref83 = (_ref84 = (_ref85 = (_raw$status = raw.status) !== null && _raw$status !== void 0 ? _raw$status : raw.Status) !== null && _ref85 !== void 0 ? _ref85 : raw.activityStatus) !== null && _ref84 !== void 0 ? _ref84 : raw.activity_status) !== null && _ref83 !== void 0 ? _ref83 : 'active',
+    startTime: (_ref86 = (_ref87 = (_ref88 = (_ref89 = (_raw$startTime = raw.startTime) !== null && _raw$startTime !== void 0 ? _raw$startTime : raw.start_time) !== null && _ref89 !== void 0 ? _ref89 : raw.StartTime) !== null && _ref88 !== void 0 ? _ref88 : raw.beginTime) !== null && _ref87 !== void 0 ? _ref87 : raw.begin_time) !== null && _ref86 !== void 0 ? _ref86 : '',
+    endTime: (_ref90 = (_ref91 = (_ref92 = (_ref93 = (_raw$endTime = raw.endTime) !== null && _raw$endTime !== void 0 ? _raw$endTime : raw.end_time) !== null && _ref93 !== void 0 ? _ref93 : raw.EndTime) !== null && _ref92 !== void 0 ? _ref92 : raw.finishTime) !== null && _ref91 !== void 0 ? _ref91 : raw.finish_time) !== null && _ref90 !== void 0 ? _ref90 : '',
     products: products.map(normalizeSeckillProduct)
   };
 }
@@ -1980,8 +2080,8 @@ function normalizeSeckillActivity(raw) {
  * 秒杀购买结果数据规范化：兼容 snake_case / PascalCase / camelCase 字段名
  */
 function normalizeSeckillPurchase(raw) {
-  var _ref80, _ref81, _ref82, _ref83, _raw$status2, _ref84, _ref85, _ref86, _ref87, _ref88, _ref89, _ref90, _raw$id3, _ref91, _ref92, _ref93, _ref94, _raw$purchaseId, _ref95, _ref96, _ref97, _ref98, _ref99, _ref100, _raw$orderId, _ref101, _ref102, _raw$activityId2, _ref103, _ref104, _ref105, _raw$productId2, _ref106, _ref107, _raw$skuId2, _ref108, _ref109, _ref110, _ref111, _raw$quantity, _ref112, _ref113, _ref114, _ref115, _raw$seckillPrice2, _ref116, _ref117, _ref118, _ref119, _ref120, _ref121, _raw$totalAmount, _ref122, _ref123, _ref124, _ref125, _raw$statusText, _ref126, _ref127, _ref128, _ref129, _ref130, _raw$message, _ref131, _ref132, _ref133, _ref134, _ref135, _raw$createdAt, _ref136, _ref137, _ref138, _ref139, _ref140, _raw$paidAt;
-  var rawStatus = (_ref80 = (_ref81 = (_ref82 = (_ref83 = (_raw$status2 = raw.status) !== null && _raw$status2 !== void 0 ? _raw$status2 : raw.Status) !== null && _ref83 !== void 0 ? _ref83 : raw.purchaseStatus) !== null && _ref82 !== void 0 ? _ref82 : raw.purchase_status) !== null && _ref81 !== void 0 ? _ref81 : raw.result) !== null && _ref80 !== void 0 ? _ref80 : raw.Result;
+  var _ref94, _ref95, _ref96, _ref97, _raw$status2, _ref98, _ref99, _ref100, _ref101, _ref102, _ref103, _ref104, _raw$id3, _ref105, _ref106, _ref107, _ref108, _raw$purchaseId, _ref109, _ref110, _ref111, _ref112, _ref113, _ref114, _raw$orderId, _ref115, _ref116, _raw$activityId2, _ref117, _ref118, _ref119, _raw$productId2, _ref120, _ref121, _raw$skuId2, _ref122, _ref123, _ref124, _ref125, _raw$quantity, _ref126, _ref127, _ref128, _ref129, _raw$seckillPrice2, _ref130, _ref131, _ref132, _ref133, _ref134, _ref135, _raw$totalAmount, _ref136, _ref137, _ref138, _ref139, _raw$statusText, _ref140, _ref141, _ref142, _ref143, _ref144, _raw$message, _ref145, _ref146, _ref147, _ref148, _ref149, _raw$createdAt, _ref150, _ref151, _ref152, _ref153, _ref154, _raw$paidAt;
+  var rawStatus = (_ref94 = (_ref95 = (_ref96 = (_ref97 = (_raw$status2 = raw.status) !== null && _raw$status2 !== void 0 ? _raw$status2 : raw.Status) !== null && _ref97 !== void 0 ? _ref97 : raw.purchaseStatus) !== null && _ref96 !== void 0 ? _ref96 : raw.purchase_status) !== null && _ref95 !== void 0 ? _ref95 : raw.result) !== null && _ref94 !== void 0 ? _ref94 : raw.Result;
   var status = rawStatus;
   var statusCode = null;
   if (typeof rawStatus === 'number') {
@@ -2010,21 +2110,21 @@ function normalizeSeckillPurchase(raw) {
     'sold_out': '售罄'
   };
   return {
-    id: (_ref84 = (_ref85 = (_ref86 = (_ref87 = (_ref88 = (_ref89 = (_ref90 = (_raw$id3 = raw.id) !== null && _raw$id3 !== void 0 ? _raw$id3 : raw.Id) !== null && _ref90 !== void 0 ? _ref90 : raw.ID) !== null && _ref89 !== void 0 ? _ref89 : raw.purchaseId) !== null && _ref88 !== void 0 ? _ref88 : raw.purchase_id) !== null && _ref87 !== void 0 ? _ref87 : raw.PurchaseId) !== null && _ref86 !== void 0 ? _ref86 : raw.orderId) !== null && _ref85 !== void 0 ? _ref85 : raw.order_id) !== null && _ref84 !== void 0 ? _ref84 : '',
-    purchaseId: (_ref91 = (_ref92 = (_ref93 = (_ref94 = (_raw$purchaseId = raw.purchaseId) !== null && _raw$purchaseId !== void 0 ? _raw$purchaseId : raw.purchase_id) !== null && _ref94 !== void 0 ? _ref94 : raw.PurchaseId) !== null && _ref93 !== void 0 ? _ref93 : raw.id) !== null && _ref92 !== void 0 ? _ref92 : raw.Id) !== null && _ref91 !== void 0 ? _ref91 : '',
-    orderId: (_ref95 = (_ref96 = (_ref97 = (_ref98 = (_ref99 = (_ref100 = (_raw$orderId = raw.orderId) !== null && _raw$orderId !== void 0 ? _raw$orderId : raw.order_id) !== null && _ref100 !== void 0 ? _ref100 : raw.OrderId) !== null && _ref99 !== void 0 ? _ref99 : raw.OrderID) !== null && _ref98 !== void 0 ? _ref98 : raw.orderNo) !== null && _ref97 !== void 0 ? _ref97 : raw.order_no) !== null && _ref96 !== void 0 ? _ref96 : raw.OrderNo) !== null && _ref95 !== void 0 ? _ref95 : '',
-    activityId: (_ref101 = (_ref102 = (_raw$activityId2 = raw.activityId) !== null && _raw$activityId2 !== void 0 ? _raw$activityId2 : raw.activity_id) !== null && _ref102 !== void 0 ? _ref102 : raw.ActivityId) !== null && _ref101 !== void 0 ? _ref101 : '',
-    productId: (_ref103 = (_ref104 = (_ref105 = (_raw$productId2 = raw.productId) !== null && _raw$productId2 !== void 0 ? _raw$productId2 : raw.product_id) !== null && _ref105 !== void 0 ? _ref105 : raw.ProductId) !== null && _ref104 !== void 0 ? _ref104 : raw.ProductID) !== null && _ref103 !== void 0 ? _ref103 : '',
-    skuId: (_ref106 = (_ref107 = (_raw$skuId2 = raw.skuId) !== null && _raw$skuId2 !== void 0 ? _raw$skuId2 : raw.sku_id) !== null && _ref107 !== void 0 ? _ref107 : raw.SkuId) !== null && _ref106 !== void 0 ? _ref106 : '',
-    quantity: Number((_ref108 = (_ref109 = (_ref110 = (_ref111 = (_raw$quantity = raw.quantity) !== null && _raw$quantity !== void 0 ? _raw$quantity : raw.Quantity) !== null && _ref111 !== void 0 ? _ref111 : raw.count) !== null && _ref110 !== void 0 ? _ref110 : raw.Count) !== null && _ref109 !== void 0 ? _ref109 : raw.num) !== null && _ref108 !== void 0 ? _ref108 : 1),
-    seckillPrice: Number((_ref112 = (_ref113 = (_ref114 = (_ref115 = (_raw$seckillPrice2 = raw.seckillPrice) !== null && _raw$seckillPrice2 !== void 0 ? _raw$seckillPrice2 : raw.seckill_price) !== null && _ref115 !== void 0 ? _ref115 : raw.SeckillPrice) !== null && _ref114 !== void 0 ? _ref114 : raw.price) !== null && _ref113 !== void 0 ? _ref113 : raw.Price) !== null && _ref112 !== void 0 ? _ref112 : 0),
-    totalAmount: Number((_ref116 = (_ref117 = (_ref118 = (_ref119 = (_ref120 = (_ref121 = (_raw$totalAmount = raw.totalAmount) !== null && _raw$totalAmount !== void 0 ? _raw$totalAmount : raw.total_amount) !== null && _ref121 !== void 0 ? _ref121 : raw.TotalAmount) !== null && _ref120 !== void 0 ? _ref120 : raw.amount) !== null && _ref119 !== void 0 ? _ref119 : raw.Amount) !== null && _ref118 !== void 0 ? _ref118 : raw.payAmount) !== null && _ref117 !== void 0 ? _ref117 : raw.pay_amount) !== null && _ref116 !== void 0 ? _ref116 : 0),
+    id: (_ref98 = (_ref99 = (_ref100 = (_ref101 = (_ref102 = (_ref103 = (_ref104 = (_raw$id3 = raw.id) !== null && _raw$id3 !== void 0 ? _raw$id3 : raw.Id) !== null && _ref104 !== void 0 ? _ref104 : raw.ID) !== null && _ref103 !== void 0 ? _ref103 : raw.purchaseId) !== null && _ref102 !== void 0 ? _ref102 : raw.purchase_id) !== null && _ref101 !== void 0 ? _ref101 : raw.PurchaseId) !== null && _ref100 !== void 0 ? _ref100 : raw.orderId) !== null && _ref99 !== void 0 ? _ref99 : raw.order_id) !== null && _ref98 !== void 0 ? _ref98 : '',
+    purchaseId: (_ref105 = (_ref106 = (_ref107 = (_ref108 = (_raw$purchaseId = raw.purchaseId) !== null && _raw$purchaseId !== void 0 ? _raw$purchaseId : raw.purchase_id) !== null && _ref108 !== void 0 ? _ref108 : raw.PurchaseId) !== null && _ref107 !== void 0 ? _ref107 : raw.id) !== null && _ref106 !== void 0 ? _ref106 : raw.Id) !== null && _ref105 !== void 0 ? _ref105 : '',
+    orderId: (_ref109 = (_ref110 = (_ref111 = (_ref112 = (_ref113 = (_ref114 = (_raw$orderId = raw.orderId) !== null && _raw$orderId !== void 0 ? _raw$orderId : raw.order_id) !== null && _ref114 !== void 0 ? _ref114 : raw.OrderId) !== null && _ref113 !== void 0 ? _ref113 : raw.OrderID) !== null && _ref112 !== void 0 ? _ref112 : raw.orderNo) !== null && _ref111 !== void 0 ? _ref111 : raw.order_no) !== null && _ref110 !== void 0 ? _ref110 : raw.OrderNo) !== null && _ref109 !== void 0 ? _ref109 : '',
+    activityId: (_ref115 = (_ref116 = (_raw$activityId2 = raw.activityId) !== null && _raw$activityId2 !== void 0 ? _raw$activityId2 : raw.activity_id) !== null && _ref116 !== void 0 ? _ref116 : raw.ActivityId) !== null && _ref115 !== void 0 ? _ref115 : '',
+    productId: (_ref117 = (_ref118 = (_ref119 = (_raw$productId2 = raw.productId) !== null && _raw$productId2 !== void 0 ? _raw$productId2 : raw.product_id) !== null && _ref119 !== void 0 ? _ref119 : raw.ProductId) !== null && _ref118 !== void 0 ? _ref118 : raw.ProductID) !== null && _ref117 !== void 0 ? _ref117 : '',
+    skuId: (_ref120 = (_ref121 = (_raw$skuId2 = raw.skuId) !== null && _raw$skuId2 !== void 0 ? _raw$skuId2 : raw.sku_id) !== null && _ref121 !== void 0 ? _ref121 : raw.SkuId) !== null && _ref120 !== void 0 ? _ref120 : '',
+    quantity: Number((_ref122 = (_ref123 = (_ref124 = (_ref125 = (_raw$quantity = raw.quantity) !== null && _raw$quantity !== void 0 ? _raw$quantity : raw.Quantity) !== null && _ref125 !== void 0 ? _ref125 : raw.count) !== null && _ref124 !== void 0 ? _ref124 : raw.Count) !== null && _ref123 !== void 0 ? _ref123 : raw.num) !== null && _ref122 !== void 0 ? _ref122 : 1),
+    seckillPrice: Number((_ref126 = (_ref127 = (_ref128 = (_ref129 = (_raw$seckillPrice2 = raw.seckillPrice) !== null && _raw$seckillPrice2 !== void 0 ? _raw$seckillPrice2 : raw.seckill_price) !== null && _ref129 !== void 0 ? _ref129 : raw.SeckillPrice) !== null && _ref128 !== void 0 ? _ref128 : raw.price) !== null && _ref127 !== void 0 ? _ref127 : raw.Price) !== null && _ref126 !== void 0 ? _ref126 : 0),
+    totalAmount: Number((_ref130 = (_ref131 = (_ref132 = (_ref133 = (_ref134 = (_ref135 = (_raw$totalAmount = raw.totalAmount) !== null && _raw$totalAmount !== void 0 ? _raw$totalAmount : raw.total_amount) !== null && _ref135 !== void 0 ? _ref135 : raw.TotalAmount) !== null && _ref134 !== void 0 ? _ref134 : raw.amount) !== null && _ref133 !== void 0 ? _ref133 : raw.Amount) !== null && _ref132 !== void 0 ? _ref132 : raw.payAmount) !== null && _ref131 !== void 0 ? _ref131 : raw.pay_amount) !== null && _ref130 !== void 0 ? _ref130 : 0),
     status: status,
     statusCode: statusCode,
-    statusText: (_ref122 = (_ref123 = (_ref124 = (_ref125 = (_raw$statusText = raw.statusText) !== null && _raw$statusText !== void 0 ? _raw$statusText : raw.status_text) !== null && _ref125 !== void 0 ? _ref125 : raw.StatusText) !== null && _ref124 !== void 0 ? _ref124 : statusTextMap[status]) !== null && _ref123 !== void 0 ? _ref123 : status) !== null && _ref122 !== void 0 ? _ref122 : '',
-    message: (_ref126 = (_ref127 = (_ref128 = (_ref129 = (_ref130 = (_raw$message = raw.message) !== null && _raw$message !== void 0 ? _raw$message : raw.Message) !== null && _ref130 !== void 0 ? _ref130 : raw.msg) !== null && _ref129 !== void 0 ? _ref129 : raw.Msg) !== null && _ref128 !== void 0 ? _ref128 : raw.remark) !== null && _ref127 !== void 0 ? _ref127 : raw.Remark) !== null && _ref126 !== void 0 ? _ref126 : '',
-    createdAt: (_ref131 = (_ref132 = (_ref133 = (_ref134 = (_ref135 = (_raw$createdAt = raw.createdAt) !== null && _raw$createdAt !== void 0 ? _raw$createdAt : raw.created_at) !== null && _ref135 !== void 0 ? _ref135 : raw.CreatedAt) !== null && _ref134 !== void 0 ? _ref134 : raw.createTime) !== null && _ref133 !== void 0 ? _ref133 : raw.create_time) !== null && _ref132 !== void 0 ? _ref132 : raw.CreateTime) !== null && _ref131 !== void 0 ? _ref131 : '',
-    paidAt: (_ref136 = (_ref137 = (_ref138 = (_ref139 = (_ref140 = (_raw$paidAt = raw.paidAt) !== null && _raw$paidAt !== void 0 ? _raw$paidAt : raw.paid_at) !== null && _ref140 !== void 0 ? _ref140 : raw.PaidAt) !== null && _ref139 !== void 0 ? _ref139 : raw.payTime) !== null && _ref138 !== void 0 ? _ref138 : raw.pay_time) !== null && _ref137 !== void 0 ? _ref137 : raw.PayTime) !== null && _ref136 !== void 0 ? _ref136 : ''
+    statusText: (_ref136 = (_ref137 = (_ref138 = (_ref139 = (_raw$statusText = raw.statusText) !== null && _raw$statusText !== void 0 ? _raw$statusText : raw.status_text) !== null && _ref139 !== void 0 ? _ref139 : raw.StatusText) !== null && _ref138 !== void 0 ? _ref138 : statusTextMap[status]) !== null && _ref137 !== void 0 ? _ref137 : status) !== null && _ref136 !== void 0 ? _ref136 : '',
+    message: (_ref140 = (_ref141 = (_ref142 = (_ref143 = (_ref144 = (_raw$message = raw.message) !== null && _raw$message !== void 0 ? _raw$message : raw.Message) !== null && _ref144 !== void 0 ? _ref144 : raw.msg) !== null && _ref143 !== void 0 ? _ref143 : raw.Msg) !== null && _ref142 !== void 0 ? _ref142 : raw.remark) !== null && _ref141 !== void 0 ? _ref141 : raw.Remark) !== null && _ref140 !== void 0 ? _ref140 : '',
+    createdAt: (_ref145 = (_ref146 = (_ref147 = (_ref148 = (_ref149 = (_raw$createdAt = raw.createdAt) !== null && _raw$createdAt !== void 0 ? _raw$createdAt : raw.created_at) !== null && _ref149 !== void 0 ? _ref149 : raw.CreatedAt) !== null && _ref148 !== void 0 ? _ref148 : raw.createTime) !== null && _ref147 !== void 0 ? _ref147 : raw.create_time) !== null && _ref146 !== void 0 ? _ref146 : raw.CreateTime) !== null && _ref145 !== void 0 ? _ref145 : '',
+    paidAt: (_ref150 = (_ref151 = (_ref152 = (_ref153 = (_ref154 = (_raw$paidAt = raw.paidAt) !== null && _raw$paidAt !== void 0 ? _raw$paidAt : raw.paid_at) !== null && _ref154 !== void 0 ? _ref154 : raw.PaidAt) !== null && _ref153 !== void 0 ? _ref153 : raw.payTime) !== null && _ref152 !== void 0 ? _ref152 : raw.pay_time) !== null && _ref151 !== void 0 ? _ref151 : raw.PayTime) !== null && _ref150 !== void 0 ? _ref150 : ''
   };
 }
 
@@ -2042,7 +2142,8 @@ function fetchSeckillActivities() {
 /**
  * 获取指定商品的秒杀活动
  * GET /api/v1/seckill/activities/products
- * @param params productId 商品ID（必填），activityId 活动ID（可选）
+ * @param params productId 商品ID（可选），activityId 活动ID（可选）
+ * 至少需要一个参数
  */
 function _fetchSeckillActivities() {
   _fetchSeckillActivities = (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_1__["default"])(/*#__PURE__*/(0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_2__["default"])().m(function _callee() {
@@ -2051,9 +2152,9 @@ function _fetchSeckillActivities() {
       query,
       res,
       list,
-      _ref141,
-      _ref142,
-      _ref143,
+      _ref155,
+      _ref156,
+      _ref157,
       _res$data$list,
       _args = arguments;
     return (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_2__["default"])().w(function (_context) {
@@ -2078,7 +2179,7 @@ function _fetchSeckillActivities() {
             if (res.data.products || res.data.Products || res.data.items) {
               list = [res.data];
             } else {
-              list = (_ref141 = (_ref142 = (_ref143 = (_res$data$list = res.data.list) !== null && _res$data$list !== void 0 ? _res$data$list : res.data.items) !== null && _ref143 !== void 0 ? _ref143 : res.data.records) !== null && _ref142 !== void 0 ? _ref142 : res.data.activities) !== null && _ref141 !== void 0 ? _ref141 : [];
+              list = (_ref155 = (_ref156 = (_ref157 = (_res$data$list = res.data.list) !== null && _res$data$list !== void 0 ? _res$data$list : res.data.items) !== null && _ref157 !== void 0 ? _ref157 : res.data.records) !== null && _ref156 !== void 0 ? _ref156 : res.data.activities) !== null && _ref155 !== void 0 ? _ref155 : [];
               if (!Array.isArray(list)) list = [];
             }
           }
@@ -2105,10 +2206,15 @@ function _fetchProductSeckillActivity() {
     return (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_2__["default"])().w(function (_context2) {
       while (1) switch (_context2.n) {
         case 0:
-          query = {
-            productId: params.productId
-          };
-          if (params.activityId !== undefined) query.activityId = params.activityId;
+          query = {}; // 兼容 camelCase 和 snake_case 参数名
+          if (params.productId !== undefined && params.productId !== '' && params.productId !== null) {
+            query.productId = params.productId;
+            query.product_id = params.productId;
+          }
+          if (params.activityId !== undefined && params.activityId !== '' && params.activityId !== null) {
+            query.activityId = params.activityId;
+            query.activity_id = params.activityId;
+          }
           _context2.n = 1;
           return (0,_api_common__WEBPACK_IMPORTED_MODULE_0__.apiGet)(seckillApi.activityProducts, query);
         case 1:
@@ -2254,7 +2360,7 @@ function _pollSeckillPurchaseResult() {
           startTime = Date.now();
           return _context6.a(2, new Promise(function (resolve, reject) {
             var _poll = /*#__PURE__*/function () {
-              var _ref144 = (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_1__["default"])(/*#__PURE__*/(0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_2__["default"])().m(function _callee5() {
+              var _ref158 = (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_1__["default"])(/*#__PURE__*/(0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_2__["default"])().m(function _callee5() {
                 var _res$data, _result$status, res, result, status, isTerminal, _t;
                 return (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_2__["default"])().w(function (_context5) {
                   while (1) switch (_context5.p = _context5.n) {
@@ -2293,7 +2399,7 @@ function _pollSeckillPurchaseResult() {
                 }, _callee5, null, [[1, 3]]);
               }));
               return function poll() {
-                return _ref144.apply(this, arguments);
+                return _ref158.apply(this, arguments);
               };
             }();
             _poll();
@@ -2404,8 +2510,11 @@ function normalizeCoupon(raw) {
   for (var _i = 0, _nestedKeys = nestedKeys; _i < _nestedKeys.length; _i++) {
     var k = _nestedKeys[_i];
     if (raw[k] && (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_typeof_js__WEBPACK_IMPORTED_MODULE_1__["default"])(raw[k]) === 'object' && !Array.isArray(raw[k])) {
-      // 嵌套对象包含至少一个字段才视为有效
-      if (Object.keys(raw[k]).length >= 2) {
+      // coupon 类嵌套对象即使只有1个字段也合并（后端常将门槛字段嵌套在 coupon 内）
+      // 其他通用嵌套键要求至少2个字段以避免误合并
+      var isCouponKey = k === 'coupon' || k === 'couponInfo' || k === 'coupon_info';
+      var minKeys = isCouponKey ? 1 : 2;
+      if (Object.keys(raw[k]).length >= minKeys) {
         data = (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_2__["default"])((0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_2__["default"])({}, raw), raw[k]);
         break;
       }
@@ -2490,7 +2599,8 @@ function normalizeCoupon(raw) {
   if (true) {
     var missingFields = [];
     if (!result.value) missingFields.push("value(rawValue=".concat(couponValue, ")"));
-    if (!result.minAmount && couponMinAmount !== 0) missingFields.push("minAmount(raw=".concat(couponMinAmount, ")"));
+    // 0 是合法值（无门槛券），用 toNumber 统一比较以兼容字符串 "0.00"
+    if (!result.minAmount && toNumber(couponMinAmount) !== 0) missingFields.push("minAmount(raw=".concat(couponMinAmount, ")"));
     if (!result.name) missingFields.push('name');
     if (missingFields.length > 0) {
       console.warn('[normalizeCoupon] 字段可能未正确匹配:', missingFields.join(', '), '原始数据:', data);
@@ -2534,21 +2644,6 @@ function extractCouponList(res) {
   for (var _i2 = 0, _candidates = candidates; _i2 < _candidates.length; _i2++) {
     var c = _candidates[_i2];
     if (Array.isArray(c) && c.length > 0) {
-      console.log('[coupon] 提取列表命中路径:', Object.keys({
-        0: 'res.data',
-        1: 'res.data.list',
-        2: 'res.data.items',
-        3: 'res.data.coupons',
-        4: 'res.data.data',
-        5: 'res.data.data.list',
-        6: 'res.data.data.items',
-        7: 'res.data.data.coupons',
-        8: 'res.data.result',
-        9: 'res.data.records',
-        10: 'res.data.rows',
-        11: 'res.data.list.data',
-        12: 'res.data.items.data'
-      })[candidates.indexOf(c)]);
       return c;
     }
   }
@@ -2558,7 +2653,6 @@ function extractCouponList(res) {
     for (var _i3 = 0, _Object$keys = Object.keys(d); _i3 < _Object$keys.length; _i3++) {
       var key = _Object$keys[_i3];
       if (Array.isArray(d[key]) && d[key].length > 0) {
-        console.log('[coupon] 兜底提取列表:', key, '长度:', d[key].length);
         return d[key];
       }
     }
@@ -2625,13 +2719,7 @@ function _fetchMyCoupons() {
           return (0,_api_common__WEBPACK_IMPORTED_MODULE_0__.apiGet)(couponApi.mine, params);
         case 1:
           res = _context2.v;
-          // 调试日志：打印原始响应结构
-          console.log('[coupon/mine] 原始响应:', JSON.stringify(res, null, 2));
           list = extractCouponList(res);
-          if (list.length > 0) {
-            console.log('[coupon/mine] 第一条原始数据:', list[0]);
-            console.log('[coupon/mine] 第一条数据的所有键:', Object.keys(list[0]));
-          }
           return _context2.a(2, (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_2__["default"])((0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_2__["default"])({}, res), {}, {
             data: list.map(normalizeCoupon)
           }));
@@ -2736,279 +2824,6 @@ function normalizeUserProfile(raw) {
     email: pickStr(data, ['email', 'Email', 'eMail', 'mail', 'Mail'])
   };
 }
-
-/***/ }),
-
-/***/ "./src/data/common/home.ts":
-/*!*********************************!*\
-  !*** ./src/data/common/home.ts ***!
-  \*********************************/
-/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
-
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   hotSearchKeywords: function() { return /* binding */ hotSearchKeywords; },
-/* harmony export */   seckillActivity: function() { return /* binding */ seckillActivity; }
-/* harmony export */ });
-/* unused harmony exports banners, categories, searchProducts, seckillProducts */
-/* harmony import */ var D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./node_modules/@babel/runtime/helpers/esm/objectSpread2.js */ "./node_modules/@babel/runtime/helpers/esm/objectSpread2.js");
-/* harmony import */ var D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_toConsumableArray_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./node_modules/@babel/runtime/helpers/esm/toConsumableArray.js */ "./node_modules/@babel/runtime/helpers/esm/toConsumableArray.js");
-
-
-// ============================================
-// 轮播图数据
-// ============================================
-
-var banners = [{
-  id: '1',
-  image: 'https://picsum.photos/id/292/750/400',
-  type: 'seckill',
-  targetId: 'seckill-1'
-}, {
-  id: '2',
-  image: 'https://picsum.photos/id/326/750/400',
-  type: 'product',
-  targetId: 'product-2'
-}, {
-  id: '3',
-  image: 'https://picsum.photos/id/431/750/400',
-  type: 'product',
-  targetId: 'product-1'
-}, {
-  id: '4',
-  image: 'https://picsum.photos/id/580/750/400',
-  type: 'category',
-  targetId: 'category-1'
-}, {
-  id: '5',
-  image: 'https://picsum.photos/id/625/750/400',
-  type: 'url',
-  url: '/pages/seckill/index'
-}];
-
-// 分类数据
-var categories = [{
-  id: '1',
-  name: '手机数码',
-  icon: 'https://picsum.photos/id/1/100/100',
-  children: [{
-    id: '1-1',
-    name: '手机',
-    icon: ''
-  }, {
-    id: '1-2',
-    name: '平板',
-    icon: ''
-  }, {
-    id: '1-3',
-    name: '耳机',
-    icon: ''
-  }, {
-    id: '1-4',
-    name: '充电宝',
-    icon: ''
-  }]
-}, {
-  id: '2',
-  name: '电脑办公',
-  icon: 'https://picsum.photos/id/2/100/100',
-  children: [{
-    id: '2-1',
-    name: '笔记本',
-    icon: ''
-  }, {
-    id: '2-2',
-    name: '台式机',
-    icon: ''
-  }, {
-    id: '2-3',
-    name: '打印机',
-    icon: ''
-  }, {
-    id: '2-4',
-    name: '键鼠',
-    icon: ''
-  }]
-}, {
-  id: '3',
-  name: '服饰鞋包',
-  icon: 'https://picsum.photos/id/103/100/100',
-  children: [{
-    id: '3-1',
-    name: '男装',
-    icon: ''
-  }, {
-    id: '3-2',
-    name: '女装',
-    icon: ''
-  }, {
-    id: '3-3',
-    name: '鞋',
-    icon: ''
-  }, {
-    id: '3-4',
-    name: '箱包',
-    icon: ''
-  }]
-}, {
-  id: '4',
-  name: '家用电器',
-  icon: 'https://picsum.photos/id/225/100/100',
-  children: [{
-    id: '4-1',
-    name: '冰箱',
-    icon: ''
-  }, {
-    id: '4-2',
-    name: '洗衣机',
-    icon: ''
-  }, {
-    id: '4-3',
-    name: '空调',
-    icon: ''
-  }, {
-    id: '4-4',
-    name: '厨房电器',
-    icon: ''
-  }]
-}, {
-  id: '5',
-  name: '食品生鲜',
-  icon: 'https://picsum.photos/id/312/100/100',
-  children: [{
-    id: '5-1',
-    name: '水果',
-    icon: ''
-  }, {
-    id: '5-2',
-    name: '肉类',
-    icon: ''
-  }, {
-    id: '5-3',
-    name: '零食',
-    icon: ''
-  }, {
-    id: '5-4',
-    name: '饮料',
-    icon: ''
-  }]
-}, {
-  id: '6',
-  name: '美妆护肤',
-  icon: 'https://picsum.photos/id/250/100/100',
-  children: [{
-    id: '6-1',
-    name: '护肤',
-    icon: ''
-  }, {
-    id: '6-2',
-    name: '彩妆',
-    icon: ''
-  }, {
-    id: '6-3',
-    name: '香水',
-    icon: ''
-  }, {
-    id: '6-4',
-    name: '个护',
-    icon: ''
-  }]
-}, {
-  id: '7',
-  name: '母婴用品',
-  icon: 'https://picsum.photos/id/64/100/100',
-  children: [{
-    id: '7-1',
-    name: '奶粉',
-    icon: ''
-  }, {
-    id: '7-2',
-    name: '纸尿裤',
-    icon: ''
-  }, {
-    id: '7-3',
-    name: '童装',
-    icon: ''
-  }, {
-    id: '7-4',
-    name: '玩具',
-    icon: ''
-  }]
-}, {
-  id: '8',
-  name: '家居家纺',
-  icon: 'https://picsum.photos/id/582/100/100',
-  children: [{
-    id: '8-1',
-    name: '家具',
-    icon: ''
-  }, {
-    id: '8-2',
-    name: '家纺',
-    icon: ''
-  }, {
-    id: '8-3',
-    name: '厨具',
-    icon: ''
-  }, {
-    id: '8-4',
-    name: '收纳',
-    icon: ''
-  }]
-}];
-
-// 秒杀活动 - 动态生成未来的结束时间（当前时间 + 12小时）
-var now = new Date();
-var endTime = new Date(now.getTime() + 12 * 60 * 60 * 1000);
-var endTimeStr = endTime.toISOString().replace('T', ' ').slice(0, 19);
-var seckillActivity = {
-  id: 'seckill-1',
-  name: '限时秒杀',
-  startTime: now.toISOString().replace('T', ' ').slice(0, 19),
-  endTime: endTimeStr,
-  status: 'active',
-  products: []
-};
-
-// 热门搜索关键词
-var hotSearchKeywords = ['iPhone 15', '华为手机', '蓝牙耳机', '笔记本电脑', '智能手表', '充电宝', '空调', '洗衣机'];
-
-// 搜索商品
-var searchProducts = function searchProducts(keyword) {
-  var allProducts = [{
-    id: 'product-1',
-    name: 'iPhone 15 Pro Max 256GB 钛金属设计',
-    price: 9999,
-    images: ['https://picsum.photos/id/1/750/750']
-  }, {
-    id: 'product-2',
-    name: '华为 Mate 60 Pro 12GB+512GB',
-    price: 6999,
-    images: ['https://picsum.photos/id/2/750/750']
-  }, {
-    id: 'product-3',
-    name: 'AirPods Pro (第二代)',
-    price: 1899,
-    images: ['https://picsum.photos/id/3/750/750']
-  }, {
-    id: 'product-4',
-    name: '小米手环8 Pro',
-    price: 399,
-    images: ['https://picsum.photos/id/8/750/750']
-  }];
-  return allProducts.filter(function (product) {
-    return product.name.toLowerCase().includes(keyword.toLowerCase());
-  });
-};
-
-// 秒杀商品列表（用于秒杀页面）
-var seckillProducts = (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_toConsumableArray_js__WEBPACK_IMPORTED_MODULE_0__["default"])(seckillActivity.products.map(function (p) {
-  return (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_1__["default"])((0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_1__["default"])({}, p), {}, {
-    id: p.productId,
-    soldPercent: Math.round(p.soldCount / p.stock * 100),
-    tags: ['限时秒杀'],
-    category: '数码'
-  });
-}));
 
 /***/ }),
 
@@ -3542,26 +3357,138 @@ function normalizeConversation(raw) {
     lastTime: (_ref13 = (_ref14 = (_ref15 = (_ref16 = (_ref17 = (_ref18 = (_raw$lastTime = raw.lastTime) !== null && _raw$lastTime !== void 0 ? _raw$lastTime : raw.LastTime) !== null && _ref18 !== void 0 ? _ref18 : raw.time) !== null && _ref17 !== void 0 ? _ref17 : raw.UpdatedAt) !== null && _ref16 !== void 0 ? _ref16 : raw.updatedAt) !== null && _ref15 !== void 0 ? _ref15 : raw.createdAt) !== null && _ref14 !== void 0 ? _ref14 : raw.CreatedAt) !== null && _ref13 !== void 0 ? _ref13 : ''
   });
 }
+
+// ---------- 当前用户信息获取 ----------
+function _getCurrentUserId() {
+  try {
+    var userInfoStr = localStorage.getItem('userInfo');
+    if (userInfoStr) {
+      var _ref19, _ref20, _ref21, _info$id;
+      var info = JSON.parse(userInfoStr);
+      return String((_ref19 = (_ref20 = (_ref21 = (_info$id = info.id) !== null && _info$id !== void 0 ? _info$id : info.userId) !== null && _ref21 !== void 0 ? _ref21 : info.user_id) !== null && _ref20 !== void 0 ? _ref20 : info.ID) !== null && _ref19 !== void 0 ? _ref19 : '');
+    }
+  } catch (_unused) {}
+  return null;
+}
+
+// 客服/服务端发送者的识别关键词
+var SERVICE_SENDER_KEYWORDS = ['service', 'agent', 'admin', 'cs', 'customer_service', 'customer-service', 'customerService', 'staff', 'operator', 'kefu', '客服', '客服小乐', '小乐', 'ai客服', 'robot', 'bot', 'assistant', 'support'];
+var SERVICE_NAME_KEYWORDS = ['客服', '小乐', 'AI客服', '客服小乐', '乐享购', '官方客服'];
+// 用户发送者的识别关键词（用于反向排除）
+var USER_SENDER_KEYWORDS = ['user', 'customer', 'client', 'buyer', 'member', 'visitor', 'guest', '用户', '客户'];
+function _isServiceSender(raw) {
+  var _ref30, _ref31, _ref32, _ref33, _raw$sender, _ref34, _ref35, _ref36, _raw$senderName, _ref37, _ref38, _ref39, _raw$senderAvatar, _ref40, _ref41, _raw$userType;
+  var currentUserId = _getCurrentUserId();
+
+  // ===== 策略1：基于用户ID比较（最可靠）=====
+  // 检查消息的发送者ID是否与当前用户ID匹配 → 匹配则是用户
+  if (currentUserId) {
+    var _ref22, _ref23, _ref24, _ref25, _ref26, _ref27, _ref28, _ref29, _raw$senderId;
+    var msgSenderId = String((_ref22 = (_ref23 = (_ref24 = (_ref25 = (_ref26 = (_ref27 = (_ref28 = (_ref29 = (_raw$senderId = raw.senderId) !== null && _raw$senderId !== void 0 ? _raw$senderId : raw.SenderId) !== null && _ref29 !== void 0 ? _ref29 : raw.sender_id) !== null && _ref28 !== void 0 ? _ref28 : raw.userId) !== null && _ref27 !== void 0 ? _ref27 : raw.user_id) !== null && _ref26 !== void 0 ? _ref26 : raw.UserId) !== null && _ref25 !== void 0 ? _ref25 : raw.createdBy) !== null && _ref24 !== void 0 ? _ref24 : raw.created_by) !== null && _ref23 !== void 0 ? _ref23 : raw.CreatedBy) !== null && _ref22 !== void 0 ? _ref22 : '').trim();
+    if (msgSenderId && msgSenderId === currentUserId) {
+      console.log('[ChatStore] _isServiceSender: 通过用户ID匹配为用户消息', {
+        msgSenderId: msgSenderId,
+        currentUserId: currentUserId
+      });
+      return false;
+    }
+    // 如果消息有 senderId 但不匹配当前用户 → 可能是客服
+    if (msgSenderId && msgSenderId !== currentUserId) {
+      console.log('[ChatStore] _isServiceSender: senderId 不匹配当前用户，判定为客服消息', {
+        msgSenderId: msgSenderId,
+        currentUserId: currentUserId
+      });
+      return true;
+    }
+  }
+
+  // ===== 策略2：检查 sender 字段关键词 =====
+  var senderRaw = String((_ref30 = (_ref31 = (_ref32 = (_ref33 = (_raw$sender = raw.sender) !== null && _raw$sender !== void 0 ? _raw$sender : raw.Sender) !== null && _ref33 !== void 0 ? _ref33 : raw.senderType) !== null && _ref32 !== void 0 ? _ref32 : raw.role) !== null && _ref31 !== void 0 ? _ref31 : raw.sender_role) !== null && _ref30 !== void 0 ? _ref30 : '').toLowerCase().trim();
+
+  // 先检查是否明确为用户关键词
+  if (senderRaw && USER_SENDER_KEYWORDS.some(function (kw) {
+    return senderRaw === kw || senderRaw.includes(kw);
+  })) {
+    return false;
+  }
+
+  // 再检查是否明确为客服关键词
+  if (senderRaw && SERVICE_SENDER_KEYWORDS.some(function (kw) {
+    return senderRaw === kw || senderRaw.includes(kw);
+  })) {
+    return true;
+  }
+
+  // sender 字段为纯数字枚举：常见 0=用户, 1=客服, 2=系统/管理员
+  if (senderRaw !== '' && /^\d+$/.test(senderRaw)) {
+    var numSender = Number(senderRaw);
+    if (numSender === 0) return false; // 用户
+    if (numSender === 1 || numSender === 2 || numSender === 3 || numSender === 9) return true; // 客服/系统
+  }
+
+  // ===== 策略3：检查 senderName 名称关键词 =====
+  var nameRaw = String((_ref34 = (_ref35 = (_ref36 = (_raw$senderName = raw.senderName) !== null && _raw$senderName !== void 0 ? _raw$senderName : raw.SenderName) !== null && _ref36 !== void 0 ? _ref36 : raw.sender_name) !== null && _ref35 !== void 0 ? _ref35 : raw.name) !== null && _ref34 !== void 0 ? _ref34 : '').toLowerCase().trim();
+  if (nameRaw) {
+    if (SERVICE_NAME_KEYWORDS.some(function (kw) {
+      return nameRaw.includes(kw.toLowerCase());
+    })) {
+      return true;
+    }
+    if (USER_SENDER_KEYWORDS.some(function (kw) {
+      return nameRaw.includes(kw);
+    })) {
+      return false;
+    }
+  }
+
+  // ===== 策略4：检查头像 URL 关键词 =====
+  var avatarRaw = String((_ref37 = (_ref38 = (_ref39 = (_raw$senderAvatar = raw.senderAvatar) !== null && _raw$senderAvatar !== void 0 ? _raw$senderAvatar : raw.SenderAvatar) !== null && _ref39 !== void 0 ? _ref39 : raw.sender_avatar) !== null && _ref38 !== void 0 ? _ref38 : raw.avatar) !== null && _ref37 !== void 0 ? _ref37 : '').toLowerCase();
+  if (avatarRaw && SERVICE_SENDER_KEYWORDS.some(function (kw) {
+    return avatarRaw.includes(kw);
+  })) {
+    return true;
+  }
+
+  // ===== 策略5：检查 userType / UserType 数值枚举 =====
+  // 后端可能用 0=用户, 1=客服 等数字枚举
+  var userType = (_ref40 = (_ref41 = (_raw$userType = raw.userType) !== null && _raw$userType !== void 0 ? _raw$userType : raw.UserType) !== null && _ref41 !== void 0 ? _ref41 : raw.user_type) !== null && _ref40 !== void 0 ? _ref40 : raw.sender_type;
+  if (userType !== undefined && userType !== null) {
+    var numType = Number(userType);
+    if (!isNaN(numType)) {
+      // 常见枚举：0=用户, 1=客服/管理员
+      if (numType === 0 || numType === 2) return false; // 用户
+      if (numType === 1 || numType === 3 || numType === 9) return true; // 客服
+    }
+  }
+
+  // 无法确定时，默认当作用户（user），并打印警告
+  console.warn('[ChatStore] _isServiceSender: 无法确定 sender 类型，默认当作 user', {
+    senderRaw: senderRaw,
+    nameRaw: nameRaw,
+    userType: userType,
+    rawKeys: Object.keys(raw || {}),
+    raw: raw
+  });
+  return false;
+}
 function normalizeMessage(raw, conversationId) {
-  var _ref19, _ref20, _ref21, _ref22, _raw$sender, _ref23, _ref24, _ref25, _ref26, _ref27, _raw$timestamp, _ref28, _ref29, _ref30, _ref31, _ref32, _raw$id2, _ref33, _ref34, _raw$conversationId, _raw$type, _raw$type2, _ref35, _ref36, _ref37, _raw$content, _ref38, _raw$senderId, _ref39, _raw$senderName, _ref40, _ref41, _raw$senderAvatar, _raw$status, _raw$status2, _ref42, _raw$extra;
-  var senderRaw = String((_ref19 = (_ref20 = (_ref21 = (_ref22 = (_raw$sender = raw.sender) !== null && _raw$sender !== void 0 ? _raw$sender : raw.Sender) !== null && _ref22 !== void 0 ? _ref22 : raw.senderType) !== null && _ref21 !== void 0 ? _ref21 : raw.role) !== null && _ref20 !== void 0 ? _ref20 : raw.sender_role) !== null && _ref19 !== void 0 ? _ref19 : '');
-  var lowerSender = senderRaw.toLowerCase();
-  var isServiceSender = ['service', 'agent', 'admin', 'cs', 'customer_service', 'customer-service', 'staff', 'operator', '客服'].includes(lowerSender);
-  var sender = isServiceSender ? 'service' : lowerSender === 'system' ? 'system' : 'user';
-  var ts = (_ref23 = (_ref24 = (_ref25 = (_ref26 = (_ref27 = (_raw$timestamp = raw.timestamp) !== null && _raw$timestamp !== void 0 ? _raw$timestamp : raw.Timestamp) !== null && _ref27 !== void 0 ? _ref27 : raw.createTime) !== null && _ref26 !== void 0 ? _ref26 : raw.CreateTime) !== null && _ref25 !== void 0 ? _ref25 : raw.created_at) !== null && _ref24 !== void 0 ? _ref24 : raw.createdAt) !== null && _ref23 !== void 0 ? _ref23 : Date.now();
+  var _ref42, _ref43, _ref44, _ref45, _ref46, _raw$timestamp, _ref47, _ref48, _ref49, _ref50, _ref51, _raw$id2, _ref52, _ref53, _raw$conversationId, _raw$type, _raw$type2, _ref54, _ref55, _ref56, _raw$content, _ref57, _ref58, _ref59, _raw$senderId2, _ref60, _raw$senderName2, _ref61, _ref62, _raw$senderAvatar2, _raw$status, _raw$status2, _ref63, _raw$extra;
+  var isServiceSender = _isServiceSender(raw);
+  var sender = isServiceSender ? 'service' : 'user';
+  var ts = (_ref42 = (_ref43 = (_ref44 = (_ref45 = (_ref46 = (_raw$timestamp = raw.timestamp) !== null && _raw$timestamp !== void 0 ? _raw$timestamp : raw.Timestamp) !== null && _ref46 !== void 0 ? _ref46 : raw.createTime) !== null && _ref45 !== void 0 ? _ref45 : raw.CreateTime) !== null && _ref44 !== void 0 ? _ref44 : raw.created_at) !== null && _ref43 !== void 0 ? _ref43 : raw.createdAt) !== null && _ref42 !== void 0 ? _ref42 : Date.now();
   return {
-    id: String((_ref28 = (_ref29 = (_ref30 = (_ref31 = (_ref32 = (_raw$id2 = raw.id) !== null && _raw$id2 !== void 0 ? _raw$id2 : raw.ID) !== null && _ref32 !== void 0 ? _ref32 : raw.Id) !== null && _ref31 !== void 0 ? _ref31 : raw.messageId) !== null && _ref30 !== void 0 ? _ref30 : raw.MessageId) !== null && _ref29 !== void 0 ? _ref29 : raw.msg_id) !== null && _ref28 !== void 0 ? _ref28 : "m-".concat(Math.random().toString(36).slice(2, 10))),
-    conversationId: conversationId || String((_ref33 = (_ref34 = (_raw$conversationId = raw.conversationId) !== null && _raw$conversationId !== void 0 ? _raw$conversationId : raw.ConversationId) !== null && _ref34 !== void 0 ? _ref34 : raw.conv_id) !== null && _ref33 !== void 0 ? _ref33 : ''),
+    id: String((_ref47 = (_ref48 = (_ref49 = (_ref50 = (_ref51 = (_raw$id2 = raw.id) !== null && _raw$id2 !== void 0 ? _raw$id2 : raw.ID) !== null && _ref51 !== void 0 ? _ref51 : raw.Id) !== null && _ref50 !== void 0 ? _ref50 : raw.messageId) !== null && _ref49 !== void 0 ? _ref49 : raw.MessageId) !== null && _ref48 !== void 0 ? _ref48 : raw.msg_id) !== null && _ref47 !== void 0 ? _ref47 : "m-".concat(Math.random().toString(36).slice(2, 10))),
+    conversationId: conversationId || String((_ref52 = (_ref53 = (_raw$conversationId = raw.conversationId) !== null && _raw$conversationId !== void 0 ? _raw$conversationId : raw.ConversationId) !== null && _ref53 !== void 0 ? _ref53 : raw.conv_id) !== null && _ref52 !== void 0 ? _ref52 : ''),
     type: ['text', 'image', 'order', 'product', 'system'].includes((_raw$type = raw.type) !== null && _raw$type !== void 0 ? _raw$type : raw.Type) ? (_raw$type2 = raw.type) !== null && _raw$type2 !== void 0 ? _raw$type2 : raw.Type : 'text',
-    content: String((_ref35 = (_ref36 = (_ref37 = (_raw$content = raw.content) !== null && _raw$content !== void 0 ? _raw$content : raw.Content) !== null && _ref37 !== void 0 ? _ref37 : raw.message) !== null && _ref36 !== void 0 ? _ref36 : raw.text) !== null && _ref35 !== void 0 ? _ref35 : ''),
+    content: String((_ref54 = (_ref55 = (_ref56 = (_raw$content = raw.content) !== null && _raw$content !== void 0 ? _raw$content : raw.Content) !== null && _ref56 !== void 0 ? _ref56 : raw.message) !== null && _ref55 !== void 0 ? _ref55 : raw.text) !== null && _ref54 !== void 0 ? _ref54 : ''),
     sender: sender,
-    senderId: (_ref38 = (_raw$senderId = raw.senderId) !== null && _raw$senderId !== void 0 ? _raw$senderId : raw.SenderId) !== null && _ref38 !== void 0 ? _ref38 : raw.sender_id,
-    senderName: (_ref39 = (_raw$senderName = raw.senderName) !== null && _raw$senderName !== void 0 ? _raw$senderName : raw.SenderName) !== null && _ref39 !== void 0 ? _ref39 : raw.sender_name,
-    senderAvatar: (_ref40 = (_ref41 = (_raw$senderAvatar = raw.senderAvatar) !== null && _raw$senderAvatar !== void 0 ? _raw$senderAvatar : raw.SenderAvatar) !== null && _ref41 !== void 0 ? _ref41 : raw.sender_avatar) !== null && _ref40 !== void 0 ? _ref40 : raw.avatar,
+    senderId: (_ref57 = (_ref58 = (_ref59 = (_raw$senderId2 = raw.senderId) !== null && _raw$senderId2 !== void 0 ? _raw$senderId2 : raw.SenderId) !== null && _ref59 !== void 0 ? _ref59 : raw.sender_id) !== null && _ref58 !== void 0 ? _ref58 : raw.userId) !== null && _ref57 !== void 0 ? _ref57 : raw.user_id,
+    senderName: (_ref60 = (_raw$senderName2 = raw.senderName) !== null && _raw$senderName2 !== void 0 ? _raw$senderName2 : raw.SenderName) !== null && _ref60 !== void 0 ? _ref60 : raw.sender_name,
+    senderAvatar: (_ref61 = (_ref62 = (_raw$senderAvatar2 = raw.senderAvatar) !== null && _raw$senderAvatar2 !== void 0 ? _raw$senderAvatar2 : raw.SenderAvatar) !== null && _ref62 !== void 0 ? _ref62 : raw.sender_avatar) !== null && _ref61 !== void 0 ? _ref61 : raw.avatar,
     createTime: typeof ts === 'number' ? formatTime(ts) : String(ts),
     timestamp: typeof ts === 'number' ? ts : new Date(ts).getTime(),
     status: ['sending', 'sent', 'failed', 'read'].includes((_raw$status = raw.status) !== null && _raw$status !== void 0 ? _raw$status : raw.Status) ? (_raw$status2 = raw.status) !== null && _raw$status2 !== void 0 ? _raw$status2 : raw.Status : 'sent',
-    extra: (_ref42 = (_raw$extra = raw.extra) !== null && _raw$extra !== void 0 ? _raw$extra : raw.payload) !== null && _ref42 !== void 0 ? _ref42 : undefined
+    extra: (_ref63 = (_raw$extra = raw.extra) !== null && _raw$extra !== void 0 ? _raw$extra : raw.payload) !== null && _ref63 !== void 0 ? _ref63 : undefined
   };
 }
 
@@ -3631,7 +3558,7 @@ var useChatStore = (0,zustand__WEBPACK_IMPORTED_MODULE_5__.create)(function (set
     fetchConversations: function fetchConversations() {
       var _arguments = arguments;
       return (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_6__["default"])(/*#__PURE__*/(0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_7__["default"])().m(function _callee() {
-        var forceRefresh, state, _ref43, _ref44, _res$data, _data$list, _list$find, res, data, list, curId, curConv, _t;
+        var forceRefresh, state, _ref64, _ref65, _res$data, _data$list, _list$find, res, data, list, curId, curConv, _t;
         return (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_7__["default"])().w(function (_context) {
           while (1) switch (_context.p = _context.n) {
             case 0:
@@ -3651,7 +3578,7 @@ var useChatStore = (0,zustand__WEBPACK_IMPORTED_MODULE_5__.create)(function (set
               return (0,_api_common__WEBPACK_IMPORTED_MODULE_1__.apiGet)(_api_message__WEBPACK_IMPORTED_MODULE_2__.chatApi.conversations);
             case 3:
               res = _context.v;
-              data = (_ref43 = (_ref44 = (_res$data = res === null || res === void 0 ? void 0 : res.data) !== null && _res$data !== void 0 ? _res$data : res === null || res === void 0 ? void 0 : res.result) !== null && _ref44 !== void 0 ? _ref44 : res) !== null && _ref43 !== void 0 ? _ref43 : [];
+              data = (_ref64 = (_ref65 = (_res$data = res === null || res === void 0 ? void 0 : res.data) !== null && _res$data !== void 0 ? _res$data : res === null || res === void 0 ? void 0 : res.result) !== null && _ref65 !== void 0 ? _ref65 : res) !== null && _ref64 !== void 0 ? _ref64 : [];
               list = (Array.isArray(data) ? data : (_data$list = data === null || data === void 0 ? void 0 : data.list) !== null && _data$list !== void 0 ? _data$list : []).map(normalizeConversation); // 按更新时间倒序
               list.sort(function (a, b) {
                 var at = new Date(a.lastTime || a.updatedAt || 0).getTime();
@@ -3751,9 +3678,9 @@ var useChatStore = (0,zustand__WEBPACK_IMPORTED_MODULE_5__.create)(function (set
             case 1:
               _context3.p = 1;
               _context3.n = 2;
-              return (0,_api_common__WEBPACK_IMPORTED_MODULE_1__.apiPost)(_api_message__WEBPACK_IMPORTED_MODULE_2__.chatApi.readConversation, {}, {
+              return (0,_api_common__WEBPACK_IMPORTED_MODULE_1__.apiPut)(_api_message__WEBPACK_IMPORTED_MODULE_2__.chatApi.readConversation, {}, {
                 id: conversationId
-              }, {}, true);
+              });
             case 2:
               // 乐观更新本地
               set(function (s) {
@@ -3848,7 +3775,7 @@ var useChatStore = (0,zustand__WEBPACK_IMPORTED_MODULE_5__.create)(function (set
     fetchMessages: function fetchMessages(conversationId) {
       var _arguments3 = arguments;
       return (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_6__["default"])(/*#__PURE__*/(0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_7__["default"])().m(function _callee6() {
-        var forceRefresh, state, key, _state$messagesMap$ke, _ref45, _ref46, _res$data3, _ref47, _data$list2, res, data, rawList, list, _state$messagesMap$ke2, _t4;
+        var forceRefresh, state, key, _state$messagesMap$ke, _ref66, _ref67, _res$data3, _ref68, _data$list2, res, data, rawList, list, _state$messagesMap$ke2, _t4;
         return (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_7__["default"])().w(function (_context6) {
           while (1) switch (_context6.p = _context6.n) {
             case 0:
@@ -3879,14 +3806,35 @@ var useChatStore = (0,zustand__WEBPACK_IMPORTED_MODULE_5__.create)(function (set
               });
             case 4:
               res = _context6.v;
-              data = (_ref45 = (_ref46 = (_res$data3 = res === null || res === void 0 ? void 0 : res.data) !== null && _res$data3 !== void 0 ? _res$data3 : res === null || res === void 0 ? void 0 : res.result) !== null && _ref46 !== void 0 ? _ref46 : res) !== null && _ref45 !== void 0 ? _ref45 : [];
-              rawList = Array.isArray(data) ? data : (_ref47 = (_data$list2 = data === null || data === void 0 ? void 0 : data.list) !== null && _data$list2 !== void 0 ? _data$list2 : data === null || data === void 0 ? void 0 : data.records) !== null && _ref47 !== void 0 ? _ref47 : [];
+              data = (_ref66 = (_ref67 = (_res$data3 = res === null || res === void 0 ? void 0 : res.data) !== null && _res$data3 !== void 0 ? _res$data3 : res === null || res === void 0 ? void 0 : res.result) !== null && _ref67 !== void 0 ? _ref67 : res) !== null && _ref66 !== void 0 ? _ref66 : [];
+              rawList = Array.isArray(data) ? data : (_ref68 = (_data$list2 = data === null || data === void 0 ? void 0 : data.list) !== null && _data$list2 !== void 0 ? _data$list2 : data === null || data === void 0 ? void 0 : data.records) !== null && _ref68 !== void 0 ? _ref68 : []; // 调试日志：打印后端返回的原始消息结构
+              console.log('[ChatStore] fetchMessages 原始数据:', {
+                conversationId: conversationId,
+                count: rawList.length,
+                firstRaw: rawList[0] ? JSON.stringify(rawList[0], null, 2) : null,
+                allSenderFields: rawList.map(function (m) {
+                  var _ref69, _ref70, _ref71, _ref72, _ref73, _ref74, _m$sender, _ref75, _ref76, _ref77, _m$senderName;
+                  return {
+                    sender: (_ref69 = (_ref70 = (_ref71 = (_ref72 = (_ref73 = (_ref74 = (_m$sender = m.sender) !== null && _m$sender !== void 0 ? _m$sender : m.Sender) !== null && _ref74 !== void 0 ? _ref74 : m.senderType) !== null && _ref73 !== void 0 ? _ref73 : m.role) !== null && _ref72 !== void 0 ? _ref72 : m.sender_role) !== null && _ref71 !== void 0 ? _ref71 : m.userType) !== null && _ref70 !== void 0 ? _ref70 : m.UserType) !== null && _ref69 !== void 0 ? _ref69 : '(无)',
+                    senderName: (_ref75 = (_ref76 = (_ref77 = (_m$senderName = m.senderName) !== null && _m$senderName !== void 0 ? _m$senderName : m.SenderName) !== null && _ref77 !== void 0 ? _ref77 : m.sender_name) !== null && _ref76 !== void 0 ? _ref76 : m.name) !== null && _ref75 !== void 0 ? _ref75 : '(无)',
+                    keys: Object.keys(m || {})
+                  };
+                })
+              });
               list = rawList.map(function (raw) {
                 return normalizeMessage(raw, conversationId);
               }).sort(function (a, b) {
                 var _a$timestamp, _b$timestamp;
                 return ((_a$timestamp = a.timestamp) !== null && _a$timestamp !== void 0 ? _a$timestamp : 0) - ((_b$timestamp = b.timestamp) !== null && _b$timestamp !== void 0 ? _b$timestamp : 0);
               });
+              console.log('[ChatStore] fetchMessages 标准化后:', list.map(function (m) {
+                var _m$content;
+                return {
+                  id: m.id,
+                  sender: m.sender,
+                  content: (_m$content = m.content) === null || _m$content === void 0 ? void 0 : _m$content.slice(0, 20)
+                };
+              }));
               set(function (s) {
                 return {
                   messagesMap: (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_4__["default"])((0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_4__["default"])({}, s.messagesMap), {}, (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_defineProperty_js__WEBPACK_IMPORTED_MODULE_9__["default"])({}, key, list)),
@@ -3946,7 +3894,12 @@ var useChatStore = (0,zustand__WEBPACK_IMPORTED_MODULE_5__.create)(function (set
                 _utils_chatWS__WEBPACK_IMPORTED_MODULE_3__["default"].connect();
               }
 
-              // 3. 通过 WebSocket 发送消息（chatWS 内部有发送队列，未连接时会暂存）
+              // 3. 如果 WebSocket 未连接，同时通过 HTTP API 发送作为兜底
+              if (!get().wsConnected) {
+                get()._sendViaHttp(conversationId, payload, tempId);
+              }
+
+              // 4. 通过 WebSocket 发送消息（chatWS 内部有发送队列，未连接时会暂存）
               wsPayload = {
                 type: 'message/send',
                 data: {
@@ -3959,7 +3912,7 @@ var useChatStore = (0,zustand__WEBPACK_IMPORTED_MODULE_5__.create)(function (set
               };
               _utils_chatWS__WEBPACK_IMPORTED_MODULE_3__["default"].send(wsPayload);
 
-              // 4. 等待最多 8 秒确认：通过 WS 推送的新消息视为 ACK；超时则乐观设为 sent
+              // 5. 等待最多 8 秒确认：通过 WS 推送的新消息视为 ACK；超时则乐观设为 sent
               return _context7.a(2, new Promise(function (resolve) {
                 var resolved = false;
                 var unsubListener = null;
@@ -3993,16 +3946,14 @@ var useChatStore = (0,zustand__WEBPACK_IMPORTED_MODULE_5__.create)(function (set
 
                   // 后端广播了新的 user 消息
                   if (type === 'message/new' && data) {
-                    var _ref48, _data$conversationId, _ref49, _ref50, _ref51, _ref52, _data$sender, _ref53, _ref54, _ref55, _data$content;
-                    var inConvId = String((_ref48 = (_data$conversationId = data.conversationId) !== null && _data$conversationId !== void 0 ? _data$conversationId : data.conv_id) !== null && _ref48 !== void 0 ? _ref48 : '');
-                    var inSender = String((_ref49 = (_ref50 = (_ref51 = (_ref52 = (_data$sender = data.sender) !== null && _data$sender !== void 0 ? _data$sender : data.Sender) !== null && _ref52 !== void 0 ? _ref52 : data.senderType) !== null && _ref51 !== void 0 ? _ref51 : data.role) !== null && _ref50 !== void 0 ? _ref50 : data.sender_role) !== null && _ref49 !== void 0 ? _ref49 : '');
-                    var lowerInSender = inSender.toLowerCase();
-                    var isUserSender = !['service', 'agent', 'admin', 'cs', 'customer_service', 'customer-service', 'staff', 'operator', '客服', 'system'].includes(lowerInSender);
-                    var inContent = String((_ref53 = (_ref54 = (_ref55 = (_data$content = data.content) !== null && _data$content !== void 0 ? _data$content : data.Content) !== null && _ref55 !== void 0 ? _ref55 : data.message) !== null && _ref54 !== void 0 ? _ref54 : data.text) !== null && _ref53 !== void 0 ? _ref53 : '');
+                    var _ref78, _data$conversationId, _ref79, _ref80, _ref81, _data$content;
+                    var inConvId = String((_ref78 = (_data$conversationId = data.conversationId) !== null && _data$conversationId !== void 0 ? _data$conversationId : data.conv_id) !== null && _ref78 !== void 0 ? _ref78 : '');
+                    var isUserSender = !_isServiceSender(data);
+                    var inContent = String((_ref79 = (_ref80 = (_ref81 = (_data$content = data.content) !== null && _data$content !== void 0 ? _data$content : data.Content) !== null && _ref81 !== void 0 ? _ref81 : data.message) !== null && _ref80 !== void 0 ? _ref80 : data.text) !== null && _ref79 !== void 0 ? _ref79 : '');
                     if (inConvId === conversationId && isUserSender && inContent === optimisticMsg.content) {
-                      var _ref56, _ref57, _ref58, _ref59, _ref60, _data$id;
+                      var _ref82, _ref83, _ref84, _ref85, _ref86, _data$id;
                       // 回推消息 ID 与临时 ID 不同：用服务端消息替换本地乐观消息
-                      var serverMsgId = String((_ref56 = (_ref57 = (_ref58 = (_ref59 = (_ref60 = (_data$id = data.id) !== null && _data$id !== void 0 ? _data$id : data.ID) !== null && _ref60 !== void 0 ? _ref60 : data.Id) !== null && _ref59 !== void 0 ? _ref59 : data.messageId) !== null && _ref58 !== void 0 ? _ref58 : data.MessageId) !== null && _ref57 !== void 0 ? _ref57 : data.msg_id) !== null && _ref56 !== void 0 ? _ref56 : '');
+                      var serverMsgId = String((_ref82 = (_ref83 = (_ref84 = (_ref85 = (_ref86 = (_data$id = data.id) !== null && _data$id !== void 0 ? _data$id : data.ID) !== null && _ref86 !== void 0 ? _ref86 : data.Id) !== null && _ref85 !== void 0 ? _ref85 : data.messageId) !== null && _ref84 !== void 0 ? _ref84 : data.MessageId) !== null && _ref83 !== void 0 ? _ref83 : data.msg_id) !== null && _ref82 !== void 0 ? _ref82 : '');
                       if (serverMsgId && serverMsgId !== tempId) {
                         set(function (s) {
                           var _s$messagesMap$conver;
@@ -4083,6 +4034,35 @@ var useChatStore = (0,zustand__WEBPACK_IMPORTED_MODULE_5__.create)(function (set
         };
       });
     },
+    /**
+     * 通过 HTTP API 发送消息（作为 WebSocket 的兜底方案）
+     */
+    _sendViaHttp: function _sendViaHttp(conversationId, payload, tempId) {
+      console.log('[ChatStore] _sendViaHttp: 通过 HTTP 发送消息兜底');
+      (0,_api_common__WEBPACK_IMPORTED_MODULE_1__.apiPost)(_api_message__WEBPACK_IMPORTED_MODULE_2__.chatApi.sendMessage, {
+        type: payload.type,
+        content: payload.content
+      }, {
+        id: conversationId
+      }, {}, true).then(function (res) {
+        console.log('[ChatStore] _sendViaHttp: HTTP 发送成功', res);
+        // 更新消息状态为 sent
+        get().updateMessage(conversationId, tempId, {
+          status: 'sent'
+        });
+        // 刷新消息列表
+        get().fetchMessages(conversationId, true).catch(function () {});
+      }).catch(function (err) {
+        console.error('[ChatStore] _sendViaHttp: HTTP 发送失败', err);
+        get().updateMessage(conversationId, tempId, {
+          status: 'failed'
+        });
+        _tarojs_taro__WEBPACK_IMPORTED_MODULE_0___default().showToast({
+          title: '消息发送失败',
+          icon: 'none'
+        });
+      });
+    },
     getMessages: function getMessages(conversationId) {
       var _get$messagesMap$conv;
       return (_get$messagesMap$conv = get().messagesMap[conversationId]) !== null && _get$messagesMap$conv !== void 0 ? _get$messagesMap$conv : [];
@@ -4141,19 +4121,32 @@ function _handleWSMessage(msg) {
   switch (type) {
     case 'message/new':
       {
-        var _ref61, _ref62, _data$conversationId2;
+        var _ref87, _ref88, _data$conversationId2, _ref89, _ref90, _ref91, _ref92, _ref93, _data$sender, _ref94, _ref95, _ref96, _data$senderName, _chatMsg$content;
         if (!data) return;
-        var conversationId = String((_ref61 = (_ref62 = (_data$conversationId2 = data.conversationId) !== null && _data$conversationId2 !== void 0 ? _data$conversationId2 : data.conv_id) !== null && _ref62 !== void 0 ? _ref62 : store.currentConversationId) !== null && _ref61 !== void 0 ? _ref61 : '');
+        var conversationId = String((_ref87 = (_ref88 = (_data$conversationId2 = data.conversationId) !== null && _data$conversationId2 !== void 0 ? _data$conversationId2 : data.conv_id) !== null && _ref88 !== void 0 ? _ref88 : store.currentConversationId) !== null && _ref87 !== void 0 ? _ref87 : '');
+
+        // 调试日志：打印 WS 推送的消息结构
+        console.log('[ChatStore] WS message/new 原始数据:', {
+          dataKeys: Object.keys(data || {}),
+          sender: (_ref89 = (_ref90 = (_ref91 = (_ref92 = (_ref93 = (_data$sender = data.sender) !== null && _data$sender !== void 0 ? _data$sender : data.Sender) !== null && _ref93 !== void 0 ? _ref93 : data.senderType) !== null && _ref92 !== void 0 ? _ref92 : data.role) !== null && _ref91 !== void 0 ? _ref91 : data.sender_role) !== null && _ref90 !== void 0 ? _ref90 : data.userType) !== null && _ref89 !== void 0 ? _ref89 : '(无)',
+          senderName: (_ref94 = (_ref95 = (_ref96 = (_data$senderName = data.senderName) !== null && _data$senderName !== void 0 ? _data$senderName : data.SenderName) !== null && _ref96 !== void 0 ? _ref96 : data.sender_name) !== null && _ref95 !== void 0 ? _ref95 : data.name) !== null && _ref94 !== void 0 ? _ref94 : '(无)',
+          raw: JSON.stringify(data).slice(0, 300)
+        });
         var chatMsg = normalizeMessage(data, conversationId);
+        console.log('[ChatStore] WS message/new 标准化后:', {
+          id: chatMsg.id,
+          sender: chatMsg.sender,
+          content: (_chatMsg$content = chatMsg.content) === null || _chatMsg$content === void 0 ? void 0 : _chatMsg$content.slice(0, 30)
+        });
         store.addMessage(chatMsg);
         // 如果不在当前会话 → 刷新未读（addMessage 内部已处理）
         break;
       }
     case 'message/read':
       {
-        var _ref63, _data$conversationId3;
+        var _ref97, _data$conversationId3;
         // 对方已读 → 更新消息状态
-        var _conversationId = String((_ref63 = (_data$conversationId3 = data === null || data === void 0 ? void 0 : data.conversationId) !== null && _data$conversationId3 !== void 0 ? _data$conversationId3 : store.currentConversationId) !== null && _ref63 !== void 0 ? _ref63 : '');
+        var _conversationId = String((_ref97 = (_data$conversationId3 = data === null || data === void 0 ? void 0 : data.conversationId) !== null && _data$conversationId3 !== void 0 ? _data$conversationId3 : store.currentConversationId) !== null && _ref97 !== void 0 ? _ref97 : '');
         var msgIds = Array.isArray(data === null || data === void 0 ? void 0 : data.messageIds) ? data.messageIds.map(String) : data !== null && data !== void 0 && data.messageId ? [String(data.messageId)] : [];
         if (_conversationId && msgIds.length) {
           msgIds.forEach(function (mid) {
@@ -4192,8 +4185,8 @@ function _handleWSMessage(msg) {
       }
     case 'conversation/read':
       {
-        var _ref64, _data$conversationId4;
-        var convId = String((_ref64 = (_data$conversationId4 = data === null || data === void 0 ? void 0 : data.conversationId) !== null && _data$conversationId4 !== void 0 ? _data$conversationId4 : data === null || data === void 0 ? void 0 : data.id) !== null && _ref64 !== void 0 ? _ref64 : '');
+        var _ref98, _data$conversationId4;
+        var convId = String((_ref98 = (_data$conversationId4 = data === null || data === void 0 ? void 0 : data.conversationId) !== null && _data$conversationId4 !== void 0 ? _data$conversationId4 : data === null || data === void 0 ? void 0 : data.id) !== null && _ref98 !== void 0 ? _ref98 : '');
         if (convId) store.markConversationRead(convId).catch(function () {});
         break;
       }
@@ -4289,6 +4282,7 @@ function getCategoryIcon(categoryName, fallbackIcon) {
 /* harmony import */ var _tarojs_taro__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_tarojs_taro__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _api_message__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @/api/message */ "./src/api/message/index.ts");
 /* harmony import */ var _api_common__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @/api/common */ "./src/api/common/index.ts");
+/* provided dependency */ var window = __webpack_require__(/*! @tarojs/runtime */ "./node_modules/@tarojs/runtime/dist/index.js")["window"];
 
 
 
@@ -4344,6 +4338,8 @@ var ChatWebSocketManager = /*#__PURE__*/function () {
     (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_defineProperty_js__WEBPACK_IMPORTED_MODULE_4__["default"])(this, "_sendQueue", []);
     (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_defineProperty_js__WEBPACK_IMPORTED_MODULE_4__["default"])(this, "_lastServerSeq", null);
     (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_defineProperty_js__WEBPACK_IMPORTED_MODULE_4__["default"])(this, "_msgBuffer", []);
+    // ============== 内部：连接 ==============
+    (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_defineProperty_js__WEBPACK_IMPORTED_MODULE_4__["default"])(this, "_connectTimeoutTimer", null);
   }
 
   // ============== 公共 API ==============
@@ -4457,42 +4453,104 @@ var ChatWebSocketManager = /*#__PURE__*/function () {
     value: function resetReconnect() {
       this._reconnectAttempts = 0;
     }
-
-    // ============== 内部：连接 ==============
   }, {
     key: "_doConnect",
     value: function _doConnect() {
+      var _this3 = this;
+      // 如果已有连接正在进行中，不重复连接
+      if (this._status === 'connecting') {
+        console.debug('[ChatWS] 已有连接正在进行中，跳过');
+        return;
+      }
       this._setStatus('connecting');
       this._clearHeartbeat();
       this._authSent = false;
       var token = (0,_api_common__WEBPACK_IMPORTED_MODULE_2__.getAuthToken)();
 
-      // H5 环境：优先走 devServer 代理（相对路径），必要时 fallback 直连后端
-      // 小程序环境：直连后端
-      var url;
+      // 构建 URL：URL 查询参数携带 token（解决后端握手阶段鉴权问题）
+      var baseUrl;
       if (this._isH5) {
         if (this._useDirectFallback) {
-          url = _api_message__WEBPACK_IMPORTED_MODULE_1__.WS_DIRECT_URL;
-          console.log('[ChatWS] H5 连接（直连后端 fallback）:', url);
+          baseUrl = _api_message__WEBPACK_IMPORTED_MODULE_1__.WS_DIRECT_URL;
+          console.log('[ChatWS] H5 连接（直连后端 fallback）:', baseUrl);
         } else {
-          url = _api_message__WEBPACK_IMPORTED_MODULE_1__.WS_BASE_URL;
-          console.log('[ChatWS] H5 连接（走代理）:', url);
+          baseUrl = _api_message__WEBPACK_IMPORTED_MODULE_1__.WS_BASE_URL;
+          console.log('[ChatWS] H5 连接（走代理）:', baseUrl);
         }
       } else {
-        url = _api_message__WEBPACK_IMPORTED_MODULE_1__.WS_BASE_URL;
-        console.log('[ChatWS] 小程序连接（直连）:', url);
+        baseUrl = _api_message__WEBPACK_IMPORTED_MODULE_1__.WS_BASE_URL;
+        console.log('[ChatWS] 小程序连接（直连）:', baseUrl);
+      }
+
+      // 在 URL 上拼接 token 查询参数
+      var url = token ? "".concat(baseUrl).concat(baseUrl.includes('?') ? '&' : '?', "token=").concat(encodeURIComponent(token)) : baseUrl;
+      if (!token) {
+        console.warn('[ChatWS] 无 token，后端可能拒绝握手');
       }
       try {
+        // 销毁旧实例，防止残留连接
+        if (this._ws) {
+          try {
+            if (this._isH5) {
+              this._ws.onopen = null;
+              this._ws.onmessage = null;
+              this._ws.onerror = null;
+              this._ws.onclose = null;
+              if (this._ws.readyState === WebSocket.OPEN || this._ws.readyState === WebSocket.CONNECTING) {
+                this._ws.close(4001, 'Reconnecting');
+              }
+            }
+          } catch (_unused) {}
+          this._ws = null;
+        }
+
+        // 连接超时保护：5秒内未连接成功则视为超时
+        if (this._connectTimeoutTimer) clearTimeout(this._connectTimeoutTimer);
+        this._connectTimeoutTimer = setTimeout(function () {
+          if (_this3._status === 'connecting') {
+            console.warn('[ChatWS] 连接超时（5秒），强制关闭并重连');
+            if (_this3._ws) {
+              // SocketTask 已存在，走正常关闭流程（会触发 onClose → 重连）
+              _this3._doClose(4000, 'Connection timeout');
+            } else {
+              // Promise 尚未 resolve，无 SocketTask 可关闭，直接重连
+              _this3._setStatus('closed');
+              _this3._tryFallbackOrReconnect();
+            }
+          }
+        }, 5000);
         if (this._isH5 && typeof WebSocket !== 'undefined') {
           this._ws = new WebSocket(url);
           this._bindH5Events(this._ws, token);
         } else {
-          this._ws = _tarojs_taro__WEBPACK_IMPORTED_MODULE_0___default().connectSocket({
+          // Taro 4.x: connectSocket 返回 Promise<SocketTask>，需通过 .then() 获取 SocketTask 实例
+          this._ws = null; // 标记为 null，等待 Promise resolve
+          _tarojs_taro__WEBPACK_IMPORTED_MODULE_0___default().connectSocket({
             url: url,
             protocols: [],
             complete: function complete() {}
+          }).then(function (task) {
+            // Promise resolve 时检查是否已被取消（用户 disconnect 或超时关闭）
+            if (_this3._status !== 'connecting') {
+              console.log('[ChatWS] SocketTask 已 resolve 但连接状态已变更:', _this3._status, '，关闭残留 task');
+              try {
+                task.close({
+                  code: 4001,
+                  reason: 'Cancelled',
+                  complete: function complete() {}
+                });
+              } catch (_unused2) {}
+              return;
+            }
+            _this3._ws = task;
+            _this3._bindMiniEvents(task, token);
+          }).catch(function (err) {
+            console.error('[ChatWS] connectSocket Promise rejected:', err);
+            if (_this3._status === 'connecting') {
+              _this3._setStatus('closed');
+              _this3._tryFallbackOrReconnect();
+            }
           });
-          this._bindMiniEvents(this._ws, token);
         }
       } catch (err) {
         console.error('[ChatWS] 创建连接异常:', err);
@@ -4503,12 +4561,12 @@ var ChatWebSocketManager = /*#__PURE__*/function () {
   }, {
     key: "_bindH5Events",
     value: function _bindH5Events(ws, token) {
-      var _this3 = this;
+      var _this4 = this;
       ws.onopen = function () {
-        return _this3._onOpen(token);
+        return _this4._onOpen(token);
       };
       ws.onmessage = function (ev) {
-        return _this3._onMessage(ev.data);
+        return _this4._onMessage(ev.data);
       };
       ws.onerror = function (ev) {
         var wsAny = ws;
@@ -4517,46 +4575,53 @@ var ChatWebSocketManager = /*#__PURE__*/function () {
           readyState: wsAny.readyState,
           url: wsAny.url,
           // 诊断信息
-          diagnostic: _this3._diagnoseError(wsAny, token)
+          diagnostic: _this4._diagnoseError(wsAny, token)
         });
+        // 握手失败后立即发送一次诊断探测（带/不带 Origin 的 HTTP 对比），
+        // 帮助定位是否为后端 Origin 中间件 403 拒握手
+        _this4._probeOriginPolicy(wsAny.url);
       };
       ws.onclose = function (ev) {
         console.log("[ChatWS] H5 \u5173\u95ED code=".concat(ev.code, " reason=").concat(ev.reason, " wasClean=").concat(ev.wasClean));
-        _this3._onClose();
+        _this4._onClose();
       };
     }
   }, {
     key: "_bindMiniEvents",
     value: function _bindMiniEvents(task, token) {
-      var _this4 = this;
+      var _this5 = this;
       task.onOpen(function () {
-        return _this4._onOpen(token);
+        return _this5._onOpen(token);
       });
       task.onMessage(function (res) {
         var _data;
-        return _this4._onMessage((_data = res.data) !== null && _data !== void 0 ? _data : res);
+        return _this5._onMessage((_data = res.data) !== null && _data !== void 0 ? _data : res);
       });
       task.onError(function (err) {
         return console.error('[ChatWS] 小程序 WebSocket error:', err);
       });
       task.onClose(function (res) {
         console.log("[ChatWS] \u5C0F\u7A0B\u5E8F WebSocket \u5173\u95ED code=".concat(res === null || res === void 0 ? void 0 : res.code, " reason=").concat(res === null || res === void 0 ? void 0 : res.reason));
-        _this4._onClose();
+        _this5._onClose();
       });
     }
   }, {
     key: "_onOpen",
     value: function _onOpen(token) {
-      console.log('[ChatWS] 连接已建立，开始鉴权');
+      console.log('[ChatWS] WebSocket 握手成功（URL token 鉴权通过）');
+      // 清除连接超时定时器
+      if (this._connectTimeoutTimer) {
+        clearTimeout(this._connectTimeoutTimer);
+        this._connectTimeoutTimer = null;
+      }
       this._setStatus('open');
       this._reconnectAttempts = 0;
 
-      // 优先方案：通过 URL query 传递 token（兼容旧后端）
-      // 备选方案：首条消息发送鉴权（兼容不支持 URL token 的后端）
+      // URL 已携带 token，握手成功即视为鉴权通过
+      // 同时发送首条 auth 消息作为兼容（部分后端可能需要双重鉴权）
       if (token) {
         this._sendAuthMessage(token);
       } else {
-        // 无 token，视为匿名连接，直接 flush 队列
         console.warn('[ChatWS] 无 token，以匿名身份连接');
         this._authSent = true;
         this._startHeartbeat();
@@ -4571,7 +4636,7 @@ var ChatWebSocketManager = /*#__PURE__*/function () {
   }, {
     key: "_sendAuthMessage",
     value: function _sendAuthMessage(token) {
-      var _this5 = this;
+      var _this6 = this;
       if (!this._ws || this._status !== 'open') return;
       var authMsg = {
         type: 'auth',
@@ -4595,9 +4660,9 @@ var ChatWebSocketManager = /*#__PURE__*/function () {
         // 鉴权超时保护：5 秒内未收到 auth_ack 则视为鉴权失败
         this._clearAuthTimer();
         this._authTimer = setTimeout(function () {
-          if (!_this5._authSent && _this5._status === 'open') {
+          if (!_this6._authSent && _this6._status === 'open') {
             console.warn('[ChatWS] 鉴权超时，关闭连接');
-            _this5._doClose(4001, 'Auth timeout');
+            _this6._doClose(4001, 'Auth timeout');
           }
         }, 5000);
 
@@ -4623,6 +4688,11 @@ var ChatWebSocketManager = /*#__PURE__*/function () {
   }, {
     key: "_onClose",
     value: function _onClose() {
+      // 清除连接超时定时器
+      if (this._connectTimeoutTimer) {
+        clearTimeout(this._connectTimeoutTimer);
+        this._connectTimeoutTimer = null;
+      }
       this._clearHeartbeat();
       this._clearAuthTimer();
       this._authSent = false;
@@ -4780,11 +4850,11 @@ var ChatWebSocketManager = /*#__PURE__*/function () {
   }, {
     key: "_startHeartbeat",
     value: function _startHeartbeat() {
-      var _this6 = this;
+      var _this7 = this;
       this._clearHeartbeat();
       this._heartbeatTimer = setInterval(function () {
-        if (_this6._status === 'open' && _this6._authSent) {
-          _this6.send({
+        if (_this7._status === 'open' && _this7._authSent) {
+          _this7.send({
             type: 'ping'
           });
         }
@@ -4806,11 +4876,11 @@ var ChatWebSocketManager = /*#__PURE__*/function () {
   }, {
     key: "_resetIdleTimer",
     value: function _resetIdleTimer() {
-      var _this7 = this;
+      var _this8 = this;
       if (this._idleTimer) clearTimeout(this._idleTimer);
       this._idleTimer = setTimeout(function () {
         console.warn('[ChatWS] 心跳超时，关闭连接并重连');
-        _this7._doClose(4000, 'Idle timeout');
+        _this8._doClose(4000, 'Idle timeout');
       }, HEARTBEAT_IDLE_TIMEOUT);
     }
 
@@ -4818,7 +4888,7 @@ var ChatWebSocketManager = /*#__PURE__*/function () {
   }, {
     key: "_scheduleReconnect",
     value: function _scheduleReconnect(initialDelay) {
-      var _this8 = this;
+      var _this9 = this;
       this._clearReconnectTimer();
       if (!this._shouldReconnect) return;
 
@@ -4834,7 +4904,7 @@ var ChatWebSocketManager = /*#__PURE__*/function () {
       if (initialDelay !== undefined && this._reconnectAttempts === 1) {
         console.log("[ChatWS] \uD83D\uDD04 fallback \u91CD\u8FDE\uFF0C".concat(initialDelay, "ms \u540E..."));
         this._reconnectTimer = setTimeout(function () {
-          if (_this8._shouldReconnect) _this8._doConnect();
+          if (_this9._shouldReconnect) _this9._doConnect();
         }, initialDelay);
         return;
       }
@@ -4843,7 +4913,7 @@ var ChatWebSocketManager = /*#__PURE__*/function () {
       var delay = Math.round(baseDelay + jitter);
       console.log("[ChatWS] \uD83D\uDD04 \u8BA1\u5212\u7B2C ".concat(this._reconnectAttempts, "/").concat(MAX_RECONNECT_ATTEMPTS, " \u6B21\u91CD\u8FDE\uFF0C").concat(delay, "ms \u540E..."));
       this._reconnectTimer = setTimeout(function () {
-        if (_this8._shouldReconnect) _this8._doConnect();
+        if (_this9._shouldReconnect) _this9._doConnect();
       }, delay);
     }
   }, {
@@ -4870,9 +4940,43 @@ var ChatWebSocketManager = /*#__PURE__*/function () {
       if (!token) {
         parts.push('⚠️ 无 token，可能因未登录被后端拒绝');
       }
-      parts.push("\u4EE3\u7406\u914D\u7F6E: config/dev.ts \u4E2D /api \u4EE3\u7406 ws:true \u72B6\u6001\u9700\u786E\u8BA4");
-      parts.push("\u82E5\u76F4\u8FDE\u540E\u7AEF\uFF0C\u8BF7\u786E\u8BA4\u540E\u7AEF WebSocket \u7AEF\u53E3\u53EF\u8FBE\uFF08ping/telnet\uFF09");
+      parts.push("\u4EE3\u7406\u914D\u7F6E: config/dev.ts \u4E2D /api \u4EE3\u7406 ws:true + onProxyReqWs \u5DF2\u5265\u79BB Origin/Referer");
+      parts.push("\u82E5\u76F4\u8FDE\u540E\u7AEF: \u540E\u7AEF Origin \u4E2D\u95F4\u4EF6\u5FC5\u987B\u653E\u884C WebSocket \u63E1\u624B\uFF0C\u5426\u5219\u6D4F\u89C8\u5668\u5F3A\u5236 Origin \u2192 403");
+      parts.push("\u63E1\u624B\u9274\u6743: \u9996\u6761\u6D88\u606F {type:\"auth\",data:{token}} \u65B9\u6848\u5DF2\u542F\u7528");
       return parts.join(' | ');
+    }
+
+    /**
+     * 主动探测后端 Origin 策略（WS 握手失败时触发一次，辅助诊断）
+     * 带 Origin 与不带 Origin 的 HTTP GET 对比：
+     *   - 403 (带) + 200 (不带)  → Origin 中间件黑名单拒绝，需后端放行 WebSocket 握手
+     *   - 200 (带) + 200 (不带)  → Origin 校验正常，排查 WS 路由/Upgrade 处理
+     */
+  }, {
+    key: "_probeOriginPolicy",
+    value: function _probeOriginPolicy(target) {
+      if (!target) return;
+      var path = target.replace(/^wss?:\/\//, '').replace(/^[^/]+/, '') || '/';
+      var baseOrigin = typeof window !== 'undefined' ? window.location.origin : '';
+      var run = function run(withOrigin, tag) {
+        var headers = {};
+        if (withOrigin) headers['Origin'] = baseOrigin;
+        fetch(path, {
+          method: 'GET',
+          headers: headers,
+          mode: 'no-cors',
+          cache: 'no-store'
+        }).then(function () {
+          return console.info("[ChatWS] probe ".concat(tag, " OK (mode=no-cors)"));
+        }).catch(function (err) {
+          return console.info("[ChatWS] probe ".concat(tag, " err:"), err);
+        });
+      };
+      console.groupCollapsed('[ChatWS] Origin 策略探测');
+      console.info('目标路径:', path);
+      run(true, 'with-Origin');
+      run(false, 'no-Origin');
+      console.groupEnd();
     }
 
     // ============== 内部：状态广播 ==============
@@ -4938,7 +5042,7 @@ var DEFAULT_PLACEHOLDER = 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_im
 
 // 需要过滤的占位符域名（精确匹配主机名）
 // 注意：后端使用 img.example.com 作为图片服务器，不可过滤
-var PLACEHOLDER_DOMAINS = ['placeholder.com', 'test.com', 'demo.com', 'example.com', 'example.cn', 'xxx.com', 'xxx.cn', 'xxx.yyy', 'demo.example.com', 'test.example.com'];
+var PLACEHOLDER_DOMAINS = ['placeholder.com', 'test.com', 'demo.com', 'example.com', 'example.cn', 'xxx.com', 'xxx.cn', 'xxx.yyy', 'xxx', 'yyy', 'demo.example.com', 'test.example.com'];
 
 /**
  * 从 URL 中提取主机名
@@ -5230,7 +5334,7 @@ module.exports = "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5v
   \************************************/
 /***/ (function(module) {
 
-module.exports = "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDI0IDEwMjQiIHdpZHRoPSIyMDAiIGhlaWdodD0iMjAwIj48cGF0aCBkPSJNNzkxLjQ4OCA1NDQuMDk1Yy0xLjI4LTEyOS42OTUgMTA1Ljc2LTE5MS44NzEgMTEwLjUyOC0xOTQuOTc1LTYwLjE2LTg4LjAzMi0xNTMuODU2LTEwMC4wNjQtMTg3LjIzMi0xMDEuNDcyLTc5Ljc0NC04LjA2NC0xNTUuNTg0IDQ2Ljk0NC0xOTYuMDY0IDQ2Ljk0NC00MC4zNTIgMC0xMDIuODE2LTQ1Ljc2LTE2OC45Ni00NC41NDQtODYuOTEyIDEuMjgtMTY3LjA3MiA1MC41MjgtMjExLjgwOCAxMjguMzg0LTkwLjMwNCAxNTYuNzAzLTIzLjEzNiAzODguODMxIDY0Ljg5NiA1MTUuOTM1IDQzLjAwOCA2Mi4yMDggOTQuMzA0IDEzMi4wNjQgMTYxLjYzMiAxMjkuNTY4IDY0LjgzMi0yLjU5MiA4OS4zNzYtNDEuOTUyIDE2Ny43NDQtNDEuOTUyczEwMC40MTYgNDEuOTUyIDE2OS4wNTYgNDAuNjcyYzY5Ljc2LTEuMzEyIDExMy45ODQtNjMuMzkyIDE1Ni43MDQtMTI1Ljc5MiA0OS4zNzYtNzIuMTYgNjkuNzI4LTE0Mi4wNDggNzAuOTEyLTE0NS42MzItMS41MzYtMC43MDQtMTM2LjA2NC01Mi4yMjQtMTM3LjQwOC0yMDcuMTM2ek02NjIuNTYgMTYzLjUyQzY5OC4zMDQgMTIwLjE2IDcyMi40MzIgNjAgNzE1Ljg0IDBjLTUxLjQ4OCAyLjExMi0xMTMuODg4IDM0LjMwNC0xNTAuODE2IDc3LjUzNi0zMy4xNTIgMzguMzY4LTYyLjE0NCA5OS42MTYtNTQuMzY4IDE1OC40MzIgNTcuNDcyIDQuNDggMTE2LjEyOC0yOS4yMTYgMTUxLjkwNC03Mi40NDh6IiBmaWxsPSIjMDAwIi8+PC9zdmc+Cg==";
+module.exports = "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDI0IDEwMjQiIHdpZHRoPSIyMDAiIGhlaWdodD0iMjAwIj48ZyB0cmFuc2Zvcm09InRyYW5zbGF0ZSg1MTIsIDUxMikgc2NhbGUoMC43OCkgdHJhbnNsYXRlKC01MTEuOTg2NywgLTUxMikiPjxwYXRoIGQ9Ik03OTEuNDg4IDU0NC4wOTVjLTEuMjgtMTI5LjY5NSAxMDUuNzYtMTkxLjg3MSAxMTAuNTI4LTE5NC45NzUtNjAuMTYtODguMDMyLTE1My44NTYtMTAwLjA2NC0xODcuMjMyLTEwMS40NzItNzkuNzQ0LTguMDY0LTE1NS41ODQgNDYuOTQ0LTE5Ni4wNjQgNDYuOTQ0LTQwLjM1MiAwLTEwMi44MTYtNDUuNzYtMTY4Ljk2LTQ0LjU0NC04Ni45MTIgMS4yOC0xNjcuMDcyIDUwLjUyOC0yMTEuODA4IDEyOC4zODQtOTAuMzA0IDE1Ni43MDMtMjMuMTM2IDM4OC44MzEgNjQuODk2IDUxNS45MzUgNDMuMDA4IDYyLjIwOCA5NC4zMDQgMTMyLjA2NCAxNjEuNjMyIDEyOS41NjggNjQuODMyLTIuNTkyIDg5LjM3Ni00MS45NTIgMTY3Ljc0NC00MS45NTJzMTAwLjQxNiA0MS45NTIgMTY5LjA1NiA0MC42NzJjNjkuNzYtMS4zMTIgMTEzLjk4NC02My4zOTIgMTU2LjcwNC0xMjUuNzkyIDQ5LjM3Ni03Mi4xNiA2OS43MjgtMTQyLjA0OCA3MC45MTItMTQ1LjYzMi0xLjUzNi0wLjcwNC0xMzYuMDY0LTUyLjIyNC0xMzcuNDA4LTIwNy4xMzZ6TTY2Mi41NiAxNjMuNTJDNjk4LjMwNCAxMjAuMTYgNzIyLjQzMiA2MCA3MTUuODQgMGMtNTEuNDg4IDIuMTEyLTExMy44ODggMzQuMzA0LTE1MC44MTYgNzcuNTM2LTMzLjE1MiAzOC4zNjgtNjIuMTQ0IDk5LjYxNi01NC4zNjggMTU4LjQzMiA1Ny40NzIgNC40OCAxMTYuMTI4LTI5LjIxNiAxNTEuOTA0LTcyLjQ0OHoiIGZpbGw9IiMwMDAiLz48L2c+PC9zdmc+Cg==";
 
 /***/ }),
 
@@ -5240,7 +5344,7 @@ module.exports = "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5v
   \*************************************/
 /***/ (function(module) {
 
-module.exports = "data:image/svg+xml;base64,PHN2ZyB0PSIxNzg1NDg5NDgzNjAwIiBjbGFzcz0iaWNvbiIgdmlld0JveD0iMCAwIDEwMjQgMTAyNCIgdmVyc2lvbj0iMS4xIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHAtaWQ9IjY5MTEiPjxnIHRyYW5zZm9ybT0idHJhbnNsYXRlKDE2MCAyNzUpIj48cGF0aCBkPSJNNDEyLjA4IDc1My44N1EyOTcgODU1LjA2IDIyMC4xNCA4NTUuMTN0LTExNy4yNy05NS4wN2wzMDkuMjEtNi4yNHogbTIwMi4xNiAwbDMwOS4yMSA2LjE5UTg4MyA4NTUuMTMgODA2LjE4IDg1NS4xM1Q2MTQuMjQgNzUzLjgyek0xNS45MSA0ODkuMXExNzggOTUgMjI4LjQ5IDEyNS4zNHQxNzEuODkgMTA4Ljg4cS0xOTMuMSAxMi0yNTIuNzUgMC4zMmMtNDUuNDktOC44OS04MC45LTI4LjI5LTExMS4yMi01OC42NlEtOC4yMiA2MDQuNDQgMTUuOTEgNDg5LjF6IG05OTQuNSAwUTEwMzQuNTYgNjA0LjQxIDk3NCA2NjVjLTMwLjMxIDMwLjM3LTY1LjcyIDQ5Ljc3LTExMS4yMiA1OC42NnEtNTkuNjQgMTEuNy0yNTIuNy0wLjMyIDEyMS4yNy03OC41NSAxNzEuODUtMTA4Ljg4dDIyOC40OC0xMjUuMzZ6TTE2MS40OCAyMjguMjdxOTMuMDggMTIzLjM2IDEyNy40MSAxNzUuOTR0MTU1IDI4My4zOFEyMDUuODggNTgwLjU1IDExMyA0NzVjLTQ0LjQ5LTUwLjU0LTQ0LjQ5LTEzMy40NiA2LTIwNC4yM3ExMS0xNS40IDQyLjQ3LTQyLjQ3eiBtNzAzLjMxIDBxMzEuNTEgMjcuMSA0Mi40NyA0Mi40N2M1MC41NCA3MC43NyA1MC41NCAxNTMuNjUgNi4wNiAyMDQuMjZxLTkyLjg4IDEwNS42LTMzMSAyMTIuNjIgMTIwLjY2LTIzMC44IDE1NS0yODMuNDN0MTI3LjQ3LTE3NS45MnpNNDQwLjYgODQuNzJxNDYuNTEgMTM3LjUyIDUyLjU2IDE5NC4xVDQ4My4wNyA2NTlRMjgwLjgxIDM2Ny44MyAyODAuODEgMjM2LjM5VDQ0MC42IDg0LjcyeiBtMTQ1LjIxIDBRNzQ1LjU1IDEwNSA3NDUuNTUgMjM2LjM5VDU0My4zNCA2NTlxLTE2LjE3LTMyMy41NS0xMC4wOS0zODAuMTZ0NTIuNTYtMTk0LjF6IiBmaWxsPSIjRkUwMDAwIiBwLWlkPSI2OTEyIiBkYXRhLXNwbS1hbmNob3ItaWQ9ImEzMTN4LnNlYXJjaF9pbmRleC4wLmkwLjE2NmYzYTgxZVZCVGFpIiBjbGFzcz0iIj48L3BhdGg+PC9nPjwvc3ZnPg==";
+module.exports = "data:image/svg+xml;base64,PHN2ZyB0PSIxNzg1NDg5NDgzNjAwIiBjbGFzcz0iaWNvbiIgdmlld0JveD0iMCAwIDEwMjQgMTAyNCIgdmVyc2lvbj0iMS4xIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHAtaWQ9IjY5MTEiPjxnIHRyYW5zZm9ybT0idHJhbnNsYXRlKDUxMiwgNTEyKSBzY2FsZSgwLjc5MjIpIHRyYW5zbGF0ZSgtNTEzLjE2NDEsIC00NjkuOTI1KSI+PHBhdGggZD0iTTQxMi4wOCA3NTMuODdRMjk3IDg1NS4wNiAyMjAuMTQgODU1LjEzdC0xMTcuMjctOTUuMDdsMzA5LjIxLTYuMjR6IG0yMDIuMTYgMGwzMDkuMjEgNi4xOVE4ODMgODU1LjEzIDgwNi4xOCA4NTUuMTNUNjE0LjI0IDc1My44MnpNMTUuOTEgNDg5LjFxMTc4IDk1IDIyOC40OSAxMjUuMzR0MTcxLjg5IDEwOC44OHEtMTkzLjEgMTItMjUyLjc1IDAuMzJjLTQ1LjQ5LTguODktODAuOS0yOC4yOS0xMTEuMjItNTguNjZRLTguMjIgNjA0LjQ0IDE1LjkxIDQ4OS4xeiBtOTk0LjUgMFExMDM0LjU2IDYwNC40MSA5NzQgNjY1Yy0zMC4zMSAzMC4zNy02NS43MiA0OS43Ny0xMTEuMjIgNTguNjZxLTU5LjY0IDExLjctMjUyLjctMC4zMiAxMjEuMjctNzguNTUgMTcxLjg1LTEwOC44OHQyMjguNDgtMTI1LjM2ek0xNjEuNDggMjI4LjI3cTkzLjA4IDEyMy4zNiAxMjcuNDEgMTc1Ljk0dDE1NSAyODMuMzhRMjA1Ljg4IDU4MC41NSAxMTMgNDc1Yy00NC40OS01MC41NC00NC40OS0xMzMuNDYgNi0yMDQuMjNxMTEtMTUuNCA0Mi40Ny00Mi40N3ogbTcwMy4zMSAwcTMxLjUxIDI3LjEgNDIuNDcgNDIuNDdjNTAuNTQgNzAuNzcgNTAuNTQgMTUzLjY1IDYuMDYgMjA0LjI2cS05Mi44OCAxMDUuNi0zMzEgMjEyLjYyIDEyMC42Ni0yMzAuOCAxNTUtMjgzLjQzdDEyNy40Ny0xNzUuOTJ6TTQ0MC42IDg0LjcycTQ2LjUxIDEzNy41MiA1Mi41NiAxOTQuMVQ0ODMuMDcgNjU5UTI4MC44MSAzNjcuODMgMjgwLjgxIDIzNi4zOVQ0NDAuNiA4NC43MnogbTE0NS4yMSAwUTc0NS41NSAxMDUgNzQ1LjU1IDIzNi4zOVQ1NDMuMzQgNjU5cS0xNi4xNy0zMjMuNTUtMTAuMDktMzgwLjE2dDUyLjU2LTE5NC4xeiIgZmlsbD0iI0ZFMDAwMCIgcC1pZD0iNjkxMiIgZGF0YS1zcG0tYW5jaG9yLWlkPSJhMzEzeC5zZWFyY2hfaW5kZXguMC5pMC4xNjZmM2E4MWVWQlRhaSIgY2xhc3M9IiI+PC9wYXRoPjwvZz48L3N2Zz4=";
 
 /***/ }),
 
@@ -5250,7 +5354,7 @@ module.exports = "data:image/svg+xml;base64,PHN2ZyB0PSIxNzg1NDg5NDgzNjAwIiBjbGFz
   \***********************************/
 /***/ (function(module) {
 
-module.exports = "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDI0IDEwMjQiIHdpZHRoPSIyMDAiIGhlaWdodD0iMjAwIj48cGF0aCBkPSJNMTY4LjI5NDQgMzcwLjM0NjY2N2MtMjEuMDM5Nzg3IDkxLjAyMzM2LTIxLjAzOTc4NyAxNDUuNjM2NjkzIDAgMTYzLjg0IDMxLjU2MzA5MyAyNy4zMDY2NjcgNzkuMzQ5NzYgMjAuNDggMTUyLjU3NiAwIDQ4LjgxNDA4LTEzLjY1MzMzMyAyNjQuNzY1NDQtNzEuMTA5OTczIDY0Ny44NTA2NjctMTcyLjM3MzMzNC00MTcuMTA5MzMzIDE4NS40NTY2NC02NTEuODM0MDI3IDI4Ni43Mi03MDQuMTcwNjY3IDMwMy43ODY2NjctNzguNTA2NjY3IDI1LjYtMTMzLjk4Njk4NyAyNS42LTE3NS42MjYyNCAwLTQxLjY0MjY2Ny0yNS42LTQ0LjM3MzMzMy0xMDIuNC0xMy42NTMzMzMtMTYwLjQyNjY2NyAyMC40OC0zOC42ODMzMDcgNTEuNDg2NzItODMuNjI2NjY3IDkzLjAyMzU3My0xMzQuODI2NjY2eiIgZmlsbD0iIzAwMCIvPjwvc3ZnPgo=";
+module.exports = "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDI0IDEwMjQiIHdpZHRoPSIyMDAiIGhlaWdodD0iMjAwIj48ZyB0cmFuc2Zvcm09InRyYW5zbGF0ZSg1MTIsIDUxMikgc2NhbGUoMC44NzM4KSB0cmFuc2xhdGUoLTUxMS42NjY5LCAtNTIzLjMwNjYpIj48cGF0aCBkPSJNMTY4LjI5NDQgMzcwLjM0NjY2N2MtMjEuMDM5Nzg3IDkxLjAyMzM2LTIxLjAzOTc4NyAxNDUuNjM2NjkzIDAgMTYzLjg0IDMxLjU2MzA5MyAyNy4zMDY2NjcgNzkuMzQ5NzYgMjAuNDggMTUyLjU3NiAwIDQ4LjgxNDA4LTEzLjY1MzMzMyAyNjQuNzY1NDQtNzEuMTA5OTczIDY0Ny44NTA2NjctMTcyLjM3MzMzNC00MTcuMTA5MzMzIDE4NS40NTY2NC02NTEuODM0MDI3IDI4Ni43Mi03MDQuMTcwNjY3IDMwMy43ODY2NjctNzguNTA2NjY3IDI1LjYtMTMzLjk4Njk4NyAyNS42LTE3NS42MjYyNCAwLTQxLjY0MjY2Ny0yNS42LTQ0LjM3MzMzMy0xMDIuNC0xMy42NTMzMzMtMTYwLjQyNjY2NyAyMC40OC0zOC42ODMzMDcgNTEuNDg2NzItODMuNjI2NjY3IDkzLjAyMzU3My0xMzQuODI2NjY2eiIgZmlsbD0iIzAwMCIvPjwvZz48L3N2Zz4K";
 
 /***/ }),
 
@@ -5260,7 +5364,7 @@ module.exports = "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5v
   \***********************************/
 /***/ (function(module) {
 
-module.exports = "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMjggMTI4IiBmaWxsPSJub25lIj4KICA8Y2lyY2xlIGN4PSI2NCIgY3k9IjY0IiByPSI2MCIgc3Ryb2tlPSIjRThEOEIwIiBzdHJva2Utd2lkdGg9IjIiIGZpbGw9IiNmZmYiLz4KICA8cGF0aCBkPSJNNjQgMzIgTDcwIDU2IEw5NiA1MCBMNzYgNjYgTDk2IDc4IEw3MCA3NCBMNjQgOTYgTDU4IDc0IEwzMiA3OCBMNTIgNjYgTDMyIDUwIEw1OCA1NiBaIiBzdHJva2U9IiNENEEwMTciIHN0cm9rZS13aWR0aD0iMiIgZmlsbD0iI0ZGRDcwMCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPgogIDxlbGxpcHNlIGN4PSI2NCIgY3k9IjY0IiByeD0iMTQiIHJ5PSIxNCIgc3Ryb2tlPSIjRjVGNURDIiBzdHJva2Utd2lkdGg9IjEuNSIgZmlsbD0iI0ZGRkFDRCIvPgogIDxjaXJjbGUgY3g9IjU4IiBjeT0iNjAiIHI9IjEuNSIgZmlsbD0iIzhCNDUxMyIvPgogIDxjaXJjbGUgY3g9IjcwIiBjeT0iNjAiIHI9IjEuNSIgZmlsbD0iIzhCNDUxMyIvPgogIDxwYXRoIGQ9Ik01OCA2OCBMNjQgNzIgTDcwIDY4IiBzdHJva2U9IiM4QjQ1MTMiIHN0cm9rZS13aWR0aD0iMS4yIiBmaWxsPSJub25lIiBzdHJva2UtbGluZWNhcD0icm91bmQiLz4KPC9zdmc+";
+module.exports = "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMjggMTI4IiBmaWxsPSJub25lIj4KICA8ZyB0cmFuc2Zvcm09InRyYW5zbGF0ZSg2NCwgNjQpIHNjYWxlKDAuODMyKSB0cmFuc2xhdGUoLTY0LCAtNjQpIj4KICA8Y2lyY2xlIGN4PSI2NCIgY3k9IjY0IiByPSI2MCIgc3Ryb2tlPSIjRThEOEIwIiBzdHJva2Utd2lkdGg9IjIiIGZpbGw9IiNmZmYiLz4KICA8cGF0aCBkPSJNNjQgMzIgTDcwIDU2IEw5NiA1MCBMNzYgNjYgTDk2IDc4IEw3MCA3NCBMNjQgOTYgTDU4IDc0IEwzMiA3OCBMNTIgNjYgTDMyIDUwIEw1OCA1NiBaIiBzdHJva2U9IiNENEEwMTciIHN0cm9rZS13aWR0aD0iMiIgZmlsbD0iI0ZGRDcwMCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPgogIDxlbGxpcHNlIGN4PSI2NCIgY3k9IjY0IiByeD0iMTQiIHJ5PSIxNCIgc3Ryb2tlPSIjRjVGNURDIiBzdHJva2Utd2lkdGg9IjEuNSIgZmlsbD0iI0ZGRkFDRCIvPgogIDxjaXJjbGUgY3g9IjU4IiBjeT0iNjAiIHI9IjEuNSIgZmlsbD0iIzhCNDUxMyIvPgogIDxjaXJjbGUgY3g9IjcwIiBjeT0iNjAiIHI9IjEuNSIgZmlsbD0iIzhCNDUxMyIvPgogIDxwYXRoIGQ9Ik01OCA2OCBMNjQgNzIgTDcwIDY4IiBzdHJva2U9IiM4QjQ1MTMiIHN0cm9rZS13aWR0aD0iMS4yIiBmaWxsPSJub25lIiBzdHJva2UtbGluZWNhcD0icm91bmQiLz4KICA8L2c+Cjwvc3ZnPg==";
 
 /***/ }),
 
@@ -5270,7 +5374,7 @@ module.exports = "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5v
   \***************************************/
 /***/ (function(module) {
 
-module.exports = "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxNzEwIDEwMjQiIHdpZHRoPSIyMDAiIGhlaWdodD0iMjAwIj48cGF0aCBkPSJNMCA4NjQuMjY4MTVsMi42OTU4OTYgMS4zNDc5NDlhODIyLjAyMzY4MiA4MjIuMDIzNjgyIDAgMCAwIDMyMS40ODU2MjIgNjIuNjc5NTg2QTgwNS44NDgzMDUgODA1Ljg0ODMwNSAwIDAgMCA3NDEuMzcxNDU0IDgyMi43MDY0MTdjNy4xODkwNTcgNS4zOTE3OTIgMTQuMzc4MTEzIDEwLjc4MzU4NSAyMi40NjU4MDEgMTUuNzI2MDYybC01OC4xODY0MjYgMTgxLjk3Mjk5My0xLjEyMzI5IDMuNTk0NTI4aDQ4Ny45NTcyMTJ2LTIuNjk1ODk2YTgzLjU3Mjc4MiA4My41NzI3ODIgMCAwIDAtMi40NzEyMzktMTkuNzY5OTA2aDIxMy4yMDA0NTh2LTIuNjk1ODk2YTgzLjEyMzQ2NiA4My4xMjM0NjYgMCAwIDAtODMuMTIzNDY2LTgzLjEyMzQ2NmgtMTQ5Ljg0Njg5N2w5Ljg4NDk1My0xNy43NDc5ODNhMTg5LjE2MjA1IDE4OS4xNjIwNSAwIDAgMCAxMTQuMzUwOTMtMTY2LjI0NjkzMiA4OS44NjMyMDcgODkuODYzMjA3IDAgMCAwIDUuMzkxNzkyLTcuNDEzNzE1bDc4LjE4MDk5LTEyMS45ODkzMDMgNjcuMzk3NDA1LTkuMjEwOTc4IDUwLjA5ODczOCAxMS42ODIyMTcgNjMuODAyODc2LTI2LjUwOTY0NnYtNDcuMTc4MTg0bDguMzEyMzQ3LTEuMTIzMjkgNDkuODc0MDc5IDExLjQ1NzU1OSA2NC4wMjc1MzUtMjYuMjg0OTg4di0xMDIuNjY4NzEzbC02NC43MDE1MDktMTMuMjU0ODIzLTc1LjcwOTc1MSAzMS4wMDI4MDYtNDguOTc1NDQ4LTYuMjkwNDI1IDQ5LjQyNDc2NC03Ny4wNTc2OTloNDAuMjEzNzg1bDUwLjc3MjcxMi02Mi40NTQ5MjkgMTkuMDk1OTMxIDMwLjEwNDE3NCA0Mi40NjAzNjUtOC45ODYzMlYyMTIuOTg0NTYxTDE3MDkuNjQ3NTA0IDE3OS43MzUxNzVWMTIxLjMyNDA5bC0xMzUuOTE4MS02MS4xMDY5OC0yMC42Njg1MzctMjIuNDY1ODAyYTEyMi4yMTM5NjEgMTIyLjIxMzk2MSAwIDAgMC02MC42NTc2NjUtMzIuMzUwNzU0QTMyNS4zMDQ4MDggMzI1LjMwNDgwOCAwIDAgMCAxNDMzLjA5MzQ4NiAwLjAwODc2MmEzMDcuMzMyMTY2IDMwNy4zMzIxNjYgMCAwIDAtOTUuMjU0OTk5IDE0LjM3ODExM2wtMjIuNDY1ODAyLTkuMjEwOTc5aC00Ni43Mjg4Njd2Mi40NzEyMzhBMTg5LjgzNjAyNCAxODkuODM2MDI0IDAgMCAwIDEyNjcuMDcxMjEyIDQ0Ljk0MDM2NWwtMTI5Ljg1MjMzMyA0NC45MzE2MDMtMjI3LjgwMzIyOSAzNS45NDUyODNhMzg2LjYzNjQ0NiAzODYuNjM2NDQ2IDAgMCAwLTIxOC41OTIyNSAxMTYuMTQ4MTk0IDM5MS41Nzg5MjIgMzkxLjU3ODkyMiAwIDAgMC01MC45OTczNyA0NjkuMzEwNTk2IDk5Ny40ODE1OTIgOTk3LjQ4MTU5MiAwIDAgMC0xOTAuNTA5OTk3LTE4LjY0NjYxNWMtMTYxLjA3OTc5OCAwLTMxMC43MDIwMzcgNDEuNTYxNzMzLTQyMS4yMzM3ODEgMTE3LjI3MTQ4NHoiIGZpbGw9IiM5QTZBNDQiLz48L3N2Zz4K";
+module.exports = "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxNzEwIDEwMjQiIHdpZHRoPSIyMDAiIGhlaWdodD0iMjAwIj48ZyB0cmFuc2Zvcm09InRyYW5zbGF0ZSg4NTUsIDUxMikgc2NhbGUoMC43OCkgdHJhbnNsYXRlKC04NTQuODIzNywgLTUxMikiPjxwYXRoIGQ9Ik0wIDg2NC4yNjgxNWwyLjY5NTg5NiAxLjM0Nzk0OWE4MjIuMDIzNjgyIDgyMi4wMjM2ODIgMCAwIDAgMzIxLjQ4NTYyMiA2Mi42Nzk1ODZBODA1Ljg0ODMwNSA4MDUuODQ4MzA1IDAgMCAwIDc0MS4zNzE0NTQgODIyLjcwNjQxN2M3LjE4OTA1NyA1LjM5MTc5MiAxNC4zNzgxMTMgMTAuNzgzNTg1IDIyLjQ2NTgwMSAxNS43MjYwNjJsLTU4LjE4NjQyNiAxODEuOTcyOTkzLTEuMTIzMjkgMy41OTQ1MjhoNDg3Ljk1NzIxMnYtMi42OTU4OTZhODMuNTcyNzgyIDgzLjU3Mjc4MiAwIDAgMC0yLjQ3MTIzOS0xOS43Njk5MDZoMjEzLjIwMDQ1OHYtMi42OTU4OTZhODMuMTIzNDY2IDgzLjEyMzQ2NiAwIDAgMC04My4xMjM0NjYtODMuMTIzNDY2aC0xNDkuODQ2ODk3bDkuODg0OTUzLTE3Ljc0Nzk4M2ExODkuMTYyMDUgMTg5LjE2MjA1IDAgMCAwIDExNC4zNTA5My0xNjYuMjQ2OTMyIDg5Ljg2MzIwNyA4OS44NjMyMDcgMCAwIDAgNS4zOTE3OTItNy40MTM3MTVsNzguMTgwOTktMTIxLjk4OTMwMyA2Ny4zOTc0MDUtOS4yMTA5NzggNTAuMDk4NzM4IDExLjY4MjIxNyA2My44MDI4NzYtMjYuNTA5NjQ2di00Ny4xNzgxODRsOC4zMTIzNDctMS4xMjMyOSA0OS44NzQwNzkgMTEuNDU3NTU5IDY0LjAyNzUzNS0yNi4yODQ5ODh2LTEwMi42Njg3MTNsLTY0LjcwMTUwOS0xMy4yNTQ4MjMtNzUuNzA5NzUxIDMxLjAwMjgwNi00OC45NzU0NDgtNi4yOTA0MjUgNDkuNDI0NzY0LTc3LjA1NzY5OWg0MC4yMTM3ODVsNTAuNzcyNzEyLTYyLjQ1NDkyOSAxOS4wOTU5MzEgMzAuMTA0MTc0IDQyLjQ2MDM2NS04Ljk4NjMyVjIxMi45ODQ1NjFMMTcwOS42NDc1MDQgMTc5LjczNTE3NVYxMjEuMzI0MDlsLTEzNS45MTgxLTYxLjEwNjk4LTIwLjY2ODUzNy0yMi40NjU4MDJhMTIyLjIxMzk2MSAxMjIuMjEzOTYxIDAgMCAwLTYwLjY1NzY2NS0zMi4zNTA3NTRBMzI1LjMwNDgwOCAzMjUuMzA0ODA4IDAgMCAwIDE0MzMuMDkzNDg2IDAuMDA4NzYyYTMwNy4zMzIxNjYgMzA3LjMzMjE2NiAwIDAgMC05NS4yNTQ5OTkgMTQuMzc4MTEzbC0yMi40NjU4MDItOS4yMTA5NzloLTQ2LjcyODg2N3YyLjQ3MTIzOEExODkuODM2MDI0IDE4OS44MzYwMjQgMCAwIDAgMTI2Ny4wNzEyMTIgNDQuOTQwMzY1bC0xMjkuODUyMzMzIDQ0LjkzMTYwMy0yMjcuODAzMjI5IDM1Ljk0NTI4M2EzODYuNjM2NDQ2IDM4Ni42MzY0NDYgMCAwIDAtMjE4LjU5MjI1IDExNi4xNDgxOTQgMzkxLjU3ODkyMiAzOTEuNTc4OTIyIDAgMCAwLTUwLjk5NzM3IDQ2OS4zMTA1OTYgOTk3LjQ4MTU5MiA5OTcuNDgxNTkyIDAgMCAwLTE5MC41MDk5OTctMTguNjQ2NjE1Yy0xNjEuMDc5Nzk4IDAtMzEwLjcwMjAzNyA0MS41NjE3MzMtNDIxLjIzMzc4MSAxMTcuMjcxNDg0eiIgZmlsbD0iIzlBNkE0NCIvPjwvZz48L3N2Zz4K";
 
 /***/ }),
 
@@ -5280,7 +5384,7 @@ module.exports = "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5v
   \*************************************/
 /***/ (function(module) {
 
-module.exports = "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDI0IDEwMjQiPjxwYXRoIGQ9Ik03MDYuOTc1NjQ3IDc5NC4zOTE1NzlWMzg5LjQyMjI0NGMwLTkyLjAxNDY3LTc0LjU3MDM2OS0xNjYuNjE4ODA4LTE2Ni41NzQ4MDctMTY2LjYxODgwOUg3Mi4xNDkyMjdjLTMuNjEwMjI0IDAtNi41MzU4NTcgMi45MDkyNi02LjUzNTg1NyA2LjQ4MjY0NXY1NjUuMTAxNDA1YzAgMy41NzMzODUgMi45MjQ2MDkgNi40NjkzNDIgNi41MzU4NTcgNi40NjkzNDJoMTI1LjA3NDYyM2MzLjYxMTI0OCAwIDYuNTMxNzYzLTIuOTExMzA2IDYuNTMxNzY0LTYuNTA1MTU3VjM1MC44MTM5MjRjMC0zLjYwMTAxNSAyLjkyNDYwOS02LjUyMjU1NCA2LjUzNTg1Ni02LjUyMjU1NGgyNjguOTYyNzMyYzUwLjUwNzMyNCAwIDkxLjQ2NjE3OCA0MC45Mzk0MTEgOTEuNDY2MTc4IDkxLjQ1Mjg3NXYzNTguNTk0MTIyYzAgMy41OTc5NDUgMi45MjA1MTYgNi41MDIwODggNi41MTMzNDQgNi41MDIwODdINzAwLjQ2NzQxOWMzLjU4NDY0MiAwIDYuNTEzMzQ0LTIuOTAyMDk2IDYuNTEzMzQ0LTYuNDY5MzQybC0wLjAwNTExNiAwLjAyMDQ2N3ogbS0yNTIuNTc2NTMtMC4wNDQwMDNhNi40OTI4NzggNi40OTI4NzggMCAwIDEtNi41MDkyNSA2LjUwOTI1MUgzMjIuODQ0OTE5Yy0zLjYxMTI0OCAwLTYuNTM1ODU3LTIuOTExMzA2LTYuNTM1ODU3LTYuNTA5MjUxVjQ1NC40Njc2NzljMC0zLjU5Nzk0NSAyLjkyNDYwOS02LjUxODQ2IDYuNTM1ODU3LTYuNTE4NDYxaDEyNS4wNDQ5NDhhNi41MDMxMTEgNi41MDMxMTEgMCAwIDEgNi41MDkyNSA2LjUxODQ2MVY3OTQuMzY0OTczdi0wLjAxNzM5N201MDAuMDQ1NzM3IDBjMCAzLjYwMTAxNS0yLjkyODcwMiA2LjUwOTI1MS02LjUzODkyNiA2LjUwOTI1MUg4MjIuODg5NjMzYy0zLjYyMDQ1NyAwLTYuNTY0NTA5LTIuOTExMzA2LTYuNTY0NTA5LTYuNTA5MjUxVjIyOS4zNDY0NTVjMC0zLjYxNDMxNyAyLjk0NDA1Mi02LjUzMTc2MyA2LjU2NDUwOS02LjUzMTc2M2gxMjUuMDE2Mjk1YTYuNTI4Njk0IDYuNTI4Njk0IDAgMCAxIDYuNTM4OTI2IDYuNTMxNzYzdjU2NS4wMDExMjEiIGZpbGw9IiMyNzI1MzYiLz48L3N2Zz4K";
+module.exports = "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDI0IDEwMjQiPjxnIHRyYW5zZm9ybT0idHJhbnNsYXRlKDUxMiwgNTEyKSBzY2FsZSgwLjg5ODYpIHRyYW5zbGF0ZSgtNTEwLjAyOTIsIC01MTEuODMwMikiPjxwYXRoIGQ9Ik03MDYuOTc1NjQ3IDc5NC4zOTE1NzlWMzg5LjQyMjI0NGMwLTkyLjAxNDY3LTc0LjU3MDM2OS0xNjYuNjE4ODA4LTE2Ni41NzQ4MDctMTY2LjYxODgwOUg3Mi4xNDkyMjdjLTMuNjEwMjI0IDAtNi41MzU4NTcgMi45MDkyNi02LjUzNTg1NyA2LjQ4MjY0NXY1NjUuMTAxNDA1YzAgMy41NzMzODUgMi45MjQ2MDkgNi40NjkzNDIgNi41MzU4NTcgNi40NjkzNDJoMTI1LjA3NDYyM2MzLjYxMTI0OCAwIDYuNTMxNzYzLTIuOTExMzA2IDYuNTMxNzY0LTYuNTA1MTU3VjM1MC44MTM5MjRjMC0zLjYwMTAxNSAyLjkyNDYwOS02LjUyMjU1NCA2LjUzNTg1Ni02LjUyMjU1NGgyNjguOTYyNzMyYzUwLjUwNzMyNCAwIDkxLjQ2NjE3OCA0MC45Mzk0MTEgOTEuNDY2MTc4IDkxLjQ1Mjg3NXYzNTguNTk0MTIyYzAgMy41OTc5NDUgMi45MjA1MTYgNi41MDIwODggNi41MTMzNDQgNi41MDIwODdINzAwLjQ2NzQxOWMzLjU4NDY0MiAwIDYuNTEzMzQ0LTIuOTAyMDk2IDYuNTEzMzQ0LTYuNDY5MzQybC0wLjAwNTExNiAwLjAyMDQ2N3ogbS0yNTIuNTc2NTMtMC4wNDQwMDNhNi40OTI4NzggNi40OTI4NzggMCAwIDEtNi41MDkyNSA2LjUwOTI1MUgzMjIuODQ0OTE5Yy0zLjYxMTI0OCAwLTYuNTM1ODU3LTIuOTExMzA2LTYuNTM1ODU3LTYuNTA5MjUxVjQ1NC40Njc2NzljMC0zLjU5Nzk0NSAyLjkyNDYwOS02LjUxODQ2IDYuNTM1ODU3LTYuNTE4NDYxaDEyNS4wNDQ5NDhhNi41MDMxMTEgNi41MDMxMTEgMCAwIDEgNi41MDkyNSA2LjUxODQ2MVY3OTQuMzY0OTczdi0wLjAxNzM5N201MDAuMDQ1NzM3IDBjMCAzLjYwMTAxNS0yLjkyODcwMiA2LjUwOTI1MS02LjUzODkyNiA2LjUwOTI1MUg4MjIuODg5NjMzYy0zLjYyMDQ1NyAwLTYuNTY0NTA5LTIuOTExMzA2LTYuNTY0NTA5LTYuNTA5MjUxVjIyOS4zNDY0NTVjMC0zLjYxNDMxNyAyLjk0NDA1Mi02LjUzMTc2MyA2LjU2NDUwOS02LjUzMTc2M2gxMjUuMDE2Mjk1YTYuNTI4Njk0IDYuNTI4Njk0IDAgMCAxIDYuNTM4OTI2IDYuNTMxNzYzdjU2NS4wMDExMjEiIGZpbGw9IiMyNzI1MzYiLz48L2c+PC9zdmc+Cg==";
 
 /***/ }),
 

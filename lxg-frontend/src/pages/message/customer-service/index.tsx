@@ -134,10 +134,12 @@ const CustomerServicePage: React.FC = () => {
   }, []);
 
   const handleReconnect = useCallback(() => {
+    // 非 closed/idle 状态时忽略点击（避免给 Taro 事件处理器传 undefined 导致 removeEventListener 崩溃）
+    if (wsStatus !== 'closed' && wsStatus !== 'idle') return;
     chatWS.resetReconnect();
     connectWS();
     Taro.showToast({ title: '正在重新连接...', icon: 'none' });
-  }, [connectWS]);
+  }, [connectWS, wsStatus]);
 
   const conversationTitle = useMemo(() => {
     return currentConversation?.title
@@ -224,7 +226,7 @@ const CustomerServicePage: React.FC = () => {
             <Text
               className={`${styles.headerStatus} ws-${wsStatus}`}
               style={{ color: statusColor }}
-              onClick={wsStatus === 'closed' || wsStatus === 'idle' ? handleReconnect : undefined}
+              onClick={handleReconnect}
             >
               {statusText}
               {(wsStatus === 'closed' || wsStatus === 'idle') && (

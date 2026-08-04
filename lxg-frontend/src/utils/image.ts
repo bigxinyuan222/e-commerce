@@ -17,6 +17,8 @@ const PLACEHOLDER_DOMAINS = [
   'xxx.com',
   'xxx.cn',
   'xxx.yyy',
+  'xxx',
+  'yyy',
   'demo.example.com',
   'test.example.com',
 ];

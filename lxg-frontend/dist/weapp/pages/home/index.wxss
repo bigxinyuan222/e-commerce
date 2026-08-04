@@ -73,21 +73,14 @@
   padding: 0 32rpx;
   margin: 32rpx 0;
 }
-.home-module__categoryNavWrap___oGT3B .home-module__categoryNav___TdagT {
-  white-space: nowrap;
-}
-.home-module__categoryNavWrap___oGT3B .home-module__categoryNav___TdagT .home-module__categoryNavInner___L9meQ {
-  display: -webkit-inline-flex;
-  display: -ms-inline-flexbox;
-  display: inline-flex;
-  gap: 32rpx;
+.home-module__categoryNavWrap___oGT3B .home-module__categoryNavInner___L9meQ {
   padding: 32rpx 32rpx;
   background-color: #ffffff;
   border-radius: 32rpx;
   -webkit-box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.06);
           box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.06);
 }
-.home-module__categoryNavWrap___oGT3B .home-module__categoryNav___TdagT .home-module__categoryNavInner___L9meQ .home-module__categoryItem___zQ8_l {
+.home-module__categoryNavWrap___oGT3B .home-module__categoryNavInner___L9meQ .home-module__categoryItem___zQ8_l {
   display: -webkit-flex;
   display: -ms-flexbox;
   display: flex;
@@ -97,12 +90,8 @@
   -webkit-align-items: center;
       -ms-flex-align: center;
           align-items: center;
-  min-width: 120rpx;
-  -webkit-flex-shrink: 0;
-      -ms-flex-negative: 0;
-          flex-shrink: 0;
 }
-.home-module__categoryNavWrap___oGT3B .home-module__categoryNav___TdagT .home-module__categoryNavInner___L9meQ .home-module__categoryItem___zQ8_l .home-module__categoryIcon___k7xtB {
+.home-module__categoryNavWrap___oGT3B .home-module__categoryNavInner___L9meQ .home-module__categoryItem___zQ8_l .home-module__categoryIcon___k7xtB {
   width: 64rpx;
   height: 64rpx;
   border-radius: 50%;
@@ -121,15 +110,49 @@
   -webkit-box-shadow: 0 8rpx 20rpx rgba(226, 35, 26, 0.25);
           box-shadow: 0 8rpx 20rpx rgba(226, 35, 26, 0.25);
 }
-.home-module__categoryNavWrap___oGT3B .home-module__categoryNav___TdagT .home-module__categoryNavInner___L9meQ .home-module__categoryItem___zQ8_l .home-module__categoryIcon___k7xtB .home-module__categoryIconImg___ADAxe {
+.home-module__categoryNavWrap___oGT3B .home-module__categoryNavInner___L9meQ .home-module__categoryItem___zQ8_l .home-module__categoryIcon___k7xtB .home-module__categoryIconImg___ADAxe {
   width: 32rpx;
   height: 32rpx;
   background: transparent;
 }
-.home-module__categoryNavWrap___oGT3B .home-module__categoryNav___TdagT .home-module__categoryNavInner___L9meQ .home-module__categoryItem___zQ8_l .home-module__categoryName___GEBF1 {
+.home-module__categoryNavWrap___oGT3B .home-module__categoryNavInner___L9meQ .home-module__categoryItem___zQ8_l .home-module__categoryName___GEBF1 {
   font-size: 28rpx;
   color: #4a4a4a;
   font-weight: 500;
+}
+.home-module__categoryNavWrap___oGT3B .home-module__categoryNav___TdagT {
+  white-space: nowrap;
+}
+.home-module__categoryNavWrap___oGT3B .home-module__categoryNav___TdagT .home-module__categoryNavInner___L9meQ {
+  display: -webkit-inline-flex;
+  display: -ms-inline-flexbox;
+  display: inline-flex;
+  gap: 32rpx;
+}
+.home-module__categoryNavWrap___oGT3B .home-module__categoryNav___TdagT .home-module__categoryNavInner___L9meQ .home-module__categoryItem___zQ8_l {
+  min-width: 120rpx;
+  -webkit-flex-shrink: 0;
+      -ms-flex-negative: 0;
+          flex-shrink: 0;
+}
+.home-module__categoryNavWrap___oGT3B .home-module__categoryNavFill___dpFZi .home-module__categoryNavInner___L9meQ {
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-justify-content: space-between;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+  width: 100%;
+  gap: 16rpx;
+}
+.home-module__categoryNavWrap___oGT3B .home-module__categoryNavFill___dpFZi .home-module__categoryNavInner___L9meQ .home-module__categoryItem___zQ8_l {
+  -webkit-flex: 1;
+      -ms-flex: 1;
+          flex: 1;
+  min-width: 0;
+  -webkit-flex-shrink: 1;
+      -ms-flex-negative: 1;
+          flex-shrink: 1;
 }
 .home-module__brandsSection___Grurl {
   padding: 0 32rpx;
@@ -181,25 +204,18 @@
   margin-left: 4rpx;
 }
 .home-module__brandsSection___Grurl .home-module__brandsList___AXIDA {
-  white-space: nowrap;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(130rpx, 1fr));
+  gap: 16rpx;
 }
 .home-module__brandsSection___Grurl .home-module__brandsList___AXIDA .home-module__brandItem___syJmF {
-  display: inline-block;
-  margin-right: 24rpx;
   text-align: center;
   background-color: #ffffff;
   border-radius: 24rpx;
   -webkit-box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.06);
           box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.06);
   overflow: hidden;
-  width: 180rpx;
-  vertical-align: top;
-}
-.home-module__brandsSection___Grurl .home-module__brandsList___AXIDA .home-module__brandItem___syJmF:first-child {
-  margin-left: 32rpx;
-}
-.home-module__brandsSection___Grurl .home-module__brandsList___AXIDA .home-module__brandItem___syJmF:last-child {
-  margin-right: 32rpx;
+  min-width: 0;
 }
 .home-module__brandsSection___Grurl .home-module__brandsList___AXIDA .home-module__brandItem___syJmF .home-module__brandIconWrap___yl1dx {
   position: relative;
@@ -426,17 +442,10 @@
   color: #d91e18;
   margin-bottom: 4rpx;
 }
-.home-module__seckillArea___ju4h7 .home-module__seckillProducts___jUo6K .home-module__seckillProduct___NuSZ9 .home-module__seckillPriceArea___mAeSm .home-module__seckillPrice___bykOz::before {
-  content: "¥";
-  font-size: 30rpx;
-}
 .home-module__seckillArea___ju4h7 .home-module__seckillProducts___jUo6K .home-module__seckillProduct___NuSZ9 .home-module__seckillPriceArea___mAeSm .home-module__originalPrice___liqTH {
   font-size: 30rpx;
   color: #8a8a8a;
   text-decoration: line-through;
-}
-.home-module__seckillArea___ju4h7 .home-module__seckillProducts___jUo6K .home-module__seckillProduct___NuSZ9 .home-module__seckillPriceArea___mAeSm .home-module__originalPrice___liqTH::before {
-  content: "¥";
 }
 .home-module__seckillArea___ju4h7 .home-module__seckillProducts___jUo6K .home-module__seckillProduct___NuSZ9 .home-module__seckillBtn___VFtGp {
   width: 100%;
@@ -649,9 +658,6 @@
   color: #8a8a8a;
   text-decoration: line-through;
   margin-left: 16rpx;
-}
-.home-module__productGrid___vabQw .home-module__productCard___eqvIf .home-module__productInfo___xYtl8 .home-module__productPrice___O2MUC .home-module__originalPrice___liqTH::before {
-  content: "¥";
 }
 .home-module__productGrid___vabQw .home-module__productCard___eqvIf .home-module__productInfo___xYtl8 .home-module__salesInfo___dMMqr {
   font-size: 28rpx;

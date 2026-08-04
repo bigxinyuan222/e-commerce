@@ -4,7 +4,6 @@ import Taro from '@tarojs/taro';
 import { apiGet } from '@/api/common';
 import { homeApi, categoryApi, brandApi, productApi } from '@/api/home';
 import { fetchSeckillActivities } from '@/api/seckill';
-import { seckillActivity as mockSeckillActivity } from '@/data/common/home';
 import { getImageUrl, normalizeProductListImages, lazyImgProps, getBrandIcon } from '@/utils/image';
 import { getCategoryIcon } from '@/utils/categoryIcons';
 import styles from '@/styles/home/home.module.scss';
@@ -329,11 +328,11 @@ const HomePage: React.FC = () => {
             endTime: seckillData.endTime || new Date(Date.now() + 3600000).toISOString()
           });
         } else {
-          // 接口无活动数据，使用本地 mock 兜底，保证首页秒杀板块始终展示
+          // 接口无活动数据，秒杀板块显示空状态
           setSeckillActivity({
-            id: mockSeckillActivity.id || '',
-            products: mockSeckillActivity.products || [],
-            endTime: mockSeckillActivity.endTime || new Date(Date.now() + 3600000).toISOString()
+            id: '',
+            products: [],
+            endTime: ''
           });
         }
 

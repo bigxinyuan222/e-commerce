@@ -208,7 +208,7 @@ var MyCouponsPage = function MyCouponsPage() {
       });
     } else if (coupon.scope === 'category' && coupon.categoryId) {
       _tarojs_taro__WEBPACK_IMPORTED_MODULE_1___default().navigateTo({
-        url: "/pages/home/search-results/index?keyword=".concat(encodeURIComponent(coupon.scopeText))
+        url: "/pages/home/search-results/index?keyword=".concat(encodeURIComponent(coupon.scopeText || ''))
       });
     } else {
       _tarojs_taro__WEBPACK_IMPORTED_MODULE_1___default().navigateTo({

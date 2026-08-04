@@ -7,25 +7,23 @@
   \**************************************************************************************************************/
 /***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
-/* harmony import */ var D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_toConsumableArray_js__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! ./node_modules/@babel/runtime/helpers/esm/toConsumableArray.js */ "./node_modules/@babel/runtime/helpers/esm/toConsumableArray.js");
-/* harmony import */ var D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! ./node_modules/@babel/runtime/helpers/esm/regenerator.js */ "./node_modules/@babel/runtime/helpers/esm/regenerator.js");
-/* harmony import */ var D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_slicedToArray_js__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(/*! ./node_modules/@babel/runtime/helpers/esm/slicedToArray.js */ "./node_modules/@babel/runtime/helpers/esm/slicedToArray.js");
-/* harmony import */ var D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ./node_modules/@babel/runtime/helpers/esm/asyncToGenerator.js */ "./node_modules/@babel/runtime/helpers/esm/asyncToGenerator.js");
-/* harmony import */ var D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ./node_modules/@babel/runtime/helpers/esm/objectSpread2.js */ "./node_modules/@babel/runtime/helpers/esm/objectSpread2.js");
+/* harmony import */ var D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_toConsumableArray_js__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! ./node_modules/@babel/runtime/helpers/esm/toConsumableArray.js */ "./node_modules/@babel/runtime/helpers/esm/toConsumableArray.js");
+/* harmony import */ var D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ./node_modules/@babel/runtime/helpers/esm/regenerator.js */ "./node_modules/@babel/runtime/helpers/esm/regenerator.js");
+/* harmony import */ var D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_slicedToArray_js__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! ./node_modules/@babel/runtime/helpers/esm/slicedToArray.js */ "./node_modules/@babel/runtime/helpers/esm/slicedToArray.js");
+/* harmony import */ var D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ./node_modules/@babel/runtime/helpers/esm/asyncToGenerator.js */ "./node_modules/@babel/runtime/helpers/esm/asyncToGenerator.js");
+/* harmony import */ var D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./node_modules/@babel/runtime/helpers/esm/objectSpread2.js */ "./node_modules/@babel/runtime/helpers/esm/objectSpread2.js");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _tarojs_components__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! @tarojs/components */ "./node_modules/@tarojs/plugin-platform-weapp/dist/components-react.js");
+/* harmony import */ var _tarojs_components__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! @tarojs/components */ "./node_modules/@tarojs/plugin-platform-weapp/dist/components-react.js");
 /* harmony import */ var _tarojs_taro__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @tarojs/taro */ "./node_modules/@tarojs/taro/index.js");
 /* harmony import */ var _tarojs_taro__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_tarojs_taro__WEBPACK_IMPORTED_MODULE_1__);
 /* harmony import */ var _api_common__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @/api/common */ "./src/api/common/index.ts");
 /* harmony import */ var _api_home__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @/api/home */ "./src/api/home/index.ts");
 /* harmony import */ var _api_seckill__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @/api/seckill */ "./src/api/seckill/index.ts");
-/* harmony import */ var _data_common_home__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @/data/common/home */ "./src/data/common/home.ts");
-/* harmony import */ var _utils_image__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @/utils/image */ "./src/utils/image.ts");
-/* harmony import */ var _utils_categoryIcons__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! @/utils/categoryIcons */ "./src/utils/categoryIcons.ts");
-/* harmony import */ var _styles_home_home_module_scss__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! @/styles/home/home.module.scss */ "./src/styles/home/home.module.scss");
-/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/cjs/react-jsx-runtime.production.min.js");
-
+/* harmony import */ var _utils_image__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @/utils/image */ "./src/utils/image.ts");
+/* harmony import */ var _utils_categoryIcons__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @/utils/categoryIcons */ "./src/utils/categoryIcons.ts");
+/* harmony import */ var _styles_home_home_module_scss__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! @/styles/home/home.module.scss */ "./src/styles/home/home.module.scss");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/cjs/react-jsx-runtime.production.min.js");
 
 
 
@@ -45,42 +43,42 @@ var ProductCard = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().memo
   var _product$images, _product$tags;
   var product = _ref.product,
     _onClick = _ref.onClick;
-  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_10__.View, {
-    className: _styles_home_home_module_scss__WEBPACK_IMPORTED_MODULE_8__["default"].productCard,
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_9__.View, {
+    className: _styles_home_home_module_scss__WEBPACK_IMPORTED_MODULE_7__["default"].productCard,
     onClick: function onClick() {
       return _onClick(product.id);
     },
-    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_10__.Image, (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_11__["default"])({
-      src: (0,_utils_image__WEBPACK_IMPORTED_MODULE_6__.getImageUrl)(((_product$images = product.images) === null || _product$images === void 0 ? void 0 : _product$images[0]) || product.image),
-      className: _styles_home_home_module_scss__WEBPACK_IMPORTED_MODULE_8__["default"].productImage,
+    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_9__.Image, (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_10__["default"])({
+      src: (0,_utils_image__WEBPACK_IMPORTED_MODULE_5__.getImageUrl)(((_product$images = product.images) === null || _product$images === void 0 ? void 0 : _product$images[0]) || product.image),
+      className: _styles_home_home_module_scss__WEBPACK_IMPORTED_MODULE_7__["default"].productImage,
       mode: "aspectFill"
-    }, (0,_utils_image__WEBPACK_IMPORTED_MODULE_6__.lazyImgProps)())), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_10__.View, {
-      className: _styles_home_home_module_scss__WEBPACK_IMPORTED_MODULE_8__["default"].productInfo,
-      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_10__.Text, {
-        className: _styles_home_home_module_scss__WEBPACK_IMPORTED_MODULE_8__["default"].productName,
+    }, (0,_utils_image__WEBPACK_IMPORTED_MODULE_5__.lazyImgProps)())), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_9__.View, {
+      className: _styles_home_home_module_scss__WEBPACK_IMPORTED_MODULE_7__["default"].productInfo,
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_9__.Text, {
+        className: _styles_home_home_module_scss__WEBPACK_IMPORTED_MODULE_7__["default"].productName,
         children: product.name
-      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_10__.View, {
-        className: _styles_home_home_module_scss__WEBPACK_IMPORTED_MODULE_8__["default"].productTags,
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_9__.View, {
+        className: _styles_home_home_module_scss__WEBPACK_IMPORTED_MODULE_7__["default"].productTags,
         children: (_product$tags = product.tags) === null || _product$tags === void 0 ? void 0 : _product$tags.slice(0, 1).map(function (tag) {
-          return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_10__.Text, {
-            className: _styles_home_home_module_scss__WEBPACK_IMPORTED_MODULE_8__["default"].tag,
+          return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_9__.Text, {
+            className: _styles_home_home_module_scss__WEBPACK_IMPORTED_MODULE_7__["default"].tag,
             children: tag
           }, tag);
         })
-      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_10__.View, {
-        className: _styles_home_home_module_scss__WEBPACK_IMPORTED_MODULE_8__["default"].productPrice,
-        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_10__.Text, {
-          className: _styles_home_home_module_scss__WEBPACK_IMPORTED_MODULE_8__["default"].priceSymbol,
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_9__.View, {
+        className: _styles_home_home_module_scss__WEBPACK_IMPORTED_MODULE_7__["default"].productPrice,
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_9__.Text, {
+          className: _styles_home_home_module_scss__WEBPACK_IMPORTED_MODULE_7__["default"].priceSymbol,
           children: "\xA5"
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_10__.Text, {
-          className: _styles_home_home_module_scss__WEBPACK_IMPORTED_MODULE_8__["default"].currentPrice,
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_9__.Text, {
+          className: _styles_home_home_module_scss__WEBPACK_IMPORTED_MODULE_7__["default"].currentPrice,
           children: product.price
-        }), product.originalPrice > 0 && product.originalPrice !== product.price && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_10__.Text, {
-          className: _styles_home_home_module_scss__WEBPACK_IMPORTED_MODULE_8__["default"].originalPrice,
-          children: product.originalPrice
+        }), product.originalPrice > 0 && product.originalPrice !== product.price && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_9__.Text, {
+          className: _styles_home_home_module_scss__WEBPACK_IMPORTED_MODULE_7__["default"].originalPrice,
+          children: ["\xA5", product.originalPrice]
         })]
-      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_10__.Text, {
-        className: _styles_home_home_module_scss__WEBPACK_IMPORTED_MODULE_8__["default"].salesInfo,
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_9__.Text, {
+        className: _styles_home_home_module_scss__WEBPACK_IMPORTED_MODULE_7__["default"].salesInfo,
         children: ["\u5DF2\u552E ", product.sales || 0, " \u4EF6"]
       })]
     })]
@@ -89,21 +87,21 @@ var ProductCard = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().memo
 var BrandCard = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().memo(function (_ref2) {
   var brand = _ref2.brand,
     _onClick2 = _ref2.onClick;
-  var iconSrc = (0,_utils_image__WEBPACK_IMPORTED_MODULE_6__.getBrandIcon)(brand);
-  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_10__.View, {
-    className: _styles_home_home_module_scss__WEBPACK_IMPORTED_MODULE_8__["default"].brandItem,
+  var iconSrc = (0,_utils_image__WEBPACK_IMPORTED_MODULE_5__.getBrandIcon)(brand);
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_9__.View, {
+    className: _styles_home_home_module_scss__WEBPACK_IMPORTED_MODULE_7__["default"].brandItem,
     onClick: function onClick() {
       return _onClick2(brand.id);
     },
-    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_10__.View, {
-      className: _styles_home_home_module_scss__WEBPACK_IMPORTED_MODULE_8__["default"].brandIconWrap,
-      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_10__.Image, {
+    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_9__.View, {
+      className: _styles_home_home_module_scss__WEBPACK_IMPORTED_MODULE_7__["default"].brandIconWrap,
+      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_9__.Image, {
         src: iconSrc,
-        className: _styles_home_home_module_scss__WEBPACK_IMPORTED_MODULE_8__["default"].brandIconImg,
+        className: _styles_home_home_module_scss__WEBPACK_IMPORTED_MODULE_7__["default"].brandIconImg,
         mode: "aspectFit"
       })
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_10__.Text, {
-      className: _styles_home_home_module_scss__WEBPACK_IMPORTED_MODULE_8__["default"].brandName,
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_9__.Text, {
+      className: _styles_home_home_module_scss__WEBPACK_IMPORTED_MODULE_7__["default"].brandName,
       children: brand.name
     })]
   }, brand.id);
@@ -112,26 +110,26 @@ var SeckillProductCard = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default
   var _product$images2;
   var product = _ref3.product,
     _onClick3 = _ref3.onClick;
-  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_10__.View, {
-    className: _styles_home_home_module_scss__WEBPACK_IMPORTED_MODULE_8__["default"].seckillProduct,
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_9__.View, {
+    className: _styles_home_home_module_scss__WEBPACK_IMPORTED_MODULE_7__["default"].seckillProduct,
     onClick: function onClick() {
       return _onClick3(product.productId || product.id);
     },
-    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_10__.Image, (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_11__["default"])({
-      src: (0,_utils_image__WEBPACK_IMPORTED_MODULE_6__.getImageUrl)(product.image || ((_product$images2 = product.images) === null || _product$images2 === void 0 ? void 0 : _product$images2[0])),
-      className: _styles_home_home_module_scss__WEBPACK_IMPORTED_MODULE_8__["default"].productImage,
+    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_9__.Image, (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_10__["default"])({
+      src: (0,_utils_image__WEBPACK_IMPORTED_MODULE_5__.getImageUrl)(product.image || ((_product$images2 = product.images) === null || _product$images2 === void 0 ? void 0 : _product$images2[0])),
+      className: _styles_home_home_module_scss__WEBPACK_IMPORTED_MODULE_7__["default"].productImage,
       mode: "aspectFill"
-    }, (0,_utils_image__WEBPACK_IMPORTED_MODULE_6__.lazyImgProps)())), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_10__.View, {
-      className: _styles_home_home_module_scss__WEBPACK_IMPORTED_MODULE_8__["default"].seckillPriceArea,
-      children: [(product.seckillPrice || product.price) > 0 && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_10__.View, {
-        className: _styles_home_home_module_scss__WEBPACK_IMPORTED_MODULE_8__["default"].seckillPrice,
-        children: product.seckillPrice || product.price
-      }), product.originalPrice > 0 && product.originalPrice !== (product.seckillPrice || product.price) && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_10__.View, {
-        className: _styles_home_home_module_scss__WEBPACK_IMPORTED_MODULE_8__["default"].originalPrice,
-        children: product.originalPrice
+    }, (0,_utils_image__WEBPACK_IMPORTED_MODULE_5__.lazyImgProps)())), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_9__.View, {
+      className: _styles_home_home_module_scss__WEBPACK_IMPORTED_MODULE_7__["default"].seckillPriceArea,
+      children: [(product.seckillPrice || product.price) > 0 && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_9__.View, {
+        className: _styles_home_home_module_scss__WEBPACK_IMPORTED_MODULE_7__["default"].seckillPrice,
+        children: ["\xA5", product.seckillPrice || product.price]
+      }), product.originalPrice > 0 && product.originalPrice !== (product.seckillPrice || product.price) && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_9__.View, {
+        className: _styles_home_home_module_scss__WEBPACK_IMPORTED_MODULE_7__["default"].originalPrice,
+        children: ["\xA5", product.originalPrice]
       })]
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_10__.View, {
-      className: _styles_home_home_module_scss__WEBPACK_IMPORTED_MODULE_8__["default"].seckillBtn,
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_9__.View, {
+      className: _styles_home_home_module_scss__WEBPACK_IMPORTED_MODULE_7__["default"].seckillBtn,
       children: "\u62A2"
     })]
   });
@@ -139,21 +137,21 @@ var SeckillProductCard = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default
 var CategoryNavItem = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().memo(function (_ref4) {
   var category = _ref4.category,
     _onClick4 = _ref4.onClick;
-  var iconSrc = (0,_utils_categoryIcons__WEBPACK_IMPORTED_MODULE_7__.getCategoryIcon)(category.name, category.icon);
-  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_10__.View, {
-    className: _styles_home_home_module_scss__WEBPACK_IMPORTED_MODULE_8__["default"].categoryItem,
+  var iconSrc = (0,_utils_categoryIcons__WEBPACK_IMPORTED_MODULE_6__.getCategoryIcon)(category.name, category.icon);
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_9__.View, {
+    className: _styles_home_home_module_scss__WEBPACK_IMPORTED_MODULE_7__["default"].categoryItem,
     onClick: function onClick() {
       return _onClick4(category.id);
     },
-    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_10__.View, {
-      className: _styles_home_home_module_scss__WEBPACK_IMPORTED_MODULE_8__["default"].categoryIcon,
-      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_10__.Image, {
+    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_9__.View, {
+      className: _styles_home_home_module_scss__WEBPACK_IMPORTED_MODULE_7__["default"].categoryIcon,
+      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_9__.Image, {
         src: iconSrc,
         mode: "aspectFit",
-        className: _styles_home_home_module_scss__WEBPACK_IMPORTED_MODULE_8__["default"].categoryIconImg
+        className: _styles_home_home_module_scss__WEBPACK_IMPORTED_MODULE_7__["default"].categoryIconImg
       })
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_10__.Text, {
-      className: _styles_home_home_module_scss__WEBPACK_IMPORTED_MODULE_8__["default"].categoryName,
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_9__.Text, {
+      className: _styles_home_home_module_scss__WEBPACK_IMPORTED_MODULE_7__["default"].categoryName,
       children: category.name
     })]
   });
@@ -188,7 +186,7 @@ var tabToSlotName = {
 function normalizeRecommendProduct(item) {
   var _ref5, _ref6, _ref7, _item$id, _ref8, _ref9, _ref0, _item$name, _ref1, _ref10, _ref11, _item$price, _ref12, _ref13, _ref14, _item$originalPrice, _ref15, _ref16, _ref17, _item$images, _ref18, _ref19, _ref20, _item$image, _ref21, _ref22, _ref23, _item$sales, _ref24, _ref25, _item$tags;
   if (!item) return null;
-  return (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_11__["default"])((0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_11__["default"])({}, item), {}, {
+  return (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_10__["default"])((0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_10__["default"])({}, item), {}, {
     id: (_ref5 = (_ref6 = (_ref7 = (_item$id = item.id) !== null && _item$id !== void 0 ? _item$id : item.ID) !== null && _ref7 !== void 0 ? _ref7 : item.productId) !== null && _ref6 !== void 0 ? _ref6 : item.ProductId) !== null && _ref5 !== void 0 ? _ref5 : '',
     name: (_ref8 = (_ref9 = (_ref0 = (_item$name = item.name) !== null && _item$name !== void 0 ? _item$name : item.Name) !== null && _ref0 !== void 0 ? _ref0 : item.productName) !== null && _ref9 !== void 0 ? _ref9 : item.ProductName) !== null && _ref8 !== void 0 ? _ref8 : '',
     price: (_ref1 = (_ref10 = (_ref11 = (_item$price = item.price) !== null && _item$price !== void 0 ? _item$price : item.Price) !== null && _ref11 !== void 0 ? _ref11 : item.salePrice) !== null && _ref10 !== void 0 ? _ref10 : item.SalePrice) !== null && _ref1 !== void 0 ? _ref1 : 0,
@@ -241,9 +239,9 @@ function enrichRecommendSlots(_x) {
   return _enrichRecommendSlots.apply(this, arguments);
 }
 function _enrichRecommendSlots() {
-  _enrichRecommendSlots = (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_12__["default"])(/*#__PURE__*/(0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_13__["default"])().m(function _callee3(slots) {
+  _enrichRecommendSlots = (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_11__["default"])(/*#__PURE__*/(0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_12__["default"])().m(function _callee3(slots) {
     var productIdsToFetch, slotProductIndexMap, detailResults, detailMap, enrichedSlots;
-    return (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_13__["default"])().w(function (_context3) {
+    return (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_12__["default"])().w(function (_context3) {
       while (1) switch (_context3.n) {
         case 0:
           if (!(!slots || slots.length === 0)) {
@@ -278,7 +276,7 @@ function _enrichRecommendSlots() {
           return _context3.a(2, slots);
         case 2:
           _context3.n = 3;
-          return Promise.all((0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_toConsumableArray_js__WEBPACK_IMPORTED_MODULE_14__["default"])(new Set(productIdsToFetch)).map(function (pid) {
+          return Promise.all((0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_toConsumableArray_js__WEBPACK_IMPORTED_MODULE_13__["default"])(new Set(productIdsToFetch)).map(function (pid) {
             return (0,_api_common__WEBPACK_IMPORTED_MODULE_2__.apiGet)(_api_home__WEBPACK_IMPORTED_MODULE_3__.productApi.detail, {
               id: pid
             }, {}, true).then(function (res) {
@@ -305,13 +303,13 @@ function _enrichRecommendSlots() {
 
           // 将详情合并回 slots（保留原始 productId 字段）
           enrichedSlots = slots.map(function (slot) {
-            return (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_11__["default"])((0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_11__["default"])({}, slot), {}, {
+            return (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_10__["default"])((0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_10__["default"])({}, slot), {}, {
               products: (slot.products || []).map(function (p) {
                 var _ref63, _ref64, _p$productId2, _detail$id, _detail$name, _detail$price, _ref65, _detail$originalPrice, _ref66, _detail$image, _detail$images, _detail$sales;
                 var pid = (_ref63 = (_ref64 = (_p$productId2 = p.productId) !== null && _p$productId2 !== void 0 ? _p$productId2 : p.ProductId) !== null && _ref64 !== void 0 ? _ref64 : p.product_id) !== null && _ref63 !== void 0 ? _ref63 : p.ID;
                 var detail = detailMap.get(pid);
                 if (!detail) return normalizeRecommendProduct(p);
-                return normalizeRecommendProduct((0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_11__["default"])((0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_11__["default"])((0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_11__["default"])({}, p), detail), {}, {
+                return normalizeRecommendProduct((0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_10__["default"])((0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_10__["default"])((0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_10__["default"])({}, p), detail), {}, {
                   id: (_detail$id = detail.id) !== null && _detail$id !== void 0 ? _detail$id : pid,
                   name: (_detail$name = detail.name) !== null && _detail$name !== void 0 ? _detail$name : '',
                   price: (_detail$price = detail.price) !== null && _detail$price !== void 0 ? _detail$price : 0,
@@ -331,7 +329,7 @@ function _enrichRecommendSlots() {
 }
 var HomePage = function HomePage() {
   var _useState = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)('recommend'),
-    _useState2 = (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_slicedToArray_js__WEBPACK_IMPORTED_MODULE_15__["default"])(_useState, 2),
+    _useState2 = (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_slicedToArray_js__WEBPACK_IMPORTED_MODULE_14__["default"])(_useState, 2),
     activeTab = _useState2[0],
     setActiveTab = _useState2[1];
   var _useState3 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)({
@@ -339,39 +337,39 @@ var HomePage = function HomePage() {
       minutes: '00',
       seconds: '00'
     }),
-    _useState4 = (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_slicedToArray_js__WEBPACK_IMPORTED_MODULE_15__["default"])(_useState3, 2),
+    _useState4 = (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_slicedToArray_js__WEBPACK_IMPORTED_MODULE_14__["default"])(_useState3, 2),
     countdown = _useState4[0],
     setCountdown = _useState4[1];
   var _useState5 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)([]),
-    _useState6 = (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_slicedToArray_js__WEBPACK_IMPORTED_MODULE_15__["default"])(_useState5, 2),
+    _useState6 = (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_slicedToArray_js__WEBPACK_IMPORTED_MODULE_14__["default"])(_useState5, 2),
     banners = _useState6[0],
     setBanners = _useState6[1];
   var _useState7 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)([]),
-    _useState8 = (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_slicedToArray_js__WEBPACK_IMPORTED_MODULE_15__["default"])(_useState7, 2),
+    _useState8 = (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_slicedToArray_js__WEBPACK_IMPORTED_MODULE_14__["default"])(_useState7, 2),
     categories = _useState8[0],
     setCategories = _useState8[1];
   var _useState9 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)({
       products: [],
       endTime: ''
     }),
-    _useState0 = (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_slicedToArray_js__WEBPACK_IMPORTED_MODULE_15__["default"])(_useState9, 2),
+    _useState0 = (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_slicedToArray_js__WEBPACK_IMPORTED_MODULE_14__["default"])(_useState9, 2),
     seckillActivity = _useState0[0],
     setSeckillActivity = _useState0[1];
   var _useState1 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)([]),
-    _useState10 = (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_slicedToArray_js__WEBPACK_IMPORTED_MODULE_15__["default"])(_useState1, 2),
+    _useState10 = (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_slicedToArray_js__WEBPACK_IMPORTED_MODULE_14__["default"])(_useState1, 2),
     hotBrands = _useState10[0],
     setHotBrands = _useState10[1];
   var _useState11 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)([]),
-    _useState12 = (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_slicedToArray_js__WEBPACK_IMPORTED_MODULE_15__["default"])(_useState11, 2),
+    _useState12 = (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_slicedToArray_js__WEBPACK_IMPORTED_MODULE_14__["default"])(_useState11, 2),
     recommendedProducts = _useState12[0],
     setRecommendedProducts = _useState12[1];
   // 推荐位原始数据缓存（新接口返回推荐位+商品结构，切换tab时无需重复请求）
   var _useState13 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(null),
-    _useState14 = (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_slicedToArray_js__WEBPACK_IMPORTED_MODULE_15__["default"])(_useState13, 2),
+    _useState14 = (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_slicedToArray_js__WEBPACK_IMPORTED_MODULE_14__["default"])(_useState13, 2),
     recommendSlotsCache = _useState14[0],
     setRecommendSlotsCache = _useState14[1];
   var _useState15 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(true),
-    _useState16 = (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_slicedToArray_js__WEBPACK_IMPORTED_MODULE_15__["default"])(_useState15, 2),
+    _useState16 = (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_slicedToArray_js__WEBPACK_IMPORTED_MODULE_14__["default"])(_useState15, 2),
     loading = _useState16[0],
     setLoading = _useState16[1];
   var timerRef = (0,react__WEBPACK_IMPORTED_MODULE_0__.useRef)(null);
@@ -421,9 +419,9 @@ var HomePage = function HomePage() {
 
   // 加载首页数据
   var loadData = /*#__PURE__*/function () {
-    var _ref26 = (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_12__["default"])(/*#__PURE__*/(0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_13__["default"])().m(function _callee() {
+    var _ref26 = (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_11__["default"])(/*#__PURE__*/(0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_12__["default"])().m(function _callee() {
       var _yield$Promise$all, _yield$Promise$all2, bannerRes, categoryRes, seckillRes, brandRes, recommendRes, _bannerRes$data, _bannerRes$data2, _bannerRes$data3, rawBanners, normalized, _categoryRes$data, _categoryRes$data2, rawData, catData, seckillData, _brandRes$data, _brandRes$data2, _rawData, _normalized, _enrichedSlots$, rawSlots, enrichedSlots, productData, _t;
-      return (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_13__["default"])().w(function (_context) {
+      return (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_12__["default"])().w(function (_context) {
         while (1) switch (_context.p = _context.n) {
           case 0:
             setLoading(true);
@@ -444,7 +442,7 @@ var HomePage = function HomePage() {
             })]);
           case 2:
             _yield$Promise$all = _context.v;
-            _yield$Promise$all2 = (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_slicedToArray_js__WEBPACK_IMPORTED_MODULE_15__["default"])(_yield$Promise$all, 5);
+            _yield$Promise$all2 = (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_slicedToArray_js__WEBPACK_IMPORTED_MODULE_14__["default"])(_yield$Promise$all, 5);
             bannerRes = _yield$Promise$all2[0];
             categoryRes = _yield$Promise$all2[1];
             seckillRes = _yield$Promise$all2[2];
@@ -484,11 +482,11 @@ var HomePage = function HomePage() {
                 endTime: seckillData.endTime || new Date(Date.now() + 3600000).toISOString()
               });
             } else {
-              // 接口无活动数据，使用本地 mock 兜底，保证首页秒杀板块始终展示
+              // 接口无活动数据，秒杀板块显示空状态
               setSeckillActivity({
-                id: _data_common_home__WEBPACK_IMPORTED_MODULE_5__.seckillActivity.id || '',
-                products: _data_common_home__WEBPACK_IMPORTED_MODULE_5__.seckillActivity.products || [],
-                endTime: _data_common_home__WEBPACK_IMPORTED_MODULE_5__.seckillActivity.endTime || new Date(Date.now() + 3600000).toISOString()
+                id: '',
+                products: [],
+                endTime: ''
               });
             }
             if (brandRes !== null && brandRes !== void 0 && brandRes.data) {
@@ -499,10 +497,12 @@ var HomePage = function HomePage() {
                 var id = (_ref46 = (_ref47 = (_ref48 = (_ref49 = (_ref50 = (_item$id4 = item.id) !== null && _item$id4 !== void 0 ? _item$id4 : item.ID) !== null && _ref50 !== void 0 ? _ref50 : item.brandId) !== null && _ref49 !== void 0 ? _ref49 : item.BrandId) !== null && _ref48 !== void 0 ? _ref48 : item.code) !== null && _ref47 !== void 0 ? _ref47 : item.Code) !== null && _ref46 !== void 0 ? _ref46 : '';
                 var name = (_ref51 = (_ref52 = (_ref53 = (_item$name3 = item.name) !== null && _item$name3 !== void 0 ? _item$name3 : item.Name) !== null && _ref53 !== void 0 ? _ref53 : item.brandName) !== null && _ref52 !== void 0 ? _ref52 : item.BrandName) !== null && _ref51 !== void 0 ? _ref51 : '';
                 var logo = (_ref54 = (_ref55 = (_ref56 = (_ref57 = (_ref58 = (_item$logo = item.logo) !== null && _item$logo !== void 0 ? _item$logo : item.Logo) !== null && _ref58 !== void 0 ? _ref58 : item.icon) !== null && _ref57 !== void 0 ? _ref57 : item.Icon) !== null && _ref56 !== void 0 ? _ref56 : item.image) !== null && _ref55 !== void 0 ? _ref55 : item.Image) !== null && _ref54 !== void 0 ? _ref54 : '';
+                // 保留原始 logo，交由 getBrandIcon 判断占位符域名并回退到本地 SVG 图标
+                // 若先用 getImageUrl 处理，占位符域名会被替换成无效的默认占位图 URL，导致本地 SVG 兜底失效
                 return {
                   id: String(id),
                   name: name,
-                  logo: (0,_utils_image__WEBPACK_IMPORTED_MODULE_6__.getImageUrl)(logo)
+                  logo: logo
                 };
               }).filter(function (b) {
                 return b.id && b.name;
@@ -524,7 +524,7 @@ var HomePage = function HomePage() {
               setRecommendSlotsCache(enrichedSlots);
             }
             productData = extractRecommendProducts(enrichedSlots, 'recommend');
-            setRecommendedProducts((0,_utils_image__WEBPACK_IMPORTED_MODULE_6__.normalizeProductListImages)(productData));
+            setRecommendedProducts((0,_utils_image__WEBPACK_IMPORTED_MODULE_5__.normalizeProductListImages)(productData));
           case 4:
             _context.n = 6;
             break;
@@ -554,9 +554,9 @@ var HomePage = function HomePage() {
   }, []);
   (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(function () {
     var loadRecommendProducts = /*#__PURE__*/function () {
-      var _ref59 = (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_12__["default"])(/*#__PURE__*/(0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_13__["default"])().m(function _callee2() {
+      var _ref59 = (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_11__["default"])(/*#__PURE__*/(0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_12__["default"])().m(function _callee2() {
         var productData, res, _productData, _t2;
-        return (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_13__["default"])().w(function (_context2) {
+        return (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_12__["default"])().w(function (_context2) {
           while (1) switch (_context2.p = _context2.n) {
             case 0:
               _context2.p = 0;
@@ -565,7 +565,7 @@ var HomePage = function HomePage() {
                 break;
               }
               productData = extractRecommendProducts(recommendSlotsCache, activeTab);
-              setRecommendedProducts((0,_utils_image__WEBPACK_IMPORTED_MODULE_6__.normalizeProductListImages)(productData));
+              setRecommendedProducts((0,_utils_image__WEBPACK_IMPORTED_MODULE_5__.normalizeProductListImages)(productData));
               return _context2.a(2);
             case 1:
               if (!(activeTab === 'recommend')) {
@@ -582,7 +582,7 @@ var HomePage = function HomePage() {
               res = _context2.v;
               if (res !== null && res !== void 0 && res.data) {
                 _productData = extractRecommendProducts(res.data, activeTab);
-                setRecommendedProducts((0,_utils_image__WEBPACK_IMPORTED_MODULE_6__.normalizeProductListImages)(_productData));
+                setRecommendedProducts((0,_utils_image__WEBPACK_IMPORTED_MODULE_5__.normalizeProductListImages)(_productData));
               }
               _context2.n = 5;
               break;
@@ -635,50 +635,50 @@ var HomePage = function HomePage() {
     return categories.slice(0, 8);
   }, [categories]);
   if (loading) {
-    return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_10__.View, {
-      className: _styles_home_home_module_scss__WEBPACK_IMPORTED_MODULE_8__["default"].homePage,
-      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_10__.View, {
+    return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_9__.View, {
+      className: _styles_home_home_module_scss__WEBPACK_IMPORTED_MODULE_7__["default"].homePage,
+      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_9__.View, {
         style: {
           padding: '200rpx',
           textAlign: 'center'
         },
-        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_10__.Text, {
+        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_9__.Text, {
           children: "\u52A0\u8F7D\u4E2D..."
         })
       })
     });
   }
-  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_10__.View, {
-    className: _styles_home_home_module_scss__WEBPACK_IMPORTED_MODULE_8__["default"].homePage,
-    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_10__.View, {
-      className: _styles_home_home_module_scss__WEBPACK_IMPORTED_MODULE_8__["default"].header,
-      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_10__.View, {
-        className: _styles_home_home_module_scss__WEBPACK_IMPORTED_MODULE_8__["default"].searchBox,
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_9__.View, {
+    className: _styles_home_home_module_scss__WEBPACK_IMPORTED_MODULE_7__["default"].homePage,
+    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_9__.View, {
+      className: _styles_home_home_module_scss__WEBPACK_IMPORTED_MODULE_7__["default"].header,
+      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_9__.View, {
+        className: _styles_home_home_module_scss__WEBPACK_IMPORTED_MODULE_7__["default"].searchBox,
         onClick: goToSearch,
-        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_10__.Text, {
-          className: _styles_home_home_module_scss__WEBPACK_IMPORTED_MODULE_8__["default"].searchText,
+        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_9__.Text, {
+          className: _styles_home_home_module_scss__WEBPACK_IMPORTED_MODULE_7__["default"].searchText,
           children: "\u641C\u7D22\u5546\u54C1/\u5E97\u94FA"
         })
       })
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_10__.ScrollView, {
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_9__.ScrollView, {
       scrollY: true,
-      className: _styles_home_home_module_scss__WEBPACK_IMPORTED_MODULE_8__["default"].content,
+      className: _styles_home_home_module_scss__WEBPACK_IMPORTED_MODULE_7__["default"].content,
       enhanced: true,
       showScrollbar: false,
-      children: [banners.length > 0 && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_10__.View, {
-        className: _styles_home_home_module_scss__WEBPACK_IMPORTED_MODULE_8__["default"].banner,
-        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_10__.Swiper, {
+      children: [banners.length > 0 && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_9__.View, {
+        className: _styles_home_home_module_scss__WEBPACK_IMPORTED_MODULE_7__["default"].banner,
+        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_9__.Swiper, {
           autoplay: banners.length > 1,
           interval: 3000,
           circular: banners.length > 1,
           indicatorColor: "rgba(255,255,255,0.5)",
           indicatorActiveColor: "#ffffff",
           children: banners.map(function (banner) {
-            return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_10__.SwiperItem, {
-              children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_10__.Image, (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_11__["default"])((0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_11__["default"])({
-                src: (0,_utils_image__WEBPACK_IMPORTED_MODULE_6__.getImageUrl)(banner.image || banner.imageUrl),
+            return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_9__.SwiperItem, {
+              children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_9__.Image, (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_10__["default"])((0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_10__["default"])({
+                src: (0,_utils_image__WEBPACK_IMPORTED_MODULE_5__.getImageUrl)(banner.image || banner.imageUrl),
                 mode: "aspectFill"
-              }, (0,_utils_image__WEBPACK_IMPORTED_MODULE_6__.lazyImgProps)()), {}, {
+              }, (0,_utils_image__WEBPACK_IMPORTED_MODULE_5__.lazyImgProps)()), {}, {
                 onClick: function onClick() {
                   if (banner.type === 'seckill') {
                     goToSeckill();
@@ -690,153 +690,162 @@ var HomePage = function HomePage() {
             }, banner.id);
           })
         })
-      }), displayCategories.length > 0 && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_10__.View, {
-        className: _styles_home_home_module_scss__WEBPACK_IMPORTED_MODULE_8__["default"].categoryNavWrap,
-        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_10__.ScrollView, {
+      }), displayCategories.length > 0 && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_9__.View, {
+        className: _styles_home_home_module_scss__WEBPACK_IMPORTED_MODULE_7__["default"].categoryNavWrap,
+        children: displayCategories.length > 5 ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_9__.ScrollView, {
           scrollX: true,
-          className: _styles_home_home_module_scss__WEBPACK_IMPORTED_MODULE_8__["default"].categoryNav,
+          className: _styles_home_home_module_scss__WEBPACK_IMPORTED_MODULE_7__["default"].categoryNav,
           showScrollbar: false,
-          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_10__.View, {
-            className: _styles_home_home_module_scss__WEBPACK_IMPORTED_MODULE_8__["default"].categoryNavInner,
+          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_9__.View, {
+            className: _styles_home_home_module_scss__WEBPACK_IMPORTED_MODULE_7__["default"].categoryNavInner,
             children: displayCategories.map(function (category) {
-              return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(CategoryNavItem, {
+              return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(CategoryNavItem, {
+                category: category,
+                onClick: goToCategory
+              }, category.id);
+            })
+          })
+        }) : /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_9__.View, {
+          className: _styles_home_home_module_scss__WEBPACK_IMPORTED_MODULE_7__["default"].categoryNavFill,
+          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_9__.View, {
+            className: _styles_home_home_module_scss__WEBPACK_IMPORTED_MODULE_7__["default"].categoryNavInner,
+            children: displayCategories.map(function (category) {
+              return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(CategoryNavItem, {
                 category: category,
                 onClick: goToCategory
               }, category.id);
             })
           })
         })
-      }), hotBrands.length > 0 && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_10__.View, {
-        className: _styles_home_home_module_scss__WEBPACK_IMPORTED_MODULE_8__["default"].brandsSection,
-        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_10__.View, {
-          className: _styles_home_home_module_scss__WEBPACK_IMPORTED_MODULE_8__["default"].brandsHeader,
+      }), hotBrands.length > 0 && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_9__.View, {
+        className: _styles_home_home_module_scss__WEBPACK_IMPORTED_MODULE_7__["default"].brandsSection,
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_9__.View, {
+          className: _styles_home_home_module_scss__WEBPACK_IMPORTED_MODULE_7__["default"].brandsHeader,
           onClick: goToBrands,
-          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_10__.View, {
-            className: _styles_home_home_module_scss__WEBPACK_IMPORTED_MODULE_8__["default"].brandsTitleWrap,
-            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_10__.Text, {
-              className: _styles_home_home_module_scss__WEBPACK_IMPORTED_MODULE_8__["default"].brandsTitle,
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_9__.View, {
+            className: _styles_home_home_module_scss__WEBPACK_IMPORTED_MODULE_7__["default"].brandsTitleWrap,
+            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_9__.Text, {
+              className: _styles_home_home_module_scss__WEBPACK_IMPORTED_MODULE_7__["default"].brandsTitle,
               children: "\u54C1\u724C\u9986"
-            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_10__.Text, {
-              className: _styles_home_home_module_scss__WEBPACK_IMPORTED_MODULE_8__["default"].brandsSubtitle,
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_9__.Text, {
+              className: _styles_home_home_module_scss__WEBPACK_IMPORTED_MODULE_7__["default"].brandsSubtitle,
               children: "\u7CBE\u9009\u54C1\u724C"
             })]
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_10__.Text, {
-            className: _styles_home_home_module_scss__WEBPACK_IMPORTED_MODULE_8__["default"].brandsMore,
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_9__.Text, {
+            className: _styles_home_home_module_scss__WEBPACK_IMPORTED_MODULE_7__["default"].brandsMore,
             children: "\u66F4\u591A \u203A"
           })]
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_10__.ScrollView, {
-          scrollX: true,
-          className: _styles_home_home_module_scss__WEBPACK_IMPORTED_MODULE_8__["default"].brandsList,
-          showScrollbar: false,
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_9__.View, {
+          className: _styles_home_home_module_scss__WEBPACK_IMPORTED_MODULE_7__["default"].brandsList,
           children: hotBrands.map(function (brand) {
-            return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(BrandCard, {
+            return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(BrandCard, {
               brand: brand,
               onClick: goToBrandDetail
             }, brand.id);
           })
         })]
-      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_10__.View, {
-        className: _styles_home_home_module_scss__WEBPACK_IMPORTED_MODULE_8__["default"].activitySection,
-        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_10__.View, {
-          className: _styles_home_home_module_scss__WEBPACK_IMPORTED_MODULE_8__["default"].seckillArea,
-          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_10__.View, {
-            className: _styles_home_home_module_scss__WEBPACK_IMPORTED_MODULE_8__["default"].seckillHeader,
-            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_10__.View, {
-              children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_10__.Text, {
-                className: _styles_home_home_module_scss__WEBPACK_IMPORTED_MODULE_8__["default"].seckillTitle,
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_9__.View, {
+        className: _styles_home_home_module_scss__WEBPACK_IMPORTED_MODULE_7__["default"].activitySection,
+        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_9__.View, {
+          className: _styles_home_home_module_scss__WEBPACK_IMPORTED_MODULE_7__["default"].seckillArea,
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_9__.View, {
+            className: _styles_home_home_module_scss__WEBPACK_IMPORTED_MODULE_7__["default"].seckillHeader,
+            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_9__.View, {
+              children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_9__.Text, {
+                className: _styles_home_home_module_scss__WEBPACK_IMPORTED_MODULE_7__["default"].seckillTitle,
                 children: "\u9650\u65F6\u79D2\u6740"
-              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_10__.Text, {
-                className: _styles_home_home_module_scss__WEBPACK_IMPORTED_MODULE_8__["default"].seckillSubtitle,
+              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_9__.Text, {
+                className: _styles_home_home_module_scss__WEBPACK_IMPORTED_MODULE_7__["default"].seckillSubtitle,
                 children: "\u7206\u6B3E\u9650\u65F6\u62A2"
               })]
-            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_10__.View, {
-              className: _styles_home_home_module_scss__WEBPACK_IMPORTED_MODULE_8__["default"].seckillHeaderRight,
-              children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_10__.View, {
-                className: _styles_home_home_module_scss__WEBPACK_IMPORTED_MODULE_8__["default"].countdown,
-                children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_10__.Text, {
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_9__.View, {
+              className: _styles_home_home_module_scss__WEBPACK_IMPORTED_MODULE_7__["default"].seckillHeaderRight,
+              children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_9__.View, {
+                className: _styles_home_home_module_scss__WEBPACK_IMPORTED_MODULE_7__["default"].countdown,
+                children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_9__.Text, {
                   children: "\u8DDD\u7ED3\u675F"
-                }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_10__.Text, {
-                  className: _styles_home_home_module_scss__WEBPACK_IMPORTED_MODULE_8__["default"].countdownItem,
+                }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_9__.Text, {
+                  className: _styles_home_home_module_scss__WEBPACK_IMPORTED_MODULE_7__["default"].countdownItem,
                   children: countdown.hours
-                }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_10__.Text, {
+                }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_9__.Text, {
                   children: ":"
-                }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_10__.Text, {
-                  className: _styles_home_home_module_scss__WEBPACK_IMPORTED_MODULE_8__["default"].countdownItem,
+                }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_9__.Text, {
+                  className: _styles_home_home_module_scss__WEBPACK_IMPORTED_MODULE_7__["default"].countdownItem,
                   children: countdown.minutes
-                }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_10__.Text, {
+                }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_9__.Text, {
                   children: ":"
-                }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_10__.Text, {
-                  className: _styles_home_home_module_scss__WEBPACK_IMPORTED_MODULE_8__["default"].countdownItem,
+                }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_9__.Text, {
+                  className: _styles_home_home_module_scss__WEBPACK_IMPORTED_MODULE_7__["default"].countdownItem,
                   children: countdown.seconds
                 })]
-              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_10__.View, {
-                className: _styles_home_home_module_scss__WEBPACK_IMPORTED_MODULE_8__["default"].seckillArrow,
+              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_9__.View, {
+                className: _styles_home_home_module_scss__WEBPACK_IMPORTED_MODULE_7__["default"].seckillArrow,
                 onClick: goToSeckill,
-                children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_10__.Text, {
-                  className: _styles_home_home_module_scss__WEBPACK_IMPORTED_MODULE_8__["default"].arrowIcon,
+                children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_9__.Text, {
+                  className: _styles_home_home_module_scss__WEBPACK_IMPORTED_MODULE_7__["default"].arrowIcon,
                   children: "\u203A"
                 })
               })]
             })]
-          }), seckillActivity.products.length > 0 ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_10__.ScrollView, {
+          }), seckillActivity.products.length > 0 ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_9__.ScrollView, {
             scrollX: true,
-            className: _styles_home_home_module_scss__WEBPACK_IMPORTED_MODULE_8__["default"].seckillProducts,
+            className: _styles_home_home_module_scss__WEBPACK_IMPORTED_MODULE_7__["default"].seckillProducts,
             showScrollbar: false,
             children: seckillActivity.products.map(function (product) {
-              return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(SeckillProductCard, {
+              return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(SeckillProductCard, {
                 product: product,
                 onClick: goToSeckillProductDetail
               }, product.id || product.productId);
             })
-          }) : /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_10__.View, {
-            className: _styles_home_home_module_scss__WEBPACK_IMPORTED_MODULE_8__["default"].seckillEmpty,
-            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_10__.Text, {
-              className: _styles_home_home_module_scss__WEBPACK_IMPORTED_MODULE_8__["default"].seckillEmptyText,
+          }) : /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_9__.View, {
+            className: _styles_home_home_module_scss__WEBPACK_IMPORTED_MODULE_7__["default"].seckillEmpty,
+            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_9__.Text, {
+              className: _styles_home_home_module_scss__WEBPACK_IMPORTED_MODULE_7__["default"].seckillEmptyText,
               children: "\u6682\u65E0\u79D2\u6740\u5546\u54C1"
             })
           })]
         })
-      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_10__.View, {
-        className: _styles_home_home_module_scss__WEBPACK_IMPORTED_MODULE_8__["default"].recommendSection,
-        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_10__.View, {
-          className: _styles_home_home_module_scss__WEBPACK_IMPORTED_MODULE_8__["default"].recommendHeader,
-          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_10__.View, {
-            className: _styles_home_home_module_scss__WEBPACK_IMPORTED_MODULE_8__["default"].recommendLine
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_10__.Text, {
-            className: _styles_home_home_module_scss__WEBPACK_IMPORTED_MODULE_8__["default"].recommendTitle,
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_9__.View, {
+        className: _styles_home_home_module_scss__WEBPACK_IMPORTED_MODULE_7__["default"].recommendSection,
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_9__.View, {
+          className: _styles_home_home_module_scss__WEBPACK_IMPORTED_MODULE_7__["default"].recommendHeader,
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_9__.View, {
+            className: _styles_home_home_module_scss__WEBPACK_IMPORTED_MODULE_7__["default"].recommendLine
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_9__.Text, {
+            className: _styles_home_home_module_scss__WEBPACK_IMPORTED_MODULE_7__["default"].recommendTitle,
             children: "\u7CBE\u9009\u63A8\u8350"
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_10__.View, {
-            className: _styles_home_home_module_scss__WEBPACK_IMPORTED_MODULE_8__["default"].recommendLine
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_9__.View, {
+            className: _styles_home_home_module_scss__WEBPACK_IMPORTED_MODULE_7__["default"].recommendLine
           })]
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_10__.View, {
-          className: _styles_home_home_module_scss__WEBPACK_IMPORTED_MODULE_8__["default"].recommendTabs,
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_9__.View, {
+          className: _styles_home_home_module_scss__WEBPACK_IMPORTED_MODULE_7__["default"].recommendTabs,
           children: recommendTabs.map(function (tab) {
-            return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_10__.View, {
-              className: "".concat(_styles_home_home_module_scss__WEBPACK_IMPORTED_MODULE_8__["default"].recommendTab, " ").concat(activeTab === tab.key ? _styles_home_home_module_scss__WEBPACK_IMPORTED_MODULE_8__["default"].recommendTabActive : ''),
+            return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_9__.View, {
+              className: "".concat(_styles_home_home_module_scss__WEBPACK_IMPORTED_MODULE_7__["default"].recommendTab, " ").concat(activeTab === tab.key ? _styles_home_home_module_scss__WEBPACK_IMPORTED_MODULE_7__["default"].recommendTabActive : ''),
               onClick: function onClick() {
                 return setActiveTab(tab.key);
               },
-              children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_10__.Text, {
-                className: _styles_home_home_module_scss__WEBPACK_IMPORTED_MODULE_8__["default"].recommendTabText,
+              children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_9__.Text, {
+                className: _styles_home_home_module_scss__WEBPACK_IMPORTED_MODULE_7__["default"].recommendTabText,
                 children: tab.label
               })
             }, tab.key);
           })
-        }), recommendedProducts.length > 0 ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_10__.View, {
-          className: _styles_home_home_module_scss__WEBPACK_IMPORTED_MODULE_8__["default"].productGrid,
+        }), recommendedProducts.length > 0 ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_9__.View, {
+          className: _styles_home_home_module_scss__WEBPACK_IMPORTED_MODULE_7__["default"].productGrid,
           children: recommendedProducts.map(function (product) {
-            return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(ProductCard, {
+            return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(ProductCard, {
               product: product,
               onClick: goToProductDetail
             }, product.id);
           })
-        }) : /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_10__.View, {
+        }) : /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_9__.View, {
           style: {
             padding: '60rpx',
             textAlign: 'center',
             color: '#999'
           },
-          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_10__.Text, {
+          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_9__.Text, {
             children: "\u8BE5\u5206\u7C7B\u6682\u65E0\u5546\u54C1"
           })
         })]
@@ -882,7 +891,7 @@ var inst = Page(taroOption)
 /***/ (function(__unused_webpack_module, __webpack_exports__) {
 
 // extracted by mini-css-extract-plugin
-/* harmony default export */ __webpack_exports__["default"] = ({"homePage":"home-module__homePage___gpLL9","header":"home-module__header___hFd8x","searchBox":"home-module__searchBox___tBwm_","searchIcon":"home-module__searchIcon___DtY81","searchText":"home-module__searchText___ShVt0","content":"home-module__content___qfPqY","banner":"home-module__banner___W3u6h","swiper-pagination-bullet":"home-module__swiper-pagination-bullet___AoOKz","swiper-pagination-bullet-active":"home-module__swiper-pagination-bullet-active___Kadu6","categoryNavWrap":"home-module__categoryNavWrap___oGT3B","categoryNav":"home-module__categoryNav___TdagT","categoryNavInner":"home-module__categoryNavInner___L9meQ","categoryItem":"home-module__categoryItem___zQ8_l","categoryIcon":"home-module__categoryIcon___k7xtB","categoryIconImg":"home-module__categoryIconImg___ADAxe","categoryName":"home-module__categoryName___GEBF1","brandsSection":"home-module__brandsSection___Grurl","brandsHeader":"home-module__brandsHeader___dxzwX","brandsTitleWrap":"home-module__brandsTitleWrap___WaPix","brandsTitle":"home-module__brandsTitle___IEVjk","brandsSubtitle":"home-module__brandsSubtitle___xxQ6p","brandsMore":"home-module__brandsMore___yw3oA","brandsList":"home-module__brandsList___AXIDA","brandItem":"home-module__brandItem___syJmF","brandIconWrap":"home-module__brandIconWrap___yl1dx","brandIconImg":"home-module__brandIconImg___FADvF","brandIconSvg":"home-module__brandIconSvg___d96jw","brandName":"home-module__brandName___O0qI2","activitySection":"home-module__activitySection___IQXb7","sectionHeader":"home-module__sectionHeader___oa072","sectionTitle":"home-module__sectionTitle___gKIyo","moreBtn":"home-module__moreBtn___K82WN","seckillArea":"home-module__seckillArea___ju4h7","seckillHeader":"home-module__seckillHeader___dmfWl","seckillTitle":"home-module__seckillTitle___wpEbE","seckillSubtitle":"home-module__seckillSubtitle____WK4I","seckillHeaderRight":"home-module__seckillHeaderRight___lpT1T","countdown":"home-module__countdown___PAWFw","countdownItem":"home-module__countdownItem___pdC59","seckillArrow":"home-module__seckillArrow___ioSEF","arrowIcon":"home-module__arrowIcon___JLbCT","seckillProducts":"home-module__seckillProducts___jUo6K","seckillProduct":"home-module__seckillProduct___NuSZ9","productImage":"home-module__productImage___Fy4mD","seckillPriceArea":"home-module__seckillPriceArea___mAeSm","seckillPrice":"home-module__seckillPrice___bykOz","originalPrice":"home-module__originalPrice___liqTH","seckillBtn":"home-module__seckillBtn___VFtGp","seckillEmpty":"home-module__seckillEmpty___hlaZz","seckillEmptyText":"home-module__seckillEmptyText___FBixm","recommendSection":"home-module__recommendSection___iVE2E","recommendHeader":"home-module__recommendHeader___Lqvnh","recommendLine":"home-module__recommendLine___gPiLo","recommendTitle":"home-module__recommendTitle___HZCoN","recommendTabs":"home-module__recommendTabs___uCz1H","recommendTab":"home-module__recommendTab___xHvWY","recommendTabText":"home-module__recommendTabText___vqO55","recommendTabActive":"home-module__recommendTabActive___Noz3_","productGrid":"home-module__productGrid___vabQw","productCard":"home-module__productCard___eqvIf","productInfo":"home-module__productInfo___xYtl8","productName":"home-module__productName___PqOUU","productTags":"home-module__productTags___aFFOA","tag":"home-module__tag___JDC0z","productPrice":"home-module__productPrice___O2MUC","priceSymbol":"home-module__priceSymbol___Orfad","currentPrice":"home-module__currentPrice___Kk_mK","salesInfo":"home-module__salesInfo___dMMqr"});
+/* harmony default export */ __webpack_exports__["default"] = ({"homePage":"home-module__homePage___gpLL9","header":"home-module__header___hFd8x","searchBox":"home-module__searchBox___tBwm_","searchIcon":"home-module__searchIcon___DtY81","searchText":"home-module__searchText___ShVt0","content":"home-module__content___qfPqY","banner":"home-module__banner___W3u6h","swiper-pagination-bullet":"home-module__swiper-pagination-bullet___AoOKz","swiper-pagination-bullet-active":"home-module__swiper-pagination-bullet-active___Kadu6","categoryNavWrap":"home-module__categoryNavWrap___oGT3B","categoryNavInner":"home-module__categoryNavInner___L9meQ","categoryItem":"home-module__categoryItem___zQ8_l","categoryIcon":"home-module__categoryIcon___k7xtB","categoryIconImg":"home-module__categoryIconImg___ADAxe","categoryName":"home-module__categoryName___GEBF1","categoryNav":"home-module__categoryNav___TdagT","categoryNavFill":"home-module__categoryNavFill___dpFZi","brandsSection":"home-module__brandsSection___Grurl","brandsHeader":"home-module__brandsHeader___dxzwX","brandsTitleWrap":"home-module__brandsTitleWrap___WaPix","brandsTitle":"home-module__brandsTitle___IEVjk","brandsSubtitle":"home-module__brandsSubtitle___xxQ6p","brandsMore":"home-module__brandsMore___yw3oA","brandsList":"home-module__brandsList___AXIDA","brandItem":"home-module__brandItem___syJmF","brandIconWrap":"home-module__brandIconWrap___yl1dx","brandIconImg":"home-module__brandIconImg___FADvF","brandIconSvg":"home-module__brandIconSvg___d96jw","brandName":"home-module__brandName___O0qI2","activitySection":"home-module__activitySection___IQXb7","sectionHeader":"home-module__sectionHeader___oa072","sectionTitle":"home-module__sectionTitle___gKIyo","moreBtn":"home-module__moreBtn___K82WN","seckillArea":"home-module__seckillArea___ju4h7","seckillHeader":"home-module__seckillHeader___dmfWl","seckillTitle":"home-module__seckillTitle___wpEbE","seckillSubtitle":"home-module__seckillSubtitle____WK4I","seckillHeaderRight":"home-module__seckillHeaderRight___lpT1T","countdown":"home-module__countdown___PAWFw","countdownItem":"home-module__countdownItem___pdC59","seckillArrow":"home-module__seckillArrow___ioSEF","arrowIcon":"home-module__arrowIcon___JLbCT","seckillProducts":"home-module__seckillProducts___jUo6K","seckillProduct":"home-module__seckillProduct___NuSZ9","productImage":"home-module__productImage___Fy4mD","seckillPriceArea":"home-module__seckillPriceArea___mAeSm","seckillPrice":"home-module__seckillPrice___bykOz","originalPrice":"home-module__originalPrice___liqTH","seckillBtn":"home-module__seckillBtn___VFtGp","seckillEmpty":"home-module__seckillEmpty___hlaZz","seckillEmptyText":"home-module__seckillEmptyText___FBixm","recommendSection":"home-module__recommendSection___iVE2E","recommendHeader":"home-module__recommendHeader___Lqvnh","recommendLine":"home-module__recommendLine___gPiLo","recommendTitle":"home-module__recommendTitle___HZCoN","recommendTabs":"home-module__recommendTabs___uCz1H","recommendTab":"home-module__recommendTab___xHvWY","recommendTabText":"home-module__recommendTabText___vqO55","recommendTabActive":"home-module__recommendTabActive___Noz3_","productGrid":"home-module__productGrid___vabQw","productCard":"home-module__productCard___eqvIf","productInfo":"home-module__productInfo___xYtl8","productName":"home-module__productName___PqOUU","productTags":"home-module__productTags___aFFOA","tag":"home-module__tag___JDC0z","productPrice":"home-module__productPrice___O2MUC","priceSymbol":"home-module__priceSymbol___Orfad","currentPrice":"home-module__currentPrice___Kk_mK","salesInfo":"home-module__salesInfo___dMMqr"});
 
 /***/ })
 

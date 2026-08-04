@@ -1,31 +1,57 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { View, Text, Input } from '@tarojs/components';
 import Taro from '@tarojs/taro';
-import { hotSearchKeywords } from '@/data/common/home';
-import { products } from '@/data/product/products';
+import { apiGet } from '@/api/common';
+import { productApi } from '@/api/home';
 import styles from '@/styles/home/search.module.scss';
+
+// 热搜关键词：后续可接入 /homepage/hot-keywords 等接口
+const hotSearchKeywords: string[] = [];
 
 const SearchPage: React.FC = () => {
   const [searchValue, setSearchValue] = useState('');
   const [searchSuggestions, setSearchSuggestions] = useState<string[]>([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
+  const searchTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
+  // 输入联想建议：调用搜索接口前 10 条结果的商品名称
   useEffect(() => {
-    if (searchValue.trim()) {
-      const lowerKeyword = searchValue.toLowerCase();
-      const suggestions = products
-        .filter(p => p.name.toLowerCase().includes(lowerKeyword))
-        .map(p => {
-          const index = p.name.toLowerCase().indexOf(lowerKeyword);
-          return p.name.substring(0, index) + searchValue + p.name.substring(index + lowerKeyword.length);
-        })
-        .slice(0, 10);
-      setSearchSuggestions(suggestions);
-      setShowSuggestions(true);
-    } else {
+    if (searchTimerRef.current) {
+      clearTimeout(searchTimerRef.current);
+    }
+
+    const trimmed = searchValue.trim();
+    if (!trimmed) {
       setSearchSuggestions([]);
       setShowSuggestions(false);
+      return;
     }
+
+    searchTimerRef.current = setTimeout(async () => {
+      try {
+        const res = await apiGet(productApi.search, {
+          key_word: trimmed,
+          page: 1,
+          size: 10,
+        });
+        const list = Array.isArray(res?.data) ? res.data : res?.data?.list || [];
+        const suggestions = list
+          .map((p: any) => p.name || p.Name || p.productName || p.ProductName || '')
+          .filter(Boolean)
+          .slice(0, 10);
+        setSearchSuggestions(suggestions);
+        setShowSuggestions(true);
+      } catch (error) {
+        console.error('搜索建议失败:', error);
+        setSearchSuggestions([]);
+      }
+    }, 300);
+
+    return () => {
+      if (searchTimerRef.current) {
+        clearTimeout(searchTimerRef.current);
+      }
+    };
   }, [searchValue]);
 
   const handleSearch = () => {
@@ -131,9 +157,7 @@ const SearchPage: React.FC = () => {
               <Text className={styles.clearHistory}>清空</Text>
             </View>
             <View className={styles.historyList}>
-              <View className={styles.historyItem} onClick={() => handleKeywordSearch('iPhone')}>iPhone</View>
-              <View className={styles.historyItem} onClick={() => handleKeywordSearch('华为手机')}>华为手机</View>
-              <View className={styles.historyItem} onClick={() => handleKeywordSearch('蓝牙耳机')}>蓝牙耳机</View>
+              {/* 搜索历史后续可从本地存储读取并渲染 */}
             </View>
           </View>
         </View>
