@@ -46,17 +46,53 @@ export const refundApi = {
 /**
  * 转换购物车项：兼容后端可能返回的 snake_case / PascalCase / camelCase 字段名
  */
+function isEmptyValue(value: any): boolean {
+    return value === undefined || value === null || value === '' || value === 0 || value === '0';
+}
+
+function normalizeEmptyId(value: any): string {
+    if (isEmptyValue(value)) return '';
+    return String(value);
+}
+
+function pickFirstValidId(...candidates: any[]): string {
+    for (const value of candidates) {
+        if (!isEmptyValue(value)) {
+            return String(value);
+        }
+    }
+    return '';
+}
+
 export function transformCartItem(raw: any): Record<string, any> {
+    // 处理 specValues：后端返回对象 {"颜色":"红色"}，需要转为字符串
+    let skuName = raw.skuName ?? raw.sku_name ?? raw.SkuName ?? raw.specName ?? '';
+    if (!skuName && raw.specValues && typeof raw.specValues === 'object') {
+        skuName = Object.values(raw.specValues).join('/') || '';
+    }
+
+    // 处理 image：后端可能返回 JSON 字符串 '["url"]' 或普通字符串
+    let image = raw.image ?? raw.imageUrl ?? raw.image_url ?? raw.Image ?? raw.pic ?? '';
+    if (typeof image === 'string' && image.startsWith('[')) {
+        try {
+            const parsed = JSON.parse(image);
+            if (Array.isArray(parsed) && parsed.length > 0) {
+                // 去除模板字符串的反引号
+                image = parsed[0].replace(/^`|`$/g, '');
+            }
+        } catch { /* ignore */ }
+    }
+
     return {
-        id: raw.id ?? raw.Id ?? raw.cartId ?? raw.cart_id ?? raw.ID ?? '',
-        productId: raw.productId ?? raw.product_id ?? raw.ProductId ?? raw.pid ?? '',
+        id: pickFirstValidId(raw.id, raw.Id, raw.cartId, raw.cart_id, raw.cartItemId, raw.cart_item_id, raw.CartItemId, raw.cid, raw.itemId, raw.item_id, raw.ID),
+        productId: pickFirstValidId(raw.productId, raw.product_id, raw.ProductId, raw.pid, raw.productID),
         productName: raw.productName ?? raw.product_name ?? raw.ProductName ?? raw.name ?? '',
-        skuId: raw.skuId ?? raw.sku_id ?? raw.SkuId ?? raw.skuID ?? '',
-        skuName: raw.skuName ?? raw.sku_name ?? raw.SkuName ?? raw.specName ?? '',
-        price: Number(raw.price ?? raw.Price ?? raw.salePrice ?? raw.sale_price ?? raw.discountPrice ?? 0),
+        skuId: pickFirstValidId(raw.skuId, raw.sku_id, raw.SkuId, raw.skuID),
+        skuName,
+        price: Number(raw.price ?? raw.Price ?? raw.salePrice ?? raw.sale_price ?? raw.discountPrice ?? raw.amount ?? 0),
         quantity: Number(raw.quantity ?? raw.Quantity ?? raw.count ?? raw.num ?? 1),
         stock: Number(raw.stock ?? raw.Stock ?? raw.maxQuantity ?? 999),
-        image: raw.image ?? raw.imageUrl ?? raw.image_url ?? raw.Image ?? raw.pic ?? '',
+        image,
         selected: raw.selected ?? raw.Selected ?? true,
         isSeckill: raw.isSeckill ?? raw.is_seckill ?? raw.IsSeckill ?? false,
         seckillPrice: raw.seckillPrice ?? raw.seckill_price ?? raw.SeckillPrice ?? null,
@@ -66,29 +102,44 @@ export function transformCartItem(raw: any): Record<string, any> {
         checked: raw.checked ?? raw.Checked ?? null,
         skuCode: raw.skuCode ?? raw.sku_code ?? raw.SkuCode ?? '',
         productCode: raw.productCode ?? raw.product_code ?? raw.ProductCode ?? '',
-        createTime: raw.createTime ?? raw.create_time ?? raw.CreateTime ?? '',
-        updateTime: raw.updateTime ?? raw.update_time ?? raw.UpdateTime ?? '',
+        createTime: raw.createTime ?? raw.create_time ?? raw.CreateTime ?? raw.CreatedAt ?? '',
+        updateTime: raw.updateTime ?? raw.update_time ?? raw.UpdateTime ?? raw.UpdatedAt ?? '',
     };
 }
 
 /**
  * 转换订单列表项
  */
+// 后端订单状态码：0=待支付 2=待发货 3=待自提 4=已完成 5=已取消
+const orderStatusCodeMap: Record<number, string> = {
+    0: 'pending_payment',
+    2: 'pending_delivery',
+    3: 'pending_pickup',
+    4: 'completed',
+    5: 'cancelled',
+};
+
 export function transformOrderItem(raw: any): Record<string, any> {
+    const rawStatus = raw.status ?? raw.Status ?? raw.orderStatus ?? '';
+    const status = typeof rawStatus === 'number'
+        ? (orderStatusCodeMap[rawStatus] ?? String(rawStatus))
+        : rawStatus;
+
     return {
-        id: raw.id ?? raw.Id ?? raw.orderId ?? raw.order_id ?? '',
-        orderNo: raw.orderNo ?? raw.order_no ?? raw.OrderNo ?? raw.OrderNO ?? '',
-        status: raw.status ?? raw.Status ?? raw.orderStatus ?? '',
+        id: pickFirstValidId(raw.id, raw.Id, raw.ID, raw.orderId, raw.order_id),
+        orderNo: pickFirstValidId(raw.orderNo, raw.order_no, raw.OrderNo, raw.OrderNO),
+        status,
         totalAmount: Number(raw.totalAmount ?? raw.total_amount ?? raw.TotalAmount ?? 0),
         payAmount: Number(raw.payAmount ?? raw.pay_amount ?? raw.PayAmount ?? 0),
         freightAmount: Number(raw.freightAmount ?? raw.freight_amount ?? raw.FreightAmount ?? 0),
-        couponAmount: Number(raw.couponAmount ?? raw.coupon_amount ?? raw.CouponAmount ?? 0),
-        itemCount: Number(raw.itemCount ?? raw.item_count ?? raw.ItemCount ?? 0),
-        createdAt: raw.createdAt ?? raw.created_at ?? raw.createTime ?? raw.CreatedAt ?? '',
-        payAt: raw.payAt ?? raw.pay_at ?? raw.PayAt ?? '',
+        couponAmount: Number(raw.couponAmount ?? raw.coupon_amount ?? raw.CouponAmount ?? raw.discountAmount ?? raw.discount_amount ?? 0),
+        itemCount: Number(raw.itemCount ?? raw.item_count ?? raw.ItemCount ?? (Array.isArray(raw.items) ? raw.items.length : 0)),
+        createdAt: raw.createdAt ?? raw.created_at ?? raw.createTime ?? raw.CreateTime ?? raw.CreatedAt ?? '',
+        payAt: raw.payAt ?? raw.pay_at ?? raw.PayAt ?? raw.paidAt ?? raw.PaidAt ?? '',
         items: Array.isArray(raw.items) ? raw.items.map(transformCartItem) : [],
         address: raw.address ?? raw.Address ?? null,
-        storeName: raw.storeName ?? raw.store_name ?? raw.StoreName ?? '',
+        storeName: raw.storeName ?? raw.store_name ?? raw.StoreName ?? raw.store?.name ?? '',
+        store: raw.store ?? raw.Store ?? null,
         remark: raw.remark ?? raw.Remark ?? '',
     };
 }
@@ -102,6 +153,10 @@ export function transformOrderItem(raw: any): Record<string, any> {
 export async function fetchCartList(params: { page?: number; size?: number } = {}) {
     const res = await apiGet(cartApi.list, params);
     const list = Array.isArray(res?.data) ? res.data : (res?.data?.list ?? res?.data?.items ?? []);
+    // 临时调试
+    if (list.length > 0) {
+        console.log('[fetchCartList] 后端原始第一条:', JSON.stringify(list[0], null, 2));
+    }
     return {
         ...res,
         data: list.map(transformCartItem),
@@ -139,11 +194,15 @@ export async function updateCartItem(id: string | number, payload: {
     quantity?: number;
     selected?: boolean;
 }) {
+    const numericId = toNumericId(id);
+    if (!numericId) {
+        throw new Error('无效的购物车ID');
+    }
     const body: Record<string, any> = {};
     if (payload.quantity !== undefined) body.quantity = payload.quantity;
     if (payload.selected !== undefined) body.selected = payload.selected;
 
-    const res = await apiPut(cartApi.update, body, { id });
+    const res = await apiPut(cartApi.update, body, { id: numericId });
     return res;
 }
 
@@ -152,7 +211,11 @@ export async function updateCartItem(id: string | number, payload: {
  * DELETE /api/v1/cart/{id}
  */
 export async function deleteCartItem(id: string | number) {
-    const res = await apiDelete(cartApi.delete, {}, { id });
+    const numericId = toNumericId(id);
+    if (!numericId) {
+        throw new Error('无效的购物车ID');
+    }
+    const res = await apiDelete(cartApi.delete, {}, { id: numericId });
     return res;
 }
 
@@ -161,7 +224,11 @@ export async function deleteCartItem(id: string | number) {
  * POST /api/v1/cart/batch-delete
  */
 export async function batchDeleteCartItem(ids: Array<string | number>) {
-    const res = await apiPost(cartApi.batchDelete, { ids });
+    const numericIds = ids.map(toNumericId).filter(Boolean);
+    if (numericIds.length === 0) {
+        throw new Error('无效的购物车ID');
+    }
+    const res = await apiPost(cartApi.batchDelete, { ids: numericIds }, {}, {}, false);
     return res;
 }
 
@@ -255,7 +322,7 @@ export async function cancelOrder(id: string | number) {
  * payload 支持：paymentMethod(wechat/alipay) 等参数
  */
 export async function payOrder(id: string | number, payload?: { paymentMethod?: string; [key: string]: any }) {
-    const res = await apiPost(orderApi.pay, payload || {}, { id });
+    const res = await apiPost(orderApi.pay, payload || {}, { id }, {}, false);
     return res;
 }
 
@@ -280,7 +347,7 @@ export async function paymentCallback(payload: {
     if (payload.paymentMethod !== undefined) body.paymentMethod = payload.paymentMethod;
     if (payload.amount !== undefined) body.amount = payload.amount;
 
-    const res = await apiPost(paymentApi.callback, body);
+    const res = await apiPost(paymentApi.callback, body, {}, {}, false);
     return res;
 }
 
@@ -321,7 +388,7 @@ export async function fetchOrderPaymentStatus(id: string | number) {
 }
 
 /**
- * 确认自提/确认收货
+ * 确认取货/确认收货（待自提→已完成）
  * PUT /api/v1/orders/{id}/confirm
  */
 export async function confirmOrder(id: string | number) {
@@ -330,11 +397,11 @@ export async function confirmOrder(id: string | number) {
 }
 
 /**
- * 确认自提
+ * 确认发货/备货完成（待发货→待自提）
  * POST /api/v1/orders/{id}/pickup
  */
 export async function confirmPickupOrder(id: string | number) {
-    const res = await apiPost(orderApi.confirmPickup, {}, { id });
+    const res = await apiPost(orderApi.confirmPickup, {}, { id }, {}, false);
     return res;
 }
 
@@ -343,7 +410,7 @@ export async function confirmPickupOrder(id: string | number) {
  * POST /api/v1/orders/{id}/refund
  */
 export async function refundOrder(id: string | number, payload?: { reason?: string; amount?: number }) {
-    const res = await apiPost(orderApi.refund, payload || {}, { id });
+    const res = await apiPost(orderApi.refund, payload || {}, { id }, {}, false);
     return res;
 }
 
@@ -407,7 +474,7 @@ export async function submitOrderReview(
     if (payload.anonymous !== undefined) body.anonymous = payload.anonymous;
     if (Array.isArray(payload.items)) body.items = payload.items;
 
-    const res = await apiPost(orderApi.review, body, { id });
+    const res = await apiPost(orderApi.review, body, { id }, {}, false);
     return res;
 }
 
@@ -620,7 +687,7 @@ export async function applyRefund(payload: {
     if (payload.trackingNo !== undefined) body.trackingNo = payload.trackingNo;
     if (payload.trackingCompany !== undefined) body.trackingCompany = payload.trackingCompany;
 
-    const res = await apiPost(refundApi.apply, body);
+    const res = await apiPost(refundApi.apply, body, {}, {}, false);
     return res;
 }
 

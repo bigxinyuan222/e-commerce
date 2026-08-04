@@ -9,8 +9,8 @@
 
 /* harmony import */ var D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regeneratorValues_js__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! ./node_modules/@babel/runtime/helpers/esm/regeneratorValues.js */ "./node_modules/@babel/runtime/helpers/esm/regeneratorValues.js");
 /* harmony import */ var D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_createForOfIteratorHelper_js__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! ./node_modules/@babel/runtime/helpers/esm/createForOfIteratorHelper.js */ "./node_modules/@babel/runtime/helpers/esm/createForOfIteratorHelper.js");
-/* harmony import */ var D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ./node_modules/@babel/runtime/helpers/esm/objectSpread2.js */ "./node_modules/@babel/runtime/helpers/esm/objectSpread2.js");
 /* harmony import */ var D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ./node_modules/@babel/runtime/helpers/esm/regenerator.js */ "./node_modules/@babel/runtime/helpers/esm/regenerator.js");
+/* harmony import */ var D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ./node_modules/@babel/runtime/helpers/esm/objectSpread2.js */ "./node_modules/@babel/runtime/helpers/esm/objectSpread2.js");
 /* harmony import */ var D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./node_modules/@babel/runtime/helpers/esm/asyncToGenerator.js */ "./node_modules/@babel/runtime/helpers/esm/asyncToGenerator.js");
 /* harmony import */ var D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_slicedToArray_js__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./node_modules/@babel/runtime/helpers/esm/slicedToArray.js */ "./node_modules/@babel/runtime/helpers/esm/slicedToArray.js");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
@@ -85,17 +85,18 @@ var CheckoutPage = function CheckoutPage() {
     var _Taro$getCurrentInsta;
     var _ref = ((_Taro$getCurrentInsta = _tarojs_taro__WEBPACK_IMPORTED_MODULE_1___default().getCurrentInstance().router) === null || _Taro$getCurrentInsta === void 0 ? void 0 : _Taro$getCurrentInsta.params) || {},
       buyNow = _ref.buyNow;
+    var parsedBuyNowItem = null;
     if (buyNow) {
       try {
-        var item = JSON.parse(decodeURIComponent(buyNow));
-        setBuyNowItem(item);
+        parsedBuyNowItem = JSON.parse(decodeURIComponent(buyNow));
+        setBuyNowItem(parsedBuyNowItem);
       } catch (e) {
         console.error('Failed to parse buyNow data:', e);
       }
     }
     var loadInitialData = /*#__PURE__*/function () {
       var _ref2 = (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_10__["default"])(/*#__PURE__*/(0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_11__["default"])().m(function _callee() {
-        var _yield$Promise$all, _yield$Promise$all2, couponRes, addressRes, _couponRes$data, couponList, availableCouponsList, _t;
+        var _yield$Promise$all, _yield$Promise$all2, couponRes, addressRes, _couponRes$data, couponList, currentItems, currentGoodsAmount, availableCouponsList, _t;
         return (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_11__["default"])().w(function (_context) {
           while (1) switch (_context.p = _context.n) {
             case 0:
@@ -104,7 +105,10 @@ var CheckoutPage = function CheckoutPage() {
               _context.n = 2;
               return Promise.all([(0,_api_user__WEBPACK_IMPORTED_MODULE_5__.fetchMyCoupons)().catch(function () {
                 return null;
-              }), (0,_api_common__WEBPACK_IMPORTED_MODULE_3__.apiGet)('/api/v1/address/default').catch(function () {
+              }), (0,_api_common__WEBPACK_IMPORTED_MODULE_3__.apiGet)('/api/v1/address/default').catch(function (err) {
+                if ((err === null || err === void 0 ? void 0 : err.statusCode) === 404) {
+                  console.info('[checkout] 默认地址接口暂未实现，跳过');
+                }
                 return null;
               })]);
             case 2:
@@ -113,9 +117,18 @@ var CheckoutPage = function CheckoutPage() {
               couponRes = _yield$Promise$all2[0];
               addressRes = _yield$Promise$all2[1];
               if (couponRes !== null && couponRes !== void 0 && couponRes.data) {
-                couponList = Array.isArray(couponRes.data) ? couponRes.data : ((_couponRes$data = couponRes.data) === null || _couponRes$data === void 0 ? void 0 : _couponRes$data.list) || [];
+                couponList = Array.isArray(couponRes.data) ? couponRes.data : ((_couponRes$data = couponRes.data) === null || _couponRes$data === void 0 ? void 0 : _couponRes$data.list) || []; // 根据当前结算商品金额过滤可用且满足门槛的优惠券
+                currentItems = parsedBuyNowItem ? [(0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_12__["default"])((0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_12__["default"])({}, parsedBuyNowItem), {}, {
+                  id: "buyNow-".concat(parsedBuyNowItem.productId),
+                  selected: true
+                })] : cartItems.filter(function (item) {
+                  return item.selected;
+                });
+                currentGoodsAmount = currentItems.reduce(function (sum, item) {
+                  return sum + item.price * item.quantity;
+                }, 0);
                 availableCouponsList = couponList.filter(function (c) {
-                  return c.status === 'available';
+                  return c.status === 'available' && c.minAmount <= currentGoodsAmount;
                 });
                 setCoupons(availableCouponsList);
                 if (availableCouponsList.length > 0) {
@@ -172,10 +185,14 @@ var CheckoutPage = function CheckoutPage() {
   }, 0).toFixed(2));
   var freightAmount = 0;
   var couponAmount = hasSpecialItem ? 0 : selectedCoupon ? selectedCoupon.value : 0;
-  var finalAmount = Number((goodsAmount + freightAmount - couponAmount).toFixed(2));
+  // 优惠券金额不能超过商品金额，防止应付总额为负
+  if (couponAmount > goodsAmount) {
+    couponAmount = goodsAmount;
+  }
+  var finalAmount = Number(Math.max(0, goodsAmount + freightAmount - couponAmount).toFixed(2));
   var handleSubmitOrder = /*#__PURE__*/function () {
     var _ref3 = (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_10__["default"])(/*#__PURE__*/(0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_11__["default"])().m(function _callee3() {
-      var currentSelectedItems, isBuyNow, realCartIds, _iterator, _step, _loop, latestCartRes, _iterator2, _step2, _loop2, storeId, userCouponId, submitData, res, remainingItems, errorMsg, _t3, _t4, _t5;
+      var currentSelectedItems, isBuyNow, realCartIds, _iterator, _step, _loop, latestCartRes, invalidItems, _iterator2, _step2, _loop2, storeId, userCouponId, submitData, res, remainingItems, errorMsg, _t3, _t4, _t5;
       return (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_11__["default"])().w(function (_context5) {
         while (1) switch (_context5.p = _context5.n) {
           case 0:
@@ -238,7 +255,7 @@ var CheckoutPage = function CheckoutPage() {
             _context5.p = 5;
             _loop = /*#__PURE__*/(0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_11__["default"])().m(function _loop() {
               var _item$id2;
-              var item, addRes, listRes, matchedItem;
+              var item, addRes, listRes, _ref4, localSkuId, matchedItem, fallbackMatched, finalMatch;
               return (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_11__["default"])().w(function (_context2) {
                 while (1) switch (_context2.n) {
                   case 0:
@@ -264,12 +281,29 @@ var CheckoutPage = function CheckoutPage() {
                   case 2:
                     listRes = _context2.v;
                     if (listRes !== null && listRes !== void 0 && listRes.data && Array.isArray(listRes.data)) {
+                      localSkuId = ((_ref4 = item.skuId || item.productId) === null || _ref4 === void 0 ? void 0 : _ref4.toString()) || '';
                       matchedItem = listRes.data.find(function (cartItem) {
-                        var _cartItem$productId, _item$productId, _cartItem$skuId, _ref4;
-                        return ((_cartItem$productId = cartItem.productId) === null || _cartItem$productId === void 0 ? void 0 : _cartItem$productId.toString()) === ((_item$productId = item.productId) === null || _item$productId === void 0 ? void 0 : _item$productId.toString()) && ((_cartItem$skuId = cartItem.skuId) === null || _cartItem$skuId === void 0 ? void 0 : _cartItem$skuId.toString()) === ((_ref4 = item.skuId || item.productId) === null || _ref4 === void 0 ? void 0 : _ref4.toString()) && cartItem.quantity === item.quantity;
-                      });
-                      if (matchedItem) {
-                        realCartIds.push(Number(matchedItem.id));
+                        var _cartItem$productId, _item$productId, _cartItem$skuId;
+                        return ((_cartItem$productId = cartItem.productId) === null || _cartItem$productId === void 0 ? void 0 : _cartItem$productId.toString()) === ((_item$productId = item.productId) === null || _item$productId === void 0 ? void 0 : _item$productId.toString()) && (((_cartItem$skuId = cartItem.skuId) === null || _cartItem$skuId === void 0 ? void 0 : _cartItem$skuId.toString()) || '') === localSkuId;
+                      }); // 降级匹配：如果 strict 匹配失败且 skuId 为空，尝试只用 productId 匹配
+                      fallbackMatched = !matchedItem && !localSkuId ? listRes.data.find(function (cartItem) {
+                        var _cartItem$productId2, _item$productId2, _cartItem$skuId2;
+                        return ((_cartItem$productId2 = cartItem.productId) === null || _cartItem$productId2 === void 0 ? void 0 : _cartItem$productId2.toString()) === ((_item$productId2 = item.productId) === null || _item$productId2 === void 0 ? void 0 : _item$productId2.toString()) && !((_cartItem$skuId2 = cartItem.skuId) !== null && _cartItem$skuId2 !== void 0 && _cartItem$skuId2.toString() || '');
+                      }) : null;
+                      finalMatch = matchedItem || fallbackMatched;
+                      if (finalMatch) {
+                        realCartIds.push(Number(finalMatch.id));
+                      } else {
+                        console.warn('[checkout] buyNow 匹配失败:', {
+                          localProductId: item.productId,
+                          localSkuId: item.skuId,
+                          backendItems: listRes.data.map(function (c) {
+                            return {
+                              productId: c.productId,
+                              skuId: c.skuId
+                            };
+                          })
+                        });
                       }
                     }
                   case 3:
@@ -299,13 +333,30 @@ var CheckoutPage = function CheckoutPage() {
             _iterator.f();
             return _context5.f(10);
           case 11:
-            _context5.n = 22;
+            _context5.n = 23;
             break;
           case 12:
             _context5.n = 13;
             return (0,_api_cart__WEBPACK_IMPORTED_MODULE_4__.fetchCartList)();
           case 13:
             latestCartRes = _context5.v;
+            // 临时调试：打印前后端购物车数据
+            console.log('[checkout] 本地选中商品:', JSON.stringify(currentSelectedItems.map(function (i) {
+              return {
+                id: i.id,
+                productId: i.productId,
+                skuId: i.skuId,
+                productName: i.productName
+              };
+            }), null, 2));
+            console.log('[checkout] 后端购物车(已转换):', JSON.stringify(latestCartRes.data.map(function (i) {
+              return {
+                id: i.id,
+                productId: i.productId,
+                skuId: i.skuId,
+                productName: i.productName
+              };
+            }), null, 2));
             if (!(!(latestCartRes !== null && latestCartRes !== void 0 && latestCartRes.data) || !Array.isArray(latestCartRes.data) || latestCartRes.data.length === 0)) {
               _context5.n = 14;
               break;
@@ -323,24 +374,55 @@ var CheckoutPage = function CheckoutPage() {
             });
             return _context5.a(2);
           case 14:
-            // 用 productId + skuId + quantity 匹配真实后端购物车 ID
+            // 用 productId + skuId 匹配真实后端购物车 ID
+            // 后端可能没有 productId 字段，所以用 skuId 作为主匹配键
+            invalidItems = [];
             _iterator2 = (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_createForOfIteratorHelper_js__WEBPACK_IMPORTED_MODULE_13__["default"])(currentSelectedItems);
             _context5.p = 15;
             _loop2 = /*#__PURE__*/(0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_11__["default"])().m(function _loop2() {
-              var item, matchedBackendItem;
+              var _item$skuId, _item$productId3;
+              var item, localSkuId, localProductId, matchedBackendItem;
               return (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_11__["default"])().w(function (_context3) {
                 while (1) switch (_context3.n) {
                   case 0:
                     item = _step2.value;
+                    localSkuId = ((_item$skuId = item.skuId) === null || _item$skuId === void 0 ? void 0 : _item$skuId.toString()) || '';
+                    localProductId = ((_item$productId3 = item.productId) === null || _item$productId3 === void 0 ? void 0 : _item$productId3.toString()) || ''; // 优先：productId + skuId 双匹配
                     matchedBackendItem = latestCartRes.data.find(function (cartItem) {
-                      var _cartItem$productId2, _item$productId2, _cartItem$skuId2, _item$skuId;
-                      return ((_cartItem$productId2 = cartItem.productId) === null || _cartItem$productId2 === void 0 ? void 0 : _cartItem$productId2.toString()) === ((_item$productId2 = item.productId) === null || _item$productId2 === void 0 ? void 0 : _item$productId2.toString()) && ((_cartItem$skuId2 = cartItem.skuId) === null || _cartItem$skuId2 === void 0 ? void 0 : _cartItem$skuId2.toString()) === ((_item$skuId = item.skuId) === null || _item$skuId === void 0 ? void 0 : _item$skuId.toString()) && Number(cartItem.quantity) === Number(item.quantity);
-                    });
+                      var _cartItem$productId3, _cartItem$skuId3;
+                      var bpId = ((_cartItem$productId3 = cartItem.productId) === null || _cartItem$productId3 === void 0 ? void 0 : _cartItem$productId3.toString()) || '';
+                      var bsId = ((_cartItem$skuId3 = cartItem.skuId) === null || _cartItem$skuId3 === void 0 ? void 0 : _cartItem$skuId3.toString()) || '';
+                      return bpId && bpId === localProductId && bsId === localSkuId;
+                    }); // 降级1：只用 skuId 匹配（后端可能没有 productId）
+                    if (!matchedBackendItem && localSkuId) {
+                      matchedBackendItem = latestCartRes.data.find(function (cartItem) {
+                        var _cartItem$skuId4;
+                        return (((_cartItem$skuId4 = cartItem.skuId) === null || _cartItem$skuId4 === void 0 ? void 0 : _cartItem$skuId4.toString()) || '') === localSkuId;
+                      });
+                    }
+                    // 降级2：只用 productId 匹配（skuId 为空的情况）
+                    if (!matchedBackendItem && localProductId && !localSkuId) {
+                      matchedBackendItem = latestCartRes.data.find(function (cartItem) {
+                        var _cartItem$productId4;
+                        return (((_cartItem$productId4 = cartItem.productId) === null || _cartItem$productId4 === void 0 ? void 0 : _cartItem$productId4.toString()) || '') === localProductId;
+                      });
+                    }
                     if (matchedBackendItem && matchedBackendItem.id) {
                       realCartIds.push(Number(matchedBackendItem.id));
                     } else {
                       // 本地购物车项在后端不存在，说明已失效
-                      console.warn("\u8D2D\u7269\u8F66\u9879\u5DF2\u5931\u6548: productId=".concat(item.productId, ", skuId=").concat(item.skuId));
+                      invalidItems.push("".concat(item.productName || item.productId));
+                      console.warn('[checkout] 匹配失败详情:', JSON.stringify({
+                        localProductId: item.productId,
+                        localSkuId: item.skuId,
+                        backendItems: latestCartRes.data.map(function (c) {
+                          return {
+                            id: c.id,
+                            productId: c.productId,
+                            skuId: c.skuId
+                          };
+                        })
+                      }, null, 2));
                     }
                   case 1:
                     return _context3.a(2);
@@ -369,6 +451,12 @@ var CheckoutPage = function CheckoutPage() {
             _iterator2.f();
             return _context5.f(20);
           case 21:
+            // 汇总打印一次警告，避免批量失效时刷屏
+            if (invalidItems.length > 0) {
+              console.warn("[checkout] \u68C0\u6D4B\u5230 ".concat(invalidItems.length, " \u4E2A\u5931\u6548\u5546\u54C1:"), invalidItems.join('、'));
+            }
+
+            // 如果有匹配不到的商品，提示用户
             if (!(realCartIds.length === 0)) {
               _context5.n = 22;
               break;
@@ -399,12 +487,21 @@ var CheckoutPage = function CheckoutPage() {
             });
             return _context5.a(2);
           case 22:
+            if (invalidItems.length > 0) {
+              // 部分商品失效，提示用户后继续提交有效商品
+              _tarojs_taro__WEBPACK_IMPORTED_MODULE_1___default().showToast({
+                title: "".concat(invalidItems.length, " \u4EF6\u5546\u54C1\u5DF2\u5931\u6548\uFF0C\u5DF2\u81EA\u52A8\u79FB\u51FA"),
+                icon: 'none',
+                duration: 2000
+              });
+            }
+          case 23:
             if (!(realCartIds.length === 0)) {
-              _context5.n = 23;
+              _context5.n = 24;
               break;
             }
             throw new Error('购物车项不能为空');
-          case 23:
+          case 24:
             // 步骤5: 提交订单
             storeId = (currentStore === null || currentStore === void 0 ? void 0 : currentStore.id) || 0;
             userCouponId = selectedCouponId || null;
@@ -415,9 +512,9 @@ var CheckoutPage = function CheckoutPage() {
               remark: remark
             };
             console.log('[SubmitOrder] Payload:', JSON.stringify(submitData));
-            _context5.n = 24;
+            _context5.n = 25;
             return (0,_api_cart__WEBPACK_IMPORTED_MODULE_4__.submitOrder)(submitData);
-          case 24:
+          case 25:
             res = _context5.v;
             _tarojs_taro__WEBPACK_IMPORTED_MODULE_1___default().hideLoading();
             if (res !== null && res !== void 0 && res.data) {
@@ -444,10 +541,10 @@ var CheckoutPage = function CheckoutPage() {
                 }
               });
             }
-            _context5.n = 26;
+            _context5.n = 27;
             break;
-          case 25:
-            _context5.p = 25;
+          case 26:
+            _context5.p = 26;
             _t5 = _context5.v;
             _tarojs_taro__WEBPACK_IMPORTED_MODULE_1___default().hideLoading();
             console.error('Submit order failed:', _t5);
@@ -513,10 +610,10 @@ var CheckoutPage = function CheckoutPage() {
                 icon: 'none'
               });
             }
-          case 26:
+          case 27:
             return _context5.a(2);
         }
-      }, _callee3, null, [[15, 19, 20, 21], [5, 9, 10, 11], [4, 25]]);
+      }, _callee3, null, [[15, 19, 20, 21], [5, 9, 10, 11], [4, 26]]);
     }));
     return function handleSubmitOrder() {
       return _ref3.apply(this, arguments);

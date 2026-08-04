@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { View, Text, ScrollView } from '@tarojs/components';
 import Taro from '@tarojs/taro';
-import { Coupon } from '@/data/common/coupons';
+import { Coupon } from '@/types';
 import { fetchMyCoupons, fetchAvailableCoupons, claimCoupon } from '@/api/user';
 import styles from '@/styles/user/coupons.module.scss';
 
@@ -98,7 +98,7 @@ const MyCouponsPage: React.FC = () => {
     if (coupon.scope === 'product' && coupon.productId) {
       Taro.navigateTo({ url: `/pages/home/detail/index?id=${coupon.productId}` });
     } else if (coupon.scope === 'category' && coupon.categoryId) {
-      Taro.navigateTo({ url: `/pages/home/search-results/index?keyword=${encodeURIComponent(coupon.scopeText)}` });
+      Taro.navigateTo({ url: `/pages/home/search-results/index?keyword=${encodeURIComponent(coupon.scopeText || '')}` });
     } else {
       Taro.navigateTo({ url: '/pages/home/index' });
     }

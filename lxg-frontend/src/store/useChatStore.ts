@@ -5,7 +5,7 @@
 
 import { create } from 'zustand';
 import Taro from '@tarojs/taro';
-import { apiGet, apiPost } from '@/api/common';
+import { apiGet, apiPost, apiPut } from '@/api/common';
 import { chatApi } from '@/api/message';
 import chatWS, { WSInboundMessage, WSConnectionStatus } from '@/utils/chatWS';
 
@@ -185,15 +185,22 @@ function _isServiceSender(raw: any): boolean {
 
   // ===== 策略2：检查 sender 字段关键词 =====
   const senderRaw = String(raw.sender ?? raw.Sender ?? raw.senderType ?? raw.role ?? raw.sender_role ?? '').toLowerCase().trim();
-  
+
   // 先检查是否明确为用户关键词
   if (senderRaw && USER_SENDER_KEYWORDS.some(kw => senderRaw === kw || senderRaw.includes(kw))) {
     return false;
   }
-  
+
   // 再检查是否明确为客服关键词
   if (senderRaw && SERVICE_SENDER_KEYWORDS.some(kw => senderRaw === kw || senderRaw.includes(kw))) {
     return true;
+  }
+
+  // sender 字段为纯数字枚举：常见 0=用户, 1=客服, 2=系统/管理员
+  if (senderRaw !== '' && /^\d+$/.test(senderRaw)) {
+    const numSender = Number(senderRaw);
+    if (numSender === 0) return false;        // 用户
+    if (numSender === 1 || numSender === 2 || numSender === 3 || numSender === 9) return true; // 客服/系统
   }
 
   // ===== 策略3：检查 senderName 名称关键词 =====
@@ -374,8 +381,8 @@ export const useChatStore = create<ChatStore>((set, get) => ({
   async markConversationRead(conversationId: string) {
     if (!conversationId) return;
     try {
-      // 项目约定：所有 POST 请求必须使用 form-urlencoded 格式
-      await apiPost(chatApi.readConversation, {}, { id: conversationId }, {}, true);
+      // 后端"标记已读"接口为 PUT 方法（非 POST），路径 /chat/conversations/:id/read
+      await apiPut(chatApi.readConversation, {}, { id: conversationId });
       // 乐观更新本地
       set((s) => ({
         conversations: s.conversations.map((c) =>
@@ -495,7 +502,7 @@ export const useChatStore = create<ChatStore>((set, get) => ({
 
     // 3. 如果 WebSocket 未连接，同时通过 HTTP API 发送作为兜底
     if (!get().wsConnected) {
-      this._sendViaHttp(conversationId, payload, tempId);
+      get()._sendViaHttp(conversationId, payload, tempId);
     }
 
     // 4. 通过 WebSocket 发送消息（chatWS 内部有发送队列，未连接时会暂存）

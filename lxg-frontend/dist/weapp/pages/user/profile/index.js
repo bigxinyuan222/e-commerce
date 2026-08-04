@@ -94,7 +94,7 @@ var ProfilePage = function ProfilePage() {
     switch (title) {
       case '个人信息':
         _tarojs_taro__WEBPACK_IMPORTED_MODULE_1___default().navigateTo({
-          url: '/pages/personal-info/index'
+          url: '/pages/user/personal-info/index'
         });
         break;
       case '消息通知':

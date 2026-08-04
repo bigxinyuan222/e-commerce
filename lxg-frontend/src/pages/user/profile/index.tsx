@@ -41,7 +41,7 @@ const ProfilePage: React.FC = () => {
   const handleMenuItemClick = (title: string) => {
     switch (title) {
       case '个人信息':
-        Taro.navigateTo({ url: '/pages/personal-info/index' });
+        Taro.navigateTo({ url: '/pages/user/personal-info/index' });
         break;
       case '消息通知':
         setNotificationEnabled(!notificationEnabled);

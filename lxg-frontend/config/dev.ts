@@ -22,6 +22,7 @@ export default {
   h5: {
     devServer: {
       open: false,
+      host: '0.0.0.0',
       port: 10090,
       proxy: {
         '/api': {

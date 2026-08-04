@@ -11,6 +11,7 @@ import styles from '@/styles/cart/checkout.module.scss';
 interface BuyNowItem {
   productId: string;
   productName: string;
+  skuId: string;
   skuName: string;
   price: number;
   quantity: number;
@@ -53,10 +54,11 @@ const CheckoutPage: React.FC = () => {
 
   useEffect(() => {
     const { buyNow } = Taro.getCurrentInstance().router?.params || {};
+    let parsedBuyNowItem: BuyNowItem | null = null;
     if (buyNow) {
       try {
-        const item = JSON.parse(decodeURIComponent(buyNow as string));
-        setBuyNowItem(item);
+        parsedBuyNowItem = JSON.parse(decodeURIComponent(buyNow as string));
+        setBuyNowItem(parsedBuyNowItem);
       } catch (e) {
         console.error('Failed to parse buyNow data:', e);
       }
@@ -67,12 +69,24 @@ const CheckoutPage: React.FC = () => {
       try {
         const [couponRes, addressRes] = await Promise.all([
           fetchMyCoupons().catch(() => null),
-          apiGet('/api/v1/address/default').catch(() => null),
+          apiGet('/api/v1/address/default').catch((err) => {
+            if (err?.statusCode === 404) {
+              console.info('[checkout] 默认地址接口暂未实现，跳过');
+            }
+            return null;
+          }),
         ]);
 
         if (couponRes?.data) {
           const couponList = Array.isArray(couponRes.data) ? couponRes.data : couponRes.data?.list || [];
-          const availableCouponsList = couponList.filter((c: Coupon) => c.status === 'available');
+          // 根据当前结算商品金额过滤可用且满足门槛的优惠券
+          const currentItems = parsedBuyNowItem
+            ? [{ ...parsedBuyNowItem, id: `buyNow-${parsedBuyNowItem.productId}`, selected: true }]
+            : cartItems.filter(item => item.selected);
+          const currentGoodsAmount = currentItems.reduce((sum: number, item: any) => sum + item.price * item.quantity, 0);
+          const availableCouponsList = couponList.filter(
+            (c: Coupon) => c.status === 'available' && c.minAmount <= currentGoodsAmount
+          );
           setCoupons(availableCouponsList);
           if (availableCouponsList.length > 0) {
             setSelectedCouponId(availableCouponsList[0].id);
@@ -109,8 +123,12 @@ const CheckoutPage: React.FC = () => {
 
   const goodsAmount = Number((selectedItems.reduce((sum, item) => sum + item.price * item.quantity, 0)).toFixed(2));
   const freightAmount = 0;
-  const couponAmount = hasSpecialItem ? 0 : (selectedCoupon ? selectedCoupon.value : 0);
-  const finalAmount = Number((goodsAmount + freightAmount - couponAmount).toFixed(2));
+  let couponAmount = hasSpecialItem ? 0 : (selectedCoupon ? selectedCoupon.value : 0);
+  // 优惠券金额不能超过商品金额，防止应付总额为负
+  if (couponAmount > goodsAmount) {
+    couponAmount = goodsAmount;
+  }
+  const finalAmount = Number(Math.max(0, goodsAmount + freightAmount - couponAmount).toFixed(2));
 
   const handleSubmitOrder = async () => {
     if (loadingData) {
@@ -161,14 +179,29 @@ const CheckoutPage: React.FC = () => {
               // 从后端获取最新购物车列表，匹配商品
               const listRes = await fetchCartList();
               if (listRes?.data && Array.isArray(listRes.data)) {
+                const localSkuId = (item.skuId || item.productId)?.toString() || '';
                 const matchedItem = listRes.data.find(
                   (cartItem: any) =>
                     cartItem.productId?.toString() === item.productId?.toString() &&
-                    cartItem.skuId?.toString() === (item.skuId || item.productId)?.toString() &&
-                    cartItem.quantity === item.quantity
+                    (cartItem.skuId?.toString() || '') === localSkuId
                 );
-                if (matchedItem) {
-                  realCartIds.push(Number(matchedItem.id));
+                // 降级匹配：如果 strict 匹配失败且 skuId 为空，尝试只用 productId 匹配
+                const fallbackMatched = !matchedItem && !localSkuId
+                  ? listRes.data.find(
+                      (cartItem: any) =>
+                        cartItem.productId?.toString() === item.productId?.toString() &&
+                        !(cartItem.skuId?.toString() || '')
+                    )
+                  : null;
+                const finalMatch = matchedItem || fallbackMatched;
+                if (finalMatch) {
+                  realCartIds.push(Number(finalMatch.id));
+                } else {
+                  console.warn('[checkout] buyNow 匹配失败:', {
+                    localProductId: item.productId,
+                    localSkuId: item.skuId,
+                    backendItems: listRes.data.map((c: any) => ({ productId: c.productId, skuId: c.skuId })),
+                  });
                 }
               }
             }
@@ -178,6 +211,10 @@ const CheckoutPage: React.FC = () => {
         // 步骤4: 购物车结算场景 - 同步刷新获取真实后端ID
         // 重新拉取最新购物车数据，防止本地缓存旧数据
         const latestCartRes = await fetchCartList();
+
+        // 临时调试：打印前后端购物车数据
+        console.log('[checkout] 本地选中商品:', JSON.stringify(currentSelectedItems.map((i: any) => ({ id: i.id, productId: i.productId, skuId: i.skuId, productName: i.productName })), null, 2));
+        console.log('[checkout] 后端购物车(已转换):', JSON.stringify(latestCartRes.data.map((i: any) => ({ id: i.id, productId: i.productId, skuId: i.skuId, productName: i.productName })), null, 2));
 
         if (!latestCartRes?.data || !Array.isArray(latestCartRes.data) || latestCartRes.data.length === 0) {
           // 后端购物车为空，说明商品已被删除/失效
@@ -194,20 +231,44 @@ const CheckoutPage: React.FC = () => {
           return;
         }
 
-        // 用 productId + skuId + quantity 匹配真实后端购物车 ID
+        // 用 productId + skuId 匹配真实后端购物车 ID
+        // 后端可能没有 productId 字段，所以用 skuId 作为主匹配键
         const invalidItems: string[] = [];
         for (const item of currentSelectedItems) {
-          const matchedBackendItem = latestCartRes.data.find(
-            (cartItem: any) =>
-              cartItem.productId?.toString() === item.productId?.toString() &&
-              cartItem.skuId?.toString() === item.skuId?.toString() &&
-              Number(cartItem.quantity) === Number(item.quantity)
+          const localSkuId = item.skuId?.toString() || '';
+          const localProductId = item.productId?.toString() || '';
+
+          // 优先：productId + skuId 双匹配
+          let matchedBackendItem = latestCartRes.data.find(
+            (cartItem: any) => {
+              const bpId = cartItem.productId?.toString() || '';
+              const bsId = cartItem.skuId?.toString() || '';
+              return (bpId && bpId === localProductId) && (bsId === localSkuId);
+            }
           );
+          // 降级1：只用 skuId 匹配（后端可能没有 productId）
+          if (!matchedBackendItem && localSkuId) {
+            matchedBackendItem = latestCartRes.data.find(
+              (cartItem: any) => (cartItem.skuId?.toString() || '') === localSkuId
+            );
+          }
+          // 降级2：只用 productId 匹配（skuId 为空的情况）
+          if (!matchedBackendItem && localProductId && !localSkuId) {
+            matchedBackendItem = latestCartRes.data.find(
+              (cartItem: any) => (cartItem.productId?.toString() || '') === localProductId
+            );
+          }
+
           if (matchedBackendItem && matchedBackendItem.id) {
             realCartIds.push(Number(matchedBackendItem.id));
           } else {
             // 本地购物车项在后端不存在，说明已失效
             invalidItems.push(`${item.productName || item.productId}`);
+            console.warn('[checkout] 匹配失败详情:', JSON.stringify({
+              localProductId: item.productId,
+              localSkuId: item.skuId,
+              backendItems: latestCartRes.data.map((c: any) => ({ id: c.id, productId: c.productId, skuId: c.skuId })),
+            }, null, 2));
           }
         }
         // 汇总打印一次警告，避免批量失效时刷屏

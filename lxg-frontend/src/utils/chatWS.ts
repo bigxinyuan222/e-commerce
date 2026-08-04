@@ -243,26 +243,53 @@ class ChatWebSocketManager {
         this._ws = null;
       }
 
-      if (this._isH5 && typeof WebSocket !== 'undefined') {
-        this._ws = new WebSocket(url);
-        this._bindH5Events(this._ws as WebSocket, token);
-      } else {
-        this._ws = Taro.connectSocket({
-          url,
-          protocols: [],
-          complete: () => {},
-        }) as any as Taro.SocketTask;
-        this._bindMiniEvents(this._ws as Taro.SocketTask, token);
-      }
-
       // 连接超时保护：5秒内未连接成功则视为超时
       if (this._connectTimeoutTimer) clearTimeout(this._connectTimeoutTimer);
       this._connectTimeoutTimer = setTimeout(() => {
         if (this._status === 'connecting') {
           console.warn('[ChatWS] 连接超时（5秒），强制关闭并重连');
-          this._doClose(4000, 'Connection timeout');
+          if (this._ws) {
+            // SocketTask 已存在，走正常关闭流程（会触发 onClose → 重连）
+            this._doClose(4000, 'Connection timeout');
+          } else {
+            // Promise 尚未 resolve，无 SocketTask 可关闭，直接重连
+            this._setStatus('closed');
+            this._tryFallbackOrReconnect();
+          }
         }
       }, 5000) as any;
+
+      if (this._isH5 && typeof WebSocket !== 'undefined') {
+        this._ws = new WebSocket(url);
+        this._bindH5Events(this._ws as WebSocket, token);
+      } else {
+        // Taro 4.x: connectSocket 返回 Promise<SocketTask>，需通过 .then() 获取 SocketTask 实例
+        this._ws = null; // 标记为 null，等待 Promise resolve
+        Taro.connectSocket({
+          url,
+          protocols: [],
+          complete: () => {},
+        })
+          .then((task: Taro.SocketTask) => {
+            // Promise resolve 时检查是否已被取消（用户 disconnect 或超时关闭）
+            if (this._status !== 'connecting') {
+              console.log('[ChatWS] SocketTask 已 resolve 但连接状态已变更:', this._status, '，关闭残留 task');
+              try {
+                task.close({ code: 4001, reason: 'Cancelled', complete: () => {} });
+              } catch {}
+              return;
+            }
+            this._ws = task;
+            this._bindMiniEvents(task, token);
+          })
+          .catch((err: any) => {
+            console.error('[ChatWS] connectSocket Promise rejected:', err);
+            if (this._status === 'connecting') {
+              this._setStatus('closed');
+              this._tryFallbackOrReconnect();
+            }
+          });
+      }
     } catch (err) {
       console.error('[ChatWS] 创建连接异常:', err);
       this._setStatus('closed');

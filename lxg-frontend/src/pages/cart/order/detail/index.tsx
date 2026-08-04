@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, Image, ScrollView } from '@tarojs/components';
 import Taro from '@tarojs/taro';
-import { fetchOrderDetail, cancelOrder, confirmOrder, payOrder, paymentCallback, fetchOrderPaymentStatus } from '@/api/cart';
+import { fetchOrderDetail, cancelOrder, confirmOrder, confirmPickupOrder, payOrder, paymentCallback, fetchOrderPaymentStatus } from '@/api/cart';
 import { getImageUrl, lazyImgProps } from '@/utils/image';
 import styles from '@/styles/cart/order-detail.module.scss';
 
@@ -111,7 +111,7 @@ const OrderDetailPage: React.FC = () => {
         success: async (res) => {
           if (res.confirm) {
             try {
-              await confirmOrder(order.id);
+              await confirmPickupOrder(order.id);
               Taro.showToast({ title: '已确认发货', icon: 'success' });
               loadOrderDetail(order.id);
             } catch (error: any) {
