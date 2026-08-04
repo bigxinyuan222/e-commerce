@@ -130,14 +130,9 @@ async function loadSummaries() {
             : response?.list ?? response?.items ?? response?.records ?? response?.ai_list ?? response?.summaries ?? [];
         if (dataList.length) {
             aiSummaryData = dataList.map(item => {
-                const rawStatus = item.state ?? item.status;
-                let status;
-                switch (rawStatus) {
-                    case '待审核': case 0: status = 'pending'; break;
-                    case '已发布': case 1: status = 'approved'; break;
-                    case '已拒绝': case 2: status = 'rejected'; break;
-                    default: status = 'pending';
-                }
+                // 后端 status_id: 0=待审核, 1=已审核
+                const statusId = Number(item.status_id ?? item.state ?? item.status);
+                const status = statusId === 1 ? 'approved' : 'pending';
                 return {
                     id: item.ID || item.id,
                     goodsId: item.productId || item.product_id || item.goodsId || item.product?.id || '',
@@ -145,8 +140,7 @@ async function loadSummaries() {
                     content: item.summary || item.summary_content || item.content || '',
                     reviewCount: item.reviewCount || item.review_count || 0,
                     status: status,
-                    createTime: item.createdAt || item.created_at || item.CreatedAt || '',
-                    updateTime: item.updatedAt || item.updated_at || item.updateTime || ''
+                    createTime: item.generated_at,
                 };
             });
         } else {
@@ -616,12 +610,8 @@ function reviewsPage() {
                                             <button class="btn btn-sm btn-success" onclick="handleSummaryAction('${summary.id}', 'approve')"><i class="fas fa-check"></i> 通过</button>
                                             <button class="btn btn-sm btn-danger" onclick="handleSummaryAction('${summary.id}', 'reject')"><i class="fas fa-trash"></i> 删除</button>
                                             <button class="btn btn-sm btn-outline" onclick="editSummary('${summary.id}')"><i class="fas fa-edit"></i> 编辑</button>
-                                            ` : summary.status === 'approved' ? `
-                                            <button class="btn btn-sm btn-outline" onclick="editSummary('${summary.id}')"><i class="fas fa-edit"></i> 编辑</button>
-                                            <button class="btn btn-sm btn-outline"><i class="fas fa-sync-alt"></i> 重新生成</button>
                                             ` : `
-                                            <button class="btn btn-sm btn-success" onclick="handleSummaryAction('${summary.id}', 'approve')"><i class="fas fa-check"></i> 通过</button>
-                                            <button class="btn btn-sm btn-outline"><i class="fas fa-sync-alt"></i> 重新生成</button>
+                                            <button class="btn btn-sm btn-outline" onclick="editSummary('${summary.id}')"><i class="fas fa-edit"></i> 编辑</button>
                                             `}
                                         </td>
                                     </tr>
