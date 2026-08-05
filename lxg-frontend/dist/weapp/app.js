@@ -13,17 +13,17 @@ require("./runtime");
 
 "use strict";
 /* harmony import */ var _store_AppContext__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./store/AppContext */ "./src/store/AppContext.tsx");
-/* harmony import */ var _utils_taroPatch__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./utils/taroPatch */ "./src/utils/taroPatch.ts");
-/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/cjs/react-jsx-runtime.production.min.js");
+/* harmony import */ var _utils_taroPatch__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./utils/taroPatch */ "./src/utils/taroPatch.ts");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/cjs/react-jsx-runtime.production.min.js");
 
 
 
 
 // 修复 Taro 4.x 小程序端 pure-text 节点映射缺失导致的 removeEventListener 崩溃
 
-(0,_utils_taroPatch__WEBPACK_IMPORTED_MODULE_1__.patchTaroPureTextNodeBug)();
+(0,_utils_taroPatch__WEBPACK_IMPORTED_MODULE_2__.patchTaroPureTextNodeBug)();
 function App(props) {
-  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(_store_AppContext__WEBPACK_IMPORTED_MODULE_0__.AppProvider, {
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(_store_AppContext__WEBPACK_IMPORTED_MODULE_0__.AppProvider, {
     children: props.children
   });
 }

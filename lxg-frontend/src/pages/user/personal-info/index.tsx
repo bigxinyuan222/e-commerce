@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, Image, Input } from '@tarojs/components';
 import Taro from '@tarojs/taro';
 import { useAppContext } from '@/store/AppContext';
-import { apiPut, uploadImage } from '@/api/common';
+import { apiPost, uploadImage } from '@/api/common';
 import { userApi } from '@/api/user';
 import { getImageUrl } from '@/utils/image';
 import styles from '@/styles/user/personal-info.module.scss';
@@ -19,11 +19,30 @@ const PersonalInfoPage: React.FC = () => {
     registerDate: userInfo?.registerDate || '2023-08-15'
   });
 
-  // 调用 PUT 接口更新用户信息，并同步到本地状态
+  // 将中文日期 "2025年01月01日" 转换为后端要求的 "2025-01-01" 格式
+  const normalizeBirthday = (val: string): string => {
+    const match = val.match(/(\d+)年(\d+)月(\d+)日/);
+    if (match) {
+      return `${match[1]}-${String(match[2]).padStart(2, '0')}-${String(match[3]).padStart(2, '0')}`;
+    }
+    return val;
+  };
+
+  // 调用 POST 接口更新用户信息，并同步到本地状态
   const updateProfile = async (updates: Partial<typeof formData>) => {
     try {
       Taro.showLoading({ title: '保存中...' });
-      await apiPut(userApi.updateProfile, updates);
+      // 后端对 nickname/avatar/gender/birthday 均设为必填，
+      // 因此将当前表单全量字段（排除 registerDate 只读字段）合并 updates 后一起提交，
+      // 确保任意单字段更新都能通过后端必填校验。
+      const { registerDate, ...restFormData } = formData;
+      const merged = { ...restFormData, ...updates };
+      // birthday 需转换为 YYYY-MM-DD 格式
+      const payload: Record<string, any> = { ...merged };
+      if (payload.birthday) {
+        payload.birthday = normalizeBirthday(payload.birthday);
+      }
+      await apiPost(userApi.updateProfile, payload);
       Taro.hideLoading();
       // 更新本地状态
       const newFormData = { ...formData, ...updates };
@@ -178,9 +197,6 @@ const PersonalInfoPage: React.FC = () => {
       case '头像':
         setShowAvatarPicker(true);
         break;
-      case '账号/手机号':
-        Taro.navigateTo({ url: '/pages/user/account-name/index' });
-        break;
       case '昵称':
         setNicknameInput(formData.nickname);
         setShowNicknameModal(true);
@@ -247,11 +263,10 @@ const PersonalInfoPage: React.FC = () => {
         </View>
 
         {/* 账号/手机号 */}
-        <View className={styles.infoItem} onClick={() => handleItemClick('账号/手机号')}>
+        <View className={styles.infoItem}>
           <Text className={styles.itemLabel}>账号/手机号</Text>
           <View className={styles.itemContent}>
             <Text className={styles.itemValue}>{formData.accountName}</Text>
-            <Text className={styles.itemArrow}>›</Text>
           </View>
         </View>
 

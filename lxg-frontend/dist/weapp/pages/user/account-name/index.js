@@ -79,8 +79,13 @@ var AccountNamePage = function AccountNamePage() {
                 _tarojs_taro__WEBPACK_IMPORTED_MODULE_1___default().showLoading({
                   title: '保存中...'
                 });
+                // 合并当前必填字段，避免后端校验失败
                 _context.n = 2;
-                return (0,_api_common__WEBPACK_IMPORTED_MODULE_3__.apiPut)(_api_user__WEBPACK_IMPORTED_MODULE_4__.userApi.updateProfile, {
+                return (0,_api_common__WEBPACK_IMPORTED_MODULE_3__.apiPost)(_api_user__WEBPACK_IMPORTED_MODULE_4__.userApi.updateProfile, {
+                  nickname: (userInfo === null || userInfo === void 0 ? void 0 : userInfo.nickname) || '',
+                  avatar: (userInfo === null || userInfo === void 0 ? void 0 : userInfo.avatar) || '',
+                  gender: (userInfo === null || userInfo === void 0 ? void 0 : userInfo.gender) || '保密',
+                  birthday: (userInfo === null || userInfo === void 0 ? void 0 : userInfo.birthday) || '',
                   accountName: accountName
                 });
               case 2:

@@ -2452,9 +2452,9 @@ var authApi = {
 };
 var userApi = {
   profile: "".concat(API_BASE_URL, "/user/profile"),
-  // GET 获取用户信息 / PUT 修改用户信息
+  // GET 获取用户信息 / POST 修改用户信息
   updateProfile: "".concat(API_BASE_URL, "/user/profile"),
-  // PUT 修改用户信息（显式别名）
+  // POST 修改用户信息（显式别名）
   upload: "".concat(API_BASE_URL, "/user/upload") // POST 上传图片（multipart/form-data）
 };
 var couponApi = {
