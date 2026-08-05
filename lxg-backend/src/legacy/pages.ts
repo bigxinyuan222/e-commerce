@@ -1,7 +1,7 @@
 export type PageId =
   | 'stats' | 'goods' | 'stock' | 'reviews' | 'coupons' | 'marketing'
   | 'orders' | 'service' | 'stores' | 'returns' | 'users' | 'admin'
-  | 'homepage' | 'notification' | 'payment' | 'settings'
+  | 'homepage' | 'notification' | 'payment' | 'settings' | 'store_manage'
 
 export interface MenuItem {
   id: PageId
@@ -9,6 +9,7 @@ export interface MenuItem {
   icon: string
   group: string
   protected?: boolean
+  exclusive?: boolean
 }
 
 export interface AdminUser {
@@ -34,6 +35,7 @@ export const menus: MenuItem[] = [
   { id: 'orders', label: '订单管理', icon: 'fas fa-shopping-bag', group: '订单客服' },
   { id: 'service', label: '客服消息', icon: 'fas fa-headset', group: '订单客服' },
   { id: 'stores', label: '门店总览', icon: 'fas fa-store-alt', group: '门店管理', protected: true },
+  { id: 'store_manage', label: '专属门店管理', icon: 'fas fa-store', group: '门店管理', exclusive: true },
   { id: 'returns', label: '退货退款', icon: 'fas fa-undo-alt', group: '门店管理' },
   { id: 'users', label: '用户管理', icon: 'fas fa-users', group: '系统管理' },
   { id: 'admin', label: '管理员管理', icon: 'fas fa-user-shield', group: '系统管理', protected: true },
@@ -44,12 +46,12 @@ export const menus: MenuItem[] = [
 ]
 
 const roleMenus: Record<string, PageId[]> = {
-  super_admin: menus.map(({ id }) => id),
-  admin: menus.map(({ id }) => id),
+  super_admin: menus.filter(({ exclusive }) => !exclusive).map(({ id }) => id),
+  admin: menus.filter(({ exclusive }) => !exclusive).map(({ id }) => id),
   user: ['stats', 'orders', 'service'],
   goods_op: ['stats', 'goods', 'stock', 'reviews', 'coupons', 'marketing'],
   order_cs: ['orders', 'service'],
-  store_staff: ['stores', 'returns'],
+  store_staff: ['store_manage', 'returns'],
 }
 
 const pageFactories: Partial<Record<PageId, string>> = {

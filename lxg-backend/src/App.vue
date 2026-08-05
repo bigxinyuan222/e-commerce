@@ -12,6 +12,7 @@ import StockPage from './components/StockPage.vue'
 import ServicePage from './components/ServicePage.vue'
 import NotificationPage from './components/NotificationPage.vue'
 import StoresPage from './components/StoresPage.vue'
+import StoreManagePage from './components/StoreManagePage.vue'
 import AdminPage from './components/AdminPage.vue'
 import PaymentPage from './components/PaymentPage.vue'
 import SettingsPage from './components/SettingsPage.vue'
@@ -92,7 +93,7 @@ const roleLabels: Record<string, string> = {
   admin: '超级管理员',
   goods_op: '商品运营',
   order_cs: '订单客服',
-  store_staff: '门店店员',
+  store_staff: '门店管理员',
   user: '普通用户',
 }
 
@@ -201,6 +202,7 @@ onMounted(async () => {
           <ServicePage v-else-if="activePage === 'service'" :token="user?.token" />
           <NotificationPage v-else-if="activePage === 'notification'" :token="user?.token" />
           <StoresPage v-else-if="activePage === 'stores'" :token="user?.token" />
+          <StoreManagePage v-else-if="activePage === 'store_manage'" :token="user?.token" />
           <AdminPage v-else-if="activePage === 'admin'" :token="user?.token" />
           <PaymentPage v-else-if="activePage === 'payment'" :token="user?.token" />
           <SettingsPage v-else-if="activePage === 'settings'" :token="user?.token" />
