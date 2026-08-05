@@ -9,9 +9,9 @@ const actions = []
 
 const rows = [
   { id: 1, order_no: 'ORD-001', user_name: '张三', phone: '13800000001', store_id: 5, store_name: '测试门店', pay_amount: 99, status: 0, order_type: 'normal', created_at: '2026-07-28 09:00:00', items: [{ product_name: '测试商品一', price: 99, quantity: 1 }] },
-  { id: 2, order_no: 'ORD-002', user_name: '李四', phone: '13800000002', store_id: 5, store_name: '测试门店', pay_amount: 199, status: 1, order_type: 'seckill', created_at: '2026-07-28 10:00:00', items: [{ product_name: '测试商品二', price: 199, quantity: 1 }] },
-  { id: 3, order_no: 'ORD-003', user_name: '王五', phone: '13800000003', store_id: 5, store_name: '测试门店', pay_amount: 299, status: 2, order_type: 'normal', created_at: '2026-07-28 11:00:00', items: [{ product_name: '测试商品三', price: 299, quantity: 1 }] },
-  { id: 4, order_no: 'ORD-004', user_name: '赵六', phone: '13800000004', store_id: 5, store_name: '测试门店', pay_amount: 399, status: 3, order_type: 'normal', created_at: '2026-07-28 12:00:00', items: [{ product_name: '测试商品四', price: 399, quantity: 1 }] },
+  { id: 2, order_no: 'ORD-002', user_name: '李四', phone: '13800000002', store_id: 5, store_name: '测试门店', pay_amount: 199, status: 2, order_type: 'seckill', created_at: '2026-07-28 10:00:00', items: [{ product_name: '测试商品二', price: 199, quantity: 1 }] },
+  { id: 3, order_no: 'ORD-003', user_name: '王五', phone: '13800000003', store_id: 5, store_name: '测试门店', pay_amount: 299, status: 3, order_type: 'normal', created_at: '2026-07-28 11:00:00', items: [{ product_name: '测试商品三', price: 299, quantity: 1 }] },
+  { id: 4, order_no: 'ORD-004', user_name: '赵六', phone: '13800000004', store_id: 5, store_name: '测试门店', pay_amount: 399, status: 4, order_type: 'normal', created_at: '2026-07-28 12:00:00', items: [{ product_name: '测试商品四', price: 399, quantity: 1 }] },
 ]
 
 await page.route('**/api/**', async route => {

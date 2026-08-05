@@ -209,12 +209,9 @@ function buildPage(id) {
         // 根据页面ID调用对应的页面渲染函数
         switch (id) {
             case 'stats': return statsPage();              // 数据统计页面
-            case 'stock': return stockPage();              // 库存管理页面
             case 'stores': return storesPage();            // 门店总览页面
             case 'homepage': return homepagePage();        // 首页管理页面
             case 'reviews': return reviewsPage();          // 评价管理页面
-            case 'marketing': return marketingPage();      // 营销活动页面
-            case 'service': return servicePage();          // 客服消息页面
             case 'users': return usersPage();              // 用户管理页面
             case 'payment': return paymentPage();          // 支付管理页面
             case 'notification': return notificationPage();// 系统通知页面
@@ -303,11 +300,8 @@ if (savedUser && savedUser.token) {
     setTimeout(() => {
         if (typeof loadStores === 'function') loadStores();
         if (typeof loadUsers === 'function') loadUsers();
-        if (typeof loadStock === 'function') loadStock();
-        if (typeof loadSeckill === 'function') loadSeckill();
         if (typeof loadReviews === 'function') loadReviews();
         if (typeof loadLogs === 'function') loadLogs();
-        if (typeof loadChats === 'function') loadChats();
         if (typeof loadBanners === 'function') loadBanners();
         if (typeof loadRecommendations === 'function') loadRecommendations();
         if (typeof loadHomepageGoods === 'function') loadHomepageGoods();

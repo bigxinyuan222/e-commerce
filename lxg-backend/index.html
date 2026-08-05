@@ -17,21 +17,15 @@
     <script src="/js/common/config.js"></script>
     <script src="/js/common/api.js"></script>
     <script src="/js/core/stats.js"></script>
-    <script src="/js/core/stock.js"></script>
-    <script src="/js/core/stores.js"></script>
     <script src="/js/core/homepage.js"></script>
     <script src="/js/trade/reviews.js"></script>
-    <script src="/js/trade/marketing.js"></script>
-    <script src="/js/system/service.js"></script>
-    <script src="/js/system/users.js"></script>
-    <script src="/js/system/payment.js"></script>
-    <script src="/js/system/notification.js"></script>
-    <script src="/js/system/admin.js"></script>
-    <script src="/js/system/settings.js"></script>
     <script src="/js/common/search.js"></script>
     <script>
       window.legacyBridge = {
-        setUser: (user) => { currentUser = user },
+        setUser: (user) => {
+          currentUser = user
+          window.currentUser = user
+        },
       }
     </script>
     <script type="module" src="/src/main.ts"></script>

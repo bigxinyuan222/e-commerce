@@ -15,7 +15,7 @@ await page.route('**/api/**', async (route) => {
   const path = requestUrl.pathname
   if (path === '/api/v1/admin/search/inventory') inventoryQueries.push(Object.fromEntries(requestUrl.searchParams))
   if (path === '/api/v1/admin/update/inventory') inventoryAdjustments.push(route.request().postDataJSON())
-  if (path === '/api/v1/admin/log/inventory') inventoryLogRequests.push(path)
+  if (path === '/api/v1/admin/log/inventory') inventoryLogRequests.push(Object.fromEntries(requestUrl.searchParams))
   const data = path === '/api/v1/admin/home'
     ? {
         total_stock: 29392,
@@ -98,7 +98,7 @@ try {
   await page.locator('#stockSearchInput').press('Enter')
   await searchResponse
   const pageResponse = page.waitForResponse(response => response.url().includes('/admin/search/inventory') && response.url().includes('page=2'))
-  await page.locator('.stock-pagination-actions button').last().click()
+  await page.locator('.stock-pagination-actions').first().locator('button').last().click()
   await pageResponse
   await page.waitForFunction(() => document.querySelector('.stock-pagination')?.textContent?.includes('第 2 / 2 页'))
 
@@ -128,6 +128,9 @@ try {
   }
   if (inventoryLogRows.length !== 2 || !inventoryLogRows[0].includes('采购入库') || !inventoryLogRows[1].includes('损耗')) {
     throw new Error(`库存日志渲染结果不符合预期: ${JSON.stringify(inventoryLogRows)}`)
+  }
+  if (JSON.stringify(inventoryLogRequests[0]) !== JSON.stringify({ page: '1', size: '6', keyword: '' })) {
+    throw new Error(`库存日志分页参数不符合预期: ${JSON.stringify(inventoryLogRequests[0])}`)
   }
   if (JSON.stringify(inventoryQueries[0]) !== JSON.stringify({ page: '1', size: '10', keyword: '' })) {
     throw new Error(`库存查询参数不符合预期: ${JSON.stringify(inventoryQueries[0])}`)
