@@ -16,8 +16,8 @@ export const authApi = {
 };
 
 export const userApi = {
-    profile: `${API_BASE_URL}/user/profile`,         // GET 获取用户信息 / PUT 修改用户信息
-    updateProfile: `${API_BASE_URL}/user/profile`,    // PUT 修改用户信息（显式别名）
+    profile: `${API_BASE_URL}/user/profile`,         // GET 获取用户信息 / POST 修改用户信息
+    updateProfile: `${API_BASE_URL}/user/profile`,    // POST 修改用户信息（显式别名）
     upload: `${API_BASE_URL}/user/upload`            // POST 上传图片（multipart/form-data）
 };
 

@@ -92,12 +92,9 @@
       -ms-flex-wrap: wrap;
           flex-wrap: wrap;
   gap: 32rpx;
-  -webkit-justify-content: center;
-      -ms-flex-pack: center;
-          justify-content: center;
-  -webkit-transform: translateX(-12rpx);
-      -ms-transform: translateX(-12rpx);
-          transform: translateX(-12rpx);
+  -webkit-justify-content: flex-start;
+      -ms-flex-pack: start;
+          justify-content: flex-start;
 }
 
 .brands-module__brandItem___hjj6o {

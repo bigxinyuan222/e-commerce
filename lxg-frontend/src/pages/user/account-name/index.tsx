@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, Input } from '@tarojs/components';
 import Taro from '@tarojs/taro';
 import { useAppContext } from '@/store/AppContext';
-import { apiPut } from '@/api/common';
+import { apiPost } from '@/api/common';
 import { userApi } from '@/api/user';
 import styles from '@/styles/user/account-name.module.scss';
 
@@ -33,7 +33,14 @@ const AccountNamePage: React.FC = () => {
         if (res.confirm) {
           try {
             Taro.showLoading({ title: '保存中...' });
-            await apiPut(userApi.updateProfile, { accountName });
+            // 合并当前必填字段，避免后端校验失败
+            await apiPost(userApi.updateProfile, {
+              nickname: userInfo?.nickname || '',
+              avatar: userInfo?.avatar || '',
+              gender: userInfo?.gender || '保密',
+              birthday: userInfo?.birthday || '',
+              accountName
+            });
             Taro.hideLoading();
             const updatedUser = { ...userInfo!, accountName, isLoggedIn: true };
             setUserInfo(updatedUser);
