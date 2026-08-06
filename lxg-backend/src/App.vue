@@ -13,6 +13,7 @@ import ServicePage from './components/ServicePage.vue'
 import NotificationPage from './components/NotificationPage.vue'
 import StoresPage from './components/StoresPage.vue'
 import StoreManagePage from './components/StoreManagePage.vue'
+import StoreOrdersPage from './components/StoreOrdersPage.vue'
 import AdminPage from './components/AdminPage.vue'
 import PaymentPage from './components/PaymentPage.vue'
 import SettingsPage from './components/SettingsPage.vue'
@@ -196,13 +197,14 @@ onMounted(async () => {
           <CouponsPage v-if="activePage === 'coupons'" :token="user?.token" />
           <ProductsPage v-else-if="activePage === 'goods'" :token="user?.token" />
           <ReturnsPage v-else-if="activePage === 'returns'" :token="user?.token" :store-id="user?.storeId" />
-          <OrdersPage v-else-if="activePage === 'orders'" :token="user?.token" :store-id="user?.storeId" />
+          <OrdersPage v-else-if="activePage === 'orders'" :token="user?.token" :store-id="user?.storeId" :role="user?.role" />
           <UsersPage v-else-if="activePage === 'users'" :token="user?.token" />
           <StockPage v-else-if="activePage === 'stock'" :token="user?.token" />
           <ServicePage v-else-if="activePage === 'service'" :token="user?.token" />
           <NotificationPage v-else-if="activePage === 'notification'" :token="user?.token" />
           <StoresPage v-else-if="activePage === 'stores'" :token="user?.token" />
           <StoreManagePage v-else-if="activePage === 'store_manage'" :token="user?.token" />
+          <StoreOrdersPage v-else-if="activePage === 'store_orders'" :token="user?.token" />
           <AdminPage v-else-if="activePage === 'admin'" :token="user?.token" />
           <PaymentPage v-else-if="activePage === 'payment'" :token="user?.token" />
           <SettingsPage v-else-if="activePage === 'settings'" :token="user?.token" />
