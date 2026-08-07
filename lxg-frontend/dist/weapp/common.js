@@ -1119,7 +1119,10 @@ function replaceUrlParams(url, params) {
 
 // 判断是否为认证相关错误
 function isAuthError(message, statusCode, code) {
-  var authErrorKeywords = ['缺少认证信息', '未登录', '登录已失效', 'token', 'Token', '未授权', 'unauthorized', 'Unauthorized', '请先登录', 'auth', '认证失败'];
+  // 排除"解析失败"类错误：token解析失败是 token 格式/解析问题，不是认证失效
+  // 误判会导致清除登录态、弹窗跳转登录页，干扰微信登录等需要临时 token 的流程
+  if (message && /解析失败|parse\s*fail/i.test(message)) return false;
+  var authErrorKeywords = ['缺少认证信息', '未登录', '登录已失效', 'token expired', 'token is expired', 'token过期', 'token失效', 'token无效', '未授权', 'unauthorized', 'Unauthorized', '请先登录', '认证失败'];
   if (statusCode === 401 || statusCode === 403) return true;
   if (code === 401 || code === 403) return true;
   return authErrorKeywords.some(function (keyword) {
@@ -1129,6 +1132,7 @@ function isAuthError(message, statusCode, code) {
 
 // 处理认证错误
 function handleAuthError(message) {
+  var _currentPages;
   // 检查当前是否有 token（区分"从未登录"和"登录失效"）
   var hasToken = !!getAuthToken();
   if (hasToken) {
@@ -1139,7 +1143,14 @@ function handleAuthError(message) {
     } catch (_unused2) {/* ignore */}
   }
 
-  // 提示用户并跳转登录页
+  // 提示用户并跳转登录页（如果当前不在登录页）
+  var currentPages = _tarojs_taro__WEBPACK_IMPORTED_MODULE_0___default().getCurrentPages();
+  var currentRoute = ((_currentPages = currentPages[currentPages.length - 1]) === null || _currentPages === void 0 ? void 0 : _currentPages.route) || '';
+  var isLoginPage = currentRoute.includes('/pages/user/login/index') || currentRoute === 'pages/user/login/index';
+  if (isLoginPage) {
+    // 已在登录页，不跳转，避免循环或白屏
+    return;
+  }
   _tarojs_taro__WEBPACK_IMPORTED_MODULE_0___default().showModal({
     title: hasToken ? '登录已失效' : '请先登录',
     content: hasToken ? message || '请重新登录' : '此操作需要登录账号',
@@ -1164,6 +1175,8 @@ function _apiRequest() {
       _response$data,
       _response$data2,
       backendMsg,
+      respPreview,
+      errMsg,
       err,
       respData,
       _backendMsg,
@@ -1216,7 +1229,14 @@ function _apiRequest() {
           }
           // 读取后端返回的 message 字段，方便定位错误
           backendMsg = ((_response$data = response.data) === null || _response$data === void 0 ? void 0 : _response$data.message) || ((_response$data2 = response.data) === null || _response$data2 === void 0 ? void 0 : _response$data2.msg);
-          err = new Error(backendMsg || "HTTP error! status: ".concat(response.statusCode));
+          respPreview = (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_typeof_js__WEBPACK_IMPORTED_MODULE_5__["default"])(response.data) === 'object' ? JSON.stringify(response.data).substring(0, 200) : String(response.data).substring(0, 200);
+          errMsg = backendMsg || "[".concat(url, "] HTTP error! status: ").concat(response.statusCode, ", response: ").concat(respPreview);
+          console.error('[API Error]', {
+            url: url,
+            statusCode: response.statusCode,
+            data: response.data
+          });
+          err = new Error(errMsg);
           err.statusCode = response.statusCode;
           err.response = response.data;
 
@@ -1305,7 +1325,9 @@ function _apiPost() {
       queryParams,
       useFormUrlEncoded,
       silent,
+      customHeaders,
       resolvedUrl,
+      stringQueryParams,
       searchParams,
       fullUrl,
       headers,
@@ -1319,16 +1341,23 @@ function _apiPost() {
           queryParams = _args3.length > 3 && _args3[3] !== undefined ? _args3[3] : {};
           useFormUrlEncoded = _args3.length > 4 && _args3[4] !== undefined ? _args3[4] : true;
           silent = _args3.length > 5 && _args3[5] !== undefined ? _args3[5] : false;
-          resolvedUrl = replaceUrlParams(url, pathParams);
-          searchParams = new URLSearchParams(queryParams);
+          customHeaders = _args3.length > 6 && _args3[6] !== undefined ? _args3[6] : {};
+          resolvedUrl = replaceUrlParams(url, pathParams); // URLSearchParams 构造函数要求值为 string，将 number 转换为 string
+          stringQueryParams = {};
+          Object.keys(queryParams).forEach(function (key) {
+            stringQueryParams[key] = String(queryParams[key]);
+          });
+          searchParams = new URLSearchParams(stringQueryParams);
           fullUrl = resolvedUrl + (searchParams.toString() ? '?' + searchParams.toString() : '');
-          headers = {};
+          headers = (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_1__["default"])({}, customHeaders);
           requestData = data;
           if (useFormUrlEncoded) {
             headers['Content-Type'] = 'application/x-www-form-urlencoded';
             requestData = new URLSearchParams(data).toString();
           } else {
             headers['Content-Type'] = 'application/json';
+            // 显式序列化为 JSON 字符串，避免某些 Taro/微信版本自动序列化行为不一致
+            requestData = JSON.stringify(data);
           }
           return _context3.a(2, apiRequest(fullUrl, {
             method: 'POST',
@@ -2447,8 +2476,11 @@ var authApi = {
   // 发送验证码
   login: "".concat(API_BASE_URL, "/auth/login"),
   // 登录接口
-  wechatLogin: "".concat(API_BASE_URL, "/auth/wechat-login"),
-  setPassword: "".concat(API_BASE_URL, "/auth/setpassword") // 微信登录后设置密码
+  wechatLogin: "".concat(API_BASE_URL, "/auth/weixinlogin"),
+  // 微信登录接口
+  wechatPhone: "".concat(API_BASE_URL, "/auth/weixinphone"),
+  // 获取微信手机号接口
+  setPassword: "".concat(API_BASE_URL, "/auth/setpassword") // 设置密码（微信登录绑定手机号后）
 };
 var userApi = {
   profile: "".concat(API_BASE_URL, "/user/profile"),

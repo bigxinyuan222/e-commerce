@@ -42,17 +42,23 @@ function replaceUrlParams(url: string, params: Record<string, string | number>):
 
 // 判断是否为认证相关错误
 function isAuthError(message: string, statusCode?: number, code?: number): boolean {
+    // 排除"解析失败"类错误：token解析失败是 token 格式/解析问题，不是认证失效
+    // 误判会导致清除登录态、弹窗跳转登录页，干扰微信登录等需要临时 token 的流程
+    if (message && /解析失败|parse\s*fail/i.test(message)) return false;
+
     const authErrorKeywords = [
         '缺少认证信息',
         '未登录',
         '登录已失效',
-        'token',
-        'Token',
+        'token expired',
+        'token is expired',
+        'token过期',
+        'token失效',
+        'token无效',
         '未授权',
         'unauthorized',
         'Unauthorized',
         '请先登录',
-        'auth',
         '认证失败',
     ];
     if (statusCode === 401 || statusCode === 403) return true;
@@ -73,7 +79,16 @@ function handleAuthError(message: string): void {
         } catch { /* ignore */ }
     }
 
-    // 提示用户并跳转登录页
+    // 提示用户并跳转登录页（如果当前不在登录页）
+    const currentPages = Taro.getCurrentPages();
+    const currentRoute = currentPages[currentPages.length - 1]?.route || '';
+    const isLoginPage = currentRoute.includes('/pages/user/login/index') || currentRoute === 'pages/user/login/index';
+
+    if (isLoginPage) {
+        // 已在登录页，不跳转，避免循环或白屏
+        return;
+    }
+
     Taro.showModal({
         title: hasToken ? '登录已失效' : '请先登录',
         content: hasToken ? (message || '请重新登录') : '此操作需要登录账号',
@@ -128,7 +143,10 @@ async function apiRequest(url: string, options: {
         if (response.statusCode < 200 || response.statusCode >= 300) {
             // 读取后端返回的 message 字段，方便定位错误
             const backendMsg = (response.data as any)?.message || (response.data as any)?.msg;
-            const err = new Error(backendMsg || `HTTP error! status: ${response.statusCode}`);
+            const respPreview = typeof response.data === 'object' ? JSON.stringify(response.data).substring(0, 200) : String(response.data).substring(0, 200);
+            const errMsg = backendMsg || `[${url}] HTTP error! status: ${response.statusCode}, response: ${respPreview}`;
+            console.error('[API Error]', { url, statusCode: response.statusCode, data: response.data });
+            const err = new Error(errMsg);
             (err as any).statusCode = response.statusCode;
             (err as any).response = response.data;
 
@@ -179,12 +197,17 @@ export async function apiGet(url: string, params: Record<string, any> = {}, path
     return apiRequest(fullUrl, { method: 'GET', silent });
 }
 
-export async function apiPost(url: string, data: Record<string, any> = {}, pathParams: Record<string, string | number> = {}, queryParams: Record<string, string | number> = {}, useFormUrlEncoded: boolean = true, silent: boolean = false): Promise<any> {
+export async function apiPost(url: string, data: Record<string, any> = {}, pathParams: Record<string, string | number> = {}, queryParams: Record<string, string | number> = {}, useFormUrlEncoded: boolean = true, silent: boolean = false, customHeaders: Record<string, string> = {}): Promise<any> {
     const resolvedUrl = replaceUrlParams(url, pathParams);
-    const searchParams = new URLSearchParams(queryParams);
+    // URLSearchParams 构造函数要求值为 string，将 number 转换为 string
+    const stringQueryParams: Record<string, string> = {};
+    Object.keys(queryParams).forEach(key => {
+        stringQueryParams[key] = String(queryParams[key]);
+    });
+    const searchParams = new URLSearchParams(stringQueryParams);
     const fullUrl = resolvedUrl + (searchParams.toString() ? '?' + searchParams.toString() : '');
 
-    const headers: Record<string, string> = {};
+    const headers: Record<string, string> = { ...customHeaders };
     let requestData: any = data;
 
     if (useFormUrlEncoded) {
@@ -192,6 +215,8 @@ export async function apiPost(url: string, data: Record<string, any> = {}, pathP
         requestData = new URLSearchParams(data as any).toString();
     } else {
         headers['Content-Type'] = 'application/json';
+        // 显式序列化为 JSON 字符串，避免某些 Taro/微信版本自动序列化行为不一致
+        requestData = JSON.stringify(data);
     }
 
     return apiRequest(fullUrl, {
