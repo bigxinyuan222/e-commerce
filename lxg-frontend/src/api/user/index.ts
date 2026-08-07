@@ -11,8 +11,9 @@ export const authApi = {
     register: `${API_BASE_URL}/auth/register`,// 注册接口
     registerSendCode: `${API_BASE_URL}/auth/registerofsendcode`,// 发送验证码
     login: `${API_BASE_URL}/auth/login`,// 登录接口
-    wechatLogin: `${API_BASE_URL}/auth/wechat-login`,
-    setPassword: `${API_BASE_URL}/auth/setpassword`// 微信登录后设置密码
+    wechatLogin: `${API_BASE_URL}/auth/weixinlogin`,// 微信登录接口
+    wechatPhone: `${API_BASE_URL}/auth/weixinphone`,// 获取微信手机号接口
+    setPassword: `${API_BASE_URL}/auth/setpassword`// 设置密码（微信登录绑定手机号后）
 };
 
 export const userApi = {
