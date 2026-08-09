@@ -622,22 +622,6 @@ function reviewsPage() {
                 </div>
             </div>
 
-            <div style="display:flex;flex-direction:column;gap:12px;">
-                <div class="card">
-                    <div class="card-header"><span class="card-title"><i class="fas fa-calendar"></i> 近7天评价趋势</span></div>
-                    <div class="card-body">
-                        <div style="display:flex;align-items:flex-end;justify-content:space-between;height:120px;padding:0 8px;">
-                            <div style="display:flex;flex-direction:column;align-items:center;gap:4px;width:28px;"><div style="width:18px;height:60px;background:#667eea;border-radius:4px;"></div><span style="font-size:10px;color:#94a3b8;">周一</span></div>
-                            <div style="display:flex;flex-direction:column;align-items:center;gap:4px;width:28px;"><div style="width:18px;height:45px;background:#764ba2;border-radius:4px;"></div><span style="font-size:10px;color:#94a3b8;">周二</span></div>
-                            <div style="display:flex;flex-direction:column;align-items:center;gap:4px;width:28px;"><div style="width:18px;height:80px;background:#667eea;border-radius:4px;"></div><span style="font-size:10px;color:#94a3b8;">周三</span></div>
-                            <div style="display:flex;flex-direction:column;align-items:center;gap:4px;width:28px;"><div style="width:18px;height:55px;background:#764ba2;border-radius:4px;"></div><span style="font-size:10px;color:#94a3b8;">周四</span></div>
-                            <div style="display:flex;flex-direction:column;align-items:center;gap:4px;width:28px;"><div style="width:18px;height:95px;background:#667eea;border-radius:4px;"></div><span style="font-size:10px;color:#94a3b8;">周五</span></div>
-                            <div style="display:flex;flex-direction:column;align-items:center;gap:4px;width:28px;"><div style="width:18px;height:110px;background:#764ba2;border-radius:4px;"></div><span style="font-size:10px;color:#94a3b8;">周六</span></div>
-                            <div style="display:flex;flex-direction:column;align-items:center;gap:4px;width:28px;"><div style="width:18px;height:75px;background:#667eea;border-radius:4px;"></div><span style="font-size:10px;color:#94a3b8;">周日</span></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
         </div>
     `;
 }

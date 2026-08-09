@@ -57,11 +57,12 @@ async function requestJson(url: string, options: RequestInit = {}) {
 }
 
 function normalizeStatus(row: any): UserRow['status'] {
-  const raw = row.status ?? row.enabled ?? row.is_enabled ?? row.is_enable
+  const raw = row.status ?? row.enabled ?? row.is_enabled ?? row.is_enable ?? row.user_status ?? row.account_status ?? row.state
   const text = String(raw ?? '').toLowerCase()
-  if (['active', 'enabled', '正常', '启用'].includes(text) || Number(raw) === 1) return 'active'
-  if (['frozen', 'disabled', '禁用', '冻结'].includes(text) || Number(raw) === 0) return 'frozen'
-  return 'deleted'
+  if (['active', 'enabled', '正常', '启用', '激活', 'true'].includes(text) || Number(raw) === 1) return 'active'
+  if (['deleted', '注销', '已注销', 'cancel', 'cancelled'].includes(text) || Number(raw) === 3) return 'deleted'
+  if (['frozen', 'disabled', '禁用', '冻结', '停用', '已冻结', '已禁用', '锁定', 'locked', 'inactive', 'false'].includes(text) || Number(raw) === 0 || Number(raw) === 2) return 'frozen'
+  return raw === undefined || raw === null || raw === '' ? 'active' : 'frozen'
 }
 
 function formatDate(value: unknown): string {
@@ -195,8 +196,6 @@ onMounted(loadUsers)
     </div>
 
     <div class="system-card-stack">
-      <div class="card"><div class="card-header"><span class="card-title"><i class="fas fa-chart-bar"></i> 用户增长趋势</span></div><div class="card-body"><div class="system-bar-chart"><div v-for="(height, index) in [50,70,45,85,95,110,65]" :key="index" class="system-bar-item"><div class="bar" :class="index % 2 ? 'purple' : 'blue'" :style="{ height: `${height}px` }"></div><span class="label">{{ ['周一','周二','周三','周四','周五','周六','周日'][index] }}</span></div></div></div></div>
-      <div class="card"><div class="card-header"><span class="card-title"><i class="fas fa-filter"></i> 快速筛选</span></div><div class="card-body"><div class="system-filter-buttons"><button class="btn btn-sm btn-outline"><i class="fas fa-clock"></i> 今日注册</button><button class="btn btn-sm btn-outline"><i class="fas fa-user"></i> 本月活跃用户</button><button class="btn btn-sm btn-outline"><i class="fas fa-shopping-cart"></i> 有订单用户</button><button class="btn btn-sm btn-outline"><i class="fas fa-star"></i> 有评价用户</button><button class="btn btn-sm btn-outline" @click="status = 'frozen'"><i class="fas fa-lock"></i> 已冻结用户</button></div></div></div>
       <div class="card"><div class="card-header"><span class="card-title"><i class="fas fa-info-circle"></i> 用户统计</span></div><div class="card-body"><div class="system-stats-info"><div class="system-stats-info-row"><span>本周新增用户</span><span class="value">128</span></div><div class="system-stats-info-row"><span>本月新增用户</span><span class="value">456</span></div></div></div></div>
     </div>
   </div>
@@ -233,7 +232,7 @@ onMounted(loadUsers)
 
 @media (max-width: 1280px) {
   .users-layout { grid-template-columns: minmax(0, 1fr); }
-  .system-card-stack { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .system-card-stack { display: grid; grid-template-columns: minmax(0, 1fr); }
 }
 
 @media (max-width: 760px) {
