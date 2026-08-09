@@ -56,12 +56,11 @@ const roleMenus: Record<string, PageId[]> = {
 }
 
 const pageFactories: Partial<Record<PageId, string>> = {
-  stats: 'statsPage', reviews: 'reviewsPage',
+  stats: 'statsPage',
   homepage: 'homepagePage',
 }
 
 const pageLoaders: Partial<Record<PageId, string[]>> = {
-  reviews: ['loadReviews', 'loadSummaries'],
   homepage: ['loadBanners', 'loadRecommendations', 'loadHomepageGoods'],
 }
 
@@ -147,8 +146,6 @@ async function loadStatsData(): Promise<void> {
     }))
   }
 
-  const loadReviews = window.loadReviews
-  if (typeof loadReviews === 'function') await Promise.resolve((loadReviews as () => unknown)()).catch(() => undefined)
 }
 
 export function allowedMenus(role: string): MenuItem[] {

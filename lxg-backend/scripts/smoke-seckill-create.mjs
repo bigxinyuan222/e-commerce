@@ -11,6 +11,10 @@ let createRequest
 await page.route('**/api/**', async route => {
   const request = route.request()
   const url = new URL(request.url())
+  if (request.method() === 'GET' && url.pathname === '/api/v1/admin/seckill/activities/home') {
+    await route.fulfill({ json: { code: 200, message: 'success', data: { salesAmount: 12860.5, orderCount: 37 } } })
+    return
+  }
   if (request.method() === 'POST' && url.pathname === '/api/v1/admin/seckill/activities') {
     createRequest = {
       method: request.method(),
@@ -29,6 +33,8 @@ try {
   })))
   await page.goto(baseUrl, { waitUntil: 'networkidle' })
   await page.locator('#sidebarNav .menu-item[data-id="marketing"]').click()
+  await page.getByText('¥12,860.50', { exact: true }).first().waitFor()
+  await page.getByText('37', { exact: true }).first().waitFor()
   await page.getByRole('button', { name: /新建秒杀/ }).click()
   await page.locator('#seckillName').fill('接口联调活动')
   await page.locator('#seckillStartTime').fill('2026-08-02T10:00')

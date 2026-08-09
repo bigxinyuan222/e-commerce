@@ -275,10 +275,6 @@ function showAddBannerModal() {
             <div class="modal-body" style="max-height:60vh;overflow-y:auto;">
                 <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
                     <div style="grid-column:span 2;">
-                        <label style="display:block;font-size:13px;color:#64748b;margin-bottom:4px;">标题 <span style="color:#ef4444;">*</span></label>
-                        <input type="text" id="bannerTitle" placeholder="请输入轮播图标题" style="width:100%;padding:8px 12px;border:1px solid #e2e8f0;border-radius:6px;font-size:13px;outline:none;" onfocus="this.style.borderColor='#4f6ef7'" />
-                    </div>
-                    <div style="grid-column:span 2;">
                         <label style="display:block;font-size:13px;color:#64748b;margin-bottom:4px;">轮播图片 <span style="color:#ef4444;">*</span></label>
                         <input type="file" id="bannerImageFile" accept="image/*" onchange="uploadBannerImage(this)" style="width:100%;padding:8px;border:1px solid #e2e8f0;border-radius:6px;font-size:13px;background:#fff;" />
                         <input type="hidden" id="bannerImage" />
@@ -367,7 +363,8 @@ async function uploadBannerImage(input) {
 }
 
 async function saveBanner(bannerId = null) {
-    const title = document.getElementById('bannerTitle').value.trim();
+    const titleEl = document.getElementById('bannerTitle');
+    const title = titleEl ? titleEl.value.trim() : '';
     const image = document.getElementById('bannerImage').value.trim();
     const linkType = document.getElementById('bannerLinkType').value;
     const link = document.getElementById('bannerLink').value.trim();
@@ -641,13 +638,12 @@ function homepagePage() {
                 </div>
                 <div class="card-body no-pad">
                     <div class="table-wrap"><table>
-                        <thead><tr><th>排序</th><th>图片</th><th>标题</th><th>链接类型</th><th>链接地址</th><th>状态</th><th>操作</th></tr></thead>
+                        <thead><tr><th>排序</th><th>图片</th><th>链接类型</th><th>链接地址</th><th>状态</th><th>操作</th></tr></thead>
                         <tbody>
                             ${bannerData.map(banner => `
                                 <tr>
                                     <td style="font-weight:600;color:#64748b;">${banner.sort}</td>
                                     <td><img src="${banner.image}" alt="${banner.title}" style="width:80px;height:40px;border-radius:4px;object-fit:cover;" /></td>
-                                    <td>${banner.title}</td>
                                     <td><span class="tag">${getLinkTypeText(banner.linkType)}</span></td>
                                     <td style="max-width:150px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${banner.link || '-'}</td>
                                     <td>${getStatusBadge(banner.status)}</td>

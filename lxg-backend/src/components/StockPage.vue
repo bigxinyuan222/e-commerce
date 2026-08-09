@@ -7,6 +7,8 @@ interface StockLog { id: string | number; skuCode: string; name: string; spec: s
 const props = defineProps<{ token?: string }>()
 const summary = reactive({ totalStock: 0, todayInbound: 0, todayOutbound: 0, warningCount: 0 })
 const warnings = ref<StockSku[]>([])
+const warningPage = ref(1)
+const warningPageSize = 5
 const inventory = ref<StockSku[]>([])
 const logs = ref<StockLog[]>([])
 const inventoryLoading = ref(false)
@@ -18,6 +20,7 @@ const inventoryKeywordInput = ref('')
 const inventoryKeyword = ref('')
 const inventoryPage = ref(1)
 const inventorySize = 10
+const warningFetchPageSize = 20
 const inventoryTotal = ref(0)
 const logKeywordInput = ref('')
 const logKeyword = ref('')
@@ -32,6 +35,8 @@ const adjustReason = ref('')
 const submitting = ref(false)
 
 const inventoryPages = computed(() => Math.max(1, Math.ceil(inventoryTotal.value / inventorySize)))
+const warningPages = computed(() => Math.max(1, Math.ceil(warnings.value.length / warningPageSize)))
+const visibleWarnings = computed(() => warnings.value.slice((warningPage.value - 1) * warningPageSize, warningPage.value * warningPageSize))
 const logPages = computed(() => Math.max(1, Math.ceil(logTotal.value / logSize)))
 const filteredLogs = computed(() => !logDate.value ? logs.value : logs.value.filter(log => log.createdAt.includes(logDate.value)))
 const adjustmentTypes = [
@@ -95,10 +100,37 @@ async function loadDashboard() {
   try {
     const data = await requestJson('/api/v1/admin/home', { headers: headers() })
     const list = Array.isArray(data?.warning_sku_list) ? data.warning_sku_list : []
-    warnings.value = list.map(normalizeSku)
+    const dashboardWarnings = list.map(normalizeSku)
+    warnings.value = dashboardWarnings
     summary.totalStock = Number(data?.total_stock) || 0; summary.todayInbound = Number(data?.today_inbound) || 0
     summary.todayOutbound = Number(data?.today_outbound) || 0; summary.warningCount = Number(data?.warning_sku_count) || list.length
+    try {
+      const allWarnings = await loadAllWarnings()
+      if (allWarnings.length >= summary.warningCount) warnings.value = allWarnings
+      summary.warningCount = Math.max(summary.warningCount, warnings.value.length)
+      warningPage.value = Math.min(warningPage.value, warningPages.value)
+    } catch (cause) {
+      console.warn('Unable to load every low-stock inventory page', cause)
+    }
   } catch (cause) { dashboardError.value = cause instanceof Error ? cause.message : '库存概览加载失败' }
+}
+
+async function loadAllWarnings(): Promise<StockSku[]> {
+  const firstParams = new URLSearchParams({ page: '1', size: String(warningFetchPageSize), keyword: '' })
+  const first = await requestJson(`/api/v1/admin/search/inventory?${firstParams}`, { headers: headers() })
+  const total = Number(first?.total ?? first?.total_count ?? first?.count) || listFrom(first, 'inventory_list').length
+  const pageCount = Math.max(1, Math.ceil(total / warningFetchPageSize))
+  const rest = await Promise.all(Array.from({ length: pageCount - 1 }, (_, index) => {
+    const params = new URLSearchParams({ page: String(index + 2), size: String(warningFetchPageSize), keyword: '' })
+    return requestJson(`/api/v1/admin/search/inventory?${params}`, { headers: headers() })
+  }))
+  const rows = [first, ...rest].flatMap(data => listFrom(data, 'inventory_list')).map(normalizeSku)
+  const unique = new Map<string, StockSku>()
+  rows.filter(item => item.status === 'warning' || item.stock <= item.threshold).forEach(item => {
+    const key = item.skuId ? `id:${item.skuId}` : `code:${item.skuCode}`
+    unique.set(key, item)
+  })
+  return [...unique.values()]
 }
 
 async function loadInventory() {
@@ -128,6 +160,7 @@ async function loadLogs() {
 async function searchInventory() { inventoryKeyword.value = inventoryKeywordInput.value.trim(); inventoryPage.value = 1; await loadInventory() }
 async function searchLogs() { logKeyword.value = logKeywordInput.value.trim(); logPage.value = 1; await loadLogs() }
 async function changeInventoryPage(next: number) { if (next < 1 || next > inventoryPages.value || next === inventoryPage.value) return; inventoryPage.value = next; await loadInventory() }
+function changeWarningPage(next: number) { if (next < 1 || next > warningPages.value || next === warningPage.value) return; warningPage.value = next }
 async function changeLogPage(next: number) { if (next < 1 || next > logPages.value || next === logPage.value) return; logPage.value = next; await loadLogs() }
 
 async function openAdjust(sku: StockSku) {
@@ -178,7 +211,7 @@ onMounted(() => Promise.all([loadDashboard(), loadInventory(), loadLogs()]))
   <div v-if="dashboardError" class="stock-dashboard-error"><i class="fas fa-exclamation-circle"></i> {{ dashboardError }}</div>
 
   <div class="card warning-card"><div class="card-header"><span class="card-title"><i class="fas fa-exclamation-triangle"></i> 低库存预警</span><span class="status-badge red"><span class="dot"></span> 低于预警阈值</span></div><div class="card-body">
-    <div v-if="warnings.length" class="grid-auto-fill"><div v-for="sku in warnings" :key="sku.skuCode" class="warning-item"><div class="item-header">{{ sku.skuCode }} · {{ sku.name }}</div><div class="item-spec">规格: {{ sku.spec }}</div><div class="item-stats"><span>当前库存</span><span class="stat-value">{{ sku.stock }}件</span></div><div class="item-stats"><span>预警阈值</span><span class="stat-threshold">{{ sku.threshold }}件</span></div><button class="btn btn-sm btn-primary warning-replenish-btn" @click="openAdjust(sku)"><i class="fas fa-plus"></i> 补货</button></div></div>
+    <template v-if="warnings.length"><div class="grid-auto-fill"><div v-for="sku in visibleWarnings" :key="sku.skuCode" class="warning-item"><div class="item-header">{{ sku.skuCode }} · {{ sku.name }}</div><div class="item-spec">规格: {{ sku.spec }}</div><div class="item-stats"><span>当前库存</span><span class="stat-value">{{ sku.stock }}件</span></div><div class="item-stats"><span>预警阈值</span><span class="stat-threshold">{{ sku.threshold }}件</span></div><button class="btn btn-sm btn-primary warning-replenish-btn" @click="openAdjust(sku)"><i class="fas fa-plus"></i> 补货</button></div></div><div v-if="warningPages > 1" class="stock-pagination warning-pagination"><span>共 {{ warnings.length }} 个预警，第 {{ warningPage }} / {{ warningPages }} 页</span><div class="stock-pagination-actions"><button class="btn btn-sm btn-outline" :disabled="warningPage <= 1" @click="changeWarningPage(warningPage - 1)"><i class="fas fa-chevron-left"></i> 上一页</button><button class="btn btn-sm btn-outline" :disabled="warningPage >= warningPages" @click="changeWarningPage(warningPage + 1)">下一页 <i class="fas fa-chevron-right"></i></button></div></div></template>
     <div v-else class="stock-warning-empty"><i class="fas fa-check-circle"></i><span>暂无低库存预警</span></div>
   </div></div>
 

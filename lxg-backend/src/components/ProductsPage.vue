@@ -108,6 +108,13 @@ const detailOpen = ref(false)
 const detailLoading = ref(false)
 const detailError = ref('')
 const detailData = ref<ProductDetail | null>(null)
+const detailTotalStock = computed(() => detailData.value?.skus.reduce((sum, sku) => sum + (Number(sku.stock) || 0), 0) ?? 0)
+const detailPriceRange = computed(() => {
+  const prices = detailData.value?.skus.map(sku => Number(sku.price)).filter(Number.isFinite) ?? []
+  if (!prices.length) return `¥${detailData.value?.original_price ?? '0.00'}`
+  const min = Math.min(...prices); const max = Math.max(...prices)
+  return min === max ? `¥${min.toFixed(2)}` : `¥${min.toFixed(2)} - ¥${max.toFixed(2)}`
+})
 const allVisibleSelected = computed(() => products.value.length > 0 && products.value.every(({ id }) => selectedIds.value.includes(id)))
 
 const categories = ref<CategoryItem[]>([])
@@ -866,64 +873,35 @@ onUnmounted(() => {
 
     <div v-if="detailOpen" class="modal-overlay" @click.self="closeProductDetail">
       <div class="modal-content product-detail-modal">
-        <div class="modal-header"><h3><i class="fas fa-box"></i> 商品详情</h3><button class="modal-close" title="关闭" @click="closeProductDetail"><i class="fas fa-times"></i></button></div>
-        <div class="modal-body">
-          <div v-if="detailLoading" class="product-state">正在加载商品详情...</div>
+        <div class="modal-header product-detail-header"><div><h3><i class="fas fa-box-open"></i> 商品详情</h3><small v-if="detailData">商品 ID：{{ detailData.id }}</small></div><button class="modal-close" title="关闭" @click="closeProductDetail"><i class="fas fa-times"></i></button></div>
+        <div class="modal-body product-detail-body">
+          <div v-if="detailLoading" class="product-state product-detail-loading"><i class="fas fa-spinner fa-spin"></i><span>正在加载商品详情...</span></div>
           <div v-else-if="detailError" class="product-error">{{ detailError }}</div>
           <div v-else-if="detailData" class="product-detail-content">
-            <div class="product-detail-grid">
-              <div class="product-detail-card">
-                <div class="product-detail-label">商品名称</div>
-                <div class="product-detail-value">{{ detailData.name }}</div>
-              </div>
-              <div class="product-detail-card">
-                <div class="product-detail-label">商品状态</div>
-                <div><span class="status-badge" :class="detailData.status === 1 ? 'green' : 'gray'"><span class="dot"></span>{{ detailData.status === 1 ? '上架' : '下架' }}</span></div>
-              </div>
-              <div class="product-detail-card">
-                <div class="product-detail-label">一级分类</div>
-                <div class="product-detail-value">{{ detailData.first_category_name }}</div>
-              </div>
-              <div class="product-detail-card">
-                <div class="product-detail-label">二级分类</div>
-                <div class="product-detail-value">{{ detailData.second_category_name }}</div>
-              </div>
-              <div class="product-detail-card">
-                <div class="product-detail-label">品牌</div>
-                <div class="product-detail-value">{{ detailData.brand_name }}</div>
-              </div>
-              <div class="product-detail-card">
-                <div class="product-detail-label">原价</div>
-                <div class="product-detail-value price">¥{{ detailData.original_price }}</div>
-              </div>
-              <div class="product-detail-card">
-                <div class="product-detail-label">SKU数量</div>
-                <div class="product-detail-value">{{ detailData.sku_count }}</div>
-              </div>
-              <div class="product-detail-card">
-                <div class="product-detail-label">浏览量</div>
-                <div class="product-detail-value">{{ detailData.views.toLocaleString() }}</div>
-              </div>
-              <div class="product-detail-card">
-                <div class="product-detail-label">成交订单</div>
-                <div class="product-detail-value">{{ detailData.completed_order_count }}</div>
-              </div>
-              <div class="product-detail-card">
-                <div class="product-detail-label">转化率</div>
-                <div class="product-detail-value">{{ detailData.conversion_rate }}%</div>
-              </div>
+            <section class="product-detail-summary">
+              <div class="product-detail-icon"><i class="fas fa-box"></i></div>
+              <div class="product-detail-main"><div class="product-detail-name-row"><h4>{{ detailData.name }}</h4><span class="status-badge" :class="detailData.status === 1 ? 'green' : 'gray'"><span class="dot"></span>{{ detailData.status === 1 ? '已上架' : '已下架' }}</span></div><div class="product-detail-meta"><span><i class="fas fa-layer-group"></i> {{ detailData.first_category_name || '未分类' }} / {{ detailData.second_category_name || '未分类' }}</span><span><i class="fas fa-copyright"></i> {{ detailData.brand_name || '无品牌' }}</span></div></div>
+              <div class="product-detail-price"><small>SKU 售价区间</small><strong>{{ detailPriceRange }}</strong><span>原价 ¥{{ detailData.original_price }}</span></div>
+            </section>
+            <div class="product-detail-metrics">
+              <div><span><i class="fas fa-barcode"></i> SKU 数量</span><strong>{{ detailData.sku_count }}</strong></div>
+              <div><span><i class="fas fa-boxes"></i> 总库存</span><strong :class="{ danger: detailTotalStock <= 0 }">{{ detailTotalStock.toLocaleString() }}</strong></div>
+              <div><span><i class="fas fa-eye"></i> 浏览量</span><strong>{{ detailData.views.toLocaleString() }}</strong></div>
+              <div><span><i class="fas fa-shopping-bag"></i> 成交订单</span><strong>{{ detailData.completed_order_count.toLocaleString() }}</strong></div>
+              <div><span><i class="fas fa-chart-line"></i> 转化率</span><strong class="conversion">{{ detailData.conversion_rate }}%</strong></div>
             </div>
             <div class="product-detail-section">
-              <div class="product-detail-section-title">SKU列表</div>
+              <div class="product-detail-section-title"><span><i class="fas fa-list"></i> SKU 明细</span><small>共 {{ detailData.skus.length }} 条</small></div>
               <div class="table-wrap">
                 <table>
                   <thead><tr><th>SKU编码</th><th>规格组合</th><th>售价</th><th>库存</th></tr></thead>
                   <tbody>
+                    <tr v-if="!detailData.skus.length"><td colspan="4" class="product-detail-empty">暂无 SKU 数据</td></tr>
                     <tr v-for="sku in detailData.skus" :key="sku.id">
-                      <td>{{ sku.sku_code }}</td>
-                      <td>{{ Object.entries(sku.spec_values).map(([key, value]) => `${key}: ${value}`).join(' / ') }}</td>
-                      <td>¥{{ sku.price }}</td>
-                      <td>{{ sku.stock }}</td>
+                      <td><code>{{ sku.sku_code }}</code></td>
+                      <td><div class="product-detail-specs"><span v-for="([key,value]) in Object.entries(sku.spec_values)" :key="key">{{ key }}：{{ value }}</span></div></td>
+                      <td class="sku-price">¥{{ Number(sku.price).toFixed(2) }}</td>
+                      <td><span class="sku-stock" :class="Number(sku.stock) <= 0 ? 'out' : Number(sku.stock) <= 10 ? 'low' : 'normal'">{{ sku.stock }} 件</span></td>
                     </tr>
                   </tbody>
                 </table>
@@ -938,3 +916,7 @@ onUnmounted(() => {
     </div>
   </div>
 </template>
+
+<style scoped>
+.product-detail-modal{width:min(980px,calc(100vw - 32px));max-height:min(860px,calc(100vh - 32px));overflow:hidden}.product-detail-header>div{display:flex;flex-direction:column;gap:3px}.product-detail-header h3{margin:0}.product-detail-header small{color:#94a3b8}.product-detail-body{overflow:auto}.product-detail-loading{min-height:300px;display:flex;align-items:center;justify-content:center;gap:10px;color:#64748b}.product-detail-summary{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:16px;padding:20px;border:1px solid #e2e8f0;border-radius:10px;background:linear-gradient(135deg,#f8fafc,#fff)}.product-detail-icon{display:grid;place-items:center;width:58px;height:58px;border-radius:12px;background:#e9edff;color:#4f6ef7;font-size:24px}.product-detail-main{min-width:0}.product-detail-name-row{display:flex;align-items:center;gap:10px}.product-detail-name-row h4{margin:0;overflow:hidden;text-overflow:ellipsis;font-size:20px;color:#0f172a}.product-detail-meta{display:flex;flex-wrap:wrap;gap:14px;margin-top:9px;color:#64748b;font-size:12px}.product-detail-meta i{margin-right:4px;color:#94a3b8}.product-detail-price{text-align:right;display:flex;flex-direction:column;gap:3px}.product-detail-price small,.product-detail-price span{color:#94a3b8;font-size:11px}.product-detail-price strong{color:#ef4444;font-size:20px;white-space:nowrap}.product-detail-metrics{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;margin:14px 0}.product-detail-metrics>div{padding:14px;border:1px solid #e2e8f0;border-radius:8px;background:#fff;display:flex;flex-direction:column;gap:8px}.product-detail-metrics span{color:#64748b;font-size:12px}.product-detail-metrics span i{margin-right:4px;color:#4f6ef7}.product-detail-metrics strong{color:#1e293b;font-size:19px}.product-detail-metrics strong.conversion{color:#16a34a}.product-detail-metrics strong.danger{color:#ef4444}.product-detail-section{border:1px solid #e2e8f0;border-radius:9px;overflow:hidden}.product-detail-section-title{display:flex;justify-content:space-between;align-items:center;padding:13px 16px;background:#f8fafc;border-bottom:1px solid #e2e8f0;font-weight:600;color:#334155}.product-detail-section-title small{font-weight:400;color:#94a3b8}.product-detail-modal table{min-width:680px}.product-detail-modal code{padding:3px 6px;border-radius:4px;background:#f1f5f9;color:#475569}.product-detail-specs{display:flex;flex-wrap:wrap;gap:5px}.product-detail-specs span{padding:3px 7px;border-radius:4px;background:#eef2ff;color:#4f46e5;font-size:11px}.sku-price{font-weight:600;color:#ef4444}.sku-stock{display:inline-block;padding:3px 8px;border-radius:999px;font-size:12px}.sku-stock.normal{background:#dcfce7;color:#15803d}.sku-stock.low{background:#fef3c7;color:#b45309}.sku-stock.out{background:#fee2e2;color:#b91c1c}.product-detail-empty{text-align:center!important;padding:36px!important;color:#94a3b8}@media(max-width:800px){.product-detail-summary{grid-template-columns:auto minmax(0,1fr)}.product-detail-price{grid-column:1/-1;text-align:left;padding-top:12px;border-top:1px solid #e2e8f0}.product-detail-metrics{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:520px){.product-detail-summary{grid-template-columns:1fr}.product-detail-icon{display:none}.product-detail-name-row{align-items:flex-start;flex-direction:column}.product-detail-metrics{grid-template-columns:1fr 1fr}}[data-theme='dark'] .product-detail-summary,[data-theme='dark'] .product-detail-metrics>div{background:#111827;border-color:#334155}[data-theme='dark'] .product-detail-name-row h4,[data-theme='dark'] .product-detail-metrics strong{color:#e5e7eb}[data-theme='dark'] .product-detail-section{border-color:#334155}[data-theme='dark'] .product-detail-section-title{background:#1e293b;border-color:#334155;color:#e5e7eb}[data-theme='dark'] .product-detail-modal code{background:#1e293b;color:#cbd5e1}
+</style>

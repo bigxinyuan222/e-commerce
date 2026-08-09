@@ -25,6 +25,10 @@ const activities = ref<Activity[]>([])
 const products = ref<ProductOption[]>([])
 const loading = ref(false)
 const loadError = ref('')
+const statsLoading = ref(false)
+const statsError = ref('')
+const activitySalesAmount = ref(0)
+const activityOrderCount = ref(0)
 const createOpen = ref(false)
 const createSubmitting = ref(false)
 const productActivity = ref<Activity | null>(null)
@@ -39,10 +43,8 @@ const createForm = reactive({ name: '', startTime: '', endTime: '' })
 
 const activeCount = computed(() => activities.value.filter(item => item.status === 'active').length)
 const pendingCount = computed(() => activities.value.filter(item => item.status === 'pending').length)
-const orders = computed<any[]>(() => Array.isArray(window.legacyOrderSnapshot) ? window.legacyOrderSnapshot : [])
-const salesAmount = computed(() => orders.value.reduce((sum, order) => sum + Number(order.payAmount ?? order.totalAmount ?? 0), 0))
-const salesLabel = computed(() => salesAmount.value > 0 ? `¥${(salesAmount.value / 10000).toFixed(1)}万` : '-')
-const orderLabel = computed(() => orders.value.length || '-')
+const salesLabel = computed(() => new Intl.NumberFormat('zh-CN', { style: 'currency', currency: 'CNY', minimumFractionDigits: 2 }).format(activitySalesAmount.value))
+const orderLabel = computed(() => activityOrderCount.value.toLocaleString('zh-CN'))
 
 function headers(json = false) {
   const result = new Headers()
@@ -107,6 +109,32 @@ async function loadActivities() {
     loadError.value = error instanceof Error ? error.message : '活动列表加载失败'
   } finally {
     loading.value = false
+  }
+}
+
+async function loadActivityStats() {
+  statsLoading.value = true
+  statsError.value = ''
+  try {
+    const data = await request('/api/v1/admin/seckill/activities/home', { headers: headers() })
+    const source = data?.stats ?? data?.statistics ?? data?.summary ?? data ?? {}
+    activitySalesAmount.value = Number(
+      source.activitySalesAmount ?? source.activity_sales_amount ?? source.salesAmount ?? source.sales_amount
+      ?? source.totalSales ?? source.total_sales ?? source.totalSalesAmount ?? source.total_sales_amount
+      ?? source.seckillSalesAmount ?? source.seckill_sales_amount ?? source.activitySales ?? source.activity_sales
+      ?? source.totalAmount ?? source.total_amount ?? source.revenue ?? 0,
+    ) || 0
+    activityOrderCount.value = Number(
+      source.activityOrderCount ?? source.activity_order_count ?? source.orderCount ?? source.order_count
+      ?? source.totalOrders ?? source.total_orders ?? source.totalOrderCount ?? source.total_order_count
+      ?? source.seckillOrderCount ?? source.seckill_order_count ?? source.activityOrders ?? source.activity_orders ?? 0,
+    ) || 0
+  } catch (error) {
+    activitySalesAmount.value = 0
+    activityOrderCount.value = 0
+    statsError.value = error instanceof Error ? error.message : '活动统计加载失败'
+  } finally {
+    statsLoading.value = false
   }
 }
 
@@ -260,7 +288,7 @@ function statusClass(status: Activity['status']) {
   return { active: 'green', pending: 'yellow', ended: 'gray', closed: 'red' }[status]
 }
 
-onMounted(loadActivities)
+onMounted(() => Promise.all([loadActivities(), loadActivityStats()]))
 </script>
 
 <template>
@@ -272,9 +300,10 @@ onMounted(loadActivities)
   <div class="trade-stat-grid">
     <div class="stat-card"><div class="label"><i class="fas fa-bolt"></i> 进行中秒杀</div><div class="value blue">{{ activeCount }}</div></div>
     <div class="stat-card"><div class="label"><i class="fas fa-clock"></i> 即将开始</div><div class="value yellow">{{ pendingCount }}</div></div>
-    <div class="stat-card"><div class="label"><i class="fas fa-chart-bar"></i> 活动销售额</div><div class="value purple">{{ salesLabel }}</div></div>
-    <div class="stat-card"><div class="label"><i class="fas fa-shopping-cart"></i> 活动订单数</div><div class="value green">{{ orderLabel }}</div></div>
+    <div class="stat-card"><div class="label"><i class="fas fa-chart-bar"></i> 活动销售额</div><div class="value purple"><i v-if="statsLoading" class="fas fa-spinner fa-spin"></i><template v-else>{{ salesLabel }}</template></div></div>
+    <div class="stat-card"><div class="label"><i class="fas fa-shopping-cart"></i> 活动订单数</div><div class="value green"><i v-if="statsLoading" class="fas fa-spinner fa-spin"></i><template v-else>{{ orderLabel }}</template></div></div>
   </div>
+  <div v-if="statsError" class="stock-list-error marketing-stats-error"><i class="fas fa-exclamation-circle"></i> {{ statsError }} <button class="btn btn-sm btn-outline" @click="loadActivityStats">重试</button></div>
 
   <div class="card">
     <div class="card-header"><span class="card-title"><i class="fas fa-bolt"></i> 秒杀活动管理</span><span class="text-muted" style="font-size:13px">共 {{ activities.length }} 个活动</span></div>
@@ -295,14 +324,6 @@ onMounted(loadActivities)
         </tr>
       </tbody>
     </table></div></div>
-  </div>
-
-  <div class="card">
-    <div class="card-header"><span class="card-title"><i class="fas fa-chart-bar"></i> 活动统计</span></div>
-    <div class="card-body"><div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px">
-      <div><div class="flex-between" style="font-size:13px;margin-bottom:4px"><span>秒杀活动销售额</span><strong style="color:#4f6ef7">{{ salesLabel }}</strong></div><div class="marketing-progress"><span :style="{ width: activities.length ? '75%' : '0' }"></span></div></div>
-      <div><div class="flex-between" style="font-size:13px;margin-bottom:4px"><span>活动订单转化率</span><strong style="color:#22c55e">{{ activeCount && orders.length ? '68.5%' : '-' }}</strong></div><div class="marketing-progress green"><span :style="{ width: activeCount ? '68.5%' : '0' }"></span></div></div>
-    </div></div>
   </div>
 
   <template v-if="createOpen">
@@ -336,5 +357,5 @@ onMounted(loadActivities)
 </template>
 
 <style scoped>
-.required,.danger-color{color:#ef4444}.product-state{padding:24px;text-align:center;color:#94a3b8}.stock-list-error{padding:10px 14px;color:#b91c1c;background:#fef2f2}.marketing-progress{height:6px;background:#e2e8f0;border-radius:3px;overflow:hidden}.marketing-progress span{display:block;height:100%;background:#4f6ef7;border-radius:3px}.marketing-progress.green span{background:#22c55e}td .btn+ .btn{margin-left:6px}
+.required,.danger-color{color:#ef4444}.product-state{padding:24px;text-align:center;color:#94a3b8}.stock-list-error{padding:10px 14px;color:#b91c1c;background:#fef2f2}.marketing-stats-error{margin-bottom:12px;border-radius:6px}td .btn+ .btn{margin-left:6px}
 </style>

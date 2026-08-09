@@ -18,6 +18,7 @@ import AdminPage from './components/AdminPage.vue'
 import PaymentPage from './components/PaymentPage.vue'
 import SettingsPage from './components/SettingsPage.vue'
 import MarketingPage from './components/MarketingPage.vue'
+import ReviewsPage from './components/ReviewsPage.vue'
 
 interface LegacyBridge {
   setUser: (user: AdminUser) => void
@@ -209,6 +210,7 @@ onMounted(async () => {
           <PaymentPage v-else-if="activePage === 'payment'" :token="user?.token" />
           <SettingsPage v-else-if="activePage === 'settings'" :token="user?.token" />
           <MarketingPage v-else-if="activePage === 'marketing'" :token="user?.token" />
+          <ReviewsPage v-else-if="activePage === 'reviews'" :token="user?.token" />
           <div v-else v-html="renderLegacyPage(activePage)"></div>
         </section>
       </main>
