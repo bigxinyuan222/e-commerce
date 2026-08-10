@@ -19,6 +19,7 @@ import PaymentPage from './components/PaymentPage.vue'
 import SettingsPage from './components/SettingsPage.vue'
 import MarketingPage from './components/MarketingPage.vue'
 import ReviewsPage from './components/ReviewsPage.vue'
+import StatisticsPage from './components/StatisticsPage.vue'
 
 interface LegacyBridge {
   setUser: (user: AdminUser) => void
@@ -196,6 +197,7 @@ onMounted(async () => {
       <main id="contentArea" class="content">
         <section :id="`panel-${activePage}`" :key="`${activePage}-${pageRevision}`" class="page-panel active">
           <CouponsPage v-if="activePage === 'coupons'" :token="user?.token" />
+          <StatisticsPage v-else-if="activePage === 'stats'" :token="user?.token" :role="user?.role" :store-id="user?.storeId" :user-name="user?.name" />
           <ProductsPage v-else-if="activePage === 'goods'" :token="user?.token" />
           <ReturnsPage v-else-if="activePage === 'returns'" :token="user?.token" :store-id="user?.storeId" />
           <OrdersPage v-else-if="activePage === 'orders'" :token="user?.token" :store-id="user?.storeId" :role="user?.role" />
