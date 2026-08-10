@@ -1,7 +1,7 @@
 export type PageId =
   | 'stats' | 'goods' | 'stock' | 'reviews' | 'coupons' | 'marketing'
   | 'orders' | 'service' | 'stores' | 'returns' | 'users' | 'admin'
-  | 'homepage' | 'notification' | 'payment' | 'settings' | 'store_manage'
+  | 'homepage' | 'notification' | 'payment' | 'settings' | 'store_manage' | 'store_orders'
 
 export interface MenuItem {
   id: PageId
@@ -36,6 +36,7 @@ export const menus: MenuItem[] = [
   { id: 'service', label: '客服消息', icon: 'fas fa-headset', group: '订单客服' },
   { id: 'stores', label: '门店总览', icon: 'fas fa-store-alt', group: '门店管理', protected: true },
   { id: 'store_manage', label: '专属门店管理', icon: 'fas fa-store', group: '门店管理', exclusive: true },
+  { id: 'store_orders', label: '门店订单管理', icon: 'fas fa-shopping-bag', group: '门店管理', exclusive: true },
   { id: 'returns', label: '退货退款', icon: 'fas fa-undo-alt', group: '门店管理' },
   { id: 'users', label: '用户管理', icon: 'fas fa-users', group: '系统管理' },
   { id: 'admin', label: '管理员管理', icon: 'fas fa-user-shield', group: '系统管理', protected: true },
@@ -51,16 +52,15 @@ const roleMenus: Record<string, PageId[]> = {
   user: ['stats', 'orders', 'service'],
   goods_op: ['stats', 'goods', 'stock', 'reviews', 'coupons', 'marketing'],
   order_cs: ['orders', 'service'],
-  store_staff: ['store_manage', 'returns'],
+  store_staff: ['store_manage', 'store_orders', 'returns'],
 }
 
 const pageFactories: Partial<Record<PageId, string>> = {
-  stats: 'statsPage', reviews: 'reviewsPage',
+  stats: 'statsPage',
   homepage: 'homepagePage',
 }
 
 const pageLoaders: Partial<Record<PageId, string[]>> = {
-  reviews: ['loadReviews', 'loadSummaries'],
   homepage: ['loadBanners', 'loadRecommendations', 'loadHomepageGoods'],
 }
 
@@ -146,8 +146,6 @@ async function loadStatsData(): Promise<void> {
     }))
   }
 
-  const loadReviews = window.loadReviews
-  if (typeof loadReviews === 'function') await Promise.resolve((loadReviews as () => unknown)()).catch(() => undefined)
 }
 
 export function allowedMenus(role: string): MenuItem[] {

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, ref } from "vue";
+import { computed, onMounted, ref } from "vue";
 import BusinessConfigPage from "./BusinessConfigPage.vue";
 type Config = {
   id: string | number;
@@ -32,6 +32,17 @@ const configs = ref<Config[]>([]),
   modal = ref(false),
   editing = ref<Config | null>(null);
 const form = ref({ configKey: "", configValue: "", description: "" });
+const logPage = ref(1);
+const LOG_PAGE_SIZE = 10;
+const logTotalPages = computed(() =>
+  Math.max(1, Math.ceil(logs.value.length / LOG_PAGE_SIZE))
+);
+const pagedLogs = computed(() =>
+  logs.value.slice(
+    (logPage.value - 1) * LOG_PAGE_SIZE,
+    logPage.value * LOG_PAGE_SIZE
+  )
+);
 function headers(json = false) {
   const h = new Headers();
   if (props.token) h.set("Authorization", "Bearer " + props.token);
@@ -49,6 +60,13 @@ function arr(d: any) {
   return Array.isArray(d)
     ? d
     : (d?.list ?? d?.items ?? d?.records ?? d?.configs ?? []);
+}
+function formatTime(value: any) {
+  if (!value) return "-";
+  const date = new Date(String(value));
+  if (Number.isNaN(date.getTime())) return String(value);
+  const pad = (n: number) => String(n).padStart(2, "0");
+  return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())} ${pad(date.getHours())}:${pad(date.getMinutes())}:${pad(date.getSeconds())}`;
 }
 async function loadConfigs() {
   loading.value = true;
@@ -72,6 +90,8 @@ async function loadConfigs() {
   }
 }
 async function loadLogs() {
+  loading.value = true;
+  logPage.value = 1;
   try {
     const q = logKeyword.value
       ? "?operator=" + encodeURIComponent(logKeyword.value)
@@ -81,16 +101,20 @@ async function loadLogs() {
     });
     logs.value = arr(d).map((x: any) => ({
       id: x.ID ?? x.id,
-      operator: x.operator ?? "",
+      operator: x.operatorName ?? x.operator_name ?? x.operator ?? "",
       module: x.module ?? "",
       content: x.content ?? x.action ?? "",
       ip: x.ip ?? "",
-      type: x.type ?? "",
-      time: x.createdAt ?? x.created_at ?? x.time ?? "",
+      type: x.type ?? x.targetType ?? "",
+      time: formatTime(x.UpdatedAt ?? x.updated_at ?? x.CreatedAt ?? x.created_at ?? x.time),
     }));
   } catch {
     logs.value = [];
   }
+}
+function changeLogPage(next: number) {
+  if (next < 1 || next > logTotalPages.value || next === logPage.value) return;
+  logPage.value = next;
 }
 function notify(t: string, k = "success") {
   (window as any).showToast?.(t, k);
@@ -255,24 +279,30 @@ onMounted(() => {
               <th>模块</th>
               <th>内容</th>
               <th>IP</th>
-              <th>类型</th>
               <th>时间</th>
             </tr>
           </thead>
           <tbody>
             <tr v-if="!logs.length">
-              <td colspan="6">暂无日志记录</td>
+              <td colspan="5">暂无日志记录</td>
             </tr>
-            <tr v-for="log in logs" v-else :key="log.id">
+            <tr v-for="log in pagedLogs" v-else :key="log.id">
               <td>{{ log.operator }}</td>
               <td>{{ log.module }}</td>
               <td>{{ log.content }}</td>
               <td>{{ log.ip }}</td>
-              <td>{{ log.type }}</td>
               <td>{{ log.time }}</td>
             </tr>
           </tbody>
         </table>
+      </div>
+    </div>
+    <div v-if="logs.length" class="card-footer log-pagination">
+      <span class="log-page-info">共 {{ logs.length }} 条</span>
+      <div class="log-page-nav">
+        <button class="icon-btn" :disabled="logPage === 1" @click="changeLogPage(logPage - 1)"><i class="fas fa-angle-left"></i></button>
+        <span>{{ logPage }} / {{ logTotalPages }}</span>
+        <button class="icon-btn" :disabled="logPage === logTotalPages" @click="changeLogPage(logPage + 1)"><i class="fas fa-angle-right"></i></button>
       </div>
     </div>
   </div>
@@ -319,5 +349,48 @@ onMounted(() => {
 }
 @media (max-width: 980px) {
   .settings-business-configs { grid-template-columns: 1fr; }
+}
+.log-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 16px;
+}
+.log-page-info {
+  font-size: 13px;
+  color: #64748b;
+}
+.log-page-nav {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+  color: #475569;
+}
+.icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  background: #fff;
+  color: #475569;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.icon-btn:hover:not(:disabled) {
+  border-color: #4f6ef7;
+  color: #4f6ef7;
+}
+.icon-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+:global([data-theme="dark"]) .icon-btn {
+  background: #1e293b;
+  border-color: #334155;
+  color: #cbd5e1;
 }
 </style>

@@ -7,6 +7,7 @@ const browser = await chromium.launch({
 })
 const page = await browser.newPage({ viewport: { width: 1440, height: 900 } })
 const refundQueries = []
+const refundStatsPaths = []
 const refundDetailPaths = []
 const auditRequests = []
 const refundReasonPaths = []
@@ -15,11 +16,18 @@ const refundReasonMutations = []
 await page.route('**/api/**', async (route) => {
   const url = new URL(route.request().url())
   let data = {}
-  if (url.pathname === '/api/v1/admin/refunds') {
+  if (url.pathname === '/api/v1/admin/refunds/stats') {
+    refundStatsPaths.push(url.pathname)
+    data = {
+      today: { refundCount: 2, refundRate: 0.12, approvalRate: 0.75 },
+      week: { refundCount: 8, refundRate: 0.2, approvalRate: 0.8 },
+      month: { refundCount: 26, refundRate: 0.35, approvalRate: 0.9 },
+    }
+  } else if (url.pathname === '/api/v1/admin/refunds') {
     refundQueries.push(Object.fromEntries(url.searchParams))
     data = {
       list: [
-        { id: 1, refund_no: 'RF-001', order_no: 'ORD-001', product_name: '测试商品一', refund_amount: 100, user_name: '张三', phone: '13800000001', store_id: 5, store_name: '测试门店', reason: '质量问题', reason_type: 'quality', status: 0, created_at: '2026-07-28 09:00:00' },
+        { id: 1, ID: 1, refundNo: 'RF-001', orderId: 11, orderNo: 'ORD-001', userId: 21, userNickname: '张三', storeId: 5, storeName: '测试门店', refundReasonId: 31, refundReason: '质量问题', description: '商品存在明显破损', images: ['https://example.com/refund-proof.jpg'], totalAmount: 100, status: 0, adminId: 0, auditRemark: '', auditedAt: '', refundPaymentId: null, refundedAt: null, createdAt: '2026-07-28 09:00:00', updatedAt: '2026-07-28 09:00:00', productNames: '新接口测试商品一', CreatedAt: '2026-07-28 09:00:00', UpdatedAt: '2026-07-28 09:00:00', DeletedAt: null },
         { id: 2, refund_no: 'RF-002', order_no: 'ORD-002', product_name: '测试商品二', refund_amount: 200, user_name: '李四', phone: '13800000002', store_id: 5, store_name: '测试门店', reason: '发错货', reason_type: 'wrong_item', status: 1, created_at: '2026-07-28 10:00:00' },
         { id: 3, refund_no: 'RF-003', order_no: 'ORD-003', product_name: '测试商品三', refund_amount: 300, user_name: '王五', phone: '13800000003', store_id: 5, store_name: '测试门店', reason: '不想要了', reason_type: 'no_need', status: 2, created_at: '2026-07-28 11:00:00' },
         { id: 4, refund_no: 'RF-004', order_no: 'ORD-004', product_name: '测试商品四', refund_amount: 400, user_name: '赵六', phone: '13800000004', store_id: 5, store_name: '测试门店', reason: '商品损坏', reason_type: 'damaged', status: 3, created_at: '2026-07-28 12:00:00' },
@@ -33,10 +41,10 @@ await page.route('**/api/**', async (route) => {
   } else if (url.pathname === '/api/v1/admin/refunds/1') {
     refundDetailPaths.push(url.pathname)
     data = {
-      id: 1, refund_no: 'RF-001', order_no: 'ORD-001', product_name: '详情商品名称',
-      spec_values: { '颜色': '黑色' }, price: 199, refund_amount: 100,
-      user_name: '张三', phone: '13800000001', store_id: 5, store_name: '测试门店',
-      reason: '质量问题详情', reason_type: 'quality', status: 0, created_at: '2026-07-28 09:00:00',
+      id: 1, ID: 1, refundNo: 'RF-001', orderId: 11, orderNo: 'ORD-001', totalAmount: 100,
+      userId: 21, storeId: 5, storeName: '测试门店', refundReasonId: 31,
+      description: '详情退货说明', images: [], status: 0, adminId: 0,
+      auditRemark: '', auditedAt: '', refundPaymentId: null, refundedAt: null, createdAt: '2026-07-28 09:00:00', updatedAt: '2026-07-28 09:00:00',
     }
   } else if (url.pathname === '/api/v1/admin/refund-reasons') {
     refundReasonPaths.push(url.pathname)
@@ -68,15 +76,17 @@ try {
   for (const status of ['待审核', '已通过', '已拒绝', '已完成']) {
     if (!rows.some(row => row.includes(status))) throw new Error(`缺少退款状态: ${status}; rows=${JSON.stringify(rows)}`)
   }
+  if (!rows.some(row => row.includes('新接口测试商品一') && row.includes('张三') && row.includes('100.00'))) throw new Error(`新退款字段渲染错误: rows=${JSON.stringify(rows)}`)
   const statsText = await page.locator('#panel-returns .return-stats').textContent()
   for (const label of ['待审核', '已通过', '已拒绝', '退款金额']) {
     if (!statsText?.includes(label)) throw new Error(`缺少退款统计项: ${label}; stats=${statsText}`)
   }
   if (!statsText?.includes('1,000.00')) throw new Error(`退款金额统计错误: ${statsText}`)
   const sidebarText = await page.locator('#panel-returns .returns-sidebar').textContent()
-  for (const label of ['退款原因分布', '处理时效', '退款统计', '质量问题', '25%', '今日已处理 3 笔', '审核通过率', '50%']) {
+  for (const label of ['退款统计', '今日', '本周', '本月', '2 笔', '8 笔', '26 笔', '12%', '80%', '90%', '质量问题']) {
     if (!sidebarText?.includes(label)) throw new Error(`右侧统计缺少内容: ${label}; sidebar=${sidebarText}`)
   }
+  if (refundStatsPaths.length !== 1) throw new Error(`退款统计接口请求次数错误: ${refundStatsPaths.length}`)
   const reasonCard = page.locator('#panel-returns .card').filter({ hasText: '退款原因配置' })
   const reasonCardText = await reasonCard.textContent()
   if (!reasonCardText?.includes('2 个') || !reasonCardText.includes('质量问题') || !reasonCardText.includes('商品损坏')) {
@@ -108,8 +118,11 @@ try {
   const detailResponse = page.waitForResponse(response => response.url().includes('/admin/refunds/1'))
   await table.locator('tbody tr').first().getByRole('button', { name: '详情' }).click()
   await detailResponse
-  await page.locator('.modal-content').filter({ hasText: '详情商品名称' }).waitFor()
-  if (!await page.locator('.modal-content').textContent().then(text => text.includes('质量问题详情'))) throw new Error('退款详情未使用接口返回内容')
+  const detailText = await page.locator('.refund-detail-modal').textContent()
+  for (const expected of ['新接口测试商品一', '张三', '质量问题']) {
+    if (!detailText?.includes(expected)) throw new Error(`详情缺失列表回退字段: ${expected}; detail=${detailText}`)
+  }
+  if (!detailText?.includes('详情退货说明')) throw new Error('退款详情未合并接口补充内容')
   await page.locator('.modal-close').click()
 
   const statusResponse = page.waitForResponse(response => response.url().includes('/admin/refunds') && response.url().includes('status=2'))

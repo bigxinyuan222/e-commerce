@@ -21,7 +21,7 @@ await page.route('**/api/**', async (route) => {
         total_stock: 29392,
         today_inbound: 12138,
         today_outbound: 0,
-        warning_sku_count: 2,
+        warning_sku_count: 8,
         warning_sku_list: [
           {
             sku_code: 'NK-PG40-WH-41',
@@ -42,7 +42,17 @@ await page.route('**/api/**', async (route) => {
         ],
       }
     : path === '/api/v1/admin/search/inventory'
-      ? requestUrl.searchParams.get('keyword') === 'NK-PG40-WH-41'
+      ? requestUrl.searchParams.get('size') === '20'
+        ? {
+            list: Array.from({ length: 8 }, (_, index) => ({ sku_id: 400 + index, sku_code: `WARN-${index + 1}`, product_name: `低库存商品${index + 1}`, spec_values: { '规格': `${index + 1}号` }, stock: index + 1, warning_value: 20, status: '预警' })),
+            total: 8, page: 1, size: 20,
+          }
+        : requestUrl.searchParams.get('keyword')?.startsWith('WARN-')
+          ? {
+              list: [{ sku_id: 400, sku_code: requestUrl.searchParams.get('keyword'), product_name: '低库存商品1', spec_values: { '规格': '1号' }, stock: 1, warning_value: 20, status: '预警' }],
+              total: 1, page: 1, size: 10,
+            }
+        : requestUrl.searchParams.get('keyword') === 'NK-PG40-WH-41'
         ? {
             list: [{ sku_id: 310, sku_code: 'NK-PG40-WH-41', product_name: 'Nike Air Zoom Pegasus 40', spec_values: { '尺码': '41码', '颜色': '白色' }, stock: 45, warning_value: 50, status: '预警' }],
             total: 1, page: 1, size: 10,
@@ -90,6 +100,9 @@ try {
 
   const values = await page.locator('#panel-stock .stat-card .value').allTextContents()
   const warningItems = await page.locator('#panel-stock .warning-item').allTextContents()
+  await page.locator('.warning-pagination').getByRole('button', { name: '下一页' }).click()
+  const secondWarningPageItems = await page.locator('#panel-stock .warning-item').allTextContents()
+  await page.locator('.warning-pagination').getByRole('button', { name: '上一页' }).click()
   const inventoryRows = await page.locator('#panel-stock table').first().locator('tbody tr').count()
   const inventoryLogRows = await page.locator('#panel-stock table').nth(1).locator('tbody tr').allTextContents()
 
@@ -98,14 +111,14 @@ try {
   await page.locator('#stockSearchInput').press('Enter')
   await searchResponse
   const pageResponse = page.waitForResponse(response => response.url().includes('/admin/search/inventory') && response.url().includes('page=2'))
-  await page.locator('.stock-pagination-actions').first().locator('button').last().click()
+  await page.locator('.card').filter({ hasText: '库存查询 · 按 SKU' }).locator('.stock-pagination-actions button').last().click()
   await pageResponse
-  await page.waitForFunction(() => document.querySelector('.stock-pagination')?.textContent?.includes('第 2 / 2 页'))
+  await page.locator('.card').filter({ hasText: '库存查询 · 按 SKU' }).locator('.stock-pagination').getByText('第 2 / 2 页').waitFor()
 
   await page.locator('.warning-item').first().getByRole('button', { name: '补货' }).click()
   await page.locator('#selectedSkuStock').waitFor()
   const matchedSkuText = await page.locator('#selectedSkuStock').textContent()
-  if (!matchedSkuText?.includes('SKU ID: 310')) throw new Error(`预警 SKU 未匹配到数字 ID: ${matchedSkuText}`)
+  if (!matchedSkuText?.includes('SKU ID: 400')) throw new Error(`预警 SKU 未匹配到数字 ID: ${matchedSkuText}`)
   await page.locator('.modal-close').click()
 
   await page.locator('#panel-stock table').first().locator('tbody tr').first().getByRole('button', { name: '调整' }).click()
@@ -120,10 +133,10 @@ try {
   await adjustmentResponse
   await page.locator('.modal-content').waitFor({ state: 'detached' })
 
-  const result = { values, warningItemCount: warningItems.length, inventoryRows, inventoryLogRows, inventoryQueries, inventoryAdjustments, inventoryLogRequests, warningItems }
+  const result = { values, warningItemCount: warningItems.length, secondWarningPageCount: secondWarningPageItems.length, inventoryRows, inventoryLogRows, inventoryQueries, inventoryAdjustments, inventoryLogRequests, warningItems }
   process.stdout.write(`${JSON.stringify(result, null, 2)}\n`)
 
-  if (values.join('|') !== '29,392|2|12,138|0' || warningItems.length !== 2 || inventoryRows !== 2) {
+  if (values.join('|') !== '29,392|8|12,138|0' || warningItems.length !== 5 || secondWarningPageItems.length !== 3 || inventoryRows !== 2) {
     throw new Error('库存汇总或低库存预警渲染结果不符合预期')
   }
   if (inventoryLogRows.length !== 2 || !inventoryLogRows[0].includes('采购入库') || !inventoryLogRows[1].includes('损耗')) {
@@ -132,10 +145,14 @@ try {
   if (JSON.stringify(inventoryLogRequests[0]) !== JSON.stringify({ page: '1', size: '6', keyword: '' })) {
     throw new Error(`库存日志分页参数不符合预期: ${JSON.stringify(inventoryLogRequests[0])}`)
   }
-  if (JSON.stringify(inventoryQueries[0]) !== JSON.stringify({ page: '1', size: '10', keyword: '' })) {
-    throw new Error(`库存查询参数不符合预期: ${JSON.stringify(inventoryQueries[0])}`)
+  const initialInventoryQuery = inventoryQueries.find(item => item.page === '1' && item.size === '10' && item.keyword === '')
+  const warningPageQuery = inventoryQueries.find(item => item.page === '1' && item.size === '20' && item.keyword === '')
+  const searchQuery = inventoryQueries.find(item => item.page === '1' && item.keyword === 'Nike')
+  const secondPageQuery = inventoryQueries.find(item => item.page === '2' && item.size === '10')
+  if (!initialInventoryQuery || !warningPageQuery) {
+    throw new Error(`库存查询或预警分页参数不符合预期: ${JSON.stringify(inventoryQueries)}`)
   }
-  if (inventoryQueries[1]?.page !== '1' || inventoryQueries[1]?.keyword !== 'Nike' || inventoryQueries[2]?.page !== '2') {
+  if (!searchQuery || !secondPageQuery) {
     throw new Error(`库存搜索或分页参数不符合预期: ${JSON.stringify(inventoryQueries)}`)
   }
   const expectedAdjustment = { sku_id: 101, type: 3, quantity: -5, reason: '盘点发现商品损耗' }

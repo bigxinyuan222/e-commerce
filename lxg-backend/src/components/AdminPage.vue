@@ -48,6 +48,9 @@ const statusFilter = ref('')
 const editing = ref<AdminRow | null>(null)
 const saving = ref(false)
 const form = reactive({ username: '', password: '', name: '', phone: '', roleId: '', storeId: '' })
+const passwordAdmin = ref<AdminRow | null>(null)
+const passwordForm = reactive({ password: '', confirmPassword: '' })
+const resettingPassword = ref(false)
 
 const filtered = computed(() => {
   const search = keyword.value.trim().toLowerCase()
@@ -177,7 +180,7 @@ async function save() {
       role_id: Number(form.roleId) || form.roleId,
       store_id: form.storeId ? Number(form.storeId) || form.storeId : null,
     }
-    if (form.password) body.password = form.password
+    if (!id) body.password = form.password
     await request(id ? `/api/v1/admins/${id}` : '/api/v1/create/admin', {
       method: id ? 'PUT' : 'POST',
       headers: authHeaders(true),
@@ -203,10 +206,35 @@ async function toggle(row: AdminRow) {
   }
 }
 
+function openPasswordEditor(row: AdminRow) {
+  passwordAdmin.value = row
+  passwordForm.password = ''
+  passwordForm.confirmPassword = ''
+}
+
+async function resetAdminPassword() {
+  if (!passwordAdmin.value || resettingPassword.value) return
+  if (passwordForm.password.length < 6) return notify('新密码至少需要 6 位', 'error')
+  if (passwordForm.password !== passwordForm.confirmPassword) return notify('两次输入的密码不一致', 'error')
+  resettingPassword.value = true
+  try {
+    await request('/api/v1/reset/admin/password', {
+      method: 'POST', headers: authHeaders(true),
+      body: JSON.stringify({ id: Number(passwordAdmin.value.id), password: passwordForm.password }),
+    })
+    passwordAdmin.value = null
+    notify('管理员密码修改成功')
+  } catch (cause) {
+    notify(cause instanceof Error ? cause.message : '管理员密码修改失败', 'error')
+  } finally {
+    resettingPassword.value = false
+  }
+}
+
 async function remove(row: AdminRow) {
   if (!confirm(`确定删除管理员“${row.name || row.username}”吗？`)) return
   try {
-    await request(`/api/v1/delete/admin?id=${row.id}`, { method: 'DELETE', headers: authHeaders() })
+    await request(`/api/v1/delete/admin?id=${encodeURIComponent(String(row.id))}`, { method: 'POST', headers: authHeaders() })
     notify('管理员已删除')
     await loadAdmins()
   } catch (cause) {
@@ -263,7 +291,7 @@ onMounted(loadAdmins)
               <td>{{ row.createdAt }}</td>
               <td>{{ row.lastLogin }}</td>
               <td><span class="status-badge" :class="row.status === 1 ? 'green' : 'gray'"><span class="dot"></span>{{ row.status === 1 ? '启用' : '停用' }}</span></td>
-              <td class="admin-actions"><button class="btn btn-sm btn-outline" @click="openEditor(row)"><i class="fas fa-edit"></i> 编辑</button><button class="btn btn-sm" :class="row.status === 1 ? 'btn-danger' : 'btn-success'" @click="toggle(row)">{{ row.status === 1 ? '停用' : '启用' }}</button><button class="btn btn-sm btn-danger" @click="remove(row)"><i class="fas fa-trash"></i></button></td>
+              <td class="admin-actions"><button class="btn btn-sm btn-outline" @click="openEditor(row)"><i class="fas fa-edit"></i> 编辑</button><button class="btn btn-sm btn-outline" @click="openPasswordEditor(row)"><i class="fas fa-key"></i> 修改密码</button><button class="btn btn-sm" :class="row.status === 1 ? 'btn-danger' : 'btn-success'" @click="toggle(row)">{{ row.status === 1 ? '停用' : '启用' }}</button><button class="btn btn-sm btn-danger" @click="remove(row)"><i class="fas fa-trash"></i></button></td>
             </tr>
           </tbody>
         </table>
@@ -297,7 +325,7 @@ onMounted(loadAdmins)
           <label><span>用户名 <b>*</b></span><input v-model="form.username" class="system-form-input"></label>
           <label><span>真实姓名 <b>*</b></span><input v-model="form.name" class="system-form-input"></label>
           <label><span>手机号 <b>*</b></span><input v-model="form.phone" class="system-form-input"></label>
-          <label><span>密码 {{ editing.id ? '' : '*' }}</span><input v-model="form.password" type="password" class="system-form-input" :placeholder="editing.id ? '不修改请留空' : '请输入登录密码'"></label>
+          <label v-if="!editing.id"><span>密码 *</span><input v-model="form.password" type="password" class="system-form-input" placeholder="请输入登录密码"></label>
           <label><span>角色 <b>*</b></span><select v-model="form.roleId" class="system-form-select"><option value="">请选择角色</option><option v-for="role in assignableRoles" :key="role.id" :value="String(role.id)">{{ role.name }}</option></select></label>
           <label><span>所属门店</span><select v-model="form.storeId" class="system-form-select"><option value="">无</option><option v-for="store in stores" :key="store.id" :value="String(store.id)">{{ store.name }}</option></select></label>
         </div>
@@ -305,8 +333,22 @@ onMounted(loadAdmins)
       <div class="modal-footer"><button class="btn btn-outline" @click="editing = null">取消</button><button class="btn btn-primary" :disabled="saving" @click="save"><i class="fas" :class="saving ? 'fa-spinner fa-spin' : 'fa-save'"></i> 保存</button></div>
     </div>
   </template>
+
+  <template v-if="passwordAdmin">
+    <div class="modal-overlay" @click="!resettingPassword && (passwordAdmin = null)"></div>
+    <div class="modal-content password-modal">
+      <div class="modal-header"><h3><i class="fas fa-key"></i> 修改管理员密码</h3><button class="modal-close" :disabled="resettingPassword" @click="passwordAdmin = null"><i class="fas fa-times"></i></button></div>
+      <div class="modal-body password-form">
+        <div class="password-target"><span class="system-user-avatar-sm">{{ (passwordAdmin.name || passwordAdmin.username).charAt(0) }}</span><div><strong>{{ passwordAdmin.name || passwordAdmin.username }}</strong><small>{{ passwordAdmin.username }}</small></div></div>
+        <label><span>新密码</span><input v-model="passwordForm.password" type="password" class="system-form-input" autocomplete="new-password" placeholder="至少输入 6 位" @keydown.enter="resetAdminPassword"></label>
+        <label><span>确认新密码</span><input v-model="passwordForm.confirmPassword" type="password" class="system-form-input" autocomplete="new-password" placeholder="请再次输入新密码" @keydown.enter="resetAdminPassword"></label>
+      </div>
+      <div class="modal-footer"><button class="btn btn-outline" :disabled="resettingPassword" @click="passwordAdmin = null">取消</button><button class="btn btn-primary" :disabled="resettingPassword" @click="resetAdminPassword"><i class="fas" :class="resettingPassword ? 'fa-spinner fa-spin' : 'fa-save'"></i> {{ resettingPassword ? '提交中...' : '确认修改' }}</button></div>
+    </div>
+  </template>
 </template>
 
 <style scoped>
+.password-modal{width:min(460px,calc(100vw - 32px))}.password-form{display:flex;flex-direction:column;gap:16px}.password-form label{display:flex;flex-direction:column;gap:7px;color:#334155;font-size:13px;font-weight:600}.password-target{display:flex;align-items:center;gap:10px;padding:12px;border-radius:7px;background:#f8fafc}.password-target>div{display:flex;flex-direction:column;gap:3px}.password-target small{color:#94a3b8}[data-theme="dark"] .password-target{background:#111827}[data-theme="dark"] .password-form label{color:#e5e7eb}
 .admin-toolbar{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:16px}.admin-message{display:flex;align-items:center;gap:8px;padding:12px 16px;font-size:13px}.admin-message.error{color:#dc2626;background:#fef2f2}.admin-message.warning{color:#92400e;background:#fffbeb}.admin-table-state{padding:34px;text-align:center;color:#94a3b8}.admin-identity{display:flex;align-items:center;gap:10px;min-width:150px}.admin-identity span:last-child{display:flex;flex-direction:column;gap:3px}.admin-identity small{color:#94a3b8}.admin-actions{white-space:nowrap}.admin-actions .btn{margin-right:5px}.admin-modal{width:min(680px,calc(100vw - 32px))}.admin-form-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}.admin-form-grid label{display:flex;flex-direction:column;gap:7px;font-size:13px;font-weight:600;color:#334155}.admin-form-grid b{color:#ef4444}.role-management{margin-top:16px}.role-description-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}.role-description-card{min-height:136px;padding:18px;border:1px solid #e2e8f0;border-radius:6px;background:#fff}.role-description-card.primary{background:#f8faff;border-color:#dbe4ff}.role-description-card h3{margin:0 0 10px;font-size:16px;color:#0f172a}.role-description-card.primary h3{color:#4f6ef7}.role-description-card p{margin:0 0 12px;font-size:13px;line-height:1.6;color:#64748b}.role-description-card p span{color:#475569}.role-permissions{display:flex;flex-wrap:wrap;gap:6px}.role-permission-tag{display:inline-flex;align-items:center;min-height:24px;padding:3px 9px;border-radius:4px;background:#f1f5f9;color:#64748b;font-size:12px}.role-description-card.primary .role-permission-tag{background:#eef2ff;color:#4f6ef7}[data-theme="dark"] .role-description-card{background:#0f172a;border-color:#334155}[data-theme="dark"] .role-description-card.primary{background:rgba(79,110,247,.08);border-color:#4f6ef7}[data-theme="dark"] .role-description-card h3{color:#f8fafc}@media(max-width:760px){.admin-toolbar{align-items:stretch;flex-direction:column}.admin-toolbar>.btn{align-self:flex-start}.search-bar{display:grid;grid-template-columns:1fr}.admin-form-grid,.role-description-grid{grid-template-columns:1fr}.admin-actions{white-space:normal}}
 </style>

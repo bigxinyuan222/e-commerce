@@ -5,21 +5,33 @@ type Id = number | string
 interface Refund {
   id: Id
   refundNo: string
+  orderId: Id | ''
   orderNo: string
   productName: string
   amount: number
+  userId: Id | ''
   userName: string
   phone: string
   storeId: Id | ''
   storeName: string
+  reasonId: Id | ''
   reason: string
   reasonType: string
+  description: string
+  images: string[]
   status: number
   createdAt: string
+  updatedAt: string
+  adminId: Id | ''
+  auditRemark: string
+  auditedAt: string
+  refundPaymentId: Id | null
+  refundedAt: string | null
   spec: unknown
   price: number
 }
 interface RefundReason { id: Id; content: string; sort: number; status: number; color: string }
+interface RefundPeriodStats { refundCount: number; refundRate: number; approvalRate: number }
 
 const props = defineProps<{ token?: string; storeId?: Id | null }>()
 const refunds = ref<Refund[]>([])
@@ -35,6 +47,13 @@ const pageSize = 20
 const total = ref(0)
 const refundStats = reactive({ pending: 0, approved: 0, rejected: 0, amount: 0 })
 const operationStats = reactive({ averageHours: null as number | null, processedToday: 0, weeklyAmount: 0, monthlyAmount: 0, refundRate: null as number | null, approvalRate: null as number | null })
+const periodStats = reactive<Record<'today' | 'week' | 'month', RefundPeriodStats>>({
+  today: { refundCount: 0, refundRate: 0, approvalRate: 0 },
+  week: { refundCount: 0, refundRate: 0, approvalRate: 0 },
+  month: { refundCount: 0, refundRate: 0, approvalRate: 0 },
+})
+const statsLoading = ref(false)
+const statsError = ref('')
 const detail = ref<Refund | null>(null)
 const detailLoading = ref(false)
 const reasonModal = ref<'list' | 'add' | 'edit' | null>(null)
@@ -58,6 +77,9 @@ const reasonDistribution = computed(() => {
 const statusOptions = [
   { value: '', label: '全部状态' }, { value: 0, label: '待审核' },
   { value: 1, label: '已通过' }, { value: 2, label: '已拒绝' }, { value: 3, label: '已完成' },
+]
+const statPeriods: Array<{ key: 'today' | 'week' | 'month'; label: string }> = [
+  { key: 'today', label: '今日' }, { key: 'week', label: '本周' }, { key: 'month', label: '本月' },
 ]
 
 function authHeaders(json = false) {
@@ -84,14 +106,22 @@ function notify(message: string, type: 'success' | 'error' = 'success') {
 function normalizeRefund(row: any): Refund {
   return {
     id: row.refund_id ?? row.refundId ?? row.ID ?? row.id,
-    refundNo: String(row.refund_no ?? row.refundNo ?? row.id ?? '-'),
+    refundNo: String(row.refund_no ?? row.refundNo ?? row.ID ?? row.id ?? '-'),
+    orderId: row.order_id ?? row.orderId ?? '',
     orderNo: String(row.order_no ?? row.orderNo ?? row.order_id ?? row.orderId ?? '-'),
-    productName: String(row.product_name ?? row.productName ?? row.goods_name ?? '-'),
-    amount: Number(row.refund_amount ?? row.refundAmount ?? row.amount) || 0,
-    userName: String(row.user_name ?? row.userName ?? '-'), phone: String(row.phone ?? '-'),
+    productName: String(row.productNames ?? row.product_names ?? row.product_name ?? row.productName ?? row.goods_name ?? '-'),
+    amount: Number(row.totalAmount ?? row.total_amount ?? row.refund_amount ?? row.refundAmount ?? row.amount) || 0,
+    userId: row.user_id ?? row.userId ?? '',
+    userName: String(row.userNickname ?? row.user_nickname ?? row.user_name ?? row.userName ?? '-'), phone: String(row.phone ?? row.userPhone ?? '-'),
     storeId: row.store_id ?? row.storeId ?? '', storeName: String(row.store_name ?? row.storeName ?? '-'),
-    reason: String(row.reason ?? row.refund_reason ?? '-'), reasonType: String(row.reason_type ?? row.reasonType ?? 'other'),
-    status: Number(row.status ?? 0), createdAt: String(row.created_at ?? row.createdAt ?? '-'),
+    reasonId: row.refund_reason_id ?? row.refundReasonId ?? '',
+    reason: String(row.refundReason ?? row.refund_reason ?? row.reason ?? '-'), reasonType: String(row.reason_type ?? row.reasonType ?? 'other'),
+    description: String(row.description ?? ''), images: Array.isArray(row.images) ? row.images.filter((item: unknown) => typeof item === 'string') : [],
+    status: Number(row.status ?? 0), createdAt: String(row.createdAt ?? row.created_at ?? row.CreatedAt ?? '-'),
+    updatedAt: String(row.updatedAt ?? row.updated_at ?? row.UpdatedAt ?? '-'),
+    adminId: row.admin_id ?? row.adminId ?? '', auditRemark: String(row.audit_remark ?? row.auditRemark ?? ''),
+    auditedAt: String(row.audited_at ?? row.auditedAt ?? ''), refundPaymentId: row.refund_payment_id ?? row.refundPaymentId ?? null,
+    refundedAt: row.refunded_at ?? row.refundedAt ?? null,
     spec: row.spec_values ?? row.spec ?? '', price: Number(row.price ?? 0),
   }
 }
@@ -149,6 +179,22 @@ async function loadRefunds() {
   finally { loading.value = false }
 }
 
+async function loadPeriodStats() {
+  statsLoading.value = true; statsError.value = ''
+  try {
+    const data = await requestJson('/api/v1/admin/refunds/stats', { headers: authHeaders() })
+    for (const key of ['today', 'week', 'month'] as const) {
+      const value = data?.[key] ?? {}
+      periodStats[key] = {
+        refundCount: Number(value.refundCount ?? value.refund_count) || 0,
+        refundRate: Number(value.refundRate ?? value.refund_rate) || 0,
+        approvalRate: Number(value.approvalRate ?? value.approval_rate) || 0,
+      }
+    }
+  } catch (cause) { statsError.value = cause instanceof Error ? cause.message : '退款统计加载失败' }
+  finally { statsLoading.value = false }
+}
+
 async function loadReasons() {
   reasonLoading.value = true; reasonError.value = ''
   try {
@@ -169,7 +215,29 @@ async function changePage(next: number) { if (next < 1 || next > totalPages.valu
 
 async function openDetail(item: Refund) {
   detailLoading.value = true
-  try { detail.value = normalizeRefund(await requestJson(`/api/v1/admin/refunds/${item.id}`, { headers: authHeaders() })) }
+  try {
+    const data = await requestJson(`/api/v1/admin/refunds/${item.id}`, { headers: authHeaders() })
+    const row = data?.refund ?? data?.detail ?? data
+    const normalized = normalizeRefund(row ?? {})
+    detail.value = {
+      ...item,
+      ...normalized,
+      id: normalized.id ?? item.id,
+      refundNo: normalized.refundNo !== '-' ? normalized.refundNo : item.refundNo,
+      orderId: normalized.orderId || item.orderId,
+      orderNo: normalized.orderNo !== '-' ? normalized.orderNo : item.orderNo,
+      productName: normalized.productName !== '-' ? normalized.productName : item.productName,
+      userId: normalized.userId || item.userId,
+      userName: normalized.userName !== '-' ? normalized.userName : item.userName,
+      phone: normalized.phone !== '-' ? normalized.phone : item.phone,
+      storeId: normalized.storeId || item.storeId,
+      storeName: normalized.storeName !== '-' ? normalized.storeName : item.storeName,
+      reasonId: normalized.reasonId || item.reasonId,
+      reason: normalized.reason !== '-' ? normalized.reason : item.reason,
+      description: normalized.description || item.description,
+      images: normalized.images.length ? normalized.images : item.images,
+    }
+  }
   catch (cause) { notify(cause instanceof Error ? cause.message : '退款详情加载失败', 'error') }
   finally { detailLoading.value = false }
 }
@@ -215,7 +283,7 @@ function statusLabel(value: number) { return ['待审核', '已通过', '已拒�
 function statusClass(value: number) { return ['pending', 'approved', 'rejected', 'done'][value] || '' }
 function formatSpec(value: unknown) { return typeof value === 'object' && value ? Object.entries(value as object).map(([key, val]) => `${key}: ${val}`).join(' / ') : String(value || '-') }
 
-onMounted(() => { void Promise.all([loadRefunds(), loadReasons()]) })
+onMounted(() => { void Promise.all([loadRefunds(), loadReasons(), loadPeriodStats()]) })
 </script>
 
 <template>
@@ -234,15 +302,42 @@ onMounted(() => { void Promise.all([loadRefunds(), loadReasons()]) })
     <div class="returns-grid">
       <section class="card return-list-card"><div class="card-header"><span class="card-title"><i class="fas fa-undo"></i> 退款申请列表</span><span class="text-muted">共 {{ total }} 笔</span></div><div class="card-body no-pad"><div class="table-wrap"><table><thead><tr><th>退款单号</th><th>关联订单</th><th>商品</th><th>用户</th><th>退款金额</th><th>原因</th><th>门店</th><th>状态</th><th>申请时间</th><th>操作</th></tr></thead><tbody><tr v-if="loading"><td colspan="10" class="return-state"><i class="fas fa-spinner fa-spin"></i> 正在加载...</td></tr><tr v-else-if="!refunds.length"><td colspan="10" class="return-state">暂无退款申请</td></tr><tr v-for="item in refunds" v-else :key="item.id"><td>{{ item.refundNo }}</td><td>{{ item.orderNo }}</td><td>{{ item.productName }}</td><td>{{ item.userName }}<small>{{ item.phone }}</small></td><td class="amount">¥{{ item.amount.toFixed(2) }}</td><td><span class="reason-pill">{{ item.reason }}</span></td><td>{{ item.storeName }}</td><td><span class="status-pill" :class="statusClass(item.status)">{{ statusLabel(item.status) }}</span></td><td>{{ item.createdAt }}</td><td class="actions"><button class="btn btn-sm btn-outline" @click="openDetail(item)"><i class="fas fa-eye"></i> 详情</button><button v-if="item.status === 0" class="btn btn-sm btn-success" @click="audit(item, true)">通过</button><button v-if="item.status === 0" class="btn btn-sm btn-danger" @click="audit(item, false)">拒绝</button></td></tr></tbody></table></div></div><div v-if="totalPages > 1" class="card-footer return-pagination"><button class="icon-btn" :disabled="page === 1" @click="changePage(page - 1)"><i class="fas fa-angle-left"></i></button><span>{{ page }} / {{ totalPages }}</span><button class="icon-btn" :disabled="page === totalPages" @click="changePage(page + 1)"><i class="fas fa-angle-right"></i></button></div></section>
       <aside class="returns-sidebar">
-        <section class="card sidebar-card"><div class="card-header"><span class="card-title"><i class="fas fa-chart-bar"></i> 退款原因分布</span></div><div class="card-body distribution-list"><div v-if="!reasonDistribution.length" class="sidebar-empty">暂无分布数据</div><div v-for="item in reasonDistribution" v-else :key="item.name" class="distribution-item"><div class="distribution-meta"><span>{{ item.name }}</span><strong>{{ item.percentage }}%</strong></div><div class="distribution-track"><i :style="{ width: `${item.percentage}%`, background: item.color }"></i></div></div></div></section>
-        <section class="card sidebar-card"><div class="card-header"><span class="card-title"><i class="fas fa-clock"></i> 处理时效</span></div><div class="card-body"><span class="metric-label">平均处理时间</span><strong class="time-value">{{ operationStats.averageHours === null ? '--' : `${operationStats.averageHours}小时` }}</strong><div class="process-note success"><i class="fas fa-check-circle"></i> 今日已处理 {{ operationStats.processedToday }} 笔退款申请</div><div class="process-note warning"><i class="fas fa-clock"></i> 有 {{ refundStats.pending }} 笔申请待审核</div></div></section>
-        <section class="card sidebar-card"><div class="card-header"><span class="card-title"><i class="fas fa-info-circle"></i> 退款统计</span></div><div class="card-body financial-list"><div><span>本周退款金额</span><strong>{{ formatCurrency(operationStats.weeklyAmount) }}</strong></div><div><span>本月退款金额</span><strong>{{ formatCurrency(operationStats.monthlyAmount) }}</strong></div><div><span>退款率</span><strong class="rate">{{ formatRate(operationStats.refundRate) }}</strong></div><div><span>审核通过率</span><strong class="approval">{{ formatRate(operationStats.approvalRate) }}</strong></div></div></section>
+        <section class="card sidebar-card refund-period-card"><div class="card-header"><span class="card-title"><i class="fas fa-chart-line"></i> 退款统计</span><button class="icon-btn" title="刷新统计" :disabled="statsLoading" @click="loadPeriodStats"><i class="fas fa-sync-alt" :class="{ 'fa-spin': statsLoading }"></i></button></div><div class="card-body"><div v-if="statsError" class="return-alert">{{ statsError }}</div><div class="period-stat-list"><div v-for="item in statPeriods" :key="item.key" class="period-stat"><h4>{{ item.label }}</h4><div><span>退款笔数</span><strong>{{ periodStats[item.key].refundCount }} 笔</strong></div><div><span>退款率</span><strong class="rate">{{ formatRate(periodStats[item.key].refundRate) }}</strong></div><div><span>审核通过率</span><strong class="approval">{{ formatRate(periodStats[item.key].approvalRate) }}</strong></div></div></div></div></section>
         <section class="card reason-summary"><div class="card-header"><span class="card-title">退款原因配置</span></div><div class="card-body"><div class="reason-count"><strong>{{ activeReasons.length }} 个</strong><span>当前可用原因</span></div><div v-if="reasonError" class="return-alert">{{ reasonError }}</div><div class="reason-chips"><span v-for="item in activeReasons" :key="item.id" :style="{ color: item.color, borderColor: item.color }">{{ item.content }}</span></div><button class="btn btn-outline full" @click="openReasonList">管理原因</button></div></section>
       </aside>
     </div>
 
     <div v-if="detailLoading" class="modal-overlay"><div class="modal-content medium return-state"><i class="fas fa-spinner fa-spin"></i> 正在加载详情...</div></div>
-    <div v-if="detail" class="modal-overlay" @click.self="detail = null"><div class="modal-content large"><div class="modal-header"><h3>退款详情</h3><button class="modal-close" @click="detail = null"><i class="fas fa-times"></i></button></div><div class="modal-body"><div class="detail-grid"><div><span>退款单号</span><strong>{{ detail.refundNo }}</strong></div><div><span>关联订单</span><strong>{{ detail.orderNo }}</strong></div><div><span>商品</span><strong>{{ detail.productName }}</strong></div><div><span>规格</span><strong>{{ formatSpec(detail.spec) }}</strong></div><div><span>用户</span><strong>{{ detail.userName }} / {{ detail.phone }}</strong></div><div><span>门店</span><strong>{{ detail.storeName }}</strong></div><div><span>退款原因</span><strong>{{ detail.reason }}</strong></div><div><span>退款金额</span><strong class="amount">¥{{ detail.amount.toFixed(2) }}</strong></div></div></div><div class="modal-footer"><button v-if="detail.status === 0" class="btn btn-success" @click="audit(detail, true)">审核通过</button><button v-if="detail.status === 0" class="btn btn-danger" @click="audit(detail, false)">拒绝申请</button><button class="btn btn-outline" @click="detail = null">关闭</button></div></div></div>
+    <div v-if="detail" class="modal-overlay" @click.self="detail = null">
+      <div class="modal-content large refund-detail-modal">
+        <div class="modal-header"><h3>退款详情</h3><button class="modal-close" @click="detail = null"><i class="fas fa-times"></i></button></div>
+        <div class="modal-body"><div class="detail-grid">
+          <div><span>退款申请ID</span><strong>{{ detail.id }}</strong></div>
+          <div><span>退款单号</span><strong>{{ detail.refundNo }}</strong></div>
+          <div><span>订单ID</span><strong>{{ detail.orderId || '-' }}</strong></div>
+          <div><span>订单号</span><strong>{{ detail.orderNo }}</strong></div>
+          <div class="detail-wide"><span>订单商品</span><strong>{{ detail.productName }}</strong></div>
+          <div><span>用户ID</span><strong>{{ detail.userId || '-' }}</strong></div>
+          <div><span>用户昵称</span><strong>{{ detail.userName }}</strong></div>
+          <div><span>处理门店ID</span><strong>{{ detail.storeId || '-' }}</strong></div>
+          <div><span>处理门店</span><strong>{{ detail.storeName }}</strong></div>
+          <div><span>退货原因ID</span><strong>{{ detail.reasonId || '-' }}</strong></div>
+          <div><span>退款原因</span><strong>{{ detail.reason }}</strong></div>
+          <div><span>退款金额</span><strong class="amount">{{ formatCurrency(detail.amount) }}</strong></div>
+          <div><span>当前状态</span><strong><span class="status-pill" :class="statusClass(detail.status)">{{ statusLabel(detail.status) }}</span></strong></div>
+          <div class="detail-wide"><span>退货说明</span><strong class="detail-description">{{ detail.description || '无退货说明' }}</strong></div>
+          <div><span>审核管理员ID</span><strong>{{ detail.adminId || '未审核' }}</strong></div>
+          <div><span>审核时间</span><strong>{{ detail.auditedAt || '未审核' }}</strong></div>
+          <div class="detail-wide"><span>审核备注</span><strong>{{ detail.auditRemark || '无审核备注' }}</strong></div>
+          <div><span>退款支付ID</span><strong>{{ detail.refundPaymentId ?? '未产生' }}</strong></div>
+          <div><span>退款到账时间</span><strong>{{ detail.refundedAt || '未到账' }}</strong></div>
+          <div><span>申请时间</span><strong>{{ detail.createdAt }}</strong></div>
+          <div><span>更新时间</span><strong>{{ detail.updatedAt }}</strong></div>
+          <div class="detail-wide"><span>凭证图片</span><div v-if="detail.images.length" class="refund-images"><a v-for="(image,index) in detail.images" :key="image" :href="image" target="_blank" rel="noopener noreferrer"><img :src="image" :alt="`退款凭证 ${index + 1}`"></a></div><strong v-else>无凭证图片</strong></div>
+        </div></div>
+        <div class="modal-footer"><button v-if="detail.status === 0" class="btn btn-success" @click="audit(detail, true)">审核通过</button><button v-if="detail.status === 0" class="btn btn-danger" @click="audit(detail, false)">拒绝申请</button><button class="btn btn-outline" @click="detail = null">关闭</button></div>
+      </div>
+    </div>
 
     <div v-if="reasonModal" class="modal-overlay" @click.self="reasonModal = null"><div class="modal-content" :class="reasonModal === 'list' ? 'large' : 'medium'"><div class="modal-header"><h3>{{ reasonModal === 'list' ? '退款原因配置' : reasonModal === 'add' ? '新增退款原因' : '编辑退款原因' }}</h3><button class="modal-close" @click="reasonModal = null"><i class="fas fa-times"></i></button></div><template v-if="reasonModal === 'list'"><div class="modal-body"><div class="reason-modal-toolbar"><span>当前可用 {{ activeReasons.length }} 个退款原因</span><button class="btn btn-primary btn-sm" @click="openAddReason"><i class="fas fa-plus"></i> 新增原因</button></div><div class="table-wrap"><table><thead><tr><th>排序</th><th>原因名称</th><th>显示颜色</th><th>状态</th><th>操作</th></tr></thead><tbody><tr v-if="reasonLoading"><td colspan="5" class="return-state">正在加载...</td></tr><tr v-for="item in reasons" v-else :key="item.id"><td>{{ item.sort }}</td><td>{{ item.content }}</td><td><span class="color-cell"><i :style="{ background: item.color }"></i>{{ item.color.toUpperCase() }}</span></td><td>{{ item.status === 1 ? '启用' : '禁用' }}</td><td class="actions"><button class="btn btn-sm btn-outline" @click="openEditReason(item)">编辑</button><button class="btn btn-sm btn-danger" @click="deleteReason(item)">删除</button></td></tr></tbody></table></div></div></template><form v-else @submit.prevent="saveReason"><div class="modal-body reason-form"><label>原因名称<input v-model.trim="reasonForm.content" required maxlength="100" /></label><label>排序<input v-model.number="reasonForm.sort" type="number" min="1" required /></label><label>显示颜色<div class="color-picker"><input v-model="reasonForm.color" type="color" /><i :style="{ background: reasonForm.color }"></i><span>{{ reasonForm.color.toUpperCase() }}</span></div></label><label v-if="reasonModal === 'edit'">状态<select v-model.number="reasonForm.status"><option :value="1">启用</option><option :value="0">禁用</option></select></label></div><div class="modal-footer"><button type="button" class="btn btn-outline" @click="reasonModal = 'list'">取消</button><button class="btn btn-primary" :disabled="reasonSaving">{{ reasonSaving ? '保存中...' : '保存' }}</button></div></form></div></div>
   </div>
@@ -255,4 +350,6 @@ onMounted(() => { void Promise.all([loadRefunds(), loadReasons()]) })
 .returns-grid{grid-template-columns:minmax(0,1fr) 300px;align-items:start}.returns-sidebar{display:flex;flex-direction:column;gap:12px}.sidebar-card{overflow:hidden}.sidebar-card .card-header{min-height:48px}.distribution-list{display:flex;flex-direction:column;gap:13px}.distribution-item{display:flex;flex-direction:column;gap:6px}.distribution-meta{display:flex;align-items:center;justify-content:space-between;font-size:13px;color:#334155}.distribution-meta strong{font-size:12px}.distribution-track{height:6px;border-radius:3px;background:#e2e8f0;overflow:hidden}.distribution-track i{display:block;height:100%;min-width:3px;border-radius:3px}.sidebar-empty{padding:18px 0;text-align:center;color:#94a3b8;font-size:13px}.metric-label{display:block;color:#64748b;font-size:12px;margin-bottom:8px}.time-value{display:block;color:#4f6ef7;font-size:27px;margin-bottom:16px}.process-note{padding:10px 12px;border-radius:6px;font-size:12px}.process-note+.process-note{margin-top:9px}.process-note.success{color:#15803d;background:#ecfdf3}.process-note.warning{color:#c2410c;background:#fff7e6}.financial-list{display:flex;flex-direction:column;gap:11px}.financial-list>div{display:flex;align-items:center;justify-content:space-between;font-size:13px;color:#334155}.financial-list strong{color:#ef4444}.financial-list strong.rate{color:#f59e0b}.financial-list strong.approval{color:#16a34a}
 @media(max-width:1100px){.returns-sidebar{display:grid;grid-template-columns:repeat(3,minmax(0,1fr))}.reason-summary{display:block;grid-column:1/-1}.sidebar-card{min-width:0}}
 @media(max-width:760px){.returns-sidebar{grid-template-columns:1fr}.reason-summary{grid-column:auto}}
+.period-stat-list{display:flex;flex-direction:column;gap:12px}.period-stat{padding:12px;border:1px solid #e2e8f0;border-radius:7px;background:#f8fafc}.period-stat h4{margin:0 0 9px;color:#334155;font-size:14px}.period-stat>div{display:flex;justify-content:space-between;align-items:center;padding:4px 0;color:#64748b;font-size:12px}.period-stat strong{color:#334155}.period-stat strong.rate{color:#f59e0b}.period-stat strong.approval{color:#16a34a}[data-theme='dark'] .period-stat{background:#111827;border-color:#334155}[data-theme='dark'] .period-stat h4,[data-theme='dark'] .period-stat strong{color:#e5e7eb}
+.refund-detail-modal{width:min(860px,calc(100vw - 32px))}.detail-wide{grid-column:1/-1}.detail-description{white-space:pre-wrap;line-height:1.6}.refund-images{display:flex;flex-wrap:wrap;gap:10px;margin-top:8px}.refund-images a{border-radius:6px;overflow:hidden}.refund-images img{display:block;width:96px;height:96px;object-fit:cover;border:1px solid #e2e8f0;border-radius:6px;transition:transform .2s}.refund-images img:hover{transform:scale(1.04)}.product-names{max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 </style>

@@ -5,6 +5,15 @@ let recommendData = [];
 // 首页商品数据缓存（用于选择关联商品）
 let homepageGoodsData = [];
 
+// 格式化时间为 YYYY-MM-DD HH:mm:ss
+function formatTime(v) {
+    if (!v) return '';
+    const d = new Date(String(v));
+    if (isNaN(d.getTime())) return String(v);
+    const p = n => String(n).padStart(2, '0');
+    return `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())} ${p(d.getHours())}:${p(d.getMinutes())}:${p(d.getSeconds())}`;
+}
+
 // 加载首页可用商品列表（用于轮播图和推荐位关联商品）
 async function loadHomepageGoods() {
     try {
@@ -55,7 +64,7 @@ async function loadRecommendations() {
             name: item.name || '',
             status: item.status === 1 ? 'active' : 'inactive',
             goods: (item.products || item.goods || []).map(g => g.productId || g.goodsId || g.id || ''),  // 关联商品ID列表
-            createTime: item.createdAt || item.createTime || ''
+            createTime: formatTime(item.CreatedAt || item.createdAt || item.createTime)
         }));
         refreshHomepagePage();
     } catch (error) {
@@ -266,10 +275,6 @@ function showAddBannerModal() {
             <div class="modal-body" style="max-height:60vh;overflow-y:auto;">
                 <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
                     <div style="grid-column:span 2;">
-                        <label style="display:block;font-size:13px;color:#64748b;margin-bottom:4px;">标题 <span style="color:#ef4444;">*</span></label>
-                        <input type="text" id="bannerTitle" placeholder="请输入轮播图标题" style="width:100%;padding:8px 12px;border:1px solid #e2e8f0;border-radius:6px;font-size:13px;outline:none;" onfocus="this.style.borderColor='#4f6ef7'" />
-                    </div>
-                    <div style="grid-column:span 2;">
                         <label style="display:block;font-size:13px;color:#64748b;margin-bottom:4px;">轮播图片 <span style="color:#ef4444;">*</span></label>
                         <input type="file" id="bannerImageFile" accept="image/*" onchange="uploadBannerImage(this)" style="width:100%;padding:8px;border:1px solid #e2e8f0;border-radius:6px;font-size:13px;background:#fff;" />
                         <input type="hidden" id="bannerImage" />
@@ -358,7 +363,8 @@ async function uploadBannerImage(input) {
 }
 
 async function saveBanner(bannerId = null) {
-    const title = document.getElementById('bannerTitle').value.trim();
+    const titleEl = document.getElementById('bannerTitle');
+    const title = titleEl ? titleEl.value.trim() : '';
     const image = document.getElementById('bannerImage').value.trim();
     const linkType = document.getElementById('bannerLinkType').value;
     const link = document.getElementById('bannerLink').value.trim();
@@ -624,7 +630,7 @@ function homepagePage() {
             <div class="stat-card"><div class="label"><i class="fas fa-star"></i> 启用推荐位</div><div class="value" style="font-size:22px;color:#4f6ef7;">${activeRecommends}</div></div>
         </div>
 
-        <div style="display:grid;grid-template-columns:2fr 1fr;gap:12px;margin-bottom:12px;">
+        <div style="display:grid;grid-template-columns:1fr;gap:12px;margin-bottom:12px;">
             <div class="card">
                 <div class="card-header">
                     <span class="card-title"><i class="fas fa-images"></i> 轮播图 / Banner</span>
@@ -632,13 +638,12 @@ function homepagePage() {
                 </div>
                 <div class="card-body no-pad">
                     <div class="table-wrap"><table>
-                        <thead><tr><th>排序</th><th>图片</th><th>标题</th><th>链接类型</th><th>链接地址</th><th>状态</th><th>操作</th></tr></thead>
+                        <thead><tr><th>排序</th><th>图片</th><th>链接类型</th><th>链接地址</th><th>状态</th><th>操作</th></tr></thead>
                         <tbody>
                             ${bannerData.map(banner => `
                                 <tr>
                                     <td style="font-weight:600;color:#64748b;">${banner.sort}</td>
                                     <td><img src="${banner.image}" alt="${banner.title}" style="width:80px;height:40px;border-radius:4px;object-fit:cover;" /></td>
-                                    <td>${banner.title}</td>
                                     <td><span class="tag">${getLinkTypeText(banner.linkType)}</span></td>
                                     <td style="max-width:150px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${banner.link || '-'}</td>
                                     <td>${getStatusBadge(banner.status)}</td>
@@ -659,37 +664,6 @@ function homepagePage() {
                             `).join('')}
                         </tbody>
                     </table></div>
-                </div>
-            </div>
-            
-            <div class="card">
-                <div class="card-header"><span class="card-title"><i class="fas fa-cog"></i> Banner 设置</span></div>
-                <div class="card-body">
-                    <div style="display:flex;flex-direction:column;gap:12px;">
-                        <div>
-                            <label style="display:block;font-size:13px;color:#64748b;margin-bottom:4px;">自动轮播间隔</label>
-                            <div style="display:flex;align-items:center;gap:8px;">
-                                <input type="number" value="5" style="width:60px;padding:4px 8px;border:1px solid #e2e8f0;border-radius:4px;text-align:center;" />
-                                <span style="font-size:13px;">秒</span>
-                            </div>
-                        </div>
-                        <div>
-                            <label style="display:flex;align-items:center;gap:4px;font-size:13px;color:#64748b;">
-                                <input type="checkbox" checked /> 启用自动轮播
-                            </label>
-                        </div>
-                        <div>
-                            <label style="display:flex;align-items:center;gap:4px;font-size:13px;color:#64748b;">
-                                <input type="checkbox" checked /> 启用指示器
-                            </label>
-                        </div>
-                        <div>
-                            <label style="display:flex;align-items:center;gap:4px;font-size:13px;color:#64748b;">
-                                <input type="checkbox" /> 启用左右切换按钮
-                            </label>
-                        </div>
-                        <button class="btn btn-sm btn-primary" style="margin-top:4px;">保存设置</button>
-                    </div>
                 </div>
             </div>
         </div>
