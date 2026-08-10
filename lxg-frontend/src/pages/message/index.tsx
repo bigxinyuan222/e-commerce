@@ -6,6 +6,7 @@ import { serviceApi } from '@/api/message';
 import { getImageUrl, lazyImgProps } from '@/utils/image';
 import { getAuthToken } from '@/api/common';
 import useChatStore from '@/store/useChatStore';
+import { formatMessageTime } from './utils';
 import useNotificationStore from '@/store/useNotificationStore';
 import styles from '@/styles/message/message.module.scss';
 
@@ -57,7 +58,7 @@ const MessagePage: React.FC = () => {
           title: conv.title ?? conv.Title ?? conv.name ?? conv.Name ?? '客服',
           content: conv.lastMessage ?? conv.LastMessage ?? conv.content ?? conv.Content ?? '',
           avatar: getImageUrl(conv.avatar ?? conv.Avatar ?? conv.avatarUrl ?? conv.AvatarUrl ?? ''),
-          time: conv.lastTime ?? conv.LastTime ?? conv.time ?? conv.UpdatedAt ?? conv.updatedAt ?? '',
+          time: formatMessageTime(conv.lastTime ?? conv.LastTime ?? conv.time ?? conv.UpdatedAt ?? conv.updatedAt ?? ''),
           unreadCount: Number(conv.unreadCount ?? conv.UnreadCount ?? conv.userUnread ?? conv.UserUnread ?? 0),
           tag: conv.tag,
           isOfficial: false,
@@ -108,8 +109,13 @@ const MessagePage: React.FC = () => {
 
     // 客服会话
     if (message.type === 'session' || message.title.includes('客服')) {
-      const convId = message.id ?? '';
-      Taro.navigateTo({ url: `/pages/message/customer-service/index?id=${encodeURIComponent(convId)}` });
+      if (message.id === 'fixed-customer-service') {
+        // 固定置顶客服入口：不传 id，由客服页自动创建/复用会话
+        Taro.navigateTo({ url: '/pages/message/customer-service/index' });
+      } else {
+        const convId = message.id ?? '';
+        Taro.navigateTo({ url: `/pages/message/customer-service/index?id=${encodeURIComponent(convId)}` });
+      }
       return;
     }
 
@@ -123,13 +129,32 @@ const MessagePage: React.FC = () => {
     title: n.title,
     content: n.content,
     avatar: getImageUrl(n.avatar || n.icon || ''),
-    time: n.time || n.createdAt || '',
+    time: formatMessageTime(n.time || n.createdAt || ''),
     unreadCount: n.isRead ? 0 : 1,
     tag: n.tag || '官方',
     isOfficial: true,
   }));
 
-  const allMessages = [...conversations, ...notifMessages];
+  // 固定置顶的客服入口：每个账号消息列表最顶部都固定显示一条客服会话
+  // 后端若返回了客服会话，合并其未读数与最新消息，避免重复显示
+  const serviceConvs = conversations.filter((c) => (c.title || '').includes('客服'));
+  const otherConvs = conversations.filter((c) => !(c.title || '').includes('客服'));
+  const serviceUnread = serviceConvs.reduce((sum, c) => sum + (c.unreadCount || 0), 0);
+  const latestService = serviceConvs[0];
+
+  const fixedCustomerService: Message = {
+    id: 'fixed-customer-service',
+    type: 'session',
+    title: '乐享购官方客服',
+    content: latestService?.content || '您好，请问有什么可以帮您？',
+    avatar: getImageUrl(latestService?.avatar || ''),
+    time: formatMessageTime(latestService?.time || ''),
+    unreadCount: serviceUnread,
+    tag: '客服',
+    isOfficial: false,
+  };
+
+  const allMessages = [fixedCustomerService, ...otherConvs, ...notifMessages];
 
   return (
     <View className={styles.messagePage}>
@@ -177,7 +202,7 @@ const MessagePage: React.FC = () => {
                   <View className={styles.unreadBadge}>{message.unreadCount}</View>
                 )}
               </View>
-              <View className={styles.messageContent}>
+              <View className={styles.messageBody}>
                 <View className={styles.messageHeader}>
                   <Text className={styles.messageTitle}>{message.title}</Text>
                   {message.tag && (
@@ -186,7 +211,9 @@ const MessagePage: React.FC = () => {
                     </Text>
                   )}
                 </View>
-                <Text className={styles.messageText}>{message.content}</Text>
+                <Text className={styles.messageText}>
+                  {message.content && message.content.length > 7 ? message.content.slice(0, 7) + '...' : message.content}
+                </Text>
               </View>
               {message.time && (
                 <Text className={styles.messageTime}>{message.time}</Text>

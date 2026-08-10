@@ -4,6 +4,7 @@ import Taro, { useDidShow, useDidHide, useRouter } from '@tarojs/taro';
 import useChatStore, { ChatMessage } from '@/store/useChatStore';
 import chatWS from '@/utils/chatWS';
 import { getImageUrl } from '@/utils/image';
+import { formatTime } from '@/utils/time';
 import styles from '@/styles/message/customer-service.module.scss';
 
 const DEFAULT_AVATAR = 'https://picsum.photos/id/2/100/100';
@@ -167,6 +168,27 @@ const CustomerServicePage: React.FC = () => {
     }
   }, [wsStatus]);
 
+  // 固定置顶的客服欢迎消息（每个会话消息列表最顶部都固定显示一条客服消息）
+  const renderWelcomeMessage = () => {
+    const avatar = currentConversation?.serviceAvatar
+      ?? currentConversation?.avatar
+      ?? DEFAULT_AVATAR;
+    return (
+      <View className={`${styles.messageWrap} ${styles.other}`}>
+        <Image
+          src={getImageUrl(avatar)}
+          className={styles.avatar}
+          mode="aspectFill"
+        />
+        <View className={styles.messageContent}>
+          <Text className={styles.messageText}>
+            您好，我是 {conversationTitle}，请问有什么可以帮您？
+          </Text>
+        </View>
+      </View>
+    );
+  };
+
   const renderMessage = (msg: ChatMessage) => {
     const isMe = msg.sender === 'user';
     const avatar = isMe
@@ -197,7 +219,7 @@ const CustomerServicePage: React.FC = () => {
         <View className={styles.messageContent}>
           <Text className={styles.messageText}>{msg.content}</Text>
           <View className={styles.messageMeta}>
-            <Text className={styles.messageTime}>{msg.createTime}</Text>
+            <Text className={styles.messageTime}>{formatTime(msg.createTime)}</Text>
             {statusBadge}
           </View>
         </View>
@@ -254,15 +276,12 @@ const CustomerServicePage: React.FC = () => {
           <View className={styles.loadingState}>
             <Text className={styles.loadingText}>加载消息中...</Text>
           </View>
-        ) : messages.length === 0 ? (
-          <View className={styles.emptyChat}>
-            <Text className={styles.emptyChatIcon}>💬</Text>
-            <Text className={styles.emptyChatText}>
-              您好，我是 {conversationTitle}，请问有什么可以帮您？
-            </Text>
-          </View>
         ) : (
-          messages.map(renderMessage)
+          <>
+            {/* 每个会话消息列表最顶部固定显示客服欢迎消息 */}
+            {renderWelcomeMessage()}
+            {messages.map(renderMessage)}
+          </>
         )}
       </ScrollView>
 

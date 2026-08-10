@@ -13,7 +13,11 @@ export const authApi = {
     login: `${API_BASE_URL}/auth/login`,// 登录接口
     wechatLogin: `${API_BASE_URL}/auth/weixinlogin`,// 微信登录接口
     wechatPhone: `${API_BASE_URL}/auth/weixinphone`,// 获取微信手机号接口
-    setPassword: `${API_BASE_URL}/auth/setpassword`// 设置密码（微信登录绑定手机号后）
+    setPassword: `${API_BASE_URL}/auth/setpassword`,// 设置密码（微信登录绑定手机号后）
+    // 重置密码 1：发送验证码 POST /api/v1/auth/resetpassword/sendcode，JSON { phone }
+    resetPasswordSendCode: `${API_BASE_URL}/auth/resetpassword/sendcode`,
+    // 重置密码 2：校验验证码并设置新密码 POST /api/v1/auth/resetpassword/reset，JSON { phone, code, password }
+    resetPassword: `${API_BASE_URL}/auth/resetpassword/reset`
 };
 
 export const userApi = {

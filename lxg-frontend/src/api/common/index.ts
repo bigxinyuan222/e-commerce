@@ -25,9 +25,12 @@ export function normalizeNumericFields(body: Record<string, any>, fields: string
 
 function getAuthToken(): string {
     try {
-        const user = JSON.parse(Taro.getStorageSync('lxg_user') || '{}');
-        return user.token || '';
-    } catch {
+        const stored = Taro.getStorageSync('lxg_user');
+        if (!stored) return '';
+        const parsed = typeof stored === 'string' ? JSON.parse(stored) : stored;
+        return parsed?.token ?? parsed?.Token ?? parsed?.accessToken ?? '';
+    } catch (error) {
+        console.error('[getAuthToken] 读取登录态失败:', error);
         return '';
     }
 }
@@ -38,6 +41,40 @@ function replaceUrlParams(url: string, params: Record<string, string | number>):
         result = result.replace(`:${key}`, String(params[key]));
     });
     return result;
+}
+
+// 将 HTTP 状态码转换为用户友好的提示（不暴露 URL、技术细节）
+function friendlyHttpError(statusCode: number): string {
+    switch (statusCode) {
+        case 400: return '请求参数有误';
+        case 401: return '登录已失效，请重新登录';
+        case 403: return '暂无权限执行此操作';
+        case 404: return '接口暂未实现或已移除';
+        case 405: return '请求方式不支持';
+        case 408: return '请求超时，请稍后重试';
+        case 409: return '操作冲突，请刷新后重试';
+        case 413: return '提交数据过大';
+        case 429: return '操作过于频繁，请稍后再试';
+        case 500: return '服务异常，请稍后重试';
+        case 501: return '服务暂未实现';
+        case 502: return '服务网关异常';
+        case 503: return '服务暂时不可用，请稍后重试';
+        case 504: return '网关超时，请稍后重试';
+        default: return statusCode >= 500 ? '服务异常，请稍后重试' : '请求失败，请稍后重试';
+    }
+}
+
+// 美化网络层错误（Taro.request 抛出的 request:fail xxx）
+function friendlyNetworkError(message: string, url?: string): string {
+    if (!message) return '网络异常，请稍后重试';
+    const lower = message.toLowerCase();
+    if (lower.includes('timeout') || lower.includes('请求超时')) return '请求超时，请检查网络后重试';
+    if (lower.includes('abort')) return '请求已取消';
+    if (lower.includes('invalid url') || lower.includes('600009')) return '请求地址异常';
+    if (lower.includes('not in domain list') || lower.includes('url not in domain')) return '请在后台配置合法域名';
+    if (lower.includes('network') || lower.includes('网络')) return '网络异常，请检查网络连接';
+    if (lower.includes('fail')) return '网络请求失败，请稍后重试';
+    return message;
 }
 
 // 判断是否为认证相关错误
@@ -66,8 +103,14 @@ function isAuthError(message: string, statusCode?: number, code?: number): boole
     return authErrorKeywords.some(keyword => message.includes(keyword));
 }
 
+// 登录弹窗全局去重标志，避免同一页面多个接口并发时重复弹窗
+let isLoginModalShowing = false;
+
 // 处理认证错误
 function handleAuthError(message: string): void {
+    // 如果当前已有登录弹窗显示中，直接忽略，避免重复弹窗
+    if (isLoginModalShowing) return;
+
     // 检查当前是否有 token（区分"从未登录"和"登录失效"）
     const hasToken = !!getAuthToken();
 
@@ -89,6 +132,7 @@ function handleAuthError(message: string): void {
         return;
     }
 
+    isLoginModalShowing = true;
     Taro.showModal({
         title: hasToken ? '登录已失效' : '请先登录',
         content: hasToken ? (message || '请重新登录') : '此操作需要登录账号',
@@ -96,6 +140,9 @@ function handleAuthError(message: string): void {
         confirmText: '去登录',
         success: () => {
             Taro.navigateTo({ url: '/pages/user/login/index' });
+        },
+        complete: () => {
+            isLoginModalShowing = false;
         }
     });
 }
@@ -143,15 +190,19 @@ async function apiRequest(url: string, options: {
         if (response.statusCode < 200 || response.statusCode >= 300) {
             // 读取后端返回的 message 字段，方便定位错误
             const backendMsg = (response.data as any)?.message || (response.data as any)?.msg;
-            const respPreview = typeof response.data === 'object' ? JSON.stringify(response.data).substring(0, 200) : String(response.data).substring(0, 200);
-            const errMsg = backendMsg || `[${url}] HTTP error! status: ${response.statusCode}, response: ${respPreview}`;
+            // 控制台输出完整调试信息（含 URL、状态码、响应内容）
             console.error('[API Error]', { url, statusCode: response.statusCode, data: response.data });
+            // 抛给用户的错误信息：优先用后端 message，否则用友好提示（不暴露 URL 等技术细节）
+            const errMsg = backendMsg || friendlyHttpError(response.statusCode);
             const err = new Error(errMsg);
             (err as any).statusCode = response.statusCode;
             (err as any).response = response.data;
+            (err as any).rawUrl = url;
 
             // 如果是认证相关错误，处理登录失效
-            if (isAuthError(err.message, response.statusCode)) {
+            // 注意：silent=true 时（如商品详情页静默拉取 AI 评价摘要）不弹窗跳转登录页，
+            // 否则未登录用户浏览商品时会被 AI 接口的 401 弹窗打断
+            if (isAuthError(err.message, response.statusCode) && !options.silent) {
                 handleAuthError(err.message);
             }
 
@@ -167,7 +218,8 @@ async function apiRequest(url: string, options: {
             (err as any).response = respData;
 
             // 如果是认证相关错误，处理登录失效
-            if (isAuthError(err.message, undefined, respData.code)) {
+            // silent=true 时（如商品 AI 评价摘要等可选数据）不弹窗跳转登录页
+            if (isAuthError(err.message, undefined, respData.code) && !options.silent) {
                 handleAuthError(err.message);
             }
 
@@ -177,20 +229,31 @@ async function apiRequest(url: string, options: {
         return response.data;
     } catch (error) {
         // 处理 Taro.request 本身抛出的错误（如网络错误、CORS 错误等）
+        const rawErrMsg = (error as any)?.errMsg || (error as any)?.message || String(error);
+        const errno = (error as any)?.errno;
+        if (!options.silent) {
+            console.error('[API Network Error]', { url, rawErrMsg, errno, error });
+        }
         if (error instanceof Error) {
             // 如果错误消息包含认证相关关键词，也处理登录失效
-            if (isAuthError(error.message)) {
+            // silent=true 时不弹窗（与上面业务/HTTP 错误处理保持一致）
+            if (isAuthError(error.message) && !options.silent) {
                 handleAuthError(error.message);
             }
-        }
-        if (!options.silent) {
-            console.error('API Request Error:', error);
+            // 美化网络层错误信息（如 request:fail timeout、request:fail invalid url 等）
+            error.message = friendlyNetworkError(error.message, url);
         }
         throw error;
     }
 }
 
 export async function apiGet(url: string, params: Record<string, any> = {}, pathParams: Record<string, string | number> = {}, silent: boolean = false): Promise<any> {
+    if (!url) {
+        const err = new Error(`[apiGet] 请求地址缺失，请检查调用方是否传入了未定义的 API URL`);
+        console.error(err);
+        console.error('[apiGet] 调用栈:', new Error().stack);
+        throw err;
+    }
     const resolvedUrl = replaceUrlParams(url, pathParams);
     const searchParams = new URLSearchParams(params);
     const fullUrl = resolvedUrl + (searchParams.toString() ? '?' + searchParams.toString() : '');
@@ -198,6 +261,12 @@ export async function apiGet(url: string, params: Record<string, any> = {}, path
 }
 
 export async function apiPost(url: string, data: Record<string, any> = {}, pathParams: Record<string, string | number> = {}, queryParams: Record<string, string | number> = {}, useFormUrlEncoded: boolean = true, silent: boolean = false, customHeaders: Record<string, string> = {}): Promise<any> {
+    if (!url) {
+        const err = new Error(`[apiPost] 请求地址缺失，请检查调用方是否传入了未定义的 API URL`);
+        console.error(err);
+        console.error('[apiPost] 调用栈:', new Error().stack);
+        throw err;
+    }
     const resolvedUrl = replaceUrlParams(url, pathParams);
     // URLSearchParams 构造函数要求值为 string，将 number 转换为 string
     const stringQueryParams: Record<string, string> = {};
@@ -215,8 +284,9 @@ export async function apiPost(url: string, data: Record<string, any> = {}, pathP
         requestData = new URLSearchParams(data as any).toString();
     } else {
         headers['Content-Type'] = 'application/json';
-        // 显式序列化为 JSON 字符串，避免某些 Taro/微信版本自动序列化行为不一致
-        requestData = JSON.stringify(data);
+        // 直接传对象，让 Taro.request 根据 Content-Type 自动序列化
+        // 手动 JSON.stringify 在小程序端可能被 Taro 二次处理导致格式异常
+        requestData = data;
     }
 
     return apiRequest(fullUrl, {
@@ -228,6 +298,11 @@ export async function apiPost(url: string, data: Record<string, any> = {}, pathP
 }
 
 export async function apiPut(url: string, data: Record<string, any> = {}, pathParams: Record<string, string | number> = {}): Promise<any> {
+    if (!url) {
+        const err = new Error(`[apiPut] 请求地址缺失，请检查调用方是否传入了未定义的 API URL`);
+        console.error(err);
+        throw err;
+    }
     const resolvedUrl = replaceUrlParams(url, pathParams);
     return apiRequest(resolvedUrl, {
         method: 'PUT',
@@ -236,6 +311,11 @@ export async function apiPut(url: string, data: Record<string, any> = {}, pathPa
 }
 
 export async function apiDelete(url: string, data: Record<string, any> = {}, pathParams: Record<string, string | number> = {}): Promise<any> {
+    if (!url) {
+        const err = new Error(`[apiDelete] 请求地址缺失，请检查调用方是否传入了未定义的 API URL`);
+        console.error(err);
+        throw err;
+    }
     const resolvedUrl = replaceUrlParams(url, pathParams);
     return apiRequest(resolvedUrl, {
         method: 'DELETE',
@@ -276,8 +356,86 @@ function extractUploadUrl(respData: any): string {
 }
 
 /**
+ * 上传前对图片进行压缩处理
+ * 小程序端：先用 getFileInfo 获取大小，超过阈值则调用 compressImage 压缩
+ * H5 端：chooseImage 已通过 sizeType:['compressed'] 处理，此处跳过
+ *
+ * @param filePath 原始临时文件路径
+ * @param maxSize  触发压缩的大小阈值（字节），默认 2MB
+ * @returns 压缩后的文件路径（无需压缩时返回原路径）
+ */
+async function compressIfNeeded(filePath: string, maxSize: number = 1024 * 1024): Promise<string> {
+    // H5 端 getFileInfo/compressImage 支持有限，直接返回原路径
+    if (process.env.TARO_ENV === 'h5') return filePath;
+    try {
+        const info: any = await Taro.getFileInfo({ filePath });
+        const fileSize: number = info?.size ?? 0;
+        console.log('[Upload] 原始文件大小:', fileSize, 'bytes');
+        if (fileSize <= maxSize) return filePath;
+        const compressed = await Taro.compressImage({ src: filePath, quality: 50 });
+        console.log('[Upload] 压缩后路径:', compressed.tempFilePath);
+        return compressed.tempFilePath;
+    } catch (e) {
+        console.warn('[Upload] 获取文件信息或压缩失败，使用原文件:', e);
+        return filePath;
+    }
+}
+
+/**
+ * 从文件路径中提取扩展名，兜底返回 .jpg
+ */
+function getFileExtension(filePath: string): string {
+    const match = filePath.match(/\.(\w+)(?:\?|$)/);
+    const ext = match ? match[1].toLowerCase() : '';
+    if (['jpg', 'jpeg', 'png', 'gif', 'webp', 'bmp'].includes(ext)) {
+        return ext === 'jpeg' ? '.jpg' : `.${ext}`;
+    }
+    // 压缩后的临时文件通常没有扩展名，compressImage 输出为 JPEG
+    return '.jpg';
+}
+
+/**
+ * 确保文件路径有图片扩展名
+ * 微信小程序 chooseImage/compressImage 返回的临时文件路径可能无扩展名（如 wxfile://tmp_xxx），
+ * 后端从文件名提取扩展名校验格式时会报"图片格式或大小不正确"。
+ * 通过 FileSystemManager.copyFile 复制到带扩展名的路径解决。
+ */
+async function ensureFileExtension(filePath: string): Promise<string> {
+    // 已有图片扩展名则直接返回
+    if (/\.(jpg|jpeg|png|gif|webp|bmp)$/i.test(filePath)) return filePath;
+
+    // #ifdef WEAPP
+    try {
+        const ext = getFileExtension(filePath);
+        const userDataPath = (Taro as any).env?.USER_DATA_PATH;
+        if (!userDataPath) return filePath;
+        const newPath = `${userDataPath}/upload_${Date.now()}${ext}`;
+        const fs = Taro.getFileSystemManager();
+        await new Promise<void>((resolve, reject) => {
+            fs.copyFile({
+                srcPath: filePath,
+                destPath: newPath,
+                success: () => resolve(),
+                fail: reject
+            });
+        });
+        console.log('[Upload] 文件已复制到带扩展名的路径:', newPath);
+        return newPath;
+    } catch (e) {
+        console.warn('[Upload] 复制文件失败，使用原路径:', e);
+        return filePath;
+    }
+    // #endif
+
+    // #ifndef WEAPP
+    return filePath;
+    // #endif
+}
+
+/**
  * 上传图片
  * 使用 Taro.uploadFile（multipart/form-data），Taro.request 不支持文件流
+ * 上传前会自动检查文件大小，超过 2MB 时压缩以避免后端"图片格式或大小不正确"错误
  *
  * @param url      上传接口地址，通常传 userApi.upload
  * @param filePath chooseImage 返回的临时文件路径
@@ -295,15 +453,25 @@ export async function uploadImage(
     const header: Record<string, string> = {};
     if (token) header['Authorization'] = `Bearer ${token}`;
 
-    console.log('[Upload Request]', { url, filePath, name, formData });
+    // 上传前压缩，避免文件过大被后端拒绝
+    let uploadPath = await compressIfNeeded(filePath);
+    // 确保文件路径有图片扩展名，避免后端无法识别格式（微信小程序临时文件常无扩展名）
+    uploadPath = await ensureFileExtension(uploadPath);
+
+    // 显式指定 fileName，确保后端能从 Content-Disposition 中识别文件扩展名
+    // 微信小程序临时文件路径常无扩展名（如 wxfile://tmp_xxx），导致后端校验格式失败
+    const fileName = `upload${getFileExtension(filePath)}`;
+
+    console.log('[Upload Request]', { url, filePath: uploadPath, fileName, name, formData });
     const res = await Taro.uploadFile({
         url,
-        filePath,
+        filePath: uploadPath,
         name,
+        fileName,
         formData,
         header,
         timeout: 30000,
-    });
+    } as any);
     console.log('[Upload Response]', { statusCode: res.statusCode, data: res.data });
 
     if (res.statusCode === 401) {
@@ -333,9 +501,11 @@ export async function uploadImage(
         throw new Error('上传响应格式无法识别');
     }
 
-    // 业务 code 校验
-    if (respData && typeof respData.code === 'number' && respData.code !== 200) {
-        throw new Error(respData.message || respData.msg || '上传失败');
+    // 业务 code 校验（兼容 code/Code/errcode/errno 等字段名）
+    const bizCode = respData?.code ?? respData?.Code ?? respData?.errcode ?? respData?.errno;
+    if (typeof bizCode === 'number' && bizCode !== 200 && bizCode !== 0) {
+        console.error('[Upload] 后端业务错误，完整响应:', respData);
+        throw new Error(respData.message || respData.msg || respData.Message || respData.errMsg || '上传失败');
     }
 
     const imgUrl = extractUploadUrl(respData);

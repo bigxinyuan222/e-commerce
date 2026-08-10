@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { View, Text, Image, Swiper, SwiperItem, ScrollView, Input } from '@tarojs/components';
+import { View, Text, Image, Swiper, SwiperItem, ScrollView, Input, RichText } from '@tarojs/components';
 import Taro from '@tarojs/taro';
 import { useAppContext } from '@/store/AppContext';
 import { apiGet } from '@/api/common';
@@ -7,7 +7,32 @@ import { productApi, fetchReviewList, fetchReviewStats, fetchReviewAiSummary, li
 import { addToCartAPI } from '@/api/cart';
 import { fetchProductSeckillActivity, createSeckillPurchase, pollSeckillPurchaseResult } from '@/api/seckill';
 import { getImageUrl, normalizeProductImages, lazyImgProps } from '@/utils/image';
+import { formatDateTime } from '@/utils/time';
+import { getAllSpecOptions } from './utils';
 import styles from '@/styles/home/detail.module.scss';
+
+/**
+ * 反转义 HTML 实体（如 &lt;p&gt; → <p>）
+ * 后端部分商品的 description 被转义存储，需要反转义后才能正确渲染
+ */
+function decodeHtmlEntities(input: string): string {
+  if (!input || typeof input !== 'string') return input || '';
+  const map: Record<string, string> = {
+    '&lt;': '<',
+    '&gt;': '>',
+    '&amp;': '&',
+    '&quot;': '"',
+    '&#39;': "'",
+    '&nbsp;': ' ',
+    '&#160;': ' ',
+    '&ensp;': ' ',
+    '&emsp;': ' ',
+    '&#60;': '<',
+    '&#62;': '>',
+    '&#38;': '&',
+  };
+  return input.replace(/&(?:lt|gt|amp|quot|#39|nbsp|#160|ensp|emsp|#60|#62|#38);/g, match => map[match] || match);
+}
 
 interface Product {
   id: string;
@@ -54,8 +79,11 @@ const EvaluationItem = React.memo(({
       />
       <View className={styles.userInfo}>
         <Text className={styles.userName}>{evaluation.userName}</Text>
-        <Text className={styles.evaluateTime}>{evaluation.createdAt || evaluation.createTime}</Text>
+        <Text className={styles.evaluateTime}>{formatDateTime(evaluation.createdAt || evaluation.createTime)}</Text>
       </View>
+    </View>
+    <View className={styles.evaluateRating}>
+      <Text className={styles.evalRatingLabel}>好评</Text>
     </View>
     <Text className={styles.evaluateContent}>{evaluation.content}</Text>
     {evaluation.images && evaluation.images.length > 0 && (
@@ -97,7 +125,7 @@ const SkuOptionGroup = React.memo(({
   <View key={specName} className={styles.optionGroup}>
     <Text className={styles.optionLabel}>{specName}</Text>
     <View className={styles.optionValues}>
-      {Array.from(new Set(product.skus.map(sku => sku.specs[specName]))).map((specValue: string) => {
+      {Array.from(new Set(product.skus.map(sku => sku.specs?.[specName]).filter((v): v is string => typeof v === 'string'))).map((specValue: string) => {
         const isAvailable = availableValues.includes(specValue);
         const isSelected = specSelections[specName] === specValue;
         return (
@@ -126,6 +154,7 @@ const ProductDetailPage: React.FC = () => {
   const [evaluations, setEvaluations] = useState<any[]>([]);
   const [evalStats, setEvalStats] = useState<any>(null);
   const [aiSummary, setAiSummary] = useState<any>(null);
+  const [aiLoading, setAiLoading] = useState(true);
   const [isSeckill, setIsSeckill] = useState(false);
   const [seckillCountdown, setSeckillCountdown] = useState('');
   const [loading, setLoading] = useState(true);
@@ -142,18 +171,19 @@ const ProductDetailPage: React.FC = () => {
   const getAvailableSpecValues = useCallback((specName: string) => {
     if (!product) return [];
     const availableValues: string[] = [];
-    
+
     product.skus.forEach(sku => {
+      if (!sku.specs) return;
       const otherSpecsMatch = Object.entries(specSelections).every(([key, value]) => {
         if (key === specName) return true;
-        return sku.specs[key] === value;
+        return sku.specs?.[key] === value;
       });
-      
-      if (otherSpecsMatch) {
+
+      if (otherSpecsMatch && typeof sku.specs[specName] === 'string') {
         availableValues.push(sku.specs[specName]);
       }
     });
-    
+
     return [...new Set(availableValues)];
   }, [product, specSelections]);
 
@@ -165,7 +195,7 @@ const ProductDetailPage: React.FC = () => {
       if (key === specName) return;
       // 检查该规格值与新选择是否至少有一个匹配的 SKU
       const hasAnyMatch = product?.skus.some(sku =>
-        sku.specs[key] === value && sku.specs[specName] === specValue
+        sku.specs && sku.specs[key] === value && sku.specs[specName] === specValue
       );
       if (hasAnyMatch) {
         newSelections[key] = value;
@@ -174,7 +204,7 @@ const ProductDetailPage: React.FC = () => {
 
     // 查找是否有完全匹配的 SKU
     const matchedSku = product?.skus.find(sku =>
-      Object.entries(newSelections).every(([key, value]) => sku.specs[key] === value)
+      sku.specs && Object.entries(newSelections).every(([key, value]) => sku.specs?.[key] === value)
     );
 
     setSpecSelections(newSelections);
@@ -499,27 +529,44 @@ const ProductDetailPage: React.FC = () => {
         const [productRes, reviewRes, statsRes, aiRes, seckillRes] = await Promise.all(requestList);
 
         if (productRes?.data) {
-          const productData = normalizeProductImages(productRes.data);
+          const rawData = productRes.data;
+          const productData = normalizeProductImages(rawData);
+          console.log('[商品详情] 原始字段:', {
+            description: rawData.description,
+            Description: rawData.Description,
+            detail: rawData.detail,
+            Detail: rawData.Detail,
+            content: rawData.content,
+            Content: rawData.Content,
+            introduce: rawData.introduce,
+            introduction: rawData.introduction,
+            productDescription: rawData.productDescription,
+            desc: rawData.desc,
+            body: rawData.body,
+            html: rawData.html,
+            normalizedDescription: productData.description,
+          });
           setProduct(productData);
 
           if (productData.skus && productData.skus.length > 0) {
+            // 从所有 SKU 中合并规格维度，避免只读第一个 SKU 导致维度缺失
+            const allSpecOptions = getAllSpecOptions(productData.skus);
+            const allSpecKeys = Object.keys(allSpecOptions);
+
             // 只预填第一个规格维度，其他维度留空
             // 避免全预填导致的规格联动锁定问题
-            const firstSpecKey = productData.skus[0].specs
-              ? Object.keys(productData.skus[0].specs)[0]
-              : '';
+            const firstSpecKey = allSpecKeys[0] || '';
             const initialSelections: { [key: string]: string } = {};
-            if (firstSpecKey) {
-              initialSelections[firstSpecKey] = productData.skus[0].specs[firstSpecKey];
+            if (firstSpecKey && allSpecOptions[firstSpecKey].length > 0) {
+              initialSelections[firstSpecKey] = allSpecOptions[firstSpecKey][0];
             }
             setSpecSelections(initialSelections);
 
             // 如果只有一个规格维度，直接匹配完整 SKU
-            if (Object.keys(initialSelections).length === Object.keys(productData.skus[0].specs || {}).length) {
-              setSelectedSku(productData.skus[0]);
-            } else {
-              setSelectedSku(null);
-            }
+            const matchedSku = productData.skus.find(sku =>
+              Object.entries(initialSelections).every(([key, value]) => sku.specs?.[key] === value)
+            );
+            setSelectedSku(matchedSku || null);
           }
         }
 
@@ -541,10 +588,11 @@ const ProductDetailPage: React.FC = () => {
         }
 
         // 解析 AI 评价摘要（fetchReviewAiSummary 已做规范化）
-        if (aiRes?.data && (aiRes.data.overall || aiRes.data.strengths?.length || aiRes.data.weaknesses?.length)) {
-          console.log('[AI评价摘要] 加载成功:', aiRes.data);
+        // 即使 content 为空也保留 aiSummary，由 UI 显示"AI分析中"占位框架
+        if (aiRes?.data) {
           setAiSummary(aiRes.data);
         }
+        setAiLoading(false);
 
         // 处理秒杀活动信息
         if (seckillRes?.data) {
@@ -569,6 +617,7 @@ const ProductDetailPage: React.FC = () => {
         Taro.showToast({ title: '加载失败', icon: 'none' });
       } finally {
         setLoading(false);
+        setAiLoading(false);
       }
     };
 
@@ -621,7 +670,7 @@ const ProductDetailPage: React.FC = () => {
 
   return (
     <View className={styles.productDetailPage}>
-      <ScrollView scrollY style={{ height: 'calc(100vh - 120rpx)' }}>
+      <ScrollView scrollY style={{ height: 'calc(100vh - 120rpx)', paddingBottom: '260rpx', boxSizing: 'border-box' }}>
         <View className={styles.bannerWrap}>
           <View className={styles.shareBtn} onClick={handleShare}>
             <Text className={styles.shareIcon}>↗</Text>
@@ -710,12 +759,6 @@ const ProductDetailPage: React.FC = () => {
             {evalStats && (
               <View className={styles.statsBar}>
                 <View className={styles.statsScore}>
-                  <Text className={styles.statsScoreVal}>{Number(evalStats.averageRating || 0).toFixed(1)}</Text>
-                  <View className={styles.statsStars}>
-                    {[5, 4, 3, 2, 1].map(star => (
-                      <Text key={star} className={star <= Math.round(Number(evalStats.averageRating || 0)) ? styles.statsStarActive : styles.statsStarInactive}>★</Text>
-                    ))}
-                  </View>
                   <Text className={styles.statsGoodRate}>好评率 {evalStats.goodRate || 100}%</Text>
                 </View>
                 <View className={styles.statsCounts}>
@@ -727,39 +770,79 @@ const ProductDetailPage: React.FC = () => {
               </View>
             )}
             
-            {aiSummary && (
-              <View className={styles.aiSummarySection}>
-                <View className={styles.aiSummaryHeader}>
-                  <View className={styles.aiIcon}>🤖</View>
-                  <Text className={styles.aiSummaryTitle}>AI评价总结</Text>
-                  <View className={styles.aiScore}>
-                    <Text className={styles.scoreValue}>{Math.round((aiSummary.averageRating || 0) * 20)}%</Text>
-                    <Text className={styles.scoreLabel}>综合评分</Text>
-                  </View>
+            {/* AI智能总评卡片：始终显示框架，加载中/无内容时展示占位 */}
+            <View className={styles.aiSummarySection}>
+              <View className={styles.aiSummaryHeader}>
+                <View className={styles.aiIconWrap}>
+                  <Text className={styles.aiIcon}>🤖</Text>
                 </View>
-                {aiSummary.overall && <Text className={styles.aiOverall}>{aiSummary.overall}</Text>}
-                {aiSummary.strengths && aiSummary.strengths.length > 0 && (
-                  <View className={styles.aiStrengths}>
-                    <Text className={styles.aiLabel}>👍 好评亮点</Text>
-                    <View className={styles.aiTags}>
-                      {aiSummary.strengths.map((tag: string, idx: number) => (
-                        <Text key={idx} className={styles.aiTag}>{tag}</Text>
-                      ))}
-                    </View>
-                  </View>
-                )}
-                {aiSummary.weaknesses && aiSummary.weaknesses.length > 0 && (
-                  <View className={styles.aiWeaknesses}>
-                    <Text className={styles.aiLabel}>👎 待改进</Text>
-                    <View className={styles.aiTags}>
-                      {aiSummary.weaknesses.map((tag: string, idx: number) => (
-                        <Text key={idx} className={`${styles.aiTag} ${styles.weakTag}`}>{tag}</Text>
-                      ))}
-                    </View>
+                <Text className={styles.aiSummaryTitle}>AI智能总评</Text>
+                <Text className={styles.aiBadge}>AI</Text>
+                {aiSummary && aiSummary.averageRating > 0 && (
+                  <View className={styles.aiScore}>
+                    <Text className={styles.scoreValue}>{Math.round(aiSummary.averageRating * 20)}%</Text>
+                    <Text className={styles.scoreLabel}>综合评分</Text>
                   </View>
                 )}
               </View>
-            )}
+
+              {/* 加载中 */}
+              {aiLoading && (
+                <View className={styles.aiAnalyzing}>
+                  <View className={styles.aiDots}>
+                    <View className={styles.dot} />
+                    <View className={styles.dot} />
+                    <View className={styles.dot} />
+                  </View>
+                  <View className={styles.aiAnalyzingText}>
+                    AI 正在分析该商品的评价...
+                    <Text className={styles.aiAnalyzingSub}>基于真实用户评价智能生成</Text>
+                  </View>
+                </View>
+              )}
+
+              {/* 加载完成但无内容 */}
+              {!aiLoading && aiSummary && !aiSummary.overall && (
+                <View className={styles.aiAnalyzing}>
+                  <View className={styles.aiDots}>
+                    <View className={styles.dot} />
+                    <View className={styles.dot} />
+                    <View className={styles.dot} />
+                  </View>
+                  <View className={styles.aiAnalyzingText}>
+                    AI 正在分析该商品的评价...
+                    <Text className={styles.aiAnalyzingSub}>评价数据积累后将自动生成总评</Text>
+                  </View>
+                </View>
+              )}
+
+              {/* 有 AI 总评内容 */}
+              {!aiLoading && aiSummary && aiSummary.overall && (
+                <>
+                  <Text className={styles.aiOverall}>{aiSummary.overall}</Text>
+                  {aiSummary.strengths && aiSummary.strengths.length > 0 && (
+                    <View className={styles.aiStrengths}>
+                      <Text className={styles.aiLabel}>👍 好评亮点</Text>
+                      <View className={styles.aiTags}>
+                        {aiSummary.strengths.map((tag: string, idx: number) => (
+                          <Text key={idx} className={styles.aiTag}>{tag}</Text>
+                        ))}
+                      </View>
+                    </View>
+                  )}
+                  {aiSummary.weaknesses && aiSummary.weaknesses.length > 0 && (
+                    <View className={styles.aiWeaknesses}>
+                      <Text className={styles.aiLabel}>👎 待改进</Text>
+                      <View className={styles.aiTags}>
+                        {aiSummary.weaknesses.map((tag: string, idx: number) => (
+                          <Text key={idx} className={`${styles.aiTag} ${styles.weakTag}`}>{tag}</Text>
+                        ))}
+                      </View>
+                    </View>
+                  )}
+                </>
+              )}
+            </View>
 
             {evaluations.length > 0 ? (
               <View className={styles.evaluateList}>
@@ -783,7 +866,15 @@ const ProductDetailPage: React.FC = () => {
         <View className={styles.detailSection}>
           <Text className={styles.sectionTitle}>商品详情</Text>
           <View className={styles.detailContent}>
-            <Text>{product.description}</Text>
+            {product.description ? (
+              process.env.TARO_ENV === 'h5' ? (
+                <div dangerouslySetInnerHTML={{ __html: decodeHtmlEntities(product.description) }} />
+              ) : (
+                <RichText nodes={decodeHtmlEntities(product.description)} />
+              )
+            ) : (
+              <Text className={styles.noDetailText}>暂无商品详情</Text>
+            )}
           </View>
         </View>
 
@@ -841,7 +932,7 @@ const ProductDetailPage: React.FC = () => {
             </View>
             
             <View className={styles.modalBody}>
-              {product.skus[0] && product.skus[0].specs && Object.keys(product.skus[0].specs).map((specName) => (
+              {product.skus.length > 0 && Object.keys(getAllSpecOptions(product.skus)).map((specName) => (
                 <SkuOptionGroup
                   key={specName}
                   specName={specName}
@@ -904,7 +995,7 @@ const ProductDetailPage: React.FC = () => {
                       <View className={styles.commentContent}>
                         <View className={styles.commentHeader}>
                           <Text className={styles.commentUserName}>{comment.userName}</Text>
-                          <Text className={styles.commentTime}>{comment.createdAt || comment.createTime}</Text>
+                          <Text className={styles.commentTime}>{formatDateTime(comment.createdAt || comment.createTime)}</Text>
                         </View>
                         <Text className={styles.commentText}>{comment.content}</Text>
                       </View>

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, Image, ScrollView, Textarea } from '@tarojs/components';
 import Taro from '@tarojs/taro';
-import { fetchOrderDetail, submitOrderReview } from '@/api/cart';
+import { fetchOrderDetail, fetchOrderReviews, submitOrderReview } from '@/api/cart';
 import { uploadImage } from '@/api/common';
 import { userApi } from '@/api/user';
 import { getImageUrl, lazyImgProps } from '@/utils/image';
@@ -28,6 +28,8 @@ const OrderReviewPage: React.FC = () => {
   const [reviewContent, setReviewContent] = useState('');
   const [images, setImages] = useState<string[]>([]);
   const [anonymous, setAnonymous] = useState(false);
+  const [isReviewed, setIsReviewed] = useState(false);
+  const [reviews, setReviews] = useState<any[]>([]);
 
   useEffect(() => {
     const params = Taro.getCurrentInstance()?.router?.params || {};
@@ -63,6 +65,21 @@ const OrderReviewPage: React.FC = () => {
           items,
           store: raw.store ?? raw.Store ?? { name: '官方自营' },
         });
+
+        // 查询是否已有评价（该接口后端可能未实现，404时静默忽略）
+        try {
+          const reviewRes = await fetchOrderReviews(orderId);
+          const reviewList = Array.isArray(reviewRes?.data)
+            ? reviewRes.data
+            : (Array.isArray(reviewRes?.data?.list) ? reviewRes.data.list : []);
+          if (reviewList.length > 0) {
+            setIsReviewed(true);
+            setReviews(reviewList);
+          }
+        } catch (reviewError: any) {
+          console.warn('[订单评价] 获取历史评价失败（接口可能未实现）:', reviewError?.message || reviewError);
+          // 接口 404 不影响用户继续提交新评价
+        }
       } else {
         Taro.showToast({ title: '订单不存在', icon: 'none' });
       }
@@ -139,26 +156,21 @@ const OrderReviewPage: React.FC = () => {
         Taro.showLoading({ title: '提交中...', mask: true });
       }
 
-      // 构造评价载荷：支持单商品和多商品
-      const hasMultipleItems = order.items && order.items.length > 1;
+      // 构造评价载荷：后端要求 Items 为必填字段，始终发送每商品评价
       const payload: any = {
         rating: ratingScoreMap[rating],
         ratingType: rating,
         content: reviewContent.trim(),
         images: uploadedImages,
         anonymous,
-      };
-
-      // 多商品时附带每商品评价
-      if (hasMultipleItems) {
-        payload.items = order.items.map((it: any) => ({
+        items: (order.items || []).map((it: any) => ({
           productId: it.productId,
           skuId: it.skuId,
           rating: ratingScoreMap[rating],
           content: reviewContent.trim(),
           images: uploadedImages,
-        }));
-      }
+        })),
+      };
 
       await submitOrderReview(order.id, payload);
       Taro.hideLoading();
@@ -224,7 +236,7 @@ const OrderReviewPage: React.FC = () => {
       <View className={styles.navBar}>
         <View className={styles.navContent}>
           <Text className={styles.navBack} onClick={() => Taro.navigateBack()}>‹</Text>
-          <Text className={styles.navTitle}>评价晒单</Text>
+          <Text className={styles.navTitle}>{isReviewed ? '我的评价' : '评价晒单'}</Text>
           <Text style={{ width: '60rpx' }}></Text>
         </View>
       </View>
@@ -266,47 +278,61 @@ const OrderReviewPage: React.FC = () => {
           <Text className={styles.ratingLabel}>商品评价</Text>
           <View className={styles.ratingButtons}>
             <View
-              className={`${styles.ratingBtn} ${styles.goodBtn} ${rating === 'good' ? styles.active : ''}`}
-              onClick={() => handleRatingClick('good')}
+              className={`${styles.ratingBtn} ${styles.goodBtn} ${(isReviewed ? reviews[0]?.ratingType === 'good' : rating === 'good') ? styles.active : ''}`}
+              onClick={() => !isReviewed && handleRatingClick('good')}
             >
               <Text className={styles.ratingEmoji}>😊</Text>
               <Text className={styles.ratingText}>好评</Text>
             </View>
             <View
-              className={`${styles.ratingBtn} ${styles.badBtn} ${rating === 'bad' ? styles.active : ''}`}
-              onClick={() => handleRatingClick('bad')}
+              className={`${styles.ratingBtn} ${styles.badBtn} ${(isReviewed ? reviews[0]?.ratingType === 'bad' : rating === 'bad') ? styles.active : ''}`}
+              onClick={() => !isReviewed && handleRatingClick('bad')}
             >
               <Text className={styles.ratingEmoji}>😢</Text>
               <Text className={styles.ratingText}>差评</Text>
             </View>
           </View>
-          <Text className={styles.ratingDesc}>{ratingLabel}</Text>
+          <Text className={styles.ratingDesc}>
+            {isReviewed ? ratingLabelMap[reviews[0]?.ratingType] || '好评' : ratingLabel}
+          </Text>
         </View>
 
         <View className={styles.contentSection}>
           <Text className={styles.contentLabel}>评价内容</Text>
-          <Textarea
-            className={styles.contentInput}
-            value={reviewContent}
-            onInput={(e: any) => setReviewContent(e.detail.value)}
-            placeholder="请输入您对商品的评价..."
-            maxlength={500}
-          />
+          {isReviewed ? (
+            <Text className={styles.contentInput} style={{ minHeight: '120rpx', color: '#333' }}>
+              {reviews[0]?.content || '无评价内容'}
+            </Text>
+          ) : (
+            <Textarea
+              className={styles.contentInput}
+              value={reviewContent}
+              onInput={(e: any) => setReviewContent(e.detail.value)}
+              placeholder="请输入您对商品的评价..."
+              maxlength={500}
+            />
+          )}
           <View className={styles.contentFooter}>
-            <Text className={styles.contentHint}>{reviewContent.length}/500</Text>
-            <View
-              className={`${styles.anonymousToggle} ${anonymous ? styles.anonymousActive : ''}`}
-              onClick={() => setAnonymous(!anonymous)}
-            >
-              <Text className={styles.anonymousText}>{anonymous ? '☑' : '☐'} 匿名评价</Text>
-            </View>
+            <Text className={styles.contentHint}>
+              {isReviewed ? reviews[0]?.content?.length || 0 : reviewContent.length}/500
+            </Text>
+            {!isReviewed && (
+              <View
+                className={`${styles.anonymousToggle} ${anonymous ? styles.anonymousActive : ''}`}
+                onClick={() => setAnonymous(!anonymous)}
+              >
+                <Text className={styles.anonymousText}>{anonymous ? '☑' : '☐'} 匿名评价</Text>
+              </View>
+            )}
           </View>
         </View>
 
         <View className={styles.imageSection}>
-          <Text className={styles.imageLabel}>晒单图片（可选，最多6张）</Text>
+          <Text className={styles.imageLabel}>
+            {isReviewed ? '晒单图片' : '晒单图片（可选，最多6张）'}
+          </Text>
           <View className={styles.imageGrid}>
-            {images.map((img, idx) => (
+            {(isReviewed ? reviews[0]?.images || [] : images).map((img: string, idx: number) => (
               <View key={idx} className={styles.imageItemWrap} style={{ position: 'relative' }}>
                 <Image
                   src={img}
@@ -314,29 +340,31 @@ const OrderReviewPage: React.FC = () => {
                   mode="aspectFill"
                   onClick={() => handlePreviewImage(img)}
                 />
-                <View
-                  style={{
-                    position: 'absolute',
-                    top: '-10rpx',
-                    right: '-10rpx',
-                    width: '40rpx',
-                    height: '40rpx',
-                    borderRadius: '50%',
-                    background: 'rgba(0,0,0,0.6)',
-                    color: '#fff',
-                    fontSize: '28rpx',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    zIndex: 2,
-                  }}
-                  onClick={() => handleDeleteImage(idx)}
-                >
-                  ×
-                </View>
+                {!isReviewed && (
+                  <View
+                    style={{
+                      position: 'absolute',
+                      top: '-10rpx',
+                      right: '-10rpx',
+                      width: '40rpx',
+                      height: '40rpx',
+                      borderRadius: '50%',
+                      background: 'rgba(0,0,0,0.6)',
+                      color: '#fff',
+                      fontSize: '28rpx',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      zIndex: 2,
+                    }}
+                    onClick={() => handleDeleteImage(idx)}
+                  >
+                    ×
+                  </View>
+                )}
               </View>
             ))}
-            {images.length < 6 && (
+            {!isReviewed && images.length < 6 && (
               <View className={`${styles.imageItem} ${styles.imageUpload}`} onClick={handleChooseImage}>
                 <Text>+</Text>
               </View>
@@ -349,16 +377,24 @@ const OrderReviewPage: React.FC = () => {
         <View className={styles.actionBtn} onClick={handleBuyAgain}>
           再次购买
         </View>
-        <View className={styles.actionBtn} onClick={handleRefund}>
-          退款/售后
-        </View>
-        <View
-          className={`${styles.actionBtn} ${styles.actionBtnPrimary}`}
-          onClick={handleReviewSubmit}
-          style={submitting ? { opacity: 0.6 } : {}}
-        >
-          {submitting ? '提交中...' : '评价晒单'}
-        </View>
+        {isReviewed ? (
+          <View className={`${styles.actionBtn} ${styles.actionBtnPrimary}`} onClick={() => Taro.navigateBack()}>
+            返回
+          </View>
+        ) : (
+          <>
+            <View className={styles.actionBtn} onClick={handleRefund}>
+              退款/售后
+            </View>
+            <View
+              className={`${styles.actionBtn} ${styles.actionBtnPrimary}`}
+              onClick={handleReviewSubmit}
+              style={submitting ? { opacity: 0.6 } : {}}
+            >
+              {submitting ? '提交中...' : '评价晒单'}
+            </View>
+          </>
+        )}
       </View>
     </View>
   );

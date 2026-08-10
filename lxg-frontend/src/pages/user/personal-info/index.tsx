@@ -68,7 +68,8 @@ const PersonalInfoPage: React.FC = () => {
       cancelText: '取消',
       success: (res) => {
         if (res.confirm) {
-          // 清除用户信息
+          // 清除用户信息（含 token 的 lxg_user 必须清除，否则未真正退出）
+          Taro.removeStorageSync('lxg_user');
           Taro.removeStorageSync('userInfo');
           setUserInfo({
             id: '',
@@ -98,7 +99,8 @@ const PersonalInfoPage: React.FC = () => {
       cancelText: '取消',
       success: (res) => {
         if (res.confirm) {
-          // 清除用户信息
+          // 清除用户信息（含 token 的 lxg_user 必须清除，否则未真正退出）
+          Taro.removeStorageSync('lxg_user');
           Taro.removeStorageSync('userInfo');
           setUserInfo({
             id: '',

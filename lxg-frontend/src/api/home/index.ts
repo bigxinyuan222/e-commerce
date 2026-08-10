@@ -8,7 +8,9 @@ import { apiGet, apiPost, toNumericId } from '@/api/common';
 
 export const homeApi = {
     banners: `${API_BASE_URL}/homepage/banners`,
-    recommendations: `${API_BASE_URL}/homepage/recommendations`,
+    // 获取所有推荐位商品 GET /api/v1/product/recommend
+    // 返回结构:{ code, message, data: [{ id, name, status, products: [完整商品] }] }
+    recommend: `${API_BASE_URL}/product/recommend`,
     seckillActivities: `${API_BASE_URL}/home/seckill-activities`,
     activities: `${API_BASE_URL}/seckill/activities`,
     activityProducts: `${API_BASE_URL}/seckill/activities/:id/products`,
@@ -189,28 +191,39 @@ export async function fetchReviewStats(productId: string | number) {
 /**
  * 获取商品AI评价摘要
  * GET /api/v1/review/ai
+ * 注意：此接口需要登录认证。使用 silent=true，未登录或 token 失效时
+ * 不弹登录窗跳转，避免打断用户浏览商品；调用方自行 catch 错误即可。
  */
 export async function fetchReviewAiSummary(productId: string | number) {
     // 后端要求参数名为 id（与 product/detail 接口一致）
     const query: Record<string, any> = { id: toNumericId(productId) };
-    const res = await apiGet(reviewApi.ai, query, {}, false);
+    const res = await apiGet(reviewApi.ai, query, {}, true);
+    // 后端返回结构：{ code, message, data: { product_id, content } }
+    // content 即 AI 总评文本
     const data = res?.data ?? res;
-    return {
-        ...res,
-        data: {
-            averageRating: Number(data?.averageRating ?? data?.average_rating ?? data?.AverageRating ?? data?.score ?? 0),
-            totalCount: Number(data?.totalCount ?? data?.total_count ?? data?.TotalCount ?? data?.total ?? 0),
-            overall: data?.overall ?? data?.Overall ?? data?.summary ?? data?.Summary ?? data?.summary_text ?? data?.aiSummary ?? data?.ai_summary ?? '',
-            strengths: Array.isArray(data?.strengths) ? data.strengths
-                : (Array.isArray(data?.Strengths) ? data.Strengths
-                    : (Array.isArray(data?.pros) ? data.pros : [])),
-            weaknesses: Array.isArray(data?.weaknesses) ? data.weaknesses
-                : (Array.isArray(data?.Weaknesses) ? data.Weaknesses
-                    : (Array.isArray(data?.cons) ? data.cons : [])),
-            tags: Array.isArray(data?.tags) ? data.tags
-                : (Array.isArray(data?.Tags) ? data.Tags : []),
-        },
+    const content = String(data?.content ?? data?.Content ?? data?.overall ?? data?.summary ?? '').trim();
+    const normalized = {
+        averageRating: Number(data?.averageRating ?? data?.average_rating ?? data?.AverageRating ?? data?.rating ?? data?.score ?? 0),
+        totalCount: Number(data?.totalCount ?? data?.total_count ?? data?.TotalCount ?? data?.total ?? data?.reviewCount ?? 0),
+        overall: content,
+        strengths: Array.isArray(data?.strengths) ? data.strengths
+            : (Array.isArray(data?.Strengths) ? data.Strengths
+                : (Array.isArray(data?.pros) ? data.pros
+                    : (Array.isArray(data?.positives) ? data.positives
+                        : (Array.isArray(data?.positive_points) ? data.positive_points : [])))),
+        weaknesses: Array.isArray(data?.weaknesses) ? data.weaknesses
+            : (Array.isArray(data?.Weaknesses) ? data.Weaknesses
+                : (Array.isArray(data?.cons) ? data.cons
+                    : (Array.isArray(data?.negatives) ? data.negatives
+                        : (Array.isArray(data?.negative_points) ? data.negative_points : [])))),
+        tags: Array.isArray(data?.tags) ? data.tags
+            : (Array.isArray(data?.Tags) ? data.Tags
+                : (Array.isArray(data?.keywords) ? data.keywords : [])),
     };
+    if (!content) {
+        console.warn('[AI评价摘要] 后端返回 content 为空，可能该商品尚未生成 AI 摘要，productId:', productId);
+    }
+    return { ...res, data: normalized };
 }
 
 /**

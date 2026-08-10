@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, Image, Switch } from '@tarojs/components';
+import { View, Text, Image } from '@tarojs/components';
 import Taro from '@tarojs/taro';
 import { useAppContext } from '@/store/AppContext';
 import { apiGet } from '@/api/common';
@@ -10,7 +10,6 @@ import styles from '@/styles/user/profile.module.scss';
 
 const ProfilePage: React.FC = () => {
   const { userInfo, setUserInfo } = useAppContext();
-  const [notificationEnabled, setNotificationEnabled] = useState(true);
 
   // 进入页面时刷新用户信息
   useEffect(() => {
@@ -43,26 +42,6 @@ const ProfilePage: React.FC = () => {
       case '个人信息':
         Taro.navigateTo({ url: '/pages/user/personal-info/index' });
         break;
-      case '消息通知':
-        setNotificationEnabled(!notificationEnabled);
-        Taro.showToast({ 
-          title: notificationEnabled ? '已关闭消息通知' : '已开启消息通知', 
-          icon: 'none' 
-        });
-        break;
-      case '隐私设置':
-        Taro.showToast({ title: '隐私设置', icon: 'none' });
-        break;
-      case '帮助与反馈':
-        Taro.showToast({ title: '帮助与反馈', icon: 'none' });
-        break;
-      case '关于我们':
-        Taro.showModal({
-          title: '关于乐享购',
-          content: '乐享购 v1.0.0\n\n致力于为用户提供优质的购物体验',
-          showCancel: false
-        });
-        break;
       default:
         break;
     }
@@ -74,9 +53,14 @@ const ProfilePage: React.FC = () => {
       content: '确定要退出登录吗？',
       success: (res) => {
         if (res.confirm) {
-          setUserInfo({ ...userInfo!, isLoggedIn: false });
+          // 清除用户信息（含 token 的 lxg_user 必须清除，否则未真正退出）
+          Taro.removeStorageSync('lxg_user');
           Taro.removeStorageSync('userInfo');
+          setUserInfo({ ...userInfo!, isLoggedIn: false });
           Taro.showToast({ title: '已退出登录', icon: 'success' });
+          setTimeout(() => {
+            Taro.switchTab({ url: '/pages/home/index' });
+          }, 1000);
         }
       }
     });
@@ -96,30 +80,6 @@ const ProfilePage: React.FC = () => {
         <View className={styles.menuItem} onClick={() => handleMenuItemClick('个人信息')}>
           <Text className={styles.menuIcon}>👤</Text>
           <Text className={styles.menuTitle}>个人信息</Text>
-          <Text className={styles.menuArrow}>›</Text>
-        </View>
-      </View>
-
-      <View className={styles.menuSection}>
-        <View className={styles.menuSectionTitle}>设置</View>
-        <View className={styles.menuItem} onClick={() => handleMenuItemClick('消息通知')}>
-          <Text className={styles.menuIcon}>🔔</Text>
-          <Text className={styles.menuTitle}>消息通知</Text>
-          <Switch color="#e2231a" checked={notificationEnabled} onClick={() => setNotificationEnabled(!notificationEnabled)} />
-        </View>
-        <View className={styles.menuItem} onClick={() => handleMenuItemClick('隐私设置')}>
-          <Text className={styles.menuIcon}>🔒</Text>
-          <Text className={styles.menuTitle}>隐私设置</Text>
-          <Text className={styles.menuArrow}>›</Text>
-        </View>
-        <View className={styles.menuItem} onClick={() => handleMenuItemClick('帮助与反馈')}>
-          <Text className={styles.menuIcon}>❓</Text>
-          <Text className={styles.menuTitle}>帮助与反馈</Text>
-          <Text className={styles.menuArrow}>›</Text>
-        </View>
-        <View className={styles.menuItem} onClick={() => handleMenuItemClick('关于我们')}>
-          <Text className={styles.menuIcon}>📋</Text>
-          <Text className={styles.menuTitle}>关于我们</Text>
           <Text className={styles.menuArrow}>›</Text>
         </View>
       </View>

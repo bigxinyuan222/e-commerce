@@ -205,7 +205,23 @@ export function normalizeProductImages(product: any): any {
   if (!normalized.skus || !Array.isArray(normalized.skus)) {
     normalized.skus = [];
   }
-  
+
+  // ====== 商品详情描述字段处理 ======
+  // 兼容后端多种详情字段命名（HTML 富文本）
+  normalized.description = normalized.description ?? normalized.Description
+    ?? normalized.detail ?? normalized.Detail
+    ?? normalized.details ?? normalized.Details
+    ?? normalized.content ?? normalized.Content
+    ?? normalized.introduce ?? normalized.Introduce
+    ?? normalized.introduction ?? normalized.Introduction
+    ?? normalized.productDescription ?? normalized.ProductDescription
+    ?? normalized.product_description ?? normalized.product_desc
+    ?? normalized.desc ?? normalized.Desc
+    ?? normalized.body ?? normalized.Body
+    ?? normalized.richText ?? normalized.RichText
+    ?? normalized.rich_text ?? normalized.html ?? normalized.Html
+    ?? '';
+
   return normalized;
 }
 
