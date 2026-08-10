@@ -56,7 +56,6 @@ const roleMenus: Record<string, PageId[]> = {
 }
 
 const pageFactories: Partial<Record<PageId, string>> = {
-  stats: 'statsPage',
   homepage: 'homepagePage',
 }
 
@@ -65,88 +64,6 @@ const pageLoaders: Partial<Record<PageId, string[]>> = {
 }
 
 const legacyPageCache = new Map<PageId, string>()
-
-function listFrom(data: any): any[] {
-  if (Array.isArray(data)) return data
-  return data?.list ?? data?.items ?? data?.records ?? data?.users ?? []
-}
-
-function orderStatus(value: unknown): string {
-  if (typeof value === 'string' && Number.isNaN(Number(value))) return value
-  return ({ 0: 'pending_payment', 1: 'grouping', 2: 'pending_delivery', 3: 'pending_pickup', 4: 'completed', 5: 'cancelled' } as Record<number, string>)[Number(value)] || 'unknown'
-}
-
-async function loadStatsData(): Promise<void> {
-  let currentUser: AdminUser | undefined
-  try {
-    currentUser = JSON.parse(localStorage.getItem('lexiangou_admin_user') || 'null') as AdminUser | undefined
-  } catch {
-    currentUser = undefined
-  }
-  const headers = new Headers()
-  if (currentUser?.token) headers.set('Authorization', `Bearer ${currentUser.token}`)
-
-  async function get(url: string) {
-    const response = await fetch(url, { credentials: 'include', headers })
-    const payload = await response.json().catch(() => null)
-    if (!response.ok || (payload?.code !== undefined && payload.code !== 0 && payload.code !== 200)) {
-      const error = new Error(payload?.message || `Stats request failed (${response.status})`) as Error & { status?: number }
-      error.status = response.status
-      throw error
-    }
-    return payload?.data ?? payload
-  }
-
-  const [orders, refunds, users, inventory] = await Promise.allSettled([
-    get('/api/v1/admin/orders?page=1&pageSize=100'),
-    get('/api/v1/admin/refunds?page=1&pageSize=100'),
-    get('/api/v1/get/users?page=1&size=100'),
-    get('/api/v1/admin/home'),
-  ])
-
-  const orderError = orders.status === 'rejected' ? orders.reason as { status?: number } : null
-  const orderData = orders.status === 'fulfilled' ? orders.value : null
-  const orderList = Array.isArray(orderData) ? orderData : orderData?.list ?? orderData?.items ?? orderData?.records ?? []
-  // 商品运营没有订单明细权限，部分后端版本会以空列表和 200 响应代替 403。
-  window.statsAccessDenied = orderError?.status === 401 || orderError?.status === 403 ||
-    (currentUser?.role === 'goods_op' && orderList.length === 0)
-
-  if (orders.status === 'fulfilled') {
-    window.legacyOrderSnapshot = listFrom(orders.value).map(row => ({
-      ...row,
-      id: row.ID ?? row.id,
-      status: orderStatus(row.status),
-      storeId: row.store?.id ?? row.store_id ?? row.storeId ?? '',
-      storeName: row.store?.name ?? row.store_name ?? row.storeName ?? '',
-      totalAmount: Number(row.total_amount ?? row.totalAmount ?? row.amount) || 0,
-      payAmount: Number(row.pay_amount ?? row.payAmount ?? 0) || 0,
-      createdAt: row.created_at ?? row.createdAt ?? row.CreatedAt ?? '',
-      items: row.items ?? row.order_items ?? row.orderItems ?? [],
-    }))
-  }
-  if (refunds.status === 'fulfilled') {
-    window.legacyRefundSnapshot = listFrom(refunds.value).map(row => ({
-      ...row,
-      status: Number(row.status) === 0 ? 'pending' : row.status,
-      storeId: row.store?.id ?? row.store_id ?? row.storeId ?? '',
-    }))
-  }
-  if (users.status === 'fulfilled') {
-    window.statsUsersSnapshot = listFrom(users.value).map(row => ({
-      ...row,
-      registerTime: row.CreatedAt ?? row.createdAt ?? row.created_at ?? '',
-    }))
-  }
-  if (inventory.status === 'fulfilled') {
-    const warnings = Array.isArray(inventory.value?.warning_sku_list) ? inventory.value.warning_sku_list : []
-    window.statsStockSnapshot = warnings.map((row: any) => ({
-      ...row,
-      stock: Number(row.stock) || 0,
-      threshold: Number(row.warning_value ?? row.warningValue ?? row.threshold) || 0,
-    }))
-  }
-
-}
 
 export function allowedMenus(role: string): MenuItem[] {
   const allowed = roleMenus[role] || roleMenus.super_admin
@@ -168,7 +85,6 @@ export function renderLegacyPage(id: PageId): string {
 }
 
 export async function loadLegacyPage(id: PageId): Promise<void> {
-  if (id === 'stats') await loadStatsData()
   await Promise.allSettled((pageLoaders[id] || []).map(async (name) => {
     const loader = window[name]
     if (typeof loader === 'function') await (loader as () => unknown)()

@@ -10,6 +10,7 @@ let replyRequest = null
 let deleteReplyRequest = null
 const summaryAuditRequests = []
 let editSummaryRequest = null
+const generateSummaryRequests = []
 
 await page.route('**/api/**', async route => {
   const request = route.request()
@@ -32,6 +33,10 @@ await page.route('**/api/**', async route => {
     summaryAuditRequests.push({ method: request.method(), headers: request.headers(), body: request.postDataJSON() })
   } else if (url.pathname === '/api/v1/admin/edit/review') {
     editSummaryRequest = { method: request.method(), headers: request.headers(), body: request.postDataJSON() }
+  } else if (url.pathname === '/api/v1/admin/review/generate-summary') {
+    const body = request.postDataJSON()
+    generateSummaryRequests.push({ method: request.method(), headers: request.headers(), body })
+    data = { id: body.product_id === 205 ? 703 : 704, product_id: body.product_id, product_name: body.product_id === 205 ? 'AI摘要联调商品' : '待删除摘要商品', summary_content: `商品${body.product_id}重新生成后的摘要`, review_count: body.product_id === 205 ? 18 : 9, state: 0, created_at: '2026-08-04T08:00:00+08:00' }
   } else if (url.pathname === '/api/v1/admin/review/ailist') {
     data = { list: [
       { id: 701, product: { id: 205, name: 'AI摘要联调商品' }, summary_content: 'AI摘要列表接口返回成功', review_count: 18, state: 0, created_at: '2026-08-03T08:00:00+08:00' },
@@ -48,6 +53,27 @@ try {
   await page.getByText('评价接口联调商品', { exact: false }).first().waitFor()
   await page.getByText('评价列表接口返回成功', { exact: false }).first().waitFor()
   await page.getByText('AI摘要列表接口返回成功', { exact: false }).waitFor()
+  const summaryCard = page.locator('.card').filter({ hasText: 'AI 评价摘要审核' })
+  if (await summaryCard.locator('.card-header').getByRole('button', { name: '生成摘要', exact: true }).count()) throw new Error('表头仍显示生成摘要按钮')
+  await Promise.all([
+    page.waitForRequest(request => new URL(request.url()).pathname === '/api/v1/admin/review/generate-summary'),
+    page.getByRole('row').filter({ hasText: 'AI摘要联调商品' }).getByRole('button', { name: '重新生成' }).click(),
+  ])
+  const firstGenerate = generateSummaryRequests[0]
+  if (firstGenerate?.method !== 'POST') throw new Error(`生成摘要方法错误: ${firstGenerate?.method || '未发出请求'}`)
+  if (JSON.stringify(firstGenerate.body) !== JSON.stringify({ product_id: 205 })) throw new Error(`生成摘要参数错误: ${JSON.stringify(firstGenerate?.body)}`)
+  if (firstGenerate.headers.authorization !== 'Bearer review-list-test') throw new Error('生成摘要请求未携带 Authorization')
+  if (!firstGenerate.headers['content-type']?.startsWith('application/json')) throw new Error('生成摘要请求 Content-Type 错误')
+  await page.getByText('商品205重新生成后的摘要', { exact: false }).waitFor()
+  if (await page.getByText('AI摘要列表接口返回成功', { exact: false }).count()) throw new Error('重新生成后旧摘要仍在列表中')
+  await Promise.all([
+    page.waitForRequest(request => new URL(request.url()).pathname === '/api/v1/admin/review/generate-summary' && request.postDataJSON()?.product_id === 206),
+    page.getByRole('row').filter({ hasText: '待删除摘要商品' }).getByRole('button', { name: '重新生成' }).click(),
+  ])
+  if (JSON.stringify(generateSummaryRequests[1]?.body) !== JSON.stringify({ product_id: 206 })) throw new Error(`单条摘要重新生成参数错误: ${JSON.stringify(generateSummaryRequests[1]?.body)}`)
+  await page.getByText('商品206重新生成后的摘要', { exact: false }).waitFor()
+  const summaryRows = await page.locator('.card').filter({ hasText: 'AI 评价摘要审核' }).locator('tbody tr').count()
+  if (summaryRows !== 2) throw new Error(`重新生成后摘要行数错误: ${summaryRows}`)
   const listRequest = requests.find(item => item.startsWith('GET /api/v1/admin/review/list'))
   if (!listRequest) throw new Error('评价列表请求错误: 未发出请求')
   const listUrl = new URL(`http://test${listRequest.slice(4)}`)
@@ -72,7 +98,7 @@ try {
   ])
   await page.getByText('编辑后的 AI 摘要内容', { exact: false }).waitFor()
   if (editSummaryRequest?.method !== 'POST') throw new Error(`编辑摘要方法错误: ${editSummaryRequest?.method || '未发出请求'}`)
-  if (JSON.stringify(editSummaryRequest.body) !== JSON.stringify({ id: 701, content: '编辑后的 AI 摘要内容' })) throw new Error(`编辑摘要参数错误: ${JSON.stringify(editSummaryRequest?.body)}`)
+if (JSON.stringify(editSummaryRequest.body) !== JSON.stringify({ id: 703, content: '编辑后的 AI 摘要内容' })) throw new Error(`编辑摘要参数错误: ${JSON.stringify(editSummaryRequest?.body)}`)
   if (editSummaryRequest.headers.authorization !== 'Bearer review-list-test') throw new Error('编辑摘要请求未携带 Authorization')
   if (!editSummaryRequest.headers['content-type']?.startsWith('application/json')) throw new Error('编辑摘要请求 Content-Type 错误')
   if (!requests.includes('POST /api/v1/admin/edit/review')) throw new Error('编辑摘要接口路径错误')
@@ -84,8 +110,8 @@ try {
   ])
   if (summaryAuditRequests.length !== 2) throw new Error(`摘要审核请求次数错误: ${summaryAuditRequests.length}`)
   if (summaryAuditRequests.some(item => item.method !== 'POST')) throw new Error('摘要审核请求方法错误')
-  if (JSON.stringify(summaryAuditRequests[0].body) !== JSON.stringify({ id: 701, action: 0 })) throw new Error(`摘要通过参数错误: ${JSON.stringify(summaryAuditRequests[0]?.body)}`)
-  if (JSON.stringify(summaryAuditRequests[1].body) !== JSON.stringify({ id: 702, action: 1 })) throw new Error(`摘要删除参数错误: ${JSON.stringify(summaryAuditRequests[1]?.body)}`)
+if (JSON.stringify(summaryAuditRequests[0].body) !== JSON.stringify({ id: 703, action: 0 })) throw new Error(`摘要通过参数错误: ${JSON.stringify(summaryAuditRequests[0]?.body)}`)
+if (JSON.stringify(summaryAuditRequests[1].body) !== JSON.stringify({ id: 704, action: 1 })) throw new Error(`摘要删除参数错误: ${JSON.stringify(summaryAuditRequests[1]?.body)}`)
   if (summaryAuditRequests.some(item => item.headers.authorization !== 'Bearer review-list-test')) throw new Error('摘要审核请求未携带 Authorization')
   if (summaryAuditRequests.some(item => !item.headers['content-type']?.startsWith('application/json'))) throw new Error('摘要审核请求 Content-Type 错误')
   if (requests.some(item => item.includes('/review-summaries/701/audit'))) throw new Error('仍在请求旧摘要审核接口')
