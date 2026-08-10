@@ -13,7 +13,7 @@ await page.route('**/api/**', async route => {
   const url = new URL(request.url())
   let data = {}
   if (request.method() === 'GET' && url.pathname === '/api/v1/admin/seckill/activities') {
-    data = { activities: [{ ID: 6, name: '待发布活动', startTime: '2026-08-02 10:00', endTime: '2026-08-02 12:00', status: 0, products: [] }] }
+    data = { activities: [{ ID: 6, name: '待发布活动', startTime: '2026-08-02 10:00', endTime: '2026-08-02 12:00', status: 0, products: [] }, { ID: 7, name: '超时活动', startTime: '2026-08-01 10:00', endTime: '2026-08-01 12:00', status: 4, products: [] }] }
   } else if (request.method() === 'GET' && url.pathname === '/api/v1/admin/product/list') {
     data = { list: [{ ID: 205, name: '联调商品', original_price: 19.9 }] }
   } else if (request.method() === 'GET' && url.pathname === '/api/v1/admin/product/detail') {
@@ -30,6 +30,7 @@ try {
   })))
   await page.goto(baseUrl, { waitUntil: 'networkidle' })
   await page.locator('#sidebarNav .menu-item[data-id="marketing"]').click()
+  await page.locator('#panel-marketing .status-badge.red').getByText('超时', { exact: true }).waitFor()
   await page.getByRole('button', { name: /添加商品/ }).click()
   await page.locator('#seckillProductSelect').selectOption('205')
   await page.locator('.seckill-sku-row').waitFor()

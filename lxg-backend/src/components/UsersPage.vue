@@ -82,8 +82,8 @@ function normalizeUser(row: any): UserRow {
     status: normalizeStatus(row),
     registerTime: formatDate(row.CreatedAt ?? row.createdAt ?? row.created_at),
     lastLogin: formatDate(row.lastLogin ?? row.last_login ?? row.lastLoginAt ?? row.last_login_at),
-    totalOrders: Number(row.totalOrders ?? row.total_orders) || 0,
-    totalAmount: Number(row.totalAmount ?? row.total_amount) || 0,
+    totalOrders: Number(row.order_count ?? row.orderCount ?? row.totalOrders ?? row.total_orders) || 0,
+    totalAmount: Number(row.consumption_amount ?? row.consumptionAmount ?? row.totalAmount ?? row.total_amount) || 0,
     reviewCount: Number(row.reviewCount ?? row.review_count) || 0,
     couponCount: Number(row.couponCount ?? row.coupon_count) || 0,
   }
@@ -143,9 +143,10 @@ async function toggleUser() {
 
 function genderText(value: string) {
   const text = value.toLowerCase()
-  if (text === 'male' || text === '男' || text === '1') return '男'
-  if (text === 'female' || text === '女' || text === '2') return '女'
-  return value || '其他'
+  if (text === '0' || text === 'male' || text === '男') return '男'
+  if (text === '1' || text === 'female' || text === '女') return '女'
+  if (text === '2' || text === 'secret' || text === 'private' || text === '保密') return '保密'
+  return '保密'
 }
 
 function statusText(value: UserRow['status']) {
@@ -174,7 +175,7 @@ onMounted(loadUsers)
 
   <div class="system-layout-main users-layout">
     <div class="card users-table-card">
-      <div class="card-header"><span class="card-title"><i class="fas fa-users"></i> 用户列表</span><span class="system-text-muted">共 {{ total }} 位用户 · 累计订单 {{ totalOrders }} 笔 · 累计消费 ¥{{ totalAmount }}</span></div>
+      <div class="card-header"><span class="card-title"><i class="fas fa-users"></i> 用户列表</span><span class="system-text-muted">共 {{ total }} 位用户 · 累计订单 {{ totalOrders }} 笔 · 累计消费 ¥{{ totalAmount.toFixed(2) }}</span></div>
       <div class="card-body no-pad">
         <div v-if="error" class="stock-list-error"><i class="fas fa-exclamation-circle"></i> {{ error }}</div>
         <div class="table-wrap users-table-wrap"><table class="users-table">
@@ -185,7 +186,7 @@ onMounted(loadUsers)
             <tr v-for="user in filteredUsers" v-else :key="user.id">
               <td><div class="flex-center"><span class="system-user-avatar-sm">{{ user.name.charAt(0) || '用' }}</span> {{ user.name }}</div></td>
               <td>{{ user.phone }}</td><td>{{ genderText(user.gender) }}</td><td>{{ user.registerTime }}</td><td>{{ user.lastLogin }}</td><td>{{ user.totalOrders }}</td>
-              <td><span class="system-amount">¥{{ user.totalAmount }}</span></td>
+              <td><span class="system-amount">¥{{ user.totalAmount.toFixed(2) }}</span></td>
               <td><span class="status-badge" :class="user.status === 'active' ? 'green' : user.status === 'frozen' ? 'yellow' : 'gray'"><span class="dot"></span> {{ statusText(user.status) }}</span></td>
               <td><button class="btn btn-sm btn-outline" type="button" @click="detail = user"><i class="fas fa-eye"></i> 详情</button> <button class="btn btn-sm" :class="user.status === 'active' ? 'btn-danger' : 'btn-success'" type="button" @click="pendingToggle = user"><i class="fas" :class="user.status === 'active' ? 'fa-lock' : 'fa-unlock'"></i> {{ user.status === 'active' ? '冻结' : '解冻' }}</button></td>
             </tr>

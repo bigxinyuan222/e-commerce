@@ -24,7 +24,7 @@ await page.route('**/api/**', async route => {
   let data = {}
   if (url.pathname === '/api/v1/admin/chat/conversations') {
     conversationQueries.push(Object.fromEntries(url.searchParams))
-    data = { list: [{ conversation_id: 5, user_name: '测试用户', phone: '13800000000', status: 1, last_message: '您好', updated_at: '10:00', unread_count: 0 }], total: 45 }
+    data = { list: [{ conversation_id: 5, userNickname: '会话昵称用户', user_name: '旧用户名', phone: '13800000000', status: 1, last_message: '您好', updated_at: '10:00', unread_count: 0 }], total: 45 }
   } else if (url.pathname === '/api/v1/admin/chat/conversations/pending-count') {
     pendingCountPaths.push(url.pathname)
     data = { count: 7 }
@@ -50,12 +50,13 @@ try {
   await page.goto(baseUrl, { waitUntil: 'networkidle' })
   await page.locator('#sidebarNav .menu-item[data-id="service"]').click()
   await page.getByText('实时连接', { exact: true }).waitFor()
+  if (await page.getByText('会话昵称用户', { exact: true }).count() < 2) throw new Error('userNickname 未在会话列表和聊天头部渲染')
   const pendingCard = page.locator('.system-stat-card').filter({ hasText: '待接入' })
   if (!(await pendingCard.textContent())?.includes('7')) throw new Error(`待接入数量渲染错误: ${await pendingCard.textContent()}`)
   if (pendingCountPaths[0] !== '/api/v1/admin/chat/conversations/pending-count') throw new Error(`待接入接口路径错误: ${JSON.stringify(pendingCountPaths)}`)
   if (!socketUrl.startsWith('ws://127.0.0.1:8081/api/v1/admin/chat/ws?')) throw new Error(`WebSocket 地址错误: ${socketUrl}`)
   if (!socketUrl.includes('token=ws-test-token')) throw new Error(`WebSocket 缺少 token: ${socketUrl}`)
-  const expectedInitialQuery = { page: '1', pageSize: '20', status: '' }
+  const expectedInitialQuery = { page: '1', pageSize: '20' }
   if (JSON.stringify(conversationQueries[0]) !== JSON.stringify(expectedInitialQuery)) throw new Error(`会话列表初始参数错误: ${JSON.stringify(conversationQueries[0])}`)
   const expectedMessageQuery = { page: '1', pageSize: '20' }
   if (JSON.stringify(messageQueries[0]) !== JSON.stringify(expectedMessageQuery)) throw new Error(`历史消息参数错误: ${JSON.stringify(messageQueries[0])}`)
@@ -65,20 +66,20 @@ try {
   if (!userMessageClass?.includes('other')) throw new Error(`用户消息未显示在左侧: ${userMessageClass}`)
   if (!staffMessageClass?.includes('me')) throw new Error(`客服消息未显示在右侧: ${staffMessageClass}`)
   if (!(await aiMessage.getAttribute('class'))?.includes('me') || !(await aiMessage.getByText('AI助手', { exact: true }).count())) throw new Error('AI 消息显示错误')
-  const renderedHistory = await page.locator('.system-chat-message-bubble > div:first-child').allTextContents()
+  const renderedHistory = await page.locator('.system-chat-message-bubble > .message-content').allTextContents()
   const expectedHistory = ['用户历史消息', '客服历史回复', 'AI历史回复']
   if (JSON.stringify(renderedHistory.slice(0, 3)) !== JSON.stringify(expectedHistory)) throw new Error(`历史消息顺序错误: ${JSON.stringify(renderedHistory)}`)
 
   await Promise.all([
-    page.waitForResponse(response => response.url().includes('/admin/chat/conversations?') && response.url().includes('status=0')),
+    page.waitForResponse(response => response.url().includes('/admin/chat/conversations?') && response.url().includes('page=1')),
     page.locator('#panel-service select').selectOption('pending'),
   ])
   await Promise.all([
     page.waitForResponse(response => response.url().includes('/admin/chat/conversations?') && response.url().includes('page=2')),
     page.locator('.system-chat-sidebar .fa-angle-right').locator('..').click(),
   ])
-  if (conversationQueries[1]?.status !== '0' || conversationQueries[1]?.page !== '1') throw new Error(`会话状态参数错误: ${JSON.stringify(conversationQueries[1])}`)
-  if (conversationQueries[2]?.page !== '2' || conversationQueries[2]?.status !== '0') throw new Error(`会话分页参数错误: ${JSON.stringify(conversationQueries[2])}`)
+  if (conversationQueries[1]?.page !== '1' || 'status' in conversationQueries[1]) throw new Error(`会话状态筛选不应向后端传递 status: ${JSON.stringify(conversationQueries[1])}`)
+  if (conversationQueries[2]?.page !== '2' || 'status' in conversationQueries[2]) throw new Error(`会话分页参数错误: ${JSON.stringify(conversationQueries[2])}`)
 
   await page.locator('#chatInput').fill('用户您好，请问有什么问题')
   await page.locator('#chatInput').press('Enter')

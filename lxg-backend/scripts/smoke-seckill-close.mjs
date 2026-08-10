@@ -31,7 +31,7 @@ try {
   await page.locator('[data-close-activity-id="6"]').click()
   await page.locator('.modal-content').getByRole('button', { name: /确认/ }).click()
   await page.getByText('秒杀活动已关闭', { exact: false }).waitFor()
-  await page.locator('#panel-marketing .status-badge.red').getByText('已关闭', { exact: true }).waitFor()
+  await page.locator('#panel-marketing .status-badge.red').getByText('管理员关闭', { exact: true }).waitFor()
 
   const expected = { activity_id: 6 }
   if (!closeRequest) throw new Error('未发出关闭活动请求')
