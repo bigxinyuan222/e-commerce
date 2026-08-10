@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react'
 import { View, Text, Image, Swiper, SwiperItem, ScrollView } from '@tarojs/components';
 import Taro from '@tarojs/taro';
 import { apiGet } from '@/api/common';
-import { homeApi, categoryApi, brandApi, productApi } from '@/api/home';
+import { homeApi, categoryApi, brandApi } from '@/api/home';
 import { fetchSeckillActivities } from '@/api/seckill';
 import { getImageUrl, normalizeProductListImages, lazyImgProps, getBrandIcon } from '@/utils/image';
 import { getCategoryIcon } from '@/utils/categoryIcons';
@@ -98,30 +98,16 @@ const CategoryNavItem = React.memo(({ category, onClick }: { category: any; onCl
 
 
 
-const recommendTabs = [
-  { key: 'recommend', label: '精选' },
-  { key: 'new', label: '新品' },
-  { key: 'special', label: '特惠' },
-  { key: 'digital', label: '数码' },
-  { key: 'fashion', label: '服饰' },
-];
-
-const tabToSlotName: Record<string, string> = {
-  recommend: '热门推荐',
-  new: '新品上架',
-  special: '特惠',
-  digital: '数码',
-  fashion: '服饰',
-};
-
 /**
  * 规范化推荐商品字段（兼容 camelCase / PascalCase / snake_case）
+ * 新接口 /product/recommend 已返回完整商品数据，无需再调用 /product/detail 补全
  */
 function normalizeRecommendProduct(item: any): any {
   if (!item) return null;
+  const id = item.id ?? item.ID ?? item.productId ?? item.ProductId ?? '';
   return {
     ...item,
-    id: item.id ?? item.ID ?? item.productId ?? item.ProductId ?? '',
+    id: id !== '' ? String(id) : '',
     name: item.name ?? item.Name ?? item.productName ?? item.ProductName ?? '',
     price: item.price ?? item.Price ?? item.salePrice ?? item.SalePrice ?? 0,
     originalPrice: item.originalPrice ?? item.OriginalPrice ?? item.marketPrice ?? item.MarketPrice ?? 0,
@@ -132,120 +118,58 @@ function normalizeRecommendProduct(item: any): any {
   };
 }
 
-function extractRecommendProducts(data: any, tabKey: string): any[] {
-  if (!data) return [];
-  const slots = Array.isArray(data) ? data : data?.list || data?.data || data?.slots || [];
-  if (slots.length === 0) return [];
-
-  // 推荐位结构：每项包含 name + products
-  if (slots[0]?.products && Array.isArray(slots[0].products)) {
-    const targetName = tabToSlotName[tabKey];
-    let rawProducts: any[] = [];
-    if (targetName) {
-      const matchedSlot = slots.find((s: any) =>
-        (s.name && s.name === targetName) ||
-        (s.Name && s.Name === targetName) ||
-        (s.slotName && s.slotName === targetName) ||
-        (s.title && s.title === targetName) ||
-        (s.key && s.key === tabKey) ||
-        (s.type && s.type === tabKey)
-      );
-      if (matchedSlot?.products) {
-        rawProducts = matchedSlot.products;
-      }
-    }
-    // 找不到对应 slot 时，返回第一个推荐位的商品兜底
-    if (!rawProducts.length) {
-      rawProducts = slots[0]?.products || [];
-    }
-    return rawProducts.map(normalizeRecommendProduct).filter(Boolean);
-  }
-
-  // 如果 slots 本身就是商品列表，也做字段规范化
-  return slots.map(normalizeRecommendProduct).filter(Boolean);
+/**
+ * 规范化推荐位结构:统一字段命名,products 做字段兼容
+ */
+function normalizeRecommendSlot(slot: any): any {
+  if (!slot) return null;
+  const id = slot.id ?? slot.ID ?? slot.slotId ?? '';
+  const name = slot.name ?? slot.Name ?? slot.slotName ?? slot.title ?? '';
+  const rawProducts = Array.isArray(slot.products) ? slot.products
+    : (Array.isArray(slot.Products) ? slot.Products
+      : (Array.isArray(slot.items) ? slot.items : []));
+  return {
+    ...slot,
+    id: id !== '' ? id : name,  // 兜底用 name 作为 key
+    name,
+    products: rawProducts.map(normalizeRecommendProduct).filter(Boolean),
+  };
 }
 
 function extractAllRecommendSlots(data: any): any[] {
   if (!data) return [];
-  return Array.isArray(data) ? data : data?.list || data?.data || data?.slots || [];
-}
-
-/**
- * 推荐位商品仅返回 productId（thin reference 契约），
- * 需批量调用 /product/detail 补全商品详情后合并回推荐位。
- */
-async function enrichRecommendSlots(slots: any[]): Promise<any[]> {
-  if (!slots || slots.length === 0) return slots;
-
-  // 收集所有需要补全的 productId（跳过已有完整信息的商品）
-  const productIdsToFetch: number[] = [];
-  const slotProductIndexMap: { slotIdx: number; productIdx: number; productId: number }[] = [];
-
-  slots.forEach((slot: any, sIdx: number) => {
-    if (!slot.products || !Array.isArray(slot.products)) return;
-    slot.products.forEach((p: any, pIdx: number) => {
-      const pid = p.productId ?? p.ProductId ?? p.product_id ?? p.ID;
-      // 已有 name 和 images 的商品无需再查
-      if (pid && (!p.name || (!p.images && !p.image))) {
-        productIdsToFetch.push(pid);
-        slotProductIndexMap.push({ slotIdx: sIdx, productIdx: pIdx, productId: pid });
-      }
-    });
-  });
-
-  if (productIdsToFetch.length === 0) return slots;
-
-  // 批量请求商品详情（并发，单个失败不影响其他）
-  const detailResults = await Promise.all(
-    [...new Set(productIdsToFetch)].map(pid =>
-      apiGet(productApi.detail, { id: pid }, {}, true)
-        .then(res => ({ pid, data: res?.data || null }))
-        .catch(() => ({ pid, data: null }))
-    )
-  );
-
-  // 构建 productId -> 商品详情 映射
-  const detailMap = new Map<number, any>();
-  detailResults.forEach(({ pid, data }) => {
-    if (data) detailMap.set(pid, data);
-  });
-
-  // 将详情合并回 slots（保留原始 productId 字段）
-  const enrichedSlots = slots.map((slot: any) => ({
-    ...slot,
-    products: (slot.products || []).map((p: any) => {
-      const pid = p.productId ?? p.ProductId ?? p.product_id ?? p.ID;
-      const detail = detailMap.get(pid);
-      if (!detail) return normalizeRecommendProduct(p);
-      return normalizeRecommendProduct({
-        ...p,
-        ...detail,
-        id: detail.id ?? pid,
-        name: detail.name ?? '',
-        price: detail.price ?? 0,
-        originalPrice: detail.originalPrice ?? detail.marketPrice ?? 0,
-        images: detail.images || [],
-        image: detail.image ?? detail.images?.[0] ?? '',
-        sales: detail.sales ?? 0,
-      });
-    }),
-  }));
-
-  return enrichedSlots;
+  const slots = Array.isArray(data) ? data : data?.list || data?.data || data?.slots || [];
+  return slots.map(normalizeRecommendSlot).filter((s: any) => s && s.name);
 }
 
 const HomePage: React.FC = () => {
-  const [activeTab, setActiveTab] = useState('recommend');
+  // 当前选中的推荐位 id（动态 tab，初始为 null，加载后默认选中第一个推荐位）
+  const [activeSlotId, setActiveSlotId] = useState<string | number | null>(null);
   const [countdown, setCountdown] = useState({ hours: '00', minutes: '00', seconds: '00' });
   const [banners, setBanners] = useState<any[]>([]);
   const [categories, setCategories] = useState<any[]>([]);
   const [seckillActivity, setSeckillActivity] = useState<any>({ products: [], endTime: '' });
   const [hotBrands, setHotBrands] = useState<any[]>([]);
-  const [recommendedProducts, setRecommendedProducts] = useState<any[]>([]);
-  // 推荐位原始数据缓存（新接口返回推荐位+商品结构，切换tab时无需重复请求）
-  const [recommendSlotsCache, setRecommendSlotsCache] = useState<any[] | null>(null);
+  // 所有推荐位数据（一次请求获取，切换 tab 直接从缓存取商品）
+  const [recommendSlots, setRecommendSlots] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
+  // 动态推荐位 tab 列表（由接口返回的推荐位生成）
+  const recommendTabs = useMemo(() => {
+    return recommendSlots.map(slot => ({
+      key: slot.id,
+      label: slot.name,
+    }));
+  }, [recommendSlots]);
+
+  // 当前推荐位的商品（由 activeSlotId 从推荐位缓存计算得出，无需重复请求）
+  const recommendedProducts = useMemo(() => {
+    if (recommendSlots.length === 0 || activeSlotId === null) return [];
+    const slot = recommendSlots.find(s => s.id === activeSlotId);
+    if (!slot) return [];
+    return normalizeProductListImages(slot.products || []);
+  }, [recommendSlots, activeSlotId]);
 
   const goToSearch = useCallback(() => {
     Taro.navigateTo({ url: '/pages/home/search/index' });
@@ -293,7 +217,7 @@ const HomePage: React.FC = () => {
           apiGet(categoryApi.categoryTree).catch(() => null),
           fetchSeckillActivities({ status: 'active' }).catch(() => null),
           apiGet(brandApi.brandTree).catch(() => null),
-          apiGet(homeApi.recommendations).catch(() => null),
+          apiGet(homeApi.recommend).catch(() => null),
         ]);
 
         if (bannerRes?.data) {
@@ -351,15 +275,13 @@ const HomePage: React.FC = () => {
         }
 
         if (recommendRes?.data) {
-          // 推荐位接口返回 thin reference（仅 productId），需批量补全商品详情
-          const rawSlots = extractAllRecommendSlots(recommendRes.data);
-          const enrichedSlots = await enrichRecommendSlots(rawSlots);
-          // 缓存补全后的推荐位数据，后续 tab 切换可直接使用
-          if (enrichedSlots.length > 0 && enrichedSlots[0]?.products) {
-            setRecommendSlotsCache(enrichedSlots);
+          // 新接口 /product/recommend 一次返回所有推荐位及完整商品数据，无需再补全详情
+          const slots = extractAllRecommendSlots(recommendRes.data);
+          setRecommendSlots(slots);
+          // 默认选中第一个推荐位
+          if (slots.length > 0) {
+            setActiveSlotId(slots[0].id);
           }
-          const productData = extractRecommendProducts(enrichedSlots, 'recommend');
-          setRecommendedProducts(normalizeProductListImages(productData));
         }
       } catch (error) {
         console.error('Failed to load home data:', error);
@@ -372,31 +294,6 @@ const HomePage: React.FC = () => {
   useEffect(() => {
     loadData();
   }, []);
-
-  useEffect(() => {
-    const loadRecommendProducts = async () => {
-      try {
-        // 优先使用缓存的推荐位数据（新 /homepage/recommendations 接口一次返回所有推荐位）
-        if (recommendSlotsCache && recommendSlotsCache.length > 0) {
-          const productData = extractRecommendProducts(recommendSlotsCache, activeTab);
-          setRecommendedProducts(normalizeProductListImages(productData));
-          return;
-        }
-        // 首次加载默认 tab 时，loadData 已经在处理推荐数据，无需重复请求
-        if (activeTab === 'recommend') return;
-        // 非默认 tab 且缓存未命中时，兜底请求单 tab 数据
-        const res = await apiGet(homeApi.recommendations, { type: activeTab });
-        if (res?.data) {
-          const productData = extractRecommendProducts(res.data, activeTab);
-          setRecommendedProducts(normalizeProductListImages(productData));
-        }
-      } catch (error) {
-        console.error('Failed to load recommendations:', error);
-      }
-    };
-
-    loadRecommendProducts();
-  }, [activeTab, recommendSlotsCache]);
 
   useEffect(() => {
     if (!seckillActivity.endTime) return;
@@ -474,7 +371,7 @@ const HomePage: React.FC = () => {
                 <SwiperItem key={banner.id}>
                   <Image
                     src={getImageUrl(banner.image || banner.imageUrl)}
-                    mode="aspectFill"
+                    mode="scaleToFill"
                     {...lazyImgProps()}
                     onClick={() => {
                       if (banner.type === 'seckill') {
@@ -542,6 +439,21 @@ const HomePage: React.FC = () => {
         )}
 
         <View className={styles.activitySection}>
+          {seckillActivity.products.length > 0 ? (
+            <ScrollView scrollX className={styles.seckillProducts} showScrollbar={false}>
+              {seckillActivity.products.map((product) => (
+                <SeckillProductCard
+                  key={product.id || product.productId}
+                  product={product}
+                  onClick={goToSeckillProductDetail}
+                />
+              ))}
+            </ScrollView>
+          ) : (
+            <View className={styles.seckillEmpty}>
+              <Text className={styles.seckillEmptyText}>暂无秒杀商品</Text>
+            </View>
+          )}
           <View className={styles.seckillArea}>
             <View className={styles.seckillHeader}>
               <View>
@@ -562,21 +474,6 @@ const HomePage: React.FC = () => {
                 </View>
               </View>
             </View>
-            {seckillActivity.products.length > 0 ? (
-              <ScrollView scrollX className={styles.seckillProducts} showScrollbar={false}>
-                {seckillActivity.products.map((product) => (
-                  <SeckillProductCard
-                    key={product.id || product.productId}
-                    product={product}
-                    onClick={goToSeckillProductDetail}
-                  />
-                ))}
-              </ScrollView>
-            ) : (
-              <View className={styles.seckillEmpty}>
-                <Text className={styles.seckillEmptyText}>暂无秒杀商品</Text>
-              </View>
-            )}
           </View>
         </View>
 
@@ -591,8 +488,8 @@ const HomePage: React.FC = () => {
               {recommendTabs.map((tab) => (
                 <View
                   key={tab.key}
-                  className={`${styles.recommendTab} ${activeTab === tab.key ? styles.recommendTabActive : ''}`}
-                  onClick={() => setActiveTab(tab.key)}
+                  className={`${styles.recommendTab} ${activeSlotId === tab.key ? styles.recommendTabActive : ''}`}
+                  onClick={() => setActiveSlotId(tab.key)}
                 >
                   <Text className={styles.recommendTabText}>{tab.label}</Text>
                 </View>
@@ -602,7 +499,7 @@ const HomePage: React.FC = () => {
             {recommendedProducts.length > 0 ? (
               <View className={styles.productGrid}>
                 {recommendedProducts.map((product) => (
-                  <ProductCard 
+                  <ProductCard
                     key={product.id}
                     product={product}
                     onClick={goToProductDetail}
@@ -611,7 +508,7 @@ const HomePage: React.FC = () => {
               </View>
             ) : (
               <View style={{ padding: '60rpx', textAlign: 'center', color: '#999' }}>
-                <Text>该分类暂无商品</Text>
+                <Text>该推荐位暂无商品</Text>
               </View>
             )}
           </View>

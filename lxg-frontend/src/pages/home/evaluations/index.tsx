@@ -10,6 +10,7 @@ import {
   fetchReviewReplies,
 } from '@/api/home';
 import { getImageUrl, lazyImgProps } from '@/utils/image';
+import { formatDateTime } from '@/utils/time';
 import styles from '@/styles/home/evaluations.module.scss';
 
 type FilterType = 'all' | 'good' | 'neutral' | 'bad' | 'image';
@@ -78,16 +79,20 @@ const ProductEvaluationsPage: React.FC = () => {
     }
   }, []);
 
-  // 加载AI评价摘要
+  // 加载AI评价摘要（即使 content 为空也保留，由 UI 显示占位框架）
+  const [aiLoading, setAiLoading] = useState(true);
   const loadAiSummary = useCallback(async (pId: string) => {
     if (!pId) return;
+    setAiLoading(true);
     try {
       const res = await fetchReviewAiSummary(pId);
-      if (res?.data && (res.data.overall || (res.data.strengths && res.data.strengths.length) || (res.data.weaknesses && res.data.weaknesses.length))) {
+      if (res?.data) {
         setAiSummary(res.data);
       }
     } catch (error: any) {
       console.error('[AI评价摘要] 加载失败:', error?.message || error);
+    } finally {
+      setAiLoading(false);
     }
   }, []);
 
@@ -232,104 +237,124 @@ const ProductEvaluationsPage: React.FC = () => {
     }
   }, [commentInput, currentEvaluation, submittingReply]);
 
-  // 渲染评分星星
-  const renderStars = useCallback((rating: number) => {
-    return [5, 4, 3, 2, 1].map(star => (
-      <Text
-        key={star}
-        className={star <= rating ? styles.starActive : styles.starInactive}
-      >★</Text>
-    ));
-  }, []);
-
   // 渲染评分分布
-  const distributionData = stats?.distribution || {};
-  const totalReviews = stats?.total || 0;
-
   return (
     <View className={styles.evaluationPage}>
-      {/* 评分统计 */}
-      {stats && (
-        <View className={styles.statsSection}>
-          <View className={styles.scoreArea}>
-            <Text className={styles.scoreValue}>{Number(stats.averageRating || 0).toFixed(1)}</Text>
-            <Text className={styles.scoreLabel}>分</Text>
-            <View className={styles.stars}>
-              {renderStars(Math.round(Number(stats.averageRating || 0)))}
+      {/* AI智能总评卡片：始终显示框架，加载中/无内容时展示占位 */}
+      <View style={{
+        position: 'relative',
+        margin: '20rpx',
+        padding: '32rpx 28rpx 28rpx',
+        borderRadius: '24rpx',
+        overflow: 'hidden',
+        background: 'linear-gradient(135deg, #1a1f3a 0%, #2d1b69 45%, #4a2c7a 100%)',
+        boxShadow: '0 8rpx 28rpx rgba(74, 44, 122, 0.35)',
+        color: '#fff',
+      }}>
+        <View style={{ position: 'relative', zIndex: 1, display: 'flex', alignItems: 'center', marginBottom: '24rpx' }}>
+          <View style={{
+            width: '64rpx', height: '64rpx', borderRadius: '999rpx',
+            background: 'linear-gradient(135deg, #a88bff 0%, #6c5ce7 100%)',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            marginRight: '16rpx',
+            boxShadow: '0 4rpx 12rpx rgba(168, 139, 255, 0.5)',
+          }}>
+            <Text style={{ fontSize: '36rpx', lineHeight: 1 }}>🤖</Text>
+          </View>
+          <Text style={{ flex: 1, fontSize: '34rpx', fontWeight: '700', color: '#fff', letterSpacing: '1rpx' }}>
+            AI智能总评
+          </Text>
+          <Text style={{
+            fontSize: '20rpx', color: '#c8b6ff',
+            background: 'rgba(168, 139, 255, 0.15)',
+            border: '1rpx solid rgba(168, 139, 255, 0.3)',
+            padding: '4rpx 14rpx', borderRadius: '999rpx', marginLeft: '12rpx',
+          }}>AI</Text>
+          {aiSummary && aiSummary.averageRating > 0 && (
+            <View style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', marginLeft: '12rpx' }}>
+              <Text style={{ fontSize: '44rpx', fontWeight: '700', color: '#ffd700', lineHeight: 1 }}>
+                {Math.round(aiSummary.averageRating * 20)}%
+              </Text>
+              <Text style={{ fontSize: '20rpx', color: 'rgba(255,255,255,0.65)', marginTop: '6rpx' }}>综合评分</Text>
+            </View>
+          )}
+        </View>
+
+        {/* 加载中 / 无内容占位 */}
+        {(aiLoading || (aiSummary && !aiSummary.overall)) && (
+          <View style={{
+            position: 'relative', zIndex: 1, display: 'flex', alignItems: 'center',
+            padding: '28rpx 24rpx', marginBottom: '20rpx',
+            background: 'rgba(255,255,255,0.06)', borderRadius: '16rpx',
+            borderLeft: '4rpx solid rgba(168,139,255,0.5)',
+          }}>
+            <View style={{ display: 'flex', marginRight: '16rpx' }}>
+              <Text style={{ width: '12rpx', height: '12rpx', borderRadius: '999rpx', background: '#a88bff', marginRight: '8rpx', opacity: 0.4 }}> </Text>
+              <Text style={{ width: '12rpx', height: '12rpx', borderRadius: '999rpx', background: '#a88bff', marginRight: '8rpx', opacity: 0.7 }}> </Text>
+              <Text style={{ width: '12rpx', height: '12rpx', borderRadius: '999rpx', background: '#a88bff', opacity: 1 }}> </Text>
+            </View>
+            <View style={{ flex: 1 }}>
+              <Text style={{ fontSize: '30rpx', color: 'rgba(255,255,255,0.75)' }}>
+                AI 正在分析该商品的评价...
+              </Text>
+              <Text style={{ display: 'block', fontSize: '22rpx', color: 'rgba(255,255,255,0.45)', marginTop: '6rpx' }}>
+                {aiLoading ? '基于真实用户评价智能生成' : '评价数据积累后将自动生成总评'}
+              </Text>
             </View>
           </View>
-          <View className={styles.distribution}>
-            {[5, 4, 3, 2, 1].map(star => {
-              const count = Number(distributionData[star] || 0);
-              const percent = totalReviews > 0 ? Math.round((count / totalReviews) * 100) : 0;
-              return (
-                <View key={star} className={styles.distItem}>
-                  <Text className={styles.distLabel}>{star}星</Text>
-                  <View className={styles.distBarWrap}>
-                    <View className={styles.distBar} style={{ width: `${percent}%` }} />
-                  </View>
-                  <Text className={styles.distPercent}>{percent}%</Text>
-                </View>
-              );
-            })}
-          </View>
-          <View className={styles.goodRate}>
-            <Text className={styles.goodRateLabel}>好评率</Text>
-            <Text className={styles.goodRateValue}>{stats.goodRate || 100}%</Text>
-          </View>
-        </View>
-      )}
+        )}
 
-      {/* AI评价摘要 */}
-      {aiSummary && (aiSummary.overall || (aiSummary.strengths && aiSummary.strengths.length > 0)) && (
-        <View style={{
-          background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-          padding: '24rpx',
-          margin: '20rpx',
-          borderRadius: '16rpx',
-          color: 'white',
-        }}>
-          <View style={{ display: 'flex', alignItems: 'center', marginBottom: '12rpx' }}>
-            <Text style={{ fontSize: '32rpx', marginRight: '8rpx' }}>🤖</Text>
-            <Text style={{ fontSize: '30rpx', fontWeight: 'bold' }}>AI评价总结</Text>
-          </View>
-          {aiSummary.overall && (
-            <Text style={{ fontSize: '26rpx', lineHeight: 1.6, display: 'block', marginBottom: '12rpx' }}>
+        {/* 有 AI 总评内容 */}
+        {!aiLoading && aiSummary && aiSummary.overall && (
+          <>
+            <Text style={{
+              position: 'relative', zIndex: 1, display: 'block',
+              fontSize: '30rpx', color: 'rgba(255,255,255,0.92)', lineHeight: 1.7,
+              marginBottom: '24rpx', padding: '20rpx 24rpx',
+              background: 'rgba(255,255,255,0.06)', borderRadius: '16rpx',
+              borderLeft: '4rpx solid #a88bff',
+            }}>
               {aiSummary.overall}
             </Text>
-          )}
-          {aiSummary.strengths && aiSummary.strengths.length > 0 && (
-            <View style={{ marginBottom: '8rpx' }}>
-              <Text style={{ fontSize: '24rpx', opacity: 0.9 }}>👍 好评亮点</Text>
-              <View style={{ display: 'flex', flexWrap: 'wrap', gap: '8rpx', marginTop: '8rpx' }}>
-                {aiSummary.strengths.map((tag: string, idx: number) => (
-                  <Text key={idx} style={{
-                    fontSize: '22rpx',
-                    padding: '4rpx 16rpx',
-                    background: 'rgba(255,255,255,0.2)',
-                    borderRadius: '20rpx',
-                  }}>{tag}</Text>
-                ))}
+            {aiSummary.strengths && aiSummary.strengths.length > 0 && (
+              <View style={{ position: 'relative', zIndex: 1, marginBottom: '16rpx' }}>
+                <Text style={{ fontSize: '28rpx', color: 'rgba(255,255,255,0.85)', marginBottom: '12rpx', fontWeight: '500' }}>
+                  👍 好评亮点
+                </Text>
+                <View style={{ display: 'flex', flexWrap: 'wrap' }}>
+                  {aiSummary.strengths.map((tag: string, idx: number) => (
+                    <Text key={idx} style={{
+                      fontSize: '28rpx', color: '#b9f5d4',
+                      background: 'rgba(72, 209, 104, 0.18)',
+                      border: '1rpx solid rgba(72, 209, 104, 0.35)',
+                      padding: '8rpx 20rpx', borderRadius: '999rpx',
+                      marginRight: '12rpx', marginBottom: '12rpx',
+                    }}>{tag}</Text>
+                  ))}
+                </View>
               </View>
-            </View>
-          )}
-          {aiSummary.weaknesses && aiSummary.weaknesses.length > 0 && (
-            <View>
-              <Text style={{ fontSize: '24rpx', opacity: 0.9 }}>👎 待改进</Text>
-              <View style={{ display: 'flex', flexWrap: 'wrap', gap: '8rpx', marginTop: '8rpx' }}>
-                {aiSummary.weaknesses.map((tag: string, idx: number) => (
-                  <Text key={idx} style={{
-                    fontSize: '22rpx',
-                    padding: '4rpx 16rpx',
-                    background: 'rgba(255,255,255,0.15)',
-                    borderRadius: '20rpx',
-                  }}>{tag}</Text>
-                ))}
+            )}
+            {aiSummary.weaknesses && aiSummary.weaknesses.length > 0 && (
+              <View style={{ position: 'relative', zIndex: 1 }}>
+                <Text style={{ fontSize: '28rpx', color: 'rgba(255,255,255,0.85)', marginBottom: '12rpx', fontWeight: '500' }}>
+                  👎 待改进
+                </Text>
+                <View style={{ display: 'flex', flexWrap: 'wrap' }}>
+                  {aiSummary.weaknesses.map((tag: string, idx: number) => (
+                    <Text key={idx} style={{
+                      fontSize: '28rpx', color: '#ffd3a0',
+                      background: 'rgba(255, 159, 67, 0.18)',
+                      border: '1rpx solid rgba(255, 159, 67, 0.35)',
+                      padding: '8rpx 20rpx', borderRadius: '999rpx',
+                      marginRight: '12rpx', marginBottom: '12rpx',
+                    }}>{tag}</Text>
+                  ))}
+                </View>
               </View>
-            </View>
-          )}
-        </View>
-      )}
+            )}
+          </>
+        )}
+      </View>
 
       {/* 筛选标签 */}
       <View className={styles.filterSection}>
@@ -347,44 +372,12 @@ const ProductEvaluationsPage: React.FC = () => {
             <Text>好评 {stats?.goodCount || ''}</Text>
           </View>
           <View
-            className={`${styles.filterTab} ${currentFilter === 'neutral' ? styles.active : ''}`}
-            onClick={() => handleFilterChange('neutral')}
-          >
-            <Text>中评 {stats?.neutralCount || ''}</Text>
-          </View>
-          <View
             className={`${styles.filterTab} ${currentFilter === 'bad' ? styles.active : ''}`}
             onClick={() => handleFilterChange('bad')}
           >
             <Text>差评 {stats?.badCount || ''}</Text>
           </View>
-          <View
-            className={`${styles.filterTab} ${currentFilter === 'image' ? styles.active : ''}`}
-            onClick={() => handleFilterChange('image')}
-          >
-            <Text>晒图 {stats?.imageCount || ''}</Text>
-          </View>
         </ScrollView>
-      </View>
-
-      {/* 排序 */}
-      <View className={styles.sortSection}>
-        <Text className={styles.sortLabel}>乐享购鼓励真实、有用的评价</Text>
-        <View className={styles.sortOptions}>
-          <Text
-            className={`${styles.sortOption} ${sortType === 'newest' ? styles.active : ''}`}
-            onClick={() => setSortType('newest')}
-          >
-            最新
-          </Text>
-          <Text className={styles.sortDivider}>|</Text>
-          <Text
-            className={`${styles.sortOption} ${sortType === 'helpful' ? styles.active : ''}`}
-            onClick={() => setSortType('helpful')}
-          >
-            最热
-          </Text>
-        </View>
       </View>
 
       {/* 评价列表 */}
@@ -420,15 +413,10 @@ const ProductEvaluationsPage: React.FC = () => {
                     </View>
                     <Text className={styles.purchaseInfo}>{evalItem.specs || evalItem.skuName || ''}</Text>
                   </View>
-                  <Text className={styles.evalTime}>{evalItem.createdAt || evalItem.createTime || ''}</Text>
+                  <Text className={styles.evalTime}>{formatDateTime(evalItem.createdAt || evalItem.createTime || '')}</Text>
                 </View>
                 <View className={styles.ratingRow}>
-                  <Text className={styles.ratingLabel}>
-                    {evalItem.ratingType === 'good' ? '好评' : evalItem.ratingType === 'bad' ? '差评' : '中评'}
-                  </Text>
-                  <View className={styles.ratingStars}>
-                    {renderStars(Number(evalItem.rating || 5))}
-                  </View>
+                  <Text className={styles.ratingLabel}>好评</Text>
                 </View>
                 <Text className={styles.evalContent}>
                   {evalItem.content && evalItem.content.length > 200
@@ -509,7 +497,7 @@ const ProductEvaluationsPage: React.FC = () => {
                       <View className={styles.commentContent}>
                         <View className={styles.commentHeader}>
                           <Text className={styles.commentUserName}>{comment.userName || '匿名用户'}</Text>
-                          <Text className={styles.commentTime}>{comment.createdAt || comment.createTime || ''}</Text>
+                          <Text className={styles.commentTime}>{formatDateTime(comment.createdAt || comment.createTime || '')}</Text>
                         </View>
                         <Text className={styles.commentText}>{comment.content}</Text>
                       </View>

@@ -90,6 +90,17 @@ const SeckillPage: React.FC = () => {
   // 当前活动
   const currentActivity = activities[activeActivityIndex] || activities[0];
 
+  // 健壮解析各种时间格式（ISO 8601、YYYY-MM-DD HH:mm:ss、YYYY/MM/DD HH:mm:ss 等）
+  const parseTime = (timeStr: string): number => {
+    if (!timeStr) return NaN;
+    let t = new Date(timeStr).getTime();
+    if (!isNaN(t)) return t;
+    t = new Date(timeStr.replace(/-/g, '/')).getTime();
+    if (!isNaN(t)) return t;
+    t = new Date(timeStr.replace(/\//g, '-')).getTime();
+    return t;
+  };
+
   // 倒计时：基于当前活动 endTime
   const updateCountdown = useCallback(() => {
     if (!currentActivity?.endTime) {
@@ -97,7 +108,7 @@ const SeckillPage: React.FC = () => {
       return;
     }
     const now = new Date().getTime();
-    const endTime = new Date(currentActivity.endTime.replace(/-/g, '/')).getTime();
+    const endTime = parseTime(currentActivity.endTime);
     const diff = endTime - now;
 
     if (diff <= 0) {
@@ -212,7 +223,9 @@ const SeckillPage: React.FC = () => {
                       <Text className={styles.priceSymbol}>¥</Text>
                       <Text className={styles.priceNum}>{product.seckillPrice}</Text>
                     </View>
-                    <Text className={styles.originalPrice}>¥{product.originalPrice}</Text>
+                    {product.originalPrice > 0 && product.originalPrice !== product.seckillPrice && (
+                      <Text className={styles.originalPrice}>¥{product.originalPrice}</Text>
+                    )}
                   </View>
                   <View className={styles.progressArea}>
                     <View className={styles.progressBar}>

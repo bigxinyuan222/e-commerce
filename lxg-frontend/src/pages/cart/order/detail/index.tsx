@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, Image, ScrollView } from '@tarojs/components';
 import Taro from '@tarojs/taro';
-import { fetchOrderDetail, cancelOrder, confirmOrder, confirmPickupOrder, payOrder, paymentCallback, fetchOrderPaymentStatus } from '@/api/cart';
+import { fetchOrderDetail, cancelOrder, confirmOrder, payOrder } from '@/api/cart';
 import { getImageUrl, lazyImgProps } from '@/utils/image';
+import { formatDateTime } from '@/utils/time';
+import { executeWechatPayment } from '@/utils/wechatPay';
 import styles from '@/styles/cart/order-detail.module.scss';
 
 const OrderDetailPage: React.FC = () => {
@@ -48,38 +50,33 @@ const OrderDetailPage: React.FC = () => {
 
   const handlePay = async () => {
     if (!order?.id) return;
-    Taro.showLoading({ title: '支付处理中...', mask: true });
+    Taro.showLoading({ title: '发起支付...', mask: true });
     try {
-      // 1. 发起支付
+      // 1. 调用后端支付接口，获取微信支付参数
       const payRes = await payOrder(order.id, { paymentMethod: 'wechat' });
-      const payData = payRes?.data || payRes;
-      const orderNo = payData?.orderNo ?? order.orderNo;
-      const transactionId = payData?.transactionId ?? payData?.prepayId ?? payData?.prepay_id ?? '';
-      const amount = payData?.amount ?? order.payAmount;
 
-      // 2. 支付回调（模拟微信异步通知）
-      await paymentCallback({
-        orderId: order.id,
-        orderNo,
-        transactionId,
-        paymentMethod: 'wechat',
-        amount,
-      });
+      // 2. 拉起微信支付（小程序 requestPayment / H5 JSAPI 或 H5 支付）
+      //    支付成功后内部会轮询确认支付状态
+      Taro.showLoading({ title: '请确认支付...', mask: true });
+      const payStatus = await executeWechatPayment(payRes, order.id);
 
-      // 3. 查询订单支付状态，确认是否支付成功
-      const statusRes = await fetchOrderPaymentStatus(order.id);
-      const payStatus = statusRes?.data;
       Taro.hideLoading();
       if (payStatus?.isPaid) {
         Taro.showToast({ title: '支付成功', icon: 'success' });
         loadOrderDetail(order.id);
       } else {
-        Taro.showToast({ title: payStatus?.message || '支付状态未确认，请稍后查看', icon: 'none' });
+        // 用户已完成支付但回调延迟，提示用户稍后查看
+        Taro.showToast({ title: payStatus?.message || '支付状态确认中，请稍后查看', icon: 'none' });
         loadOrderDetail(order.id);
       }
     } catch (error: any) {
       Taro.hideLoading();
-      Taro.showToast({ title: error?.message || '支付失败', icon: 'none' });
+      const errMsg = error?.message || '';
+      if (errMsg.includes('取消支付')) {
+        Taro.showToast({ title: '已取消支付', icon: 'none' });
+      } else {
+        Taro.showToast({ title: errMsg || '支付失败', icon: 'none' });
+      }
     }
   };
 
@@ -93,26 +90,6 @@ const OrderDetailPage: React.FC = () => {
             try {
               await confirmOrder(order.id);
               Taro.showToast({ title: '已确认收货', icon: 'success' });
-              loadOrderDetail(order.id);
-            } catch (error: any) {
-              Taro.showToast({ title: error?.message || '操作失败', icon: 'none' });
-            }
-          }
-        }
-      });
-    }
-  };
-
-  const handleConfirmDelivery = () => {
-    if (order?.id) {
-      Taro.showModal({
-        title: '确认发货',
-        content: '确定要发货吗？发货后订单将变为待自提状态。',
-        success: async (res) => {
-          if (res.confirm) {
-            try {
-              await confirmPickupOrder(order.id);
-              Taro.showToast({ title: '已确认发货', icon: 'success' });
               loadOrderDetail(order.id);
             } catch (error: any) {
               Taro.showToast({ title: error?.message || '操作失败', icon: 'none' });
@@ -204,7 +181,7 @@ const OrderDetailPage: React.FC = () => {
 
   return (
     <View className={styles.orderDetailPage}>
-      <ScrollView scrollY style={{ height: 'calc(100vh - 120rpx)' }}>
+      <ScrollView scrollY style={{ height: 'calc(100vh - 120rpx)', paddingBottom: '260rpx', boxSizing: 'border-box' }}>
         <View className={styles.statusSection} style={{ backgroundColor: getStatusBgColor() }}>
           <Text className={styles.statusIcon}>{getStatusIcon()}</Text>
           <Text className={styles.statusText}>{order.statusText}</Text>
@@ -240,12 +217,12 @@ const OrderDetailPage: React.FC = () => {
         <View className={styles.orderInfo}>
           <Text className={styles.infoTitle}>订单信息</Text>
           <View className={styles.infoRow}><Text className={styles.infoLabel}>订单编号</Text><Text className={styles.infoValue}>{order.orderNo}</Text></View>
-          <View className={styles.infoRow}><Text className={styles.infoLabel}>下单时间</Text><Text className={styles.infoValue}>{order.createTime}</Text></View>
+          <View className={styles.infoRow}><Text className={styles.infoLabel}>下单时间</Text><Text className={styles.infoValue}>{formatDateTime(order.createTime)}</Text></View>
           {!isPendingPayment && order.payTime && (
-            <View className={styles.infoRow}><Text className={styles.infoLabel}>支付时间</Text><Text className={styles.infoValue}>{order.payTime}</Text></View>
+            <View className={styles.infoRow}><Text className={styles.infoLabel}>支付时间</Text><Text className={styles.infoValue}>{formatDateTime(order.payTime)}</Text></View>
           )}
           {isCancelled && order.cancelTime && (
-            <View className={styles.infoRow}><Text className={styles.infoLabel}>取消时间</Text><Text className={styles.infoValue}>{order.cancelTime}</Text></View>
+            <View className={styles.infoRow}><Text className={styles.infoLabel}>取消时间</Text><Text className={styles.infoValue}>{formatDateTime(order.cancelTime)}</Text></View>
           )}
         </View>
 
@@ -267,10 +244,7 @@ const OrderDetailPage: React.FC = () => {
           </>
         )}
         {isPendingDelivery && (
-          <>
-            <View className={styles.actionBtn} onClick={handleCancel}>取消订单</View>
-            <View className={`${styles.actionBtn} ${styles.primary}`} onClick={handleConfirmDelivery}>确认发货</View>
-          </>
+          <View className={styles.actionBtn} onClick={handleCancel}>取消订单</View>
         )}
         {isPendingPickup && (
           <>

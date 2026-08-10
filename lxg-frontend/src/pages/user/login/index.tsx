@@ -73,6 +73,25 @@ const LoginPage: React.FC = () => {
   // 记录临时 token 获取时间，用于判断是否过期（临时 token 有效期 1 分钟）
   const wechatTempTokenTimeRef = useRef<number>(0);
 
+  // H5 宽屏隐藏微信登录：屏幕宽度大于 768px 视为非移动端，不显示微信登录
+  const [showWechatLogin, setShowWechatLogin] = useState(true);
+  useEffect(() => {
+    const checkScreenWidth = () => {
+      // #ifdef H5
+      const width = window.innerWidth;
+      setShowWechatLogin(width <= 768);
+      // #endif
+      // #ifdef WEAPP
+      setShowWechatLogin(true);
+      // #endif
+    };
+    checkScreenWidth();
+    // #ifdef H5
+    window.addEventListener('resize', checkScreenWidth);
+    return () => window.removeEventListener('resize', checkScreenWidth);
+    // #endif
+  }, []);
+
   // 微信登录后设置密码相关状态
   const [showSetPasswordModal, setShowSetPasswordModal] = useState(false);
   const [newPassword, setNewPassword] = useState('');
@@ -95,16 +114,36 @@ const LoginPage: React.FC = () => {
     return `${year}-${month}-${day}`;
   };
 
+  // 登录/注册成功后跳转：有上一页则返回，否则跳到首页（避免直接进入登录页时 navigateBack 失败）
+  const goBackOrHome = () => {
+    const pages = Taro.getCurrentPages();
+    if (pages.length > 1) {
+      Taro.navigateBack();
+    } else {
+      Taro.switchTab({ url: '/pages/home/index' });
+    }
+  };
+
   const saveUserSession = (result: any) => {
     const payload = result?.data ?? result ?? {};
     console.log('[微信登录] saveUserSession 原始响应:', JSON.stringify(result));
     console.log('[微信登录] saveUserSession payload:', JSON.stringify(payload));
     // 注意：不包含 tempToken —— 临时 token 不能作为登录态保存
-    const token = payload.token ?? payload.Token ?? payload.accessToken ?? payload.access_token ?? payload.userToken ?? payload.user_token ?? '';
-    const user = payload.user_login ?? payload.user ?? payload.userInfo ?? payload;
+    // 兼容 token 在顶层或嵌套在 user 对象中的多种返回结构
+    const token = payload.token ?? payload.Token ?? payload.accessToken ?? payload.access_token
+      ?? payload.userToken ?? payload.user_token
+      ?? payload.user?.token ?? payload.user?.Token ?? payload.user?.accessToken ?? payload.user?.access_token
+      ?? payload.user?.userToken ?? payload.user?.user_token
+      ?? payload.data?.token ?? payload.data?.Token ?? '';
+    const user = payload.user_login ?? payload.user ?? payload.userInfo ?? payload.data?.user ?? payload;
 
     console.log('[微信登录] 提取的 token:', token ? `${token.substring(0, 10)}...（长度:${token.length}）` : '空');
     console.log('[微信登录] 提取的 user:', user ? JSON.stringify(user).substring(0, 100) : '空');
+
+    if (!token) {
+      console.error('[微信登录] 登录响应中未找到有效 token，完整响应:', JSON.stringify(result));
+      throw new Error('登录失败：未获取到用户凭证');
+    }
 
     Taro.setStorageSync('lxg_user', JSON.stringify({ token, user }));
 
@@ -141,7 +180,7 @@ const LoginPage: React.FC = () => {
     }, 1000);
   };
 
-  const sendCode = async () => {
+  const sendCode = async (scene: 'register' | 'reset' = 'register') => {
     if (!phone || phone.length !== 11) {
       Taro.showToast({ title: '请输入正确的手机号', icon: 'none' });
       return;
@@ -149,7 +188,12 @@ const LoginPage: React.FC = () => {
 
     Taro.showLoading({ title: '发送中...' });
     try {
-      await apiPost(authApi.registerSendCode, { phone }, {}, {}, true);
+      // 注册场景用 registerofsendcode（表单格式）；忘记密码场景用 resetpassword/sendcode（JSON 格式）
+      if (scene === 'reset') {
+        await apiPost(authApi.resetPasswordSendCode, { phone }, {}, {}, false, false);
+      } else {
+        await apiPost(authApi.registerSendCode, { phone }, {}, {}, true);
+      }
       Taro.hideLoading();
       startCountdown();
       Taro.showToast({ title: '验证码已发送', icon: 'success' });
@@ -195,7 +239,7 @@ const LoginPage: React.FC = () => {
       Taro.hideLoading();
       Taro.showToast({ title: '登录成功', icon: 'success' });
       setTimeout(() => {
-        Taro.navigateBack();
+        goBackOrHome();
       }, 1500);
     } catch (error: any) {
       Taro.hideLoading();
@@ -224,7 +268,7 @@ const LoginPage: React.FC = () => {
       saveUserSession(result);
       Taro.showToast({ title: '注册成功', icon: 'success' });
       setTimeout(() => {
-        Taro.navigateBack();
+        goBackOrHome();
       }, 1500);
     } catch (error: any) {
       Taro.hideLoading();
@@ -248,7 +292,7 @@ const LoginPage: React.FC = () => {
     }
   };
 
-  const handleForgotPassword = () => {
+  const handleForgotPassword = async () => {
     if (!phone || phone.length !== 11) {
       Taro.showToast({ title: '请输入正确的手机号', icon: 'none' });
       return;
@@ -270,8 +314,9 @@ const LoginPage: React.FC = () => {
     }
 
     Taro.showLoading({ title: '重置密码中...' });
-
-    setTimeout(() => {
+    try {
+      // 调用 POST /api/v1/auth/resetpassword/reset，JSON 格式 { phone, code, password }
+      await apiPost(authApi.resetPassword, { phone, code, password }, {}, {}, false, false);
       Taro.hideLoading();
       Taro.showToast({ title: '密码重置成功', icon: 'success' });
 
@@ -282,7 +327,10 @@ const LoginPage: React.FC = () => {
         setPassword('');
         setConfirmPassword('');
       }, 1500);
-    }, 1500);
+    } catch (error: any) {
+      Taro.hideLoading();
+      Taro.showToast({ title: error.message || '重置密码失败', icon: 'none' });
+    }
   };
 
   // 微信登录
@@ -345,7 +393,7 @@ const LoginPage: React.FC = () => {
           // 步骤5：布尔值为 false，token 是正常的 240 小时用户 token
           saveUserSession(result);
           Taro.showToast({ title: '登录成功', icon: 'success' });
-          setTimeout(() => { Taro.navigateBack(); }, 1500);
+          setTimeout(() => { goBackOrHome(); }, 1500);
         }
       };
 
@@ -556,7 +604,7 @@ const LoginPage: React.FC = () => {
       setConfirmNewPassword('');
       Taro.showToast({ title: '密码设置成功', icon: 'success' });
       setTimeout(() => {
-        Taro.navigateBack();
+        goBackOrHome();
       }, 1500);
     } catch (error: any) {
       Taro.hideLoading();
@@ -572,7 +620,7 @@ const LoginPage: React.FC = () => {
     setShowSetPasswordModal(false);
     setNewPassword('');
     setConfirmNewPassword('');
-    Taro.navigateBack();
+    goBackOrHome();
   };
 
   const toggleRegisterMode = () => {
@@ -634,7 +682,7 @@ const LoginPage: React.FC = () => {
                 />
                 <View
                   className={`${styles.codeBtn} ${countdown > 0 ? styles.disabled : ''}`}
-                  onClick={countdown === 0 ? sendCode : undefined}
+                  onClick={countdown === 0 ? () => sendCode('reset') : undefined}
                 >
                   {countdown > 0 ? `${countdown}s` : '获取验证码'}
                 </View>
@@ -725,7 +773,7 @@ const LoginPage: React.FC = () => {
                 {isRegister && (
                   <View
                     className={`${styles.codeBtn} ${countdown > 0 ? styles.disabled : ''}`}
-                    onClick={countdown === 0 ? sendCode : undefined}
+                    onClick={countdown === 0 ? () => sendCode('register') : undefined}
                   >
                     {countdown > 0 ? `${countdown}s` : '获取验证码'}
                   </View>
@@ -817,7 +865,7 @@ const LoginPage: React.FC = () => {
                 {isRegister && (
                   <View
                     className={`${styles.codeBtn} ${countdown > 0 ? styles.disabled : ''}`}
-                    onClick={countdown === 0 ? sendCode : undefined}
+                    onClick={countdown === 0 ? () => sendCode('register') : undefined}
                   >
                     {countdown > 0 ? `${countdown}s` : '获取验证码'}
                   </View>
@@ -896,8 +944,8 @@ const LoginPage: React.FC = () => {
               </View>
               <Text className={styles.methodLabel}>手机</Text>
             </View>
-            <View 
-              className={`${styles.methodItem} ${isWechatLogin ? styles.disabledMethod : ''}`} 
+            <View
+              className={`${styles.methodItem} ${isWechatLogin ? styles.disabledMethod : ''} ${showWechatLogin ? '' : styles.methodItemHidden}`}
               onClick={isWechatLogin ? undefined : handleWechatLogin}
             >
               <View className={styles.methodIcon}>

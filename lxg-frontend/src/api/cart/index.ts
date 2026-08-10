@@ -41,6 +41,15 @@ export const refundApi = {
     detail: `${API_BASE_URL}/refunds/:id`,
 };
 
+export const addressApi = {
+    list: `${API_BASE_URL}/address`,
+    default: `${API_BASE_URL}/address/default`,
+    detail: `${API_BASE_URL}/address/:id`,
+    create: `${API_BASE_URL}/address`,
+    update: `${API_BASE_URL}/address/:id`,
+    delete: `${API_BASE_URL}/address/:id`,
+};
+
 // ==================== 数据转换 ====================
 
 /**
@@ -141,6 +150,7 @@ export function transformOrderItem(raw: any): Record<string, any> {
         storeName: raw.storeName ?? raw.store_name ?? raw.StoreName ?? raw.store?.name ?? '',
         store: raw.store ?? raw.Store ?? null,
         remark: raw.remark ?? raw.Remark ?? '',
+        isReviewed: raw.isReviewed ?? raw.is_reviewed ?? raw.IsReviewed ?? raw.reviewed ?? raw.Reviewed ?? false,
     };
 }
 
@@ -472,9 +482,17 @@ export async function submitOrderReview(
     if (payload.content !== undefined) body.content = payload.content;
     if (Array.isArray(payload.images)) body.images = payload.images;
     if (payload.anonymous !== undefined) body.anonymous = payload.anonymous;
-    if (Array.isArray(payload.items)) body.items = payload.items;
+    if (Array.isArray(payload.items)) {
+        body.items = payload.items.map(item => ({
+            productId: toNumericId(item.productId),
+            skuId: toNumericId(item.skuId),
+            rating: item.rating,
+            content: item.content,
+            images: Array.isArray(item.images) ? item.images : [],
+        }));
+    }
 
-    const res = await apiPost(orderApi.review, body, { id }, {}, false);
+    const res = await apiPost(orderApi.review, body, { id: toNumericId(id) }, {}, false);
     return res;
 }
 
@@ -499,7 +517,7 @@ export async function fetchOrderReviews(id: string | number) {
 export function normalizeRefundReason(raw: any): Record<string, any> {
     return {
         id: raw.id ?? raw.Id ?? raw.reasonId ?? raw.reason_id ?? raw.ID ?? raw.code ?? '',
-        name: raw.name ?? raw.Name ?? raw.reasonName ?? raw.reason_name ?? raw.title ?? raw.Title ?? raw.label ?? raw.Label ?? '',
+        name: raw.name ?? raw.Name ?? raw.reasonName ?? raw.reason_name ?? raw.title ?? raw.Title ?? raw.label ?? raw.Label ?? raw.content ?? raw.Content ?? '',
         sort: Number(raw.sort ?? raw.Sort ?? raw.order ?? raw.Order ?? raw.seq ?? raw.Seq ?? 0),
         enabled: raw.enabled ?? raw.Enabled ?? raw.status ?? raw.Status ?? raw.active ?? raw.Active ?? true,
         description: raw.description ?? raw.Description ?? raw.desc ?? raw.Desc ?? raw.remark ?? raw.Remark ?? '',
@@ -662,7 +680,7 @@ export async function applyRefund(payload: {
     type?: string | number;
     reasonId?: string | number;
     reason?: string;
-    amount: number;
+    amount?: number;
     description?: string;
     images?: string[];
     items?: Array<{
@@ -675,17 +693,15 @@ export async function applyRefund(payload: {
     trackingCompany?: string;
 }) {
     const body: Record<string, any> = {
-        orderId: payload.orderId,
-        amount: payload.amount,
+        // 后端 Go 结构体要求：orderId uint64（必填）
+        orderId: toNumericId(payload.orderId),
     };
-    if (payload.type !== undefined) body.type = payload.type;
-    if (payload.reasonId !== undefined && payload.reasonId !== null) body.reasonId = payload.reasonId;
-    if (payload.reason !== undefined) body.reason = payload.reason;
+    // 退款原因ID：后端字段名为 refundReasonId（uint64，必填）
+    if (payload.reasonId !== undefined && payload.reasonId !== null) {
+        body.refundReasonId = toNumericId(payload.reasonId);
+    }
     if (payload.description !== undefined) body.description = payload.description;
     if (Array.isArray(payload.images)) body.images = payload.images;
-    if (Array.isArray(payload.items)) body.items = payload.items;
-    if (payload.trackingNo !== undefined) body.trackingNo = payload.trackingNo;
-    if (payload.trackingCompany !== undefined) body.trackingCompany = payload.trackingCompany;
 
     const res = await apiPost(refundApi.apply, body, {}, {}, false);
     return res;
@@ -701,6 +717,53 @@ export async function fetchRefundDetail(id: string | number) {
         return {
             ...res,
             data: normalizeRefund(res.data),
+        };
+    }
+    return res;
+}
+
+// ==================== 收货地址 ====================
+
+/**
+ * 规范化收货地址字段（兼容 snake_case / PascalCase / camelCase）
+ */
+export function normalizeAddress(raw: any): Record<string, any> {
+    if (!raw || typeof raw !== 'object') return {};
+    return {
+        id: raw.id ?? raw.ID ?? raw.addressId ?? raw.address_id ?? '',
+        consignee: raw.consignee ?? raw.Consignee ?? raw.name ?? raw.receiver ?? raw.receiverName ?? raw.receiver_name ?? '',
+        phone: raw.phone ?? raw.Phone ?? raw.mobile ?? raw.tel ?? raw.phoneNumber ?? raw.phone_number ?? '',
+        province: raw.province ?? raw.Province ?? raw.provinceName ?? raw.province_name ?? '',
+        city: raw.city ?? raw.City ?? raw.cityName ?? raw.city_name ?? '',
+        district: raw.district ?? raw.District ?? raw.area ?? raw.Area ?? raw.districtName ?? raw.district_name ?? '',
+        detail: raw.detail ?? raw.Detail ?? raw.address ?? raw.Address ?? raw.addressDetail ?? raw.address_detail ?? '',
+        isDefault: raw.isDefault ?? raw.is_default ?? raw.IsDefault ?? raw.default ?? raw.Default ?? false,
+    };
+}
+
+/**
+ * 获取默认收货地址
+ */
+export async function fetchDefaultAddress() {
+    const res = await apiGet(addressApi.default);
+    if (res?.data) {
+        return {
+            ...res,
+            data: normalizeAddress(res.data),
+        };
+    }
+    return res;
+}
+
+/**
+ * 获取收货地址列表
+ */
+export async function fetchAddressList() {
+    const res = await apiGet(addressApi.list);
+    if (res?.data && Array.isArray(res.data)) {
+        return {
+            ...res,
+            data: res.data.map(normalizeAddress),
         };
     }
     return res;

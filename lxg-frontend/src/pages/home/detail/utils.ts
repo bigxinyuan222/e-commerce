@@ -17,21 +17,22 @@ export function findMatchingSku(skus: SKU[], selectedSpecs: { [key: string]: str
   return skus.find(sku => isSkuMatchSpecs(sku, selectedSpecs)) || null;
 }
 
-// 获取所有规格选项
+// 获取所有规格选项（从所有 SKU 的 specs 中合并，避免只读第一个 SKU 导致维度缺失）
 export function getAllSpecOptions(skus: SKU[]): { [key: string]: string[] } {
   const specOptions: { [key: string]: string[] } = {};
-  
+
   skus.forEach(sku => {
+    if (!sku.specs || typeof sku.specs !== 'object') return;
     Object.entries(sku.specs).forEach(([key, value]) => {
       if (!specOptions[key]) {
         specOptions[key] = [];
       }
-      if (!specOptions[key].includes(value)) {
+      if (value !== undefined && value !== null && !specOptions[key].includes(value)) {
         specOptions[key].push(value);
       }
     });
   });
-  
+
   return specOptions;
 }
 

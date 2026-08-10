@@ -41,24 +41,28 @@ export function normalizeSeckillProduct(raw: any): Record<string, any> {
         image = raw.Images[0];
     }
 
+    // 兼容 SKU 数组结构：从 skus[0] 读取价格和库存
+    const firstSku = Array.isArray(raw.skus) && raw.skus.length > 0 ? raw.skus[0] : null;
+
     // 兼容更多价格字段
     const originalPrice = Number(raw.originalPrice ?? raw.original_price ?? raw.OriginalPrice
         ?? raw.marketPrice ?? raw.market_price ?? raw.MarketPrice
         ?? raw.original_price_cents ?? raw.price_original
         ?? raw.minPrice ?? raw.min_price ?? raw.MinPrice
-        ?? 0);
+        ?? (firstSku ? (firstSku.original_price ?? firstSku.originalPrice ?? firstSku.price ?? 0) : 0));
 
     const seckillPrice = Number(raw.seckillPrice ?? raw.seckill_price ?? raw.SeckillPrice
         ?? raw.price ?? raw.Price ?? raw.salePrice ?? raw.sale_price
         ?? raw.seckill_price_cents ?? raw.price_seckill
         ?? raw.currentPrice ?? raw.current_price
         ?? raw.discountPrice ?? raw.discount_price
-        ?? 0);
+        ?? (firstSku ? (firstSku.seckill_price ?? firstSku.seckillPrice ?? firstSku.price ?? 0) : 0));
 
     const stock = Number(raw.stock ?? raw.Stock ?? raw.totalStock ?? raw.total_stock ?? raw.TotalStock
         ?? raw.inventory ?? raw.inventory ?? raw.Inventory
         ?? raw.availableStock ?? raw.available_stock
-        ?? 0);
+        ?? raw.remainingStock ?? raw.remaining_stock ?? raw.RemainingStock
+        ?? (firstSku ? (firstSku.remaining_stock ?? firstSku.stock ?? firstSku.remainingStock ?? 0) : 0));
 
     const soldCount = Number(raw.soldCount ?? raw.sold_count ?? raw.SoldCount ?? raw.sold ?? raw.Sold
         ?? raw.sales ?? raw.salesVolume ?? raw.sales_volume
@@ -66,7 +70,7 @@ export function normalizeSeckillProduct(raw: any): Record<string, any> {
 
     // 已售百分比（后端没返回时本地计算）
     const soldPercent = raw.soldPercent ?? raw.sold_percent ?? raw.SoldPercent
-        ?? (stock > 0 ? Math.round((soldCount / stock) * 100) : 0);
+        ?? (stock > 0 ? Math.round((soldCount / (stock + soldCount)) * 100) : 0);
 
     return {
         id: raw.id ?? raw.Id ?? raw.ID ?? raw.productId ?? raw.product_id ?? raw.ProductId ?? '',
@@ -79,7 +83,8 @@ export function normalizeSeckillProduct(raw: any): Record<string, any> {
         soldCount,
         soldPercent,
         limitCount: Number(raw.limitCount ?? raw.limit_count ?? raw.LimitCount ?? raw.buyLimit ?? raw.buy_limit ?? raw.BuyLimit ?? 1),
-        skuId: raw.skuId ?? raw.sku_id ?? raw.SkuId ?? raw.skuID ?? '',
+        skuId: raw.skuId ?? raw.sku_id ?? raw.SkuId ?? raw.skuID
+            ?? (firstSku ? (firstSku.sku_id ?? firstSku.skuId ?? firstSku.seckill_sku_price_id ?? firstSku.id ?? '') : ''),
         activityId: raw.activityId ?? raw.activity_id ?? raw.ActivityId ?? '',
         // 附加原始数据，供页面需要时使用
         raw,
@@ -248,7 +253,9 @@ export async function createSeckillPurchase(payload: {
     if (payload.addressId !== undefined) body.addressId = toNumericId(payload.addressId);
     if (payload.paymentMethod !== undefined) body.paymentMethod = payload.paymentMethod;
 
-    const res = await apiPost(seckillApi.purchases, body);
+    // 后端用 ShouldBindJSON 绑定，含多个 uint64 数字字段（activityId/productId/skuId/addressId），
+    // 必须用 JSON 提交以保留数字类型；form-urlencoded 会将数字转为字符串导致"输入参数有误"
+    const res = await apiPost(seckillApi.purchases, body, {}, {}, false);
     if (res?.data) {
         return { ...res, data: normalizeSeckillPurchase(res.data) };
     }

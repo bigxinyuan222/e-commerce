@@ -1,8 +1,9 @@
 import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import { View, Text, Image, ScrollView } from '@tarojs/components';
 import Taro from '@tarojs/taro';
-import { fetchOrderList, fetchRefundList, cancelOrder, payOrder, confirmOrder, confirmPickupOrder, paymentCallback, fetchOrderPaymentStatus } from '@/api/cart';
+import { fetchOrderList, fetchRefundList, fetchOrderReviews, cancelOrder, payOrder, confirmOrder } from '@/api/cart';
 import { getImageUrl, lazyImgProps } from '@/utils/image';
+import { executeWechatPayment } from '@/utils/wechatPay';
 import styles from '@/styles/cart/order-list.module.scss';
 
 // 后端订单状态码：0=待支付 2=待发货 3=待自提 4=已完成 5=已取消
@@ -149,26 +150,27 @@ function transformOrder(order: any): any {
   } : undefined;
 
   return {
-    id: pickFirstValid(order.id, order.ID, order.orderId, order.order_id, order.OrderId, order.OrderID),
-    orderNo: pickFirstValid(order.orderNo, order.order_no, order.OrderNo, order.OrderNO),
-    status,
-    statusText: order.statusText || order.StatusText || statusMap[status] || '',
-    createTime: order.createTime || order.CreateTime || order.CreatedAt || '',
-    totalAmount: order.totalAmount ?? order.TotalAmount ?? 0,
-    freightAmount: order.freightAmount ?? order.FreightAmount ?? 0,
-    couponAmount: order.couponAmount ?? order.CouponAmount ?? order.discountAmount ?? 0,
-    payAmount: order.payAmount ?? order.PayAmount ?? 0,
-    items,
-    store,
-    address: order.address || order.Address || {},
-    paymentMethod: order.paymentMethod || order.PaymentMethod || '',
-    payTime: order.payTime || order.PayTime || order.paidAt || order.PaidAt || '',
-    deliverTime: order.deliverTime || order.DeliverTime || order.shippedAt || order.ShippedAt || '',
-    completeTime: order.completeTime || order.CompleteTime || order.confirmedAt || order.ConfirmedAt || '',
-    cancelTime: order.cancelTime || order.CancelTime || order.cancelledAt || order.CancelledAt || '',
-    cancelReason: order.cancelReason || order.CancelReason || '',
-  };
-}
+      id: pickFirstValid(order.id, order.ID, order.orderId, order.order_id, order.OrderId, order.OrderID),
+      orderNo: pickFirstValid(order.orderNo, order.order_no, order.OrderNo, order.OrderNO),
+      status,
+      statusText: order.statusText || order.StatusText || statusMap[status] || '',
+      createTime: order.createTime || order.CreateTime || order.CreatedAt || '',
+      totalAmount: order.totalAmount ?? order.TotalAmount ?? 0,
+      freightAmount: order.freightAmount ?? order.FreightAmount ?? 0,
+      couponAmount: order.couponAmount ?? order.CouponAmount ?? order.discountAmount ?? 0,
+      payAmount: order.payAmount ?? order.PayAmount ?? 0,
+      items,
+      store,
+      address: order.address || order.Address || {},
+      paymentMethod: order.paymentMethod || order.PaymentMethod || '',
+      payTime: order.payTime || order.PayTime || order.paidAt || order.PaidAt || '',
+      deliverTime: order.deliverTime || order.DeliverTime || order.shippedAt || order.ShippedAt || '',
+      completeTime: order.completeTime || order.CompleteTime || order.confirmedAt || order.ConfirmedAt || '',
+      cancelTime: order.cancelTime || order.CancelTime || order.cancelledAt || order.CancelledAt || '',
+      cancelReason: order.cancelReason || order.CancelReason || '',
+      isReviewed: order.isReviewed ?? order.is_reviewed ?? order.IsReviewed ?? order.reviewed ?? order.Reviewed ?? false,
+    };
+  }
 
 const OrderProductItem = React.memo(({ product, onClick }: { product: any; onClick: () => void }) => (
   <View className={styles.orderProduct} onClick={onClick}>
@@ -208,16 +210,14 @@ const OrderCard = React.memo(({
   onDetail,
   onCancel,
   onPay,
-  onConfirmDelivery,
   onConfirmPickup,
   onRefund,
-  onReview
+  onReview,
 }: {
   order: any;
   onDetail: (id: string) => void;
   onCancel: (id: string) => void;
   onPay: (id: string) => void;
-  onConfirmDelivery: (id: string) => void;
   onConfirmPickup: (id: string) => void;
   onRefund: (id: string) => void;
   onReview: (id: string) => void;
@@ -226,7 +226,6 @@ const OrderCard = React.memo(({
   // 退款记录不显示订单操作按钮（取消、支付、确认发货/自提、评价等）
   const canCancel = !isRefundOrder && (order.status === 'pending_payment' || order.status === 'pending_delivery' || order.status === 'pending_pickup');
   const canPay = !isRefundOrder && order.status === 'pending_payment';
-  const canConfirmDelivery = !isRefundOrder && order.status === 'pending_delivery';
   const canConfirmPickup = !isRefundOrder && order.status === 'pending_pickup';
   const canRefund = !isRefundOrder && (order.status === 'completed' || order.status === 'pending_review');
   const canReview = !isRefundOrder && (order.status === 'completed' || order.status === 'pending_review');
@@ -303,13 +302,6 @@ const OrderCard = React.memo(({
               onClick={() => onPay(order.id)}
             />
           )}
-          {canConfirmDelivery && (
-            <OrderActionButton
-              text="确认发货"
-              type="primary"
-              onClick={() => onConfirmDelivery(order.id)}
-            />
-          )}
           {canConfirmPickup && (
             <OrderActionButton
               text="确认自提"
@@ -326,8 +318,8 @@ const OrderCard = React.memo(({
           )}
           {canReview && (
             <OrderActionButton
-              text="待评价"
-              type="primary"
+              text={order.isReviewed ? '已评价' : '待评价'}
+              type={order.isReviewed ? 'secondary' : 'primary'}
               onClick={() => onReview(order.id)}
             />
           )}
@@ -431,9 +423,28 @@ const OrderListPage: React.FC = () => {
       if (status !== latestStatusRef.current) return;
       const list = Array.isArray(res?.data) ? res.data : [];
       // 过滤掉退款相关状态的订单，确保普通订单列表不混入退款订单
-      const transformed = list
+      let transformed = list
         .map(transformOrder)
         .filter((o: any) => !refundRelatedStatuses.includes(o.status));
+
+      // 后端未返回 isReviewed 时，兜底查询已完成/待评价订单的评价记录
+      const ordersNeedCheckReview = transformed.filter((o: any) =>
+        (o.status === 'completed' || o.status === 'pending_review') && !o.isReviewed
+      );
+      if (ordersNeedCheckReview.length > 0) {
+        const reviewResults = await Promise.allSettled(
+          ordersNeedCheckReview.map((o: any) => fetchOrderReviews(o.id))
+        );
+        reviewResults.forEach((result, index) => {
+          if (result.status === 'fulfilled' && result.value?.data?.length > 0) {
+            const orderId = ordersNeedCheckReview[index].id;
+            const orderIndex = transformed.findIndex((o: any) => o.id === orderId);
+            if (orderIndex >= 0) {
+              transformed[orderIndex].isReviewed = true;
+            }
+          }
+        });
+      }
 
       if (status === 'pending_review') {
         setOrders(transformed.filter((o: any) => o.status === 'completed' || o.status === 'pending_review'));
@@ -507,57 +518,32 @@ const OrderListPage: React.FC = () => {
       Taro.showToast({ title: '订单ID异常，请刷新页面', icon: 'none' });
       return;
     }
-    const orderInfo = orders.find((o) => o.id === orderId);
-    Taro.showLoading({ title: '支付处理中...', mask: true });
+    Taro.showLoading({ title: '发起支付...', mask: true });
     try {
-      // 1. 发起支付
+      // 1. 调用后端支付接口，获取微信支付参数
       const payRes = await payOrder(orderId, { paymentMethod: 'wechat' });
-      const payData = payRes?.data || payRes;
-      const orderNo = payData?.orderNo ?? orderInfo?.orderNo ?? '';
-      const transactionId = payData?.transactionId ?? payData?.prepayId ?? payData?.prepay_id ?? '';
-      const amount = payData?.amount ?? orderInfo?.payAmount ?? 0;
 
-      // 2. 支付回调（模拟微信异步通知）
-      await paymentCallback({
-        orderId,
-        orderNo,
-        transactionId,
-        paymentMethod: 'wechat',
-        amount,
-      });
+      // 2. 拉起微信支付（小程序 requestPayment / H5 JSAPI 或 H5 支付）
+      //    支付成功后内部会轮询确认支付状态
+      Taro.showLoading({ title: '请确认支付...', mask: true });
+      const payStatus = await executeWechatPayment(payRes, orderId);
 
-      // 3. 查询订单支付状态，确认是否支付成功
-      const statusRes = await fetchOrderPaymentStatus(orderId);
-      const payStatus = statusRes?.data;
       Taro.hideLoading();
       if (payStatus?.isPaid) {
         Taro.showToast({ title: '支付成功', icon: 'success' });
       } else {
-        Taro.showToast({ title: payStatus?.message || '支付状态未确认，请稍后查看', icon: 'none' });
+        Taro.showToast({ title: payStatus?.message || '支付状态确认中，请稍后查看', icon: 'none' });
       }
       loadOrders(activeTab);
     } catch (error: any) {
       Taro.hideLoading();
-      Taro.showToast({ title: error?.message || '支付失败', icon: 'none' });
-    }
-  }, [loadOrders, activeTab, orders]);
-
-  const handleConfirmDelivery = useCallback((orderId: string) => {
-    Taro.showModal({
-      title: '确认发货',
-      content: '确定已发货吗？发货后订单将变为待自提状态',
-      success: async (res) => {
-        if (res.confirm) {
-          try {
-            await confirmPickupOrder(orderId);
-            Taro.showToast({ title: '已确认发货', icon: 'success' });
-            loadOrders(activeTab);
-          } catch (error: any) {
-            Taro.showToast({ title: error?.message || '操作失败', icon: 'none' });
-          }
-        }
+      const errMsg = error?.message || '';
+      if (errMsg.includes('取消支付')) {
+        Taro.showToast({ title: '已取消支付', icon: 'none' });
+      } else {
+        Taro.showToast({ title: errMsg || '支付失败', icon: 'none' });
       }
-    });
+    }
   }, [loadOrders, activeTab]);
 
   const handleConfirmPickup = useCallback((orderId: string) => {
@@ -638,7 +624,6 @@ const OrderListPage: React.FC = () => {
               onDetail={goToOrderDetail}
               onCancel={handleCancelOrder}
               onPay={handlePayOrder}
-              onConfirmDelivery={handleConfirmDelivery}
               onConfirmPickup={handleConfirmPickup}
               onRefund={handleApplyRefund}
               onReview={handleReviewOrder}
