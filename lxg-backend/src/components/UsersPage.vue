@@ -16,6 +16,11 @@ interface UserRow {
   couponCount: number
 }
 
+interface UserStats {
+  newDay: number
+  newMonth: number
+}
+
 const props = defineProps<{ token?: string }>()
 const users = ref<UserRow[]>([])
 const loading = ref(false)
@@ -29,6 +34,7 @@ const total = ref(0)
 const detail = ref<UserRow | null>(null)
 const pendingToggle = ref<UserRow | null>(null)
 const toggling = ref(false)
+const stats = ref<UserStats>({ newDay: 0, newMonth: 0 })
 
 const totalPages = computed(() => Math.max(1, Math.ceil(total.value / pageSize)))
 const filteredUsers = computed(() => users.value.filter((user) => {
@@ -94,6 +100,24 @@ function notify(message: string, type: 'success' | 'error' = 'success') {
   toast?.(message, type)
 }
 
+function normalizeStats(data: any): UserStats {
+  const row = data && typeof data === 'object' ? data : {}
+  const num = (value: unknown) => Number(value) || 0
+  return {
+    newDay: num(row.day_sum_people ?? row.day_sum ?? row.day_new ?? row.today_new ?? row.new_day),
+    newMonth: num(row.month_sum_people ?? row.month_sum ?? row.month_new ?? row.new_month),
+  }
+}
+
+async function loadUserStats() {
+  try {
+    const data = await requestJson('/api/v1/new/user/quantity', { headers: authHeaders() })
+    stats.value = normalizeStats(data)
+  } catch {
+    // 统计接口失败时不影响用户列表展示
+  }
+}
+
 async function loadUsers() {
   loading.value = true
   error.value = ''
@@ -134,6 +158,7 @@ async function toggleUser() {
     pendingToggle.value = null
     detail.value = null
     await loadUsers()
+    void loadUserStats()
   } catch (cause) {
     notify(cause instanceof Error ? cause.message : '操作失败，请重试', 'error')
   } finally {
@@ -153,7 +178,10 @@ function statusText(value: UserRow['status']) {
   return value === 'active' ? '启用' : value === 'frozen' ? '禁用' : '已注销'
 }
 
-onMounted(loadUsers)
+onMounted(() => {
+  void loadUsers()
+  void loadUserStats()
+})
 </script>
 
 <template>
@@ -171,6 +199,8 @@ onMounted(loadUsers)
     <div class="stat-card"><div class="label"><i class="fas fa-users"></i> 总用户数</div><div class="value">{{ total }}</div></div>
     <div class="stat-card"><div class="label"><i class="fas fa-check-circle"></i> 正常用户</div><div class="value green">{{ activeCount }}</div></div>
     <div class="stat-card"><div class="label"><i class="fas fa-lock"></i> 已冻结</div><div class="value yellow">{{ frozenCount }}</div></div>
+    <div class="stat-card"><div class="label"><i class="fas fa-calendar-day"></i> 本日新增</div><div class="value blue">{{ stats.newDay }}</div></div>
+    <div class="stat-card"><div class="label"><i class="fas fa-calendar-alt"></i> 本月新增</div><div class="value purple">{{ stats.newMonth }}</div></div>
   </div>
 
   <div class="system-layout-main users-layout">
@@ -197,7 +227,10 @@ onMounted(loadUsers)
     </div>
 
     <div class="system-card-stack">
-      <div class="card"><div class="card-header"><span class="card-title"><i class="fas fa-info-circle"></i> 用户统计</span></div><div class="card-body"><div class="system-stats-info"><div class="system-stats-info-row"><span>本周新增用户</span><span class="value">128</span></div><div class="system-stats-info-row"><span>本月新增用户</span><span class="value">456</span></div></div></div></div>
+      <div class="card"><div class="card-header"><span class="card-title"><i class="fas fa-chart-line"></i> 用户统计</span></div><div class="card-body"><div class="system-stats-info">
+        <div class="system-stats-info-row"><span><i class="fas fa-calendar-day"></i> 本日新增用户</span><span class="value blue">{{ stats.newDay }}</span></div>
+        <div class="system-stats-info-row"><span><i class="fas fa-calendar-alt"></i> 本月新增用户</span><span class="value purple">{{ stats.newMonth }}</span></div>
+      </div></div></div>
     </div>
   </div>
 
