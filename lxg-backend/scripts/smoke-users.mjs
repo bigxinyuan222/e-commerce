@@ -18,7 +18,7 @@ await page.route('**/api/**', async (route) => {
       code: 200,
       message: 'success',
       data: {
-        list: [{ id: 100, username: '测试用户', phone: '13800000000', gender: 'male', status: enabled, created_at: '2026-07-30 10:00:00' }],
+        list: [{ id: 100, username: '测试用户', phone: '13800000000', gender: 0, status: enabled, created_at: '2026-07-30 10:00:00' }],
         total: 11,
         page: Number(url.searchParams.get('page')),
       },
@@ -40,6 +40,7 @@ try {
   await page.locator('#sidebarNav .menu-item[data-id="users"]').click()
   const row = page.locator('#panel-users tbody tr').first()
   await row.getByText('测试用户').waitFor()
+  await row.getByText('男', { exact: true }).waitFor()
 
   if (process.env.LXG_SCREENSHOT) await page.screenshot({ path: process.env.LXG_SCREENSHOT, fullPage: true })
   const nextResponse = page.waitForResponse(response => response.url().includes('/api/v1/get/users?page=2'))

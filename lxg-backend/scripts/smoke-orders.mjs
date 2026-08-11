@@ -24,15 +24,16 @@ await page.route('**/api/**', async route => {
   } else if (url.pathname === '/api/v1/admin/orders/1' && request.method() === 'GET') {
     detailPaths.push(url.pathname)
     data = { ...rows[0], total_amount: 109, discount_amount: 10, remark: '尽快处理', paid_at: '2026-07-28 09:05:00', items: [{ product_name: '详情商品', spec_values: { 颜色: '黑色' }, price: 99, quantity: 1 }] }
-  } else if (/^\/api\/v1\/admin\/orders\/\d+\/(cancel|ship|confirm)$/.test(url.pathname)) {
+  } else if (/^\/api\/v1\/admin\/orders\/\d+\/(cancel|ship)$/.test(url.pathname)) {
     actions.push({ path: url.pathname, method: request.method(), body: request.postDataJSON() })
   }
   await route.fulfill({ json: { code: 200, message: 'success', data } })
 })
 
 try {
-  await page.addInitScript(() => localStorage.setItem('lexiangou_admin_user', JSON.stringify({ name: '订单客服', role: 'order_cs', storeId: null, token: 'smoke-token' })))
+  await page.addInitScript(() => localStorage.setItem('lexiangou_admin_user', JSON.stringify({ name: '超级管理员', role: 'super_admin', storeId: null, token: 'smoke-token' })))
   await page.goto(baseUrl, { waitUntil: 'networkidle' })
+  await page.locator('#sidebarNav .menu-item[data-id="orders"]').click()
   const panel = page.locator('#panel-orders')
   const table = panel.locator('table')
   await table.locator('tbody tr').first().waitFor()
@@ -51,18 +52,23 @@ try {
   await modal.waitFor()
   if (!(await modal.textContent())?.includes('颜色: 黑色')) throw new Error('订单详情规格未渲染')
   await modal.locator('.modal-close').click()
+  if (await panel.getByRole('button', { name: /核销/ }).count()) throw new Error('待自提订单仍显示管理员核销操作')
 
-  for (const [button, path] of [['取消', '/api/v1/admin/orders/1/cancel'], ['发货', '/api/v1/admin/orders/2/ship'], ['核销', '/api/v1/admin/orders/3/confirm']]) {
+  for (const [button, path] of [['取消', '/api/v1/admin/orders/1/cancel'], ['发货', '/api/v1/admin/orders/2/ship']]) {
     page.once('dialog', dialog => dialog.accept())
-    await Promise.all([page.waitForResponse(response => response.url().endsWith(path)), table.getByRole('button', { name: button, exact: true }).click()])
+    await Promise.all([
+      page.waitForResponse(response => response.url().endsWith(path)),
+      page.waitForResponse(response => new URL(response.url()).pathname === '/api/v1/admin/orders' && response.request().method() === 'GET'),
+      table.getByRole('button', { name: button, exact: true }).click(),
+    ])
   }
   const expectedInitial = { page: '1', pageSize: '20', keyword: '', status: '', store_id: '' }
-  if (JSON.stringify(listQueries[0]) !== JSON.stringify(expectedInitial)) throw new Error(`订单初始参数错误: ${JSON.stringify(listQueries[0])}`)
-  if (listQueries[1]?.keyword !== 'ORD-003' || listQueries[2]?.status !== '2' || listQueries[3]?.page !== '2') throw new Error(`订单筛选分页错误: ${JSON.stringify(listQueries.slice(1, 4))}`)
+  const orderPageQueries = listQueries.filter(query => query.pageSize === '20')
+  if (JSON.stringify(orderPageQueries[0]) !== JSON.stringify(expectedInitial)) throw new Error(`订单初始参数错误: ${JSON.stringify(orderPageQueries[0])}`)
+  if (orderPageQueries[1]?.keyword !== 'ORD-003' || orderPageQueries[2]?.status !== '2' || orderPageQueries[3]?.page !== '2') throw new Error(`订单筛选分页错误: ${JSON.stringify(orderPageQueries.slice(1, 4))}`)
   const expectedActions = [
     { path: '/api/v1/admin/orders/1/cancel', method: 'PUT', body: {} },
     { path: '/api/v1/admin/orders/2/ship', method: 'PUT', body: {} },
-    { path: '/api/v1/admin/orders/3/confirm', method: 'PUT', body: {} },
   ]
   if (JSON.stringify(actions) !== JSON.stringify(expectedActions)) throw new Error(`订单操作请求错误: ${JSON.stringify(actions)}`)
   if (detailPaths[0] !== '/api/v1/admin/orders/1') throw new Error(`订单详情路径错误: ${JSON.stringify(detailPaths)}`)

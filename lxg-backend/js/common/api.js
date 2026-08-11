@@ -195,8 +195,9 @@ const VUE_OWNED_API_SECTIONS = [
     'stores',
     'admin',
     'payments',
-    'seckill'
-    ,'settings'
+    'seckill',
+    'settings',
+    'homepage'
 ];
 
 VUE_OWNED_API_SECTIONS.forEach(section => {

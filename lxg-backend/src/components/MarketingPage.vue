@@ -6,7 +6,8 @@ interface Activity {
   name: string
   startTime: string
   endTime: string
-  status: 'active' | 'pending' | 'ended' | 'closed'
+  publishedAt: string
+  status: 'active' | 'pending' | 'ended' | 'closed' | 'timeout'
 }
 
 interface ProductOption { id: number; name: string; originalPrice: number }
@@ -85,6 +86,7 @@ function normalizeStatus(value: unknown): Activity['status'] {
   if (value === 'active' || Number(value) === 1) return 'active'
   if (value === 'pending' || Number(value) === 0) return 'pending'
   if (value === 'closed' || Number(value) === 3) return 'closed'
+  if (value === 'timeout' || Number(value) === 4) return 'timeout'
   return 'ended'
 }
 
@@ -94,6 +96,7 @@ function normalizeActivity(row: any): Activity {
     name: String(row.name ?? ''),
     startTime: String(row.startTime ?? row.start_time ?? row.StartTime ?? ''),
     endTime: String(row.endTime ?? row.end_time ?? row.EndTime ?? ''),
+    publishedAt: String(row.publishedAt ?? row.published_at ?? row.PublishedAt ?? ''),
     status: normalizeStatus(row.status),
   }
 }
@@ -281,11 +284,11 @@ async function closeActivity() {
 }
 
 function statusText(status: Activity['status']) {
-  return { active: '进行中', pending: '即将开始', ended: '已结束', closed: '已关闭' }[status]
+  return { active: '正在进行', pending: '未开始', ended: '已结束', closed: '管理员关闭', timeout: '超时' }[status]
 }
 
 function statusClass(status: Activity['status']) {
-  return { active: 'green', pending: 'yellow', ended: 'gray', closed: 'red' }[status]
+  return { active: 'green', pending: 'yellow', ended: 'gray', closed: 'red', timeout: 'red' }[status]
 }
 
 onMounted(() => Promise.all([loadActivities(), loadActivityStats()]))
@@ -298,8 +301,8 @@ onMounted(() => Promise.all([loadActivities(), loadActivityStats()]))
   </div>
 
   <div class="trade-stat-grid">
-    <div class="stat-card"><div class="label"><i class="fas fa-bolt"></i> 进行中秒杀</div><div class="value blue">{{ activeCount }}</div></div>
-    <div class="stat-card"><div class="label"><i class="fas fa-clock"></i> 即将开始</div><div class="value yellow">{{ pendingCount }}</div></div>
+    <div class="stat-card"><div class="label"><i class="fas fa-bolt"></i> 正在进行秒杀</div><div class="value blue">{{ activeCount }}</div></div>
+    <div class="stat-card"><div class="label"><i class="fas fa-clock"></i> 未开始</div><div class="value yellow">{{ pendingCount }}</div></div>
     <div class="stat-card"><div class="label"><i class="fas fa-chart-bar"></i> 活动销售额</div><div class="value purple"><i v-if="statsLoading" class="fas fa-spinner fa-spin"></i><template v-else>{{ salesLabel }}</template></div></div>
     <div class="stat-card"><div class="label"><i class="fas fa-shopping-cart"></i> 活动订单数</div><div class="value green"><i v-if="statsLoading" class="fas fa-spinner fa-spin"></i><template v-else>{{ orderLabel }}</template></div></div>
   </div>
@@ -309,12 +312,13 @@ onMounted(() => Promise.all([loadActivities(), loadActivityStats()]))
     <div class="card-header"><span class="card-title"><i class="fas fa-bolt"></i> 秒杀活动管理</span><span class="text-muted" style="font-size:13px">共 {{ activities.length }} 个活动</span></div>
     <div v-if="loadError" class="stock-list-error"><i class="fas fa-exclamation-circle"></i> {{ loadError }} <button class="btn btn-sm btn-outline" @click="loadActivities">重试</button></div>
     <div class="card-body no-pad"><div class="table-wrap"><table>
-      <thead><tr><th>活动名称</th><th>活动时间</th><th>状态</th><th>操作</th></tr></thead>
+      <thead><tr><th>活动名称</th><th>活动时间</th><th>发布时间</th><th>状态</th><th>操作</th></tr></thead>
       <tbody>
-        <tr v-if="loading"><td colspan="4" class="product-state">活动加载中...</td></tr>
-        <tr v-else-if="!activities.length"><td colspan="4" class="product-state">暂无秒杀活动</td></tr>
+        <tr v-if="loading"><td colspan="5" class="product-state">活动加载中...</td></tr>
+        <tr v-else-if="!activities.length"><td colspan="5" class="product-state">暂无秒杀活动</td></tr>
         <tr v-for="activity in activities" v-else :key="activity.id">
           <td>{{ activity.name }}</td><td>{{ activity.startTime }}<br />{{ activity.endTime }}</td>
+          <td>{{ activity.publishedAt || '未发布' }}</td>
           <td><span class="status-badge" :class="statusClass(activity.status)"><span class="dot"></span> {{ statusText(activity.status) }}</span></td>
           <td>
             <button v-if="activity.status === 'pending'" class="btn btn-sm btn-outline" type="button" @click="openAddProduct(activity)"><i class="fas fa-plus"></i> 添加商品</button>

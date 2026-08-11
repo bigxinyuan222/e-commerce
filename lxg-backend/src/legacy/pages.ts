@@ -55,13 +55,9 @@ const roleMenus: Record<string, PageId[]> = {
   store_staff: ['store_manage', 'store_orders', 'returns'],
 }
 
-const pageFactories: Partial<Record<PageId, string>> = {
-  homepage: 'homepagePage',
-}
+const pageFactories: Partial<Record<PageId, string>> = {}
 
-const pageLoaders: Partial<Record<PageId, string[]>> = {
-  homepage: ['loadBanners', 'loadRecommendations', 'loadHomepageGoods'],
-}
+const pageLoaders: Partial<Record<PageId, string[]>> = {}
 
 const legacyPageCache = new Map<PageId, string>()
 

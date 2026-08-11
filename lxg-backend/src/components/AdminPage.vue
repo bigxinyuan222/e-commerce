@@ -13,7 +13,6 @@ interface AdminRow {
   storeName: string
   status: number
   createdAt: string
-  lastLogin: string
 }
 interface OptionRow { id: Id; name: string }
 interface RoleDescription { name: string; scope: string; permissions: string[] }
@@ -108,7 +107,6 @@ function normalize(row: any): AdminRow {
     storeName: String(store?.name ?? row.storeName ?? row.store_name ?? ''),
     status: ['active', 'enabled', true, 1, '1'].includes(rawStatus) ? 1 : 0,
     createdAt: String(row.CreatedAt ?? row.createdAt ?? row.created_at ?? row.createTime ?? '-'),
-    lastLogin: String(row.lastLogin ?? row.last_login ?? '-'),
   }
 }
 
@@ -153,7 +151,7 @@ async function loadAdmins() {
 function openEditor(row?: AdminRow) {
   editing.value = row ?? {
     id: '', username: '', name: '', phone: '', roleId: '', roleName: '',
-    storeId: '', storeName: '', status: 1, createdAt: '', lastLogin: '',
+    storeId: '', storeName: '', status: 1, createdAt: '',
   }
   Object.assign(form, row ? {
     username: row.username, password: '', name: row.name, phone: row.phone,
@@ -279,17 +277,16 @@ onMounted(loadAdmins)
       <div v-if="error" class="admin-message error"><i class="fas fa-exclamation-circle"></i> {{ error }} <button class="btn btn-sm btn-outline" @click="loadAdmins">重新加载</button></div>
       <div class="table-wrap">
         <table>
-          <thead><tr><th>管理员</th><th>手机号</th><th>角色</th><th>所属门店</th><th>创建时间</th><th>最近登录</th><th>状态</th><th>操作</th></tr></thead>
+          <thead><tr><th>管理员</th><th>手机号</th><th>角色</th><th>所属门店</th><th>创建时间</th><th>状态</th><th>操作</th></tr></thead>
           <tbody>
-            <tr v-if="loading"><td colspan="8"><div class="admin-table-state"><i class="fas fa-spinner fa-spin"></i> 正在加载管理员...</div></td></tr>
-            <tr v-else-if="!filtered.length"><td colspan="8"><div class="admin-table-state"><i class="fas fa-inbox"></i> 暂无管理员数据</div></td></tr>
+            <tr v-if="loading"><td colspan="7"><div class="admin-table-state"><i class="fas fa-spinner fa-spin"></i> 正在加载管理员...</div></td></tr>
+            <tr v-else-if="!filtered.length"><td colspan="7"><div class="admin-table-state"><i class="fas fa-inbox"></i> 暂无管理员数据</div></td></tr>
             <tr v-for="row in filtered" v-else :key="row.id">
               <td><div class="admin-identity"><span class="system-user-avatar-sm">{{ (row.name || row.username).charAt(0) }}</span><span><b>{{ row.name || '-' }}</b><small>{{ row.username }}</small></span></div></td>
               <td>{{ row.phone || '-' }}</td>
               <td><span class="system-tag primary">{{ row.roleName || row.roleId || '-' }}</span></td>
               <td>{{ row.storeName || '-' }}</td>
               <td>{{ row.createdAt }}</td>
-              <td>{{ row.lastLogin }}</td>
               <td><span class="status-badge" :class="row.status === 1 ? 'green' : 'gray'"><span class="dot"></span>{{ row.status === 1 ? '启用' : '停用' }}</span></td>
               <td class="admin-actions"><button class="btn btn-sm btn-outline" @click="openEditor(row)"><i class="fas fa-edit"></i> 编辑</button><button class="btn btn-sm btn-outline" @click="openPasswordEditor(row)"><i class="fas fa-key"></i> 修改密码</button><button class="btn btn-sm" :class="row.status === 1 ? 'btn-danger' : 'btn-success'" @click="toggle(row)">{{ row.status === 1 ? '停用' : '启用' }}</button><button class="btn btn-sm btn-danger" @click="remove(row)"><i class="fas fa-trash"></i></button></td>
             </tr>

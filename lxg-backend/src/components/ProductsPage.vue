@@ -80,12 +80,6 @@ interface CreateSku {
   image: string
 }
 
-interface CreateCategoryGroup {
-  id: number
-  name: string
-  children: Array<{ id: number; name: string }>
-}
-
 type ResourceKind = 'category' | 'subcategory' | 'brand' | 'specification'
 type ResourceName = 'categories' | 'brands' | 'specifications'
 
@@ -94,8 +88,8 @@ const products = ref<Product[]>([])
 const loading = ref(false)
 const error = ref('')
 const keyword = ref('')
-const categoryId = ref<number | ''>('')
-const subcategory = ref<number | ''>('')
+const categoryId = ref<number | string | ''>('')
+const subcategory = ref<number | string | ''>('')
 const status = ref<number | ''>('')
 const page = ref(1)
 const size = ref(10)
@@ -116,10 +110,14 @@ const detailPriceRange = computed(() => {
   return min === max ? `¥${min.toFixed(2)}` : `¥${min.toFixed(2)} - ¥${max.toFixed(2)}`
 })
 const allVisibleSelected = computed(() => products.value.length > 0 && products.value.every(({ id }) => selectedIds.value.includes(id)))
-
 const categories = ref<CategoryItem[]>([])
 const brands = ref<BrandItem[]>([])
 const specifications = ref<SpecificationItem[]>([])
+const categoryProductCounts = ref<Record<string, number>>({})
+const subcategoryProductCounts = ref<Record<string, number>>({})
+const brandProductCounts = ref<Record<string, number>>({})
+const selectedSearchCategory = computed(() => categories.value.find(item => String(item.id) === String(categoryId.value)))
+const searchSubcategories = computed(() => selectedSearchCategory.value?.children ?? [])
 const resourceLoading = reactive<Record<ResourceName, boolean>>({ categories: false, brands: false, specifications: false })
 const resourceErrors = reactive<Record<ResourceName, string>>({ categories: '', brands: '', specifications: '' })
 const expandedCategories = ref<Array<number | string>>([])
@@ -147,11 +145,6 @@ const createForm = reactive({
   skus: [] as CreateSku[],
 })
 
-const createCategoryGroups: CreateCategoryGroup[] = [
-  { id: 40, name: '手机数码', children: [{ id: 43, name: '智能手机' }, { id: 44, name: '手机配件' }] },
-  { id: 41, name: '运动鞋服', children: [{ id: 45, name: '跑步鞋' }] },
-  { id: 42, name: '食品生鲜', children: [{ id: 46, name: '坚果零食' }] },
-]
 const createBrandOptions = [
   { id: 30, name: '华为' },
   { id: 31, name: '小米' },
@@ -164,7 +157,7 @@ const editorTitle = computed(() => {
   const names: Record<ResourceKind, string> = { category: '分类', subcategory: '子分类', brand: '品牌', specification: '规格' }
   return `${editorId.value === null ? '新增' : '编辑'}${names[editorKind.value]}`
 })
-const selectedCreateCategory = computed(() => createCategoryGroups.find(item => item.name === createForm.firstCategoryName))
+const selectedCreateCategory = computed(() => categories.value.find(item => String(item.id) === String(createForm.firstCategoryName)))
 const createSpecs = computed(() => specifications.value
   .map(spec => ({ id: Number(spec.id), name: spec.name, values: createForm.selectedSpecs[spec.name] || [] }))
   .filter(spec => spec.values.length > 0))
@@ -181,6 +174,45 @@ function normalizeProduct(row: ProductApiRow): Product {
     skuCount: row.sku_count ?? 0,
     status: Number(row.status ?? 0),
     createdAt: row.created_at || row.CreatedAt || '-',
+  }
+}
+
+function conversionPercent(value: unknown) {
+  const text = String(value ?? '').trim()
+  if (!text) return '0%'
+  if (text.endsWith('%')) return text
+  const ratio = Number(text)
+  if (!Number.isFinite(ratio)) return '0%'
+  const percent = ratio * 100
+  return `${percent.toFixed(2).replace(/\.00$/, '').replace(/(\.\d)0$/, '$1')}%`
+}
+
+function resourceCount(item: { name: string; productCount: number }, kind: 'category' | 'subcategory' | 'brand') {
+  const values = kind === 'category' ? categoryProductCounts.value : kind === 'subcategory' ? subcategoryProductCounts.value : brandProductCounts.value
+  return Object.prototype.hasOwnProperty.call(values, item.name) ? values[item.name] : item.productCount
+}
+
+async function loadProductResourceCounts() {
+  const rows: Product[] = []
+  const pageSize = 100
+  try {
+    for (let current = 1; current <= 1000; current++) {
+      const payload = await requestJson(`/api/v1/admin/product/list?page=${current}&size=${pageSize}`, { headers: authHeaders() })
+      const pageRows = extractList(payload).map(normalizeProduct)
+      rows.push(...pageRows)
+      const data = payload?.data ?? payload
+      const totalCount = Number(data?.total ?? data?.total_count ?? data?.count)
+      if (!pageRows.length || pageRows.length < pageSize || (Number.isFinite(totalCount) && totalCount >= 0 && rows.length >= totalCount)) break
+    }
+    const first: Record<string, number> = {}; const second: Record<string, number> = {}; const brand: Record<string, number> = {}
+    rows.forEach((product) => {
+      if (product.firstCategory && product.firstCategory !== '-') first[product.firstCategory] = (first[product.firstCategory] || 0) + 1
+      if (product.secondCategory && product.secondCategory !== '-') second[product.secondCategory] = (second[product.secondCategory] || 0) + 1
+      if (product.brand && product.brand !== '-') brand[product.brand] = (brand[product.brand] || 0) + 1
+    })
+    categoryProductCounts.value = first; subcategoryProductCounts.value = second; brandProductCounts.value = brand
+  } catch (cause) {
+    console.warn('Unable to aggregate product resource counts', cause)
   }
 }
 
@@ -369,6 +401,7 @@ function loadResources() {
   void loadCategories()
   void loadBrands()
   void loadSpecifications()
+  void loadProductResourceCounts()
 }
 
 function toggleAll(checked: boolean) {
@@ -400,6 +433,7 @@ async function batchAction(action: 'on_sale' | 'off_sale' | 'delete') {
     notify(`已${labels[action]} ${selectedIds.value.length} 件商品`)
     selectedIds.value = []
     await loadProducts()
+    await loadProductResourceCounts()
   } catch (cause) {
     batchError.value = cause instanceof Error ? cause.message : `批量${labels[action]}失败`
     notify(batchError.value, 'error')
@@ -437,6 +471,7 @@ async function deleteProduct(product: Product) {
     selectedIds.value = selectedIds.value.filter(id => id !== product.id)
     notify(`商品“${product.name}”已删除`)
     await loadProducts()
+    await loadProductResourceCounts()
   } catch (cause) {
     error.value = cause instanceof Error ? cause.message : '删除商品失败'
     notify(error.value, 'error')
@@ -586,6 +621,7 @@ function resetCreateForm() {
 function openCreateProduct() {
   resetCreateForm()
   createOpen.value = true
+  if (!categories.value.length && !resourceLoading.categories) void loadCategories()
 }
 
 function closeCreateProduct() {
@@ -708,6 +744,7 @@ async function createProduct() {
     createOpen.value = false
     page.value = 1
     await loadProducts()
+    await loadProductResourceCounts()
   } catch (cause) {
     createError.value = cause instanceof Error ? cause.message : '新增商品失败'
     notify(createError.value, 'error')
@@ -722,6 +759,9 @@ function search() {
 }
 
 watch([page, size], () => void loadProducts())
+watch(categoryId, () => {
+  if (!searchSubcategories.value.some(item => String(item.id) === String(subcategory.value))) subcategory.value = ''
+})
 onMounted(() => {
   ;(window as unknown as { openProductCreate?: () => void }).openProductCreate = openCreateProduct
   void loadProducts()
@@ -739,8 +779,8 @@ onUnmounted(() => {
       <div class="product-toolbar-controls">
         <div class="product-filters">
           <input v-model="keyword" placeholder="搜索商品名称" @keyup.enter="search" />
-          <input v-model.number="categoryId" type="number" min="0" placeholder="一级分类 ID" @keyup.enter="search" />
-          <input v-model.number="subcategory" type="number" min="0" placeholder="二级分类 ID" @keyup.enter="search" />
+          <select v-model="categoryId"><option value="">全部一级分类</option><option v-for="category in categories" :key="category.id" :value="category.id">{{ category.name }}（ID: {{ category.id }}）</option></select>
+          <select v-model="subcategory" :disabled="!categoryId"><option value="">{{ categoryId ? '全部二级分类' : '请先选择一级分类' }}</option><option v-for="child in searchSubcategories" :key="child.id" :value="child.id">{{ child.name }}（ID: {{ child.id }}）</option></select>
           <select v-model="status" @change="search"><option value="">全部状态</option><option :value="1">上架</option><option :value="0">下架</option></select>
           <button class="btn btn-primary" @click="search"><i class="fas fa-search"></i> 查询</button>
         </div>
@@ -779,11 +819,11 @@ onUnmounted(() => {
           <div v-for="category in categories" :key="category.id" class="category-group">
             <div class="category-row">
               <button class="category-toggle" :title="expandedCategories.includes(category.id) ? '收起子分类' : '展开子分类'" @click="toggleCategory(category.id)"><i class="fas fa-grip-vertical"></i><i :class="expandedCategories.includes(category.id) ? 'fas fa-chevron-down' : 'fas fa-chevron-right'"></i></button>
-              <span class="resource-tag">{{ category.name }}</span><span class="resource-count">({{ category.productCount }}件)</span>
+              <span class="resource-tag">{{ category.name }}</span><span class="resource-count">({{ resourceCount(category, 'category') }}件)</span>
               <div class="resource-actions"><button class="icon-btn primary" title="新增子分类" @click="openEditor('subcategory', undefined, category.id)"><i class="fas fa-plus"></i></button><button class="icon-btn" title="编辑分类" @click="openEditor('category', category)"><i class="fas fa-edit"></i></button><button class="icon-btn danger" title="删除分类" @click="deleteResource('categories', category)"><i class="fas fa-trash"></i></button></div>
             </div>
             <div v-if="expandedCategories.includes(category.id)" class="subcategory-list">
-              <div v-for="child in category.children" :key="child.id" class="subcategory-row"><span>{{ child.name }}</span><span class="resource-count">({{ child.productCount }}件)</span><div class="resource-actions"><button class="icon-btn" title="编辑子分类" @click="openEditor('subcategory', child, category.id)"><i class="fas fa-edit"></i></button><button class="icon-btn danger" title="删除子分类" @click="deleteResource('categories', child)"><i class="fas fa-trash"></i></button></div></div>
+              <div v-for="child in category.children" :key="child.id" class="subcategory-row"><span>{{ child.name }}</span><span class="resource-count">({{ resourceCount(child, 'subcategory') }}件)</span><div class="resource-actions"><button class="icon-btn" title="编辑子分类" @click="openEditor('subcategory', child, category.id)"><i class="fas fa-edit"></i></button><button class="icon-btn danger" title="删除子分类" @click="deleteResource('categories', child)"><i class="fas fa-trash"></i></button></div></div>
               <div v-if="!category.children.length" class="subcategory-empty">暂无子分类</div>
             </div>
           </div>
@@ -796,7 +836,7 @@ onUnmounted(() => {
         <div v-else-if="resourceErrors.brands" class="resource-state is-error">{{ resourceErrors.brands }}<button class="icon-btn" title="重新加载" @click="loadBrands"><i class="fas fa-redo"></i></button></div>
         <div v-else-if="!brands.length" class="resource-state">暂无品牌</div>
         <div v-else class="brand-grid">
-          <div v-for="brand in brands" :key="brand.id" class="brand-item"><span class="resource-tag">{{ brand.name }}</span><span class="resource-count">({{ brand.productCount }}件)</span><div class="resource-actions"><button class="icon-btn" title="编辑品牌" @click="openEditor('brand', brand)"><i class="fas fa-edit"></i></button><button class="icon-btn danger" title="删除品牌" @click="deleteResource('brands', brand)"><i class="fas fa-trash"></i></button></div></div>
+          <div v-for="brand in brands" :key="brand.id" class="brand-item"><span class="resource-tag">{{ brand.name }}</span><span class="resource-count">({{ resourceCount(brand, 'brand') }}件)</span><div class="resource-actions"><button class="icon-btn" title="编辑品牌" @click="openEditor('brand', brand)"><i class="fas fa-edit"></i></button><button class="icon-btn danger" title="删除品牌" @click="deleteResource('brands', brand)"><i class="fas fa-trash"></i></button></div></div>
         </div>
       </article>
 
@@ -819,7 +859,7 @@ onUnmounted(() => {
           <div v-if="createStep === 1" class="product-create-grid">
             <label><span>商品名称 <b>*</b></span><input v-model="createForm.name" required maxlength="150" placeholder="请输入商品名称" /></label>
             <label><span>品牌 <b>*</b></span><select v-model.number="createForm.brandId" required><option value="">请选择品牌</option><option v-for="brand in createBrandOptions" :key="brand.id" :value="brand.id">{{ brand.name }}</option></select></label>
-            <label><span>一级分类 <b>*</b></span><select v-model="createForm.firstCategoryName" required @change="selectCreateCategory"><option value="">请选择一级分类</option><option v-for="category in createCategoryGroups" :key="category.id" :value="category.name">{{ category.name }}</option></select></label>
+            <label><span>一级分类 <b>*</b></span><select v-model="createForm.firstCategoryName" required :disabled="resourceLoading.categories" @change="selectCreateCategory"><option value="">{{ resourceLoading.categories ? '分类加载中...' : '请选择一级分类' }}</option><option v-for="category in categories" :key="category.id" :value="String(category.id)">{{ category.name }}</option></select></label>
             <label><span>二级分类 <b>*</b></span><select v-model.number="createForm.categoryId" required :disabled="!selectedCreateCategory"><option value="">请选择二级分类</option><option v-for="child in selectedCreateCategory?.children || []" :key="child.id" :value="child.id">{{ child.name }}</option></select></label>
             <label><span>商品原价 <b>*</b></span><input v-model.number="createForm.originalPrice" type="number" min="0.01" step="0.01" required placeholder="0.00" /></label>
             <label><span>初始状态 <b>*</b></span><select v-model.number="createForm.status" required><option :value="0">下架</option><option :value="1">上架</option></select></label>
@@ -888,7 +928,7 @@ onUnmounted(() => {
               <div><span><i class="fas fa-boxes"></i> 总库存</span><strong :class="{ danger: detailTotalStock <= 0 }">{{ detailTotalStock.toLocaleString() }}</strong></div>
               <div><span><i class="fas fa-eye"></i> 浏览量</span><strong>{{ detailData.views.toLocaleString() }}</strong></div>
               <div><span><i class="fas fa-shopping-bag"></i> 成交订单</span><strong>{{ detailData.completed_order_count.toLocaleString() }}</strong></div>
-              <div><span><i class="fas fa-chart-line"></i> 转化率</span><strong class="conversion">{{ detailData.conversion_rate }}%</strong></div>
+              <div><span><i class="fas fa-chart-line"></i> 转化率</span><strong class="conversion">{{ conversionPercent(detailData.conversion_rate) }}</strong></div>
             </div>
             <div class="product-detail-section">
               <div class="product-detail-section-title"><span><i class="fas fa-list"></i> SKU 明细</span><small>共 {{ detailData.skus.length }} 条</small></div>

@@ -56,7 +56,7 @@ try {
   if (JSON.stringify(createBanner?.body) !== JSON.stringify({ imageUrl: uploadedImageUrl, linkUrl: 'https://xxx.com/activity', linkType: 3, sort: 5, status: 1 })) throw new Error(`banner create request mismatch: ${JSON.stringify(createBanner)}`)
   await Promise.all([
     page.waitForResponse(response => new URL(response.url()).pathname === '/api/v1/admin/banners/71'),
-    page.locator('[onclick="showEditBannerModal(\'71\')"]').click(),
+    page.locator('[data-banner-edit-id="71"]').click(),
   ])
   await page.locator('#bannerImage').waitFor({ state: 'attached' })
   if (await page.locator('#bannerImage').inputValue() !== 'https://img.example.com/banner-detail.jpg') throw new Error('banner detail response was not rendered')
@@ -64,7 +64,7 @@ try {
   await page.locator('.modal-content .modal-close').click()
   await Promise.all([
     page.waitForResponse(response => new URL(response.url()).pathname === '/api/v1/admin/banners/71'),
-    page.locator('[onclick="showEditBannerModal(\'71\')"]').click(),
+    page.locator('[data-banner-edit-id="71"]').click(),
   ])
   await Promise.all([
     page.waitForResponse(response => new URL(response.url()).pathname === '/api/v1/user/upload' && response.request().method() === 'POST'),
@@ -89,14 +89,14 @@ try {
   if (JSON.stringify(updateBanner?.body) !== JSON.stringify({ imageUrl: uploadedImageUrl, linkUrl: '', linkType: 0, sort: 1, status: 1 })) throw new Error(`banner update request mismatch: ${JSON.stringify(updateBanner)}`)
   await Promise.all([
     page.waitForResponse(response => new URL(response.url()).pathname === '/api/v1/admin/banners/71/toggle' && response.request().method() === 'PUT'),
-    page.locator('[onclick*="handleBannerAction(\'71\'"][onclick*="unpublish"]').click(),
+    page.locator('[data-banner-toggle-id="71"]').click(),
   ])
   const toggleBanner = requests.find(item => item.method === 'PUT' && item.path === '/api/v1/admin/banners/71/toggle')
   if (toggleBanner?.body !== null) throw new Error(`banner toggle should not send a body: ${JSON.stringify(toggleBanner)}`)
-  await page.locator('[onclick*="handleBannerAction(\'71\'"][onclick*="delete"]').click()
+  page.once('dialog', dialog => dialog.accept())
   await Promise.all([
     page.waitForResponse(response => new URL(response.url()).pathname === '/api/v1/admin/banners/71' && response.request().method() === 'DELETE'),
-    page.locator('.modal-content [onclick*="confirmCallback"]').click(),
+    page.locator('[data-banner-delete-id="71"]').click(),
   ])
   const deleteBanner = requests.find(item => item.method === 'DELETE' && item.path === '/api/v1/admin/banners/71')
   if (deleteBanner?.body !== null) throw new Error(`banner delete should not send a body: ${JSON.stringify(deleteBanner)}`)
@@ -123,9 +123,16 @@ try {
   ])
   await page.locator('.modal-content').waitFor()
   if (!requests.some(item => item.method === 'GET' && item.path === '/api/v1/admin/recommendations/81/products')) throw new Error('recommendation products endpoint mismatch')
+  await page.locator('#recommendProductSearch').fill('可选商品')
+  await Promise.all([
+    page.waitForResponse(response => new URL(response.url()).pathname === '/api/v1/admin/product/list' && new URL(response.url()).searchParams.get('key_word') === '可选商品'),
+    page.locator('.product-search-bar').press('Enter'),
+  ])
+  const productSearch = requests.find(item => item.method === 'GET' && item.path === '/api/v1/admin/product/list' && item.query.key_word === '可选商品')
+  if (JSON.stringify(productSearch?.query) !== JSON.stringify({ page: '1', size: '20', key_word: '可选商品' })) throw new Error(`product search query mismatch: ${JSON.stringify(productSearch)}`)
   await Promise.all([
     page.waitForResponse(response => new URL(response.url()).pathname === '/api/v1/admin/recommendations/81/products' && response.request().method() === 'POST'),
-    page.locator('.modal-content [onclick*="addRecommendGood"]').click(),
+    page.locator('.modal-content [data-add-product-id="902"]').click(),
   ])
   const addProduct = requests.find(item => item.method === 'POST' && item.path === '/api/v1/admin/recommendations/81/products')
   if (JSON.stringify(addProduct?.body) !== JSON.stringify({ productId: 902 })) throw new Error(`recommendation product request mismatch: ${JSON.stringify(addProduct)}`)

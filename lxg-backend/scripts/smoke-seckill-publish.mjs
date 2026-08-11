@@ -30,7 +30,7 @@ try {
   await page.locator('#sidebarNav .menu-item[data-id="marketing"]').click()
   await page.locator('[data-publish-activity-id="6"]').click()
   await page.getByText('秒杀活动发布成功！', { exact: false }).waitFor()
-  await page.locator('#panel-marketing .status-badge.green').getByText('进行中', { exact: true }).waitFor()
+  await page.locator('#panel-marketing .status-badge.green').getByText('正在进行', { exact: true }).waitFor()
 
   const expected = { activity_id: 6 }
   if (!publishRequest) throw new Error('未发出发布活动请求')

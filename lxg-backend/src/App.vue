@@ -20,6 +20,7 @@ import SettingsPage from './components/SettingsPage.vue'
 import MarketingPage from './components/MarketingPage.vue'
 import ReviewsPage from './components/ReviewsPage.vue'
 import StatisticsPage from './components/StatisticsPage.vue'
+import HomepagePage from './components/HomepagePage.vue'
 
 interface LegacyBridge {
   setUser: (user: AdminUser) => void
@@ -203,7 +204,7 @@ onMounted(async () => {
           <OrdersPage v-else-if="activePage === 'orders'" :token="user?.token" :store-id="user?.storeId" :role="user?.role" />
           <UsersPage v-else-if="activePage === 'users'" :token="user?.token" />
           <StockPage v-else-if="activePage === 'stock'" :token="user?.token" />
-          <ServicePage v-else-if="activePage === 'service'" :token="user?.token" />
+          <ServicePage v-else-if="activePage === 'service'" :token="user?.token" :agent-name="user?.name" :agent-role="user?.roleName || user?.role" />
           <NotificationPage v-else-if="activePage === 'notification'" :token="user?.token" />
           <StoresPage v-else-if="activePage === 'stores'" :token="user?.token" />
           <StoreManagePage v-else-if="activePage === 'store_manage'" :token="user?.token" />
@@ -211,6 +212,7 @@ onMounted(async () => {
           <AdminPage v-else-if="activePage === 'admin'" :token="user?.token" />
           <PaymentPage v-else-if="activePage === 'payment'" :token="user?.token" />
           <SettingsPage v-else-if="activePage === 'settings'" :token="user?.token" />
+          <HomepagePage v-else-if="activePage === 'homepage'" :token="user?.token" />
           <MarketingPage v-else-if="activePage === 'marketing'" :token="user?.token" />
           <ReviewsPage v-else-if="activePage === 'reviews'" :token="user?.token" />
           <div v-else v-html="renderLegacyPage(activePage)"></div>

@@ -18,6 +18,7 @@ const forbiddenScripts = [
   '/js/system/payment.js',
   '/js/system/settings.js',
   '/js/trade/marketing.js',
+  '/js/core/homepage.js',
 ]
 
 const loadedForbidden = forbiddenScripts.filter(script => index.includes(script))
@@ -32,7 +33,7 @@ for (const symbol of ['marketingPage', 'loadSeckill']) {
   if (main.includes(symbol)) throw new Error(`旧营销全局入口仍存在: ${symbol}`)
 }
 
-const requiredSections = ['auth', 'returns', 'notifications', 'orders', 'users', 'stats', 'inventory', 'categories', 'brands', 'specifications', 'service', 'stores', 'admin', 'payments', 'settings', 'seckill']
+const requiredSections = ['auth', 'returns', 'notifications', 'orders', 'users', 'stats', 'inventory', 'categories', 'brands', 'specifications', 'service', 'stores', 'admin', 'payments', 'settings', 'seckill', 'homepage']
 for (const section of requiredSections) {
   if (!api.includes(`'${section}'`)) throw new Error(`旧 API 层未禁用 Vue 接口段: ${section}`)
 }
