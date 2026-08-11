@@ -1,7 +1,9 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { View, Text, Image, ScrollView, Input } from '@tarojs/components';
 import Taro from '@tarojs/taro';
-import { searchProducts, products } from '@/data/product/products';
+import { apiGet } from '@/api/common';
+import { productApi } from '@/api/home';
+import { getImageUrl, normalizeProductListImages, lazyImgProps } from '@/utils/image';
 import styles from '@/styles/home/search-results.module.scss';
 
 type SortType = 'default' | 'sales' | 'price-asc' | 'price-desc';
@@ -28,9 +30,11 @@ const SearchResultsPage: React.FC = () => {
 
   const brands = useMemo(() => {
     const brandSet = new Set<string>();
-    products.forEach(p => brandSet.add(p.brandName));
+    searchResults.forEach(p => {
+      if (p.brandName) brandSet.add(p.brandName);
+    });
     return Array.from(brandSet);
-  }, []);
+  }, [searchResults]);
 
   const colorCategories = useMemo(() => {
     const colors = ['黑色', '白色', '银色', '金色', '蓝色', '红色', '绿色', '紫色'];
@@ -53,38 +57,50 @@ const SearchResultsPage: React.FC = () => {
     }
   }, [sortType, filter]);
 
-  const performSearch = (searchKeyword: string) => {
+  const performSearch = async (searchKeyword: string) => {
     if (!searchKeyword.trim()) {
       setSearchResults([]);
       return;
     }
-    let results = searchProducts(searchKeyword);
 
-    if (filter.minPrice) {
-      results = results.filter(p => p.price >= Number(filter.minPrice));
-    }
-    if (filter.maxPrice) {
-      results = results.filter(p => p.price <= Number(filter.maxPrice));
-    }
-    if (filter.brands.length > 0) {
-      results = results.filter(p => filter.brands.includes(p.brandName));
-    }
+    try {
+      const params: Record<string, any> = {
+        key_word: searchKeyword.trim(),
+        page: 1,
+        size: 20,
+      };
 
-    switch (sortType) {
-      case 'sales':
-        results.sort((a, b) => b.sales - a.sales);
-        break;
-      case 'price-asc':
-        results.sort((a, b) => a.price - b.price);
-        break;
-      case 'price-desc':
-        results.sort((a, b) => b.price - a.price);
-        break;
-      default:
-        break;
-    }
+      if (filter.minPrice) params.minPrice = Number(filter.minPrice);
+      if (filter.maxPrice) params.maxPrice = Number(filter.maxPrice);
+      if (filter.brands.length > 0) params.brands = filter.brands.join(',');
 
-    setSearchResults(results);
+      switch (sortType) {
+        case 'sales':
+          params.sort = 'sales';
+          break;
+        case 'price-asc':
+          params.sort = 'price';
+          params.order = 'asc';
+          break;
+        case 'price-desc':
+          params.sort = 'price';
+          params.order = 'desc';
+          break;
+        default:
+          break;
+      }
+
+      const res = await apiGet(productApi.search, params);
+      if (res?.data) {
+        const productData = Array.isArray(res.data) ? res.data : res.data?.list || [];
+        setSearchResults(normalizeProductListImages(productData));
+      } else {
+        setSearchResults([]);
+      }
+    } catch (error) {
+      console.error('搜索商品失败:', error);
+      setSearchResults([]);
+    }
   };
 
   const handleSearch = () => {
@@ -285,23 +301,24 @@ const SearchResultsPage: React.FC = () => {
                   onClick={() => goToProductDetail(product.id)}
                 >
                   <Image 
-                    src={product.images[0]} 
+                    src={getImageUrl(product.images?.[0] || product.image)} 
                     className={styles.productImage} 
                     mode="aspectFill" 
-                    lazyLoad
+                    {...lazyImgProps()}
                   />
                   <View className={styles.productInfo}>
                     <Text className={styles.productName}>{product.name}</Text>
                     <View className={styles.productTags}>
-                      {product.tags.slice(0, 2).map((tag: string) => (
+                      {(product.tags || []).slice(0, 2).map((tag: string) => (
                         <Text key={tag} className={styles.tag}>{tag}</Text>
                       ))}
                     </View>
                     <View className={styles.productPrice}>
+                      <Text className={styles.priceSymbol}>¥</Text>
                       <Text className={styles.currentPrice}>{product.price}</Text>
-                      <Text className={styles.originalPrice}>{product.originalPrice}</Text>
+                      {product.originalPrice && <Text className={styles.originalPrice}>¥{product.originalPrice}</Text>}
                     </View>
-                    <Text className={styles.salesInfo}>已售 {product.sales > 10000 ? `${(product.sales / 10000).toFixed(1)}万` : product.sales} 件</Text>
+                    <Text className={styles.salesInfo}>已售 {product.sales > 10000 ? `${(product.sales / 10000).toFixed(1)}万` : (product.sales || 0)} 件</Text>
                   </View>
                 </View>
               ))}

@@ -123,7 +123,10 @@ export interface Coupon {
   startTime: string;
   endTime: string;
   scope: 'all' | 'category' | 'product';
-  scopeIds: string[];
+  scopeIds?: string[];
+  scopeText?: string;
+  categoryId?: string;
+  productId?: string;
   status: 'available' | 'used' | 'expired';
   receiveTime?: string;
   useTime?: string;

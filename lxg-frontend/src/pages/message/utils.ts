@@ -3,27 +3,11 @@
 // ============================================
 
 import { Message, MessageType } from './types';
+import { formatDateTime } from '@/utils/time';
 
-// 格式化消息时间
+// 格式化消息时间（统一使用全局日期时间格式）
 export function formatMessageTime(time: string): string {
-  if (!time) return '';
-  const date = new Date(time);
-  const now = new Date();
-  const diff = now.getTime() - date.getTime();
-  
-  // 一天内显示"今天 HH:mm"
-  if (diff < 24 * 60 * 60 * 1000) {
-    return `今天 ${date.getHours()}:${date.getMinutes().toString().padStart(2, '0')}`;
-  }
-  
-  // 一周内显示"周几 HH:mm"
-  if (diff < 7 * 24 * 60 * 60 * 1000) {
-    const weekdays = ['周日', '周一', '周二', '周三', '周四', '周五', '周六'];
-    return `${weekdays[date.getDay()]} ${date.getHours()}:${date.getMinutes().toString().padStart(2, '0')}`;
-  }
-  
-  // 其他显示"YYYY-MM-DD"
-  return `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
+  return formatDateTime(time);
 }
 
 // 格式化消息类型

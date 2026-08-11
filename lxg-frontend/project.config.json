@@ -1,10 +1,10 @@
 {
-  "miniprogramRoot": "dist/",
+  "miniprogramRoot": "dist/weapp/",
   "projectname": "taro_template",
   "description": "taro_template",
-  "appid": "touristappid",
+  "appid": "wx5562ec9f9b4a9c51",
   "setting": {
-    "urlCheck": true,
+    "urlCheck": false,
     "es6": false,
     "enhance": false,
     "compileHotReLoad": false,

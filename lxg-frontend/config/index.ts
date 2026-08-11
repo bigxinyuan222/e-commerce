@@ -2,9 +2,13 @@ import { defineConfig, type UserConfigExport } from '@tarojs/cli';
 import TsconfigPathsPlugin from 'tsconfig-paths-webpack-plugin';
 import devConfig from './dev';
 import prodConfig from './prod';
-import vitePluginImp from 'vite-plugin-imp';
 // https://taro-docs.jd.com/docs/next/config#defineconfig-辅助函数
 export default defineConfig<'webpack5'>(async (merge, { command, mode }) => {
+  // 按平台分离输出目录，避免 H5 与小程序产物互相覆盖
+  // 例：weapp -> dist/weapp, h5 -> dist/h5, tt -> dist/tt
+  // Taro 构建时会注入 process.env.TARO_ENV 作为平台类型
+  const taroEnv = process.env.TARO_ENV || 'weapp';
+  const outputRoot = process.env.TARO_OUTPUT_DIR || `dist/${taroEnv}`;
   const baseConfig: UserConfigExport<'webpack5'> = {
     projectName: 'taro_template',
     date: '2025-12-10',
@@ -16,7 +20,7 @@ export default defineConfig<'webpack5'>(async (merge, { command, mode }) => {
       828: 1.81 / 2,
     },
     sourceRoot: 'src',
-    outputRoot: process.env.TARO_OUTPUT_DIR || 'dist',
+    outputRoot,
     plugins: [],
     defineConstants: {},
     copy: {

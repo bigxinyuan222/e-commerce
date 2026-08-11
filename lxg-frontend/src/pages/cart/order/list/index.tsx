@@ -1,10 +1,28 @@
-import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import { View, Text, Image, ScrollView } from '@tarojs/components';
 import Taro from '@tarojs/taro';
-import { getOrdersByStatus, cancelOrder, payOrder, confirmDelivery, confirmPickup, updateRefundStatus } from '@/data/order/orders';
+import { fetchOrderList, fetchRefundList, fetchOrderReviews, cancelOrder, payOrder, confirmOrder } from '@/api/cart';
+import { getImageUrl, lazyImgProps } from '@/utils/image';
+import { executeWechatPayment } from '@/utils/wechatPay';
 import styles from '@/styles/cart/order-list.module.scss';
 
-// 订单状态映射
+// 后端订单状态码：0=待支付 2=待发货 3=待自提 4=已完成 5=已取消
+const statusCodeMap: { [key: number]: string } = {
+  0: 'pending_payment',
+  2: 'pending_delivery',
+  3: 'pending_pickup',
+  4: 'completed',
+  5: 'cancelled',
+};
+
+const statusCodeReverseMap: { [key: string]: number } = {
+  'pending_payment': 0,
+  'pending_delivery': 2,
+  'pending_pickup': 3,
+  'completed': 4,
+  'cancelled': 5,
+};
+
 const statusMap: { [key: string]: string } = {
   'pending_payment': '待支付',
   'pending_delivery': '待发货',
@@ -15,9 +33,10 @@ const statusMap: { [key: string]: string } = {
   'reviewed': '已评价',
   'cancelled': '已取消',
   'refunding': '退款中',
+  'refund_rejected': '商家已拒绝',
+  'refunded': '已退款',
 };
 
-// 订单状态颜色映射
 const statusColorMap: { [key: string]: string } = {
   'pending_payment': '#e2231a',
   'pending_delivery': '#1890ff',
@@ -32,33 +51,152 @@ const statusColorMap: { [key: string]: string } = {
   'refunded': '#52c41a',
 };
 
-// 订单商品项组件
+
+
+function pickFirstValid(...candidates: any[]): string {
+  for (const value of candidates) {
+    if (value !== undefined && value !== null && value !== '' && value !== 0 && value !== '0') {
+      return String(value);
+    }
+  }
+  return '';
+}
+
+function transformOrderItem(item: any): any {
+  // 处理 specValues：后端返回对象 {"颜色":"红色"}
+  let skuName = item.skuName || item.SkuName || '';
+  if (!skuName && item.specValues && typeof item.specValues === 'object') {
+    skuName = Object.values(item.specValues).join('/') || '';
+  }
+
+  // 处理 image：后端可能返回 JSON 字符串 '["url"]'
+  let image = item.image || item.Image || '';
+  if (typeof image === 'string' && image.startsWith('[')) {
+    try {
+      const parsed = JSON.parse(image);
+      if (Array.isArray(parsed) && parsed.length > 0) {
+        image = parsed[0].replace(/^`|`$/g, '');
+      }
+    } catch { /* ignore */ }
+  }
+
+  return {
+    id: pickFirstValid(item.id, item.ID, item.productId, item.ProductID),
+    productId: pickFirstValid(item.productId, item.ProductID),
+    productName: item.productName || item.ProductName || '',
+    skuId: pickFirstValid(item.skuId, item.SkuID),
+    skuName,
+    price: item.price != null ? item.price : (item.Price || 0),
+    quantity: item.quantity != null ? item.quantity : (item.Quantity || 0),
+    image: getImageUrl(image),
+  };
+}
+
+// 退款记录专用的状态文本映射（覆盖退款自身状态 + 兼容后端可能返回的订单状态）
+const refundStatusTextMap: { [key: string]: string } = {
+  'pending': '待处理',
+  'processing': '处理中',
+  'approved': '已同意',
+  'rejected': '已拒绝',
+  'refunding': '退款中',
+  'refund_rejected': '商家已拒绝',
+  'refunded': '已退款',
+  'cancelled': '已取消',
+  'completed': '已完成',
+  // 后端可能复用订单状态码，统一映射为退款语义
+  'pending_payment': '待处理',
+  'pending_delivery': '处理中',
+  'pending_pickup': '处理中',
+  'paid': '处理中',
+};
+
+function transformRefund(refund: any): any {
+  const items = (refund.items || []).map((item: any) => ({
+    ...transformOrderItem(item),
+    image: getImageUrl(item.image || item.Image || ''),
+  }));
+
+  const status = refund.status || 'pending';
+  const statusText = refundStatusTextMap[status] || refund.statusText || '待处理';
+
+  return {
+    id: refund.id || '',
+    orderId: refund.orderId || '',
+    orderNo: refund.refundNo || refund.orderNo || '',
+    status,
+    statusText,
+    createTime: refund.applyTime || '',
+    payAmount: refund.amount || refund.payAmount || 0,
+    totalAmount: refund.amount || 0,
+    items,
+    isRefundRecord: true,
+  };
+}
+
+function transformOrder(order: any): any {
+  const rawStatus = order.status ?? order.Status;
+  const isNumericStatus = typeof rawStatus === 'number';
+  const status = isNumericStatus ? (statusCodeMap[rawStatus as number] || 'unknown') : (rawStatus || 'unknown');
+
+  const items = (order.items || order.Items || []).map(transformOrderItem);
+
+  // store 可能是嵌套对象
+  const rawStore = order.store || order.Store;
+  const store = rawStore ? {
+    name: rawStore.name || rawStore.Name || '',
+    address: rawStore.address || rawStore.Address || '',
+    phone: rawStore.phone || rawStore.Phone || '',
+    businessHours: rawStore.businessHours || rawStore.BusinessHours || rawStore.hours || '',
+  } : undefined;
+
+  return {
+      id: pickFirstValid(order.id, order.ID, order.orderId, order.order_id, order.OrderId, order.OrderID),
+      orderNo: pickFirstValid(order.orderNo, order.order_no, order.OrderNo, order.OrderNO),
+      status,
+      statusText: order.statusText || order.StatusText || statusMap[status] || '',
+      createTime: order.createTime || order.CreateTime || order.CreatedAt || '',
+      totalAmount: order.totalAmount ?? order.TotalAmount ?? 0,
+      freightAmount: order.freightAmount ?? order.FreightAmount ?? 0,
+      couponAmount: order.couponAmount ?? order.CouponAmount ?? order.discountAmount ?? 0,
+      payAmount: order.payAmount ?? order.PayAmount ?? 0,
+      items,
+      store,
+      address: order.address || order.Address || {},
+      paymentMethod: order.paymentMethod || order.PaymentMethod || '',
+      payTime: order.payTime || order.PayTime || order.paidAt || order.PaidAt || '',
+      deliverTime: order.deliverTime || order.DeliverTime || order.shippedAt || order.ShippedAt || '',
+      completeTime: order.completeTime || order.CompleteTime || order.confirmedAt || order.ConfirmedAt || '',
+      cancelTime: order.cancelTime || order.CancelTime || order.cancelledAt || order.CancelledAt || '',
+      cancelReason: order.cancelReason || order.CancelReason || '',
+      isReviewed: order.isReviewed ?? order.is_reviewed ?? order.IsReviewed ?? order.reviewed ?? order.Reviewed ?? false,
+    };
+  }
+
 const OrderProductItem = React.memo(({ product, onClick }: { product: any; onClick: () => void }) => (
   <View className={styles.orderProduct} onClick={onClick}>
-    <Image 
-      src={product.image} 
-      className={styles.productImage} 
+    <Image
+      src={product.image}
+      className={styles.productImage}
       mode="aspectFill"
-      lazyLoad
+      {...lazyImgProps()}
     />
     <View className={styles.productInfo}>
       <Text className={styles.productName}>{product.productName}</Text>
       <Text className={styles.productSpecs}>{product.skuName}</Text>
       <View className={styles.productBottom}>
-        <Text className={styles.productPrice}>{product.price}</Text>
+        <Text className={styles.productPrice}>¥{product.price}</Text>
         <Text className={styles.productQuantity}>x{product.quantity}</Text>
       </View>
     </View>
   </View>
 ));
 
-// 订单操作按钮组件
-const OrderActionButton = React.memo(({ 
-  text, 
-  type, 
-  onClick 
-}: { 
-  text: string; 
+const OrderActionButton = React.memo(({
+  text,
+  type,
+  onClick
+}: {
+  text: string;
   type: 'primary' | 'secondary' | 'danger';
   onClick: () => void;
 }) => (
@@ -67,56 +205,59 @@ const OrderActionButton = React.memo(({
   </View>
 ));
 
-// 订单卡片组件
-const OrderCard = React.memo(({ 
-  order, 
-  onDetail, 
-  onCancel, 
-  onPay, 
-  onConfirmDelivery,
-  onConfirmPickup, 
+const OrderCard = React.memo(({
+  order,
+  onDetail,
+  onCancel,
+  onPay,
+  onConfirmPickup,
   onRefund,
   onReview,
-  onRefundStatusChange
-}: { 
-  order: any; 
+}: {
+  order: any;
   onDetail: (id: string) => void;
   onCancel: (id: string) => void;
   onPay: (id: string) => void;
-  onConfirmDelivery: (id: string) => void;
   onConfirmPickup: (id: string) => void;
   onRefund: (id: string) => void;
   onReview: (id: string) => void;
-  onRefundStatusChange: (orderId: string, status: string) => void;
 }) => {
-  // 判断订单是否可取消
-  const canCancel = order.status === 'pending_payment';
-  // 判断订单是否可支付
-  const canPay = order.status === 'pending_payment';
-  // 判断订单是否可确认发货
-  const canConfirmDelivery = order.status === 'pending_delivery';
-  // 判断订单是否可确认自提
-  const canConfirmPickup = order.status === 'pending_pickup';
-  // 判断订单是否可退款（待发货、待自提和已完成都可退款）
-  const canRefund = order.status === 'pending_delivery' || order.status === 'pending_pickup' || order.status === 'completed' || order.status === 'pending_review';
-  const canReview = order.status === 'completed' || order.status === 'pending_review';
-  const isRefundOrder = order.status === 'refunding' || order.status === 'refund_rejected' || order.status === 'refunded';
+  const isRefundOrder = !!order.isRefundRecord;
+  // 退款记录不显示订单操作按钮（取消、支付、确认发货/自提、评价等）
+  const canCancel = !isRefundOrder && (order.status === 'pending_payment' || order.status === 'pending_delivery' || order.status === 'pending_pickup');
+  const canPay = !isRefundOrder && order.status === 'pending_payment';
+  const canConfirmPickup = !isRefundOrder && order.status === 'pending_pickup';
+  const canRefund = !isRefundOrder && (order.status === 'completed' || order.status === 'pending_review');
+  const canReview = !isRefundOrder && (order.status === 'completed' || order.status === 'pending_review');
 
   const refundStatusMap = {
+    'pending': '待处理',
+    'processing': '处理中',
+    'approved': '已同意',
+    'rejected': '已拒绝',
     'refunding': '退款中',
     'refund_rejected': '商家已拒绝',
     'refunded': '已退款',
+    'cancelled': '已取消',
+    'completed': '已完成',
+    'pending_payment': '待处理',
   };
 
   const refundStatusColorMap = {
+    'pending': '#faad14',
+    'processing': '#1890ff',
+    'approved': '#52c41a',
+    'rejected': '#ff4d4f',
     'refunding': '#faad14',
     'refund_rejected': '#ff4d4f',
     'refunded': '#52c41a',
+    'cancelled': '#999',
+    'completed': '#52c41a',
+    'pending_payment': '#faad14',
   };
 
   return (
-    <View className={styles.orderCard} key={order.id}>
-      {/* 订单头部 */}
+    <View className={styles.orderCard}>
       <View className={styles.orderHeader}>
         <Text className={styles.orderId}>{isRefundOrder ? '退货编号' : '订单编号'}: {order.orderNo}</Text>
         <Text className={styles.orderStatus} style={{ color: isRefundOrder ? refundStatusColorMap[order.status] : (statusColorMap[order.status] || '#999') }}>
@@ -124,24 +265,23 @@ const OrderCard = React.memo(({
         </Text>
       </View>
 
-      {/* 门店信息 */}
-      <View className={styles.storeInfo}>
-        <Text className={styles.storeName}>{order.store?.name || '无门店信息'}</Text>
-        <Text className={styles.storeAddress}>{order.store?.address || ''}</Text>
-      </View>
+      {order.store && (
+        <View className={styles.storeInfo}>
+          <Text className={styles.storeName}>{order.store.name || '无门店信息'}</Text>
+          <Text className={styles.storeAddress}>{order.store.address || ''}</Text>
+        </View>
+      )}
 
-      {/* 商品列表 */}
       <View className={styles.orderProducts}>
         {(order.items || []).map((product: any, index: number) => (
-          <OrderProductItem 
+          <OrderProductItem
             key={`${order.id}-${product.productId}-${index}`}
             product={product}
-            onClick={() => onDetail(order.id)}
+            onClick={() => order.isRefundRecord ? undefined : onDetail(order.id)}
           />
         ))}
       </View>
 
-      {/* 订单底部 */}
       <View className={styles.orderFooter}>
         <View className={styles.orderTotal}>
           <Text className={styles.totalLabel}>合计:</Text>
@@ -149,78 +289,46 @@ const OrderCard = React.memo(({
         </View>
         <View className={styles.orderActions}>
           {canCancel && (
-            <OrderActionButton 
-              text="取消订单" 
-              type="danger" 
-              onClick={() => onCancel(order.id)} 
+            <OrderActionButton
+              text="取消订单"
+              type="danger"
+              onClick={() => onCancel(order.id)}
             />
           )}
           {canPay && (
-            <OrderActionButton 
-              text="立即支付" 
-              type="primary" 
-              onClick={() => onPay(order.id)} 
-            />
-          )}
-          {canConfirmDelivery && (
-            <OrderActionButton 
-              text="确认发货" 
-              type="primary" 
-              onClick={() => onConfirmDelivery(order.id)} 
+            <OrderActionButton
+              text="立即支付"
+              type="primary"
+              onClick={() => onPay(order.id)}
             />
           )}
           {canConfirmPickup && (
-            <OrderActionButton 
-              text="确认自提" 
-              type="primary" 
-              onClick={() => onConfirmPickup(order.id)} 
+            <OrderActionButton
+              text="确认自提"
+              type="primary"
+              onClick={() => onConfirmPickup(order.id)}
             />
           )}
           {canRefund && (
-            <OrderActionButton 
-              text="申请退款" 
-              type="secondary" 
-              onClick={() => onRefund(order.id)} 
+            <OrderActionButton
+              text="申请退款"
+              type="secondary"
+              onClick={() => onRefund(order.id)}
             />
           )}
           {canReview && (
-            <OrderActionButton 
-              text="评价晒单" 
-              type="primary" 
-              onClick={() => onReview(order.id)} 
+            <OrderActionButton
+              text={order.isReviewed ? '已评价' : '待评价'}
+              type={order.isReviewed ? 'secondary' : 'primary'}
+              onClick={() => onReview(order.id)}
             />
           )}
         </View>
       </View>
-
-      {/* 退款状态操作按钮 */}
-      {isRefundOrder && (
-        <View className={styles.refundStatusActions}>
-          <View 
-            className={`${styles.refundStatusBtn} ${order.status === 'refunding' ? styles.active : ''}`}
-            onClick={() => onRefundStatusChange(order.id, 'refunding')}
-          >
-            <Text>退款中</Text>
-          </View>
-          <View 
-            className={`${styles.refundStatusBtn} ${order.status === 'refund_rejected' ? styles.active : ''}`}
-            onClick={() => onRefundStatusChange(order.id, 'refund_rejected')}
-          >
-            <Text>商家已拒绝</Text>
-          </View>
-          <View 
-            className={`${styles.refundStatusBtn} ${order.status === 'refunded' ? styles.active : ''}`}
-            onClick={() => onRefundStatusChange(order.id, 'refunded')}
-          >
-            <Text>已退款</Text>
-          </View>
-        </View>
-      )}
     </View>
   );
 });
 
-// 空订单组件
 const EmptyOrder = React.memo(({ onGoShopping }: { onGoShopping: () => void }) => (
   <View className={styles.emptyOrder}>
     <View className={styles.emptyIcon}>
@@ -234,9 +342,20 @@ const EmptyOrder = React.memo(({ onGoShopping }: { onGoShopping: () => void }) =
 ));
 
 const OrderListPage: React.FC = () => {
-  const [currentStatus, setCurrentStatus] = useState('all');
-  const [orderList, setOrderList] = useState<any[]>([]);
+  const [activeTab, setActiveTab] = useState(() => {
+    // 初始 tab 直接从 URL/路由参数读取，避免先以 'all' 加载再切换造成竞态
+    const params = Taro.getCurrentInstance()?.router?.params || {};
+    let status = params.status;
+    if (process.env.TARO_ENV === 'h5' && !status && typeof window !== 'undefined') {
+      const searchParams = new URLSearchParams(window.location.search);
+      status = searchParams.get('status') || undefined;
+    }
+    return status || 'all';
+  });
+  const [orders, setOrders] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  // 记录最新请求的 tab，用于丢弃过期响应
+  const latestStatusRef = useRef(activeTab);
 
   const tabs = [
     { key: 'all', label: '全部' },
@@ -245,34 +364,127 @@ const OrderListPage: React.FC = () => {
     { key: 'pending_pickup', label: '待自提' },
     { key: 'completed', label: '已完成' },
     { key: 'pending_review', label: '评价' },
-    { key: 'reviewed', label: '已取消' },
+    { key: 'cancelled', label: '已取消' },
   ];
 
-  // 初始化时读取URL参数
+  useEffect(() => {
+    latestStatusRef.current = activeTab;
+  }, [activeTab]);
+
   useEffect(() => {
     const params = Taro.getCurrentInstance()?.router?.params || {};
-    if (params.status) {
-      setCurrentStatus(params.status);
+    let status = params.status;
+    if (process.env.TARO_ENV === 'h5' && !status && typeof window !== 'undefined') {
+      const searchParams = new URLSearchParams(window.location.search);
+      status = searchParams.get('status') || undefined;
+    }
+    if (status && status !== activeTab) {
+      setActiveTab(status);
     }
   }, []);
 
-  // 加载订单列表
-  const loadOrders = useCallback(() => {
+  // 退款有效状态白名单：只有这些状态的记录才允许出现在退款/售后列表
+  const validRefundStatuses = [
+    'pending', 'processing', 'approved', 'rejected',
+    'refunding', 'refund_rejected', 'refunded',
+    'cancelled', 'completed',
+  ];
+  // 退款相关状态：这些状态的订单不应出现在普通订单列表中
+  const refundRelatedStatuses = [
+    'refunding', 'refund_rejected', 'refunded',
+    'pending', 'processing', 'approved', 'rejected',
+  ];
+
+  const loadOrders = useCallback(async (status?: string) => {
     setLoading(true);
-    setTimeout(() => {
-      const filteredOrders = getOrdersByStatus(currentStatus);
-      setOrderList(filteredOrders);
-      setLoading(false);
-    }, 100);
-  }, [currentStatus]);
+    try {
+      if (status === 'refunding') {
+        const res = await fetchRefundList({ page: 1, size: 50 });
+        // 如果用户已切换 tab，丢弃过期响应
+        if (status !== latestStatusRef.current) return;
+        const list = Array.isArray(res?.data) ? res.data : [];
+        // 过滤掉非退款状态的记录，确保退款/售后里只有真正的退款商品
+        const refundRecords = list
+          .map(transformRefund)
+          .filter((r: any) => validRefundStatuses.includes(r.status));
+        setOrders(refundRecords);
+        return;
+      }
+
+      const params: Record<string, any> = { page: 1, size: 50 };
+      if (status && status !== 'all' && status !== 'pending_review' && status !== 'reviewed') {
+        const statusCode = statusCodeReverseMap[status];
+        if (statusCode !== undefined) {
+          params.status = statusCode;
+        }
+      }
+      const res = await fetchOrderList(params);
+      // 如果用户已切换 tab，丢弃过期响应
+      if (status !== latestStatusRef.current) return;
+      const list = Array.isArray(res?.data) ? res.data : [];
+      // 过滤掉退款相关状态的订单，确保普通订单列表不混入退款订单
+      let transformed = list
+        .map(transformOrder)
+        .filter((o: any) => !refundRelatedStatuses.includes(o.status));
+
+      // 后端未返回 isReviewed 时，兜底查询已完成/待评价订单的评价记录
+      const ordersNeedCheckReview = transformed.filter((o: any) =>
+        (o.status === 'completed' || o.status === 'pending_review') && !o.isReviewed
+      );
+      if (ordersNeedCheckReview.length > 0) {
+        const reviewResults = await Promise.allSettled(
+          ordersNeedCheckReview.map((o: any) => fetchOrderReviews(o.id))
+        );
+        reviewResults.forEach((result, index) => {
+          if (result.status === 'fulfilled' && result.value?.data?.length > 0) {
+            const orderId = ordersNeedCheckReview[index].id;
+            const orderIndex = transformed.findIndex((o: any) => o.id === orderId);
+            if (orderIndex >= 0) {
+              transformed[orderIndex].isReviewed = true;
+            }
+          }
+        });
+      }
+
+      if (status === 'pending_review') {
+        setOrders(transformed.filter((o: any) => o.status === 'completed' || o.status === 'pending_review'));
+      } else if (status === 'cancelled') {
+        setOrders(transformed.filter((o: any) => o.status === 'cancelled'));
+      } else if (status && status !== 'all') {
+        // 前端二次过滤，确保只显示对应状态的订单
+        setOrders(transformed.filter((o: any) => o.status === status));
+      } else {
+        setOrders(transformed);
+      }
+    } catch (error) {
+      if (status !== latestStatusRef.current) return;
+      console.error('加载订单列表失败:', error);
+      setOrders([]);
+      Taro.showToast({ title: '加载失败', icon: 'none' });
+    } finally {
+      if (status === latestStatusRef.current) {
+        setLoading(false);
+      }
+    }
+  }, []);
 
   useEffect(() => {
-    loadOrders();
-  }, [loadOrders]);
+    loadOrders(activeTab);
+  }, [activeTab, loadOrders]);
 
-  // 使用 useCallback 缓存事件处理函数
+  // 监听评价成功事件，自动刷新订单列表
+  useEffect(() => {
+    const handler = () => {
+      loadOrders(activeTab);
+    };
+    Taro.eventCenter.on('orderReviewSuccess', handler);
+    return () => {
+      Taro.eventCenter.off('orderReviewSuccess', handler);
+    };
+  }, [loadOrders, activeTab]);
+
   const handleTabChange = useCallback((status: string) => {
-    setCurrentStatus(status);
+    setActiveTab(status);
   }, []);
 
   const goShopping = useCallback(() => {
@@ -280,93 +492,101 @@ const OrderListPage: React.FC = () => {
   }, []);
 
   const goToOrderDetail = useCallback((orderId: string) => {
-    Taro.navigateTo({ url: `/pages/order/detail/index?id=${orderId}` });
+    Taro.navigateTo({ url: `/pages/cart/order/detail/index?id=${orderId}` });
   }, []);
 
   const handleCancelOrder = useCallback((orderId: string) => {
     Taro.showModal({
       title: '确认取消',
       content: '确定要取消该订单吗？',
-      success: (res) => {
+      success: async (res) => {
         if (res.confirm) {
-          cancelOrder(orderId);
-          loadOrders();
-          Taro.showToast({ title: '订单已取消', icon: 'success' });
+          try {
+            await cancelOrder(orderId);
+            Taro.showToast({ title: '订单已取消', icon: 'success' });
+            loadOrders(activeTab);
+          } catch (error: any) {
+            Taro.showToast({ title: error?.message || '取消失败', icon: 'none' });
+          }
         }
       }
     });
-  }, [loadOrders]);
+  }, [loadOrders, activeTab]);
 
-  const handlePayOrder = useCallback((orderId: string) => {
-    payOrder(orderId);
-    loadOrders();
-    Taro.showToast({ title: '支付成功', icon: 'success' });
-  }, [loadOrders]);
+  const handlePayOrder = useCallback(async (orderId: string) => {
+    if (!orderId) {
+      Taro.showToast({ title: '订单ID异常，请刷新页面', icon: 'none' });
+      return;
+    }
+    Taro.showLoading({ title: '发起支付...', mask: true });
+    try {
+      // 1. 调用后端支付接口，获取微信支付参数
+      const payRes = await payOrder(orderId, { paymentMethod: 'wechat' });
 
-  const handleConfirmDelivery = useCallback((orderId: string) => {
-    Taro.showModal({
-      title: '确认发货',
-      content: '确定已发货吗？发货后订单将变为待自提状态',
-      success: (res) => {
-        if (res.confirm) {
-          confirmDelivery(orderId);
-          loadOrders();
-          Taro.showToast({ title: '已确认发货', icon: 'success' });
-        }
+      // 2. 拉起微信支付（小程序 requestPayment / H5 JSAPI 或 H5 支付）
+      //    支付成功后内部会轮询确认支付状态
+      Taro.showLoading({ title: '请确认支付...', mask: true });
+      const payStatus = await executeWechatPayment(payRes, orderId);
+
+      Taro.hideLoading();
+      if (payStatus?.isPaid) {
+        Taro.showToast({ title: '支付成功', icon: 'success' });
+      } else {
+        Taro.showToast({ title: payStatus?.message || '支付状态确认中，请稍后查看', icon: 'none' });
       }
-    });
-  }, [loadOrders]);
+      loadOrders(activeTab);
+    } catch (error: any) {
+      Taro.hideLoading();
+      const errMsg = error?.message || '';
+      if (errMsg.includes('取消支付')) {
+        Taro.showToast({ title: '已取消支付', icon: 'none' });
+      } else {
+        Taro.showToast({ title: errMsg || '支付失败', icon: 'none' });
+      }
+    }
+  }, [loadOrders, activeTab]);
 
   const handleConfirmPickup = useCallback((orderId: string) => {
     Taro.showModal({
       title: '确认自提',
       content: '确定已收到商品吗？',
-      success: (res) => {
+      success: async (res) => {
         if (res.confirm) {
-          confirmPickup(orderId);
-          loadOrders();
-          Taro.showToast({ title: '已确认收货', icon: 'success' });
+          try {
+            await confirmOrder(orderId);
+            Taro.showToast({ title: '已确认收货', icon: 'success' });
+            loadOrders(activeTab);
+          } catch (error: any) {
+            Taro.showToast({ title: error?.message || '操作失败', icon: 'none' });
+          }
         }
       }
     });
-  }, [loadOrders]);
+  }, [loadOrders, activeTab]);
 
   const handleApplyRefund = useCallback((orderId: string) => {
-    Taro.navigateTo({ url: `/pages/order/refund/index?id=${orderId}` });
+    Taro.navigateTo({ url: `/pages/cart/order/refund/index?id=${orderId}` });
   }, []);
 
   const handleReviewOrder = useCallback((orderId: string) => {
-    Taro.navigateTo({ url: `/pages/order/review/index?id=${orderId}` });
+    Taro.navigateTo({ url: `/pages/cart/order/review/index?id=${orderId}` });
   }, []);
 
-  const handleRefundStatusChange = useCallback((orderId: string, status: string) => {
-    updateRefundStatus(orderId, status);
-    loadOrders();
-    const statusTextMap: { [key: string]: string } = {
-      'refunding': '退款中',
-      'refund_rejected': '商家已拒绝',
-      'refunded': '已退款',
-    };
-    Taro.showToast({ title: `状态已更新为${statusTextMap[status]}`, icon: 'success' });
-  }, [loadOrders]);
-
-  // 使用 useMemo 缓存当前选中的标签索引
   const activeTabIndex = useMemo(() => {
-    return tabs.findIndex(tab => tab.key === currentStatus);
-  }, [currentStatus, tabs]);
+    return tabs.findIndex(tab => tab.key === activeTab);
+  }, [activeTab, tabs]);
 
   return (
     <View className={styles.orderListPage}>
-      {/* 标签导航（退款/售后页面不显示标签） */}
-      {currentStatus !== 'refunding' && (
-        <ScrollView 
-          scrollX 
+      {activeTab !== 'refunding' && (
+        <ScrollView
+          scrollX
           className={styles.tabBar}
           showScrollbar={false}
         >
           <View className={styles.tabList}>
             {tabs.map((tab, index) => (
-              <View 
+              <View
                 key={tab.key}
                 className={`${styles.tabItem} ${activeTabIndex === index ? styles.active : ''}`}
                 onClick={() => handleTabChange(tab.key)}
@@ -380,37 +600,33 @@ const OrderListPage: React.FC = () => {
           </View>
         </ScrollView>
       )}
-      {/* 退款/售后页面标题 */}
-      {currentStatus === 'refunding' && (
+      {activeTab === 'refunding' && (
         <View className={styles.refundHeader}>
           <Text className={styles.refundTitle}>退款/售后</Text>
         </View>
       )}
 
-      {/* 订单列表 */}
       {loading ? (
         <View className={styles.loading}>
           <Text>加载中...</Text>
         </View>
-      ) : orderList.length > 0 ? (
-        <ScrollView 
-          scrollY 
+      ) : orders.length > 0 ? (
+        <ScrollView
+          scrollY
           className={styles.orderList}
           enhanced
           showScrollbar={false}
         >
-          {orderList.map((order) => (
-            <OrderCard 
-              key={order.id}
+          {orders.map((order, index) => (
+            <OrderCard
+              key={order.id || `order-${index}`}
               order={order}
               onDetail={goToOrderDetail}
               onCancel={handleCancelOrder}
               onPay={handlePayOrder}
-              onConfirmDelivery={handleConfirmDelivery}
               onConfirmPickup={handleConfirmPickup}
               onRefund={handleApplyRefund}
               onReview={handleReviewOrder}
-              onRefundStatusChange={handleRefundStatusChange}
             />
           ))}
         </ScrollView>

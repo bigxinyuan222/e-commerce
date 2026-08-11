@@ -136,11 +136,6 @@
             font-size: $font-size-xl;
             font-weight: $font-weight-bold;
             color: $color-price;
-            
-            &::before {
-              content: '¥';
-              font-size: $font-size-sm;
-            }
           }
           
           .seckillTag {
@@ -257,6 +252,19 @@
   }
 }
 
+.emptyState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 120rpx 0;
+
+  .emptyText {
+    font-size: $font-size-md;
+    color: $color-text-tertiary;
+  }
+}
+
 // 底部结算栏
 .bottomBar {
   position: fixed;
@@ -332,11 +340,6 @@
         font-size: $font-size-xxl;
         font-weight: $font-weight-bold;
         color: $color-price;
-        
-        &::before {
-          content: '¥';
-          font-size: $font-size-md;
-        }
       }
     }
     
