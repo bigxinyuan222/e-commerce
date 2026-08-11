@@ -299,13 +299,13 @@
     
     .ratingStars {
       display: flex;
-      
-      .ratingStar {
+
+      .starActive {
         color: $color-warning;
         font-size: $font-size-sm;
       }
-      
-      .ratingStarInactive {
+
+      .starInactive {
         color: #e0e0e0;
         font-size: $font-size-sm;
       }

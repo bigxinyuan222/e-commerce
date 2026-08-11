@@ -1,43 +1,81 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, Image, ScrollView, Textarea } from '@tarojs/components';
 import Taro from '@tarojs/taro';
-import { getOrderById, applyRefund } from '@/data/order/orders';
+import { fetchOrderDetail, fetchRefundReasons, applyRefund as applyRefundAPI } from '@/api/cart';
+import { uploadImage } from '@/api/common';
+import { userApi } from '@/api/user';
+import { getImageUrl, lazyImgProps } from '@/utils/image';
 import styles from '@/styles/cart/order-refund.module.scss';
 
 const RefundApplyPage: React.FC = () => {
   const [order, setOrder] = useState<any>(null);
-  const [selectedReason, setSelectedReason] = useState('');
+  const [reasons, setReasons] = useState<Array<{ id: number; name: string }>>([]);
+  const [selectedReasonId, setSelectedReasonId] = useState<number>(0);
+  const [selectedReasonText, setSelectedReasonText] = useState('');
   const [refundAmount, setRefundAmount] = useState('');
   const [remark, setRemark] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [images, setImages] = useState<string[]>([]);
-
-  const reasons = [
-    { value: 'quality', label: '商品质量问题' },
-    { value: 'wrong_order', label: '拍错/多拍' },
-    { value: 'no_want', label: '不想要了' },
-    { value: 'other', label: '其他' }
-  ];
 
   useEffect(() => {
     const params = Taro.getCurrentInstance()?.router?.params || {};
     const orderId = params.id || params.orderId;
     if (orderId) {
-      const foundOrder = getOrderById(orderId as string);
-      if (foundOrder) {
-        setOrder(foundOrder);
-        setRefundAmount(foundOrder.payAmount.toString());
-      } else {
-        Taro.showToast({ title: '订单不存在', icon: 'none' });
-        setTimeout(() => {
-          Taro.navigateBack();
-        }, 1500);
-      }
+      loadPageData(orderId as string);
+    } else {
+      setLoading(false);
+      Taro.showToast({ title: '订单ID不存在', icon: 'none' });
     }
   }, []);
 
-  const handleSubmit = () => {
-    if (!selectedReason) {
+  const loadPageData = async (orderId: string) => {
+    setLoading(true);
+    try {
+      const [orderRes, reasonsRes] = await Promise.all([
+        fetchOrderDetail(orderId),
+        fetchRefundReasons({ enabled: true }),
+      ]);
+
+      if (orderRes?.data) {
+        setOrder(orderRes.data);
+        setRefundAmount(String(orderRes.data.payAmount ?? orderRes.data.totalAmount ?? ''));
+      } else {
+        Taro.showToast({ title: '订单不存在', icon: 'none' });
+      }
+
+      const defaultReasons = [
+        { id: 1, name: '商品质量问题' },
+        { id: 2, name: '拍错/多拍' },
+        { id: 3, name: '不想要了' },
+        { id: 4, name: '其他' },
+      ];
+      if (Array.isArray(reasonsRes?.data) && reasonsRes.data.length > 0) {
+        const reasonList = reasonsRes.data.map((r: any) => ({
+          id: Number(r.id ?? r.ID ?? r.Id ?? r.code ?? 0),
+          name: r.name ?? r.content ?? r.Content ?? r.label ?? r.title ?? '',
+        })).filter((r: any) => r.name && r.id > 0);
+        // 过滤后可能为空，需回退到默认原因，避免 showActionSheet 收到空 itemList
+        setReasons(reasonList.length > 0 ? reasonList : defaultReasons);
+      } else {
+        setReasons(defaultReasons);
+      }
+    } catch (error: any) {
+      console.error('加载页面数据失败:', error);
+      Taro.showToast({ title: error?.message || '加载失败', icon: 'none' });
+      setReasons([
+        { id: 1, name: '商品质量问题' },
+        { id: 2, name: '拍错/多拍' },
+        { id: 3, name: '不想要了' },
+        { id: 4, name: '其他' },
+      ]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleSubmit = async () => {
+    if (!selectedReasonId || selectedReasonId <= 0) {
       Taro.showToast({ title: '请选择退款原因', icon: 'none' });
       return;
     }
@@ -48,36 +86,63 @@ const RefundApplyPage: React.FC = () => {
       return;
     }
 
-    if (amount > order.payAmount) {
+    if (order?.payAmount && amount > order.payAmount) {
       Taro.showToast({ title: '退款金额不能超过订单金额', icon: 'none' });
       return;
     }
 
     setIsSubmitting(true);
-
-    const reasonLabel = reasons.find(r => r.value === selectedReason)?.label || selectedReason;
-    
-    setTimeout(() => {
-      const success = applyRefund(order.id, reasonLabel);
-      setIsSubmitting(false);
-      
-      if (success) {
-        Taro.showToast({ title: '退款申请已提交', icon: 'success' });
-        setTimeout(() => {
-          Taro.navigateBack();
-        }, 1500);
-      } else {
-        Taro.showToast({ title: '提交失败', icon: 'none' });
+    try {
+      // 先将本地临时图片上传到服务器，拿到URL列表
+      let uploadedImages: string[] = [];
+      if (images.length > 0) {
+        Taro.showLoading({ title: `上传图片 0/${images.length}`, mask: true });
+        uploadedImages = [];
+        for (let i = 0; i < images.length; i++) {
+          Taro.showLoading({ title: `上传图片 ${i + 1}/${images.length}`, mask: true });
+          const url = await uploadImage(userApi.upload, images[i], 'file', { type: 'refund' });
+          uploadedImages.push(url);
+        }
+        Taro.hideLoading();
       }
-    }, 1000);
+
+      const reasonText = selectedReasonText || reasons.find(r => r.id === selectedReasonId)?.name || '';
+      await applyRefundAPI({
+        orderId: order.id,
+        reasonId: selectedReasonId,
+        description: remark || reasonText,
+        images: uploadedImages,
+      });
+      Taro.showToast({ title: '退款申请已提交', icon: 'success' });
+      setTimeout(() => {
+        Taro.navigateBack();
+      }, 1500);
+    } catch (error: any) {
+      Taro.hideLoading();
+      console.error('提交退款申请失败:', error);
+      Taro.showToast({ title: error?.message || '提交失败', icon: 'none' });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleReasonSelect = () => {
-    const reasonLabels = reasons.map(r => r.label);
+    const reasonLabels = reasons.map(r => r.name);
+    if (reasonLabels.length === 0) {
+      Taro.showToast({ title: '原因列表加载中，请稍后重试', icon: 'none' });
+      return;
+    }
     Taro.showActionSheet({
       itemList: reasonLabels,
       success: (res) => {
-        setSelectedReason(reasons[res.tapIndex].value);
+        const selected = reasons[res.tapIndex];
+        if (selected) {
+          setSelectedReasonId(selected.id);
+          setSelectedReasonText(selected.name);
+        }
+      },
+      fail: () => {
+        // 用户取消选择，无需处理
       }
     });
   };
@@ -105,6 +170,9 @@ const RefundApplyPage: React.FC = () => {
             }
           });
         }
+      },
+      fail: () => {
+        // 用户取消选择，无需处理
       }
     });
   };
@@ -117,7 +185,7 @@ const RefundApplyPage: React.FC = () => {
 
   const maxRemarkLength = 170;
 
-  if (!order) {
+  if (loading) {
     return (
       <View className={styles.refundPage}>
         <View className={styles.loading}>
@@ -127,15 +195,25 @@ const RefundApplyPage: React.FC = () => {
     );
   }
 
-  const selectedReasonLabel = reasons.find(r => r.value === selectedReason)?.label || '点击选择申请原因';
+  if (!order) {
+    return (
+      <View className={styles.refundPage}>
+        <View className={styles.loading}>
+          <Text>订单不存在</Text>
+        </View>
+      </View>
+    );
+  }
+
+  const displayReason = selectedReasonText || '点击选择申请原因';
 
   return (
     <View className={styles.refundPage}>
-      <ScrollView scrollY style={{ height: 'calc(100vh - 120rpx)' }}>
+      <ScrollView scrollY style={{ height: 'calc(100vh - 120rpx)', paddingBottom: '260rpx', boxSizing: 'border-box' }}>
         <View className={styles.goodsSection}>
-          {order.items.map((item: any) => (
+          {(order.items || []).map((item: any) => (
             <View key={item.id} className={styles.goodsItem}>
-              <Image src={item.image} className={styles.goodsImage} mode="aspectFill" />
+              <Image src={getImageUrl(item.image)} className={styles.goodsImage} mode="aspectFill" {...lazyImgProps()} />
               <View className={styles.goodsInfo}>
                 <Text className={styles.goodsName}>{item.productName}</Text>
                 <Text className={styles.goodsSpecs}>×{item.quantity}，{item.skuName}</Text>
@@ -156,8 +234,8 @@ const RefundApplyPage: React.FC = () => {
           <View className={styles.formItem} onClick={handleReasonSelect}>
             <Text className={styles.formLabel}>申请原因</Text>
             <View className={styles.formRight}>
-              <Text className={`${styles.formValue} ${selectedReason ? '' : styles.placeholder}`}>
-                {selectedReasonLabel}
+              <Text className={`${styles.formValue} ${selectedReasonId > 0 || selectedReasonText ? '' : styles.placeholder}`}>
+                {displayReason}
               </Text>
               <Text className={styles.formArrow}>›</Text>
             </View>
@@ -166,7 +244,7 @@ const RefundApplyPage: React.FC = () => {
           <View className={styles.formItem}>
             <Text className={styles.formLabel}>申请金额</Text>
             <View className={styles.formRight}>
-              <Text className={styles.amountValue}>¥{parseFloat(refundAmount).toFixed(2)}</Text>
+              <Text className={styles.amountValue}>¥{parseFloat(refundAmount || '0').toFixed(2)}</Text>
             </View>
           </View>
         </View>

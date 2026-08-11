@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { View, Text, Input } from '@tarojs/components';
 import Taro from '@tarojs/taro';
 import { useAppContext } from '@/store/AppContext';
+import { apiPost } from '@/api/common';
+import { userApi } from '@/api/user';
 import styles from '@/styles/user/account-name.module.scss';
 
 const AccountNamePage: React.FC = () => {
@@ -27,18 +29,31 @@ const AccountNamePage: React.FC = () => {
     Taro.showModal({
       title: '确认更改',
       content: '账号名一年仅允许更改一次，确定要更改吗？',
-      success: (res) => {
+      success: async (res) => {
         if (res.confirm) {
-          const updatedUser = {
-            ...userInfo!,
-            accountName: accountName
-          };
-          setUserInfo(updatedUser);
-          Taro.setStorageSync('userInfo', updatedUser);
-          Taro.showToast({ title: '修改成功', icon: 'success' });
-          setTimeout(() => {
-            Taro.navigateBack();
-          }, 1500);
+          try {
+            Taro.showLoading({ title: '保存中...' });
+            // 合并当前必填字段，避免后端校验失败
+            await apiPost(userApi.updateProfile, {
+              nickname: userInfo?.nickname || '',
+              avatar: userInfo?.avatar || '',
+              gender: userInfo?.gender || '保密',
+              birthday: userInfo?.birthday || '',
+              accountName
+            });
+            Taro.hideLoading();
+            const updatedUser = { ...userInfo!, accountName, isLoggedIn: true };
+            setUserInfo(updatedUser);
+            Taro.showToast({ title: '修改成功', icon: 'success' });
+            setTimeout(() => { Taro.navigateBack(); }, 1500);
+          } catch (err: any) {
+            Taro.hideLoading();
+            // 即使接口失败，也本地更新
+            const updatedUser = { ...userInfo!, accountName, isLoggedIn: true };
+            setUserInfo(updatedUser);
+            Taro.showToast({ title: err.message || '修改失败，已本地保存', icon: 'none' });
+            setTimeout(() => { Taro.navigateBack(); }, 1500);
+          }
         }
       }
     });
