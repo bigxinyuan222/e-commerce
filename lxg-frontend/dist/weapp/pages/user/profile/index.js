@@ -1,1 +1,215 @@
-"use strict";(wx["webpackJsonp"]=wx["webpackJsonp"]||[]).push([[517],{9632:function(e,n,a){var o=a(8870),i=a(9379),r=a(1212),s=a(467),t=a(6540),l=a(118),c=a(758),u=a.n(c),m=a(63),_=a(2458),d=a(1432),f=a(7023),p=a(678),h={profilePage:"profile-module__profilePage___dJDqr",profileHeader:"profile-module__profileHeader___nBI5W",avatarSection:"profile-module__avatarSection___GjOlG",avatar:"profile-module__avatar___Pms0r",nickname:"profile-module__nickname___QC10n",menuSection:"profile-module__menuSection___R3z0H",menuSectionTitle:"profile-module__menuSectionTitle___DEtcE",menuItem:"profile-module__menuItem___GAOmM",menuIcon:"profile-module__menuIcon___MQdVd",menuTitle:"profile-module__menuTitle___vpBMK",menuValue:"profile-module__menuValue___b7wxo",menuArrow:"profile-module__menuArrow___CClR6",logoutBtn:"profile-module__logoutBtn___aFSAp"},v=a(4848),g=function(){var e=(0,m.Us)(),n=e.userInfo,a=e.setUserInfo;(0,t.useEffect)(function(){if(null!==n&&void 0!==n&&n.isLoggedIn){var e=function(){var e=(0,s.A)((0,r.A)().m(function e(){var o,i,s;return(0,r.A)().w(function(e){while(1)switch(e.p=e.n){case 0:return e.p=0,e.n=1,(0,_.Vg)(d.i$.profile);case 1:o=e.v,i=(0,f.i)(o),a({id:i.id||n.id,nickname:i.nickname||n.nickname,avatar:i.avatar||n.avatar,phone:i.phone||n.phone,accountName:i.accountName||n.accountName,gender:i.gender||n.gender,birthday:i.birthday||n.birthday,registerDate:i.registerDate||n.registerDate,email:i.email||n.email,isLoggedIn:!0}),e.n=3;break;case 2:e.p=2,s=e.v,console.error("\u83b7\u53d6\u7528\u6237\u4fe1\u606f\u5931\u8d25:",s);case 3:return e.a(2)}},e,null,[[0,2]])}));return function(){return e.apply(this,arguments)}}();e()}},[]);var o=function(e){switch(e){case"\u4e2a\u4eba\u4fe1\u606f":u().navigateTo({url:"/pages/user/personal-info/index"});break;default:break}},c=function(){u().showModal({title:"\u786e\u8ba4\u9000\u51fa",content:"\u786e\u5b9a\u8981\u9000\u51fa\u767b\u5f55\u5417\uff1f",success:function(e){e.confirm&&(u().removeStorageSync("lxg_user"),u().removeStorageSync("userInfo"),a((0,i.A)((0,i.A)({},n),{},{isLoggedIn:!1})),u().showToast({title:"\u5df2\u9000\u51fa\u767b\u5f55",icon:"success"}),setTimeout(function(){u().switchTab({url:"/pages/home/index"})},1e3))}})};return(0,v.jsxs)(l.Ss,{className:h.profilePage,children:[(0,v.jsx)(l.Ss,{className:h.profileHeader,children:(0,v.jsxs)(l.Ss,{className:h.avatarSection,children:[(0,v.jsx)(l._V,{src:(0,p.VG)(null===n||void 0===n?void 0:n.avatar)||"https://picsum.photos/id/64/200/200",className:h.avatar,mode:"aspectFill"}),(0,v.jsx)(l.EY,{className:h.nickname,children:(null===n||void 0===n?void 0:n.nickname)||"\u4e50\u4eab\u8d2d\u7528\u6237"})]})}),(0,v.jsxs)(l.Ss,{className:h.menuSection,children:[(0,v.jsx)(l.Ss,{className:h.menuSectionTitle,children:"\u8d26\u6237\u4e0e\u5b89\u5168"}),(0,v.jsxs)(l.Ss,{className:h.menuItem,onClick:function(){return o("\u4e2a\u4eba\u4fe1\u606f")},children:[(0,v.jsx)(l.EY,{className:h.menuIcon,children:"\ud83d\udc64"}),(0,v.jsx)(l.EY,{className:h.menuTitle,children:"\u4e2a\u4eba\u4fe1\u606f"}),(0,v.jsx)(l.EY,{className:h.menuArrow,children:"\u203a"})]})]}),(0,v.jsx)(l.Ss,{className:h.logoutBtn,onClick:c,children:"\u9000\u51fa\u767b\u5f55"})]})},S=g,x={navigationBarTitleText:"\u4e2a\u4eba\u4fe1\u606f",enablePullDownRefresh:!1},w=(0,o.eU)(S,"pages/user/profile/index",{root:{cn:[]}},x||{});S&&S.behaviors&&(w.behaviors=(w.behaviors||[]).concat(S.behaviors));Page(w)}},function(e){var n=function(n){return e(e.s=n)};e.O(0,[907,96,76],function(){return n(9632)});e.O()}]);
+"use strict";
+(wx["webpackJsonp"] = wx["webpackJsonp"] || []).push([["pages/user/profile/index"],{
+
+/***/ "./node_modules/@tarojs/taro-loader/lib/entry-cache.js?name=pages/user/profile/index!./src/pages/user/profile/index.tsx":
+/*!******************************************************************************************************************************!*\
+  !*** ./node_modules/@tarojs/taro-loader/lib/entry-cache.js?name=pages/user/profile/index!./src/pages/user/profile/index.tsx ***!
+  \******************************************************************************************************************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+/* harmony import */ var D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ./node_modules/@babel/runtime/helpers/esm/objectSpread2.js */ "./node_modules/@babel/runtime/helpers/esm/objectSpread2.js");
+/* harmony import */ var D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./node_modules/@babel/runtime/helpers/esm/regenerator.js */ "./node_modules/@babel/runtime/helpers/esm/regenerator.js");
+/* harmony import */ var D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./node_modules/@babel/runtime/helpers/esm/asyncToGenerator.js */ "./node_modules/@babel/runtime/helpers/esm/asyncToGenerator.js");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _tarojs_components__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! @tarojs/components */ "./node_modules/@tarojs/plugin-platform-weapp/dist/components-react.js");
+/* harmony import */ var _tarojs_taro__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @tarojs/taro */ "./node_modules/@tarojs/taro/index.js");
+/* harmony import */ var _tarojs_taro__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_tarojs_taro__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _store_AppContext__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @/store/AppContext */ "./src/store/AppContext.tsx");
+/* harmony import */ var _api_common__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @/api/common */ "./src/api/common/index.ts");
+/* harmony import */ var _api_user__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @/api/user */ "./src/api/user/index.ts");
+/* harmony import */ var _api_user_normalize__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! @/api/user/normalize */ "./src/api/user/normalize.ts");
+/* harmony import */ var _utils_image__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @/utils/image */ "./src/utils/image.ts");
+/* harmony import */ var _styles_user_profile_module_scss__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @/styles/user/profile.module.scss */ "./src/styles/user/profile.module.scss");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/cjs/react-jsx-runtime.production.min.js");
+
+
+
+
+
+
+
+
+
+
+
+
+
+var ProfilePage = function ProfilePage() {
+  var _useAppContext = (0,_store_AppContext__WEBPACK_IMPORTED_MODULE_2__.useAppContext)(),
+    userInfo = _useAppContext.userInfo,
+    setUserInfo = _useAppContext.setUserInfo;
+
+  // 进入页面时刷新用户信息
+  (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(function () {
+    if (!(userInfo !== null && userInfo !== void 0 && userInfo.isLoggedIn)) return;
+    var fetchProfile = /*#__PURE__*/function () {
+      var _ref = (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_8__["default"])(/*#__PURE__*/(0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_9__["default"])().m(function _callee() {
+        var res, normalized, _t;
+        return (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_9__["default"])().w(function (_context) {
+          while (1) switch (_context.p = _context.n) {
+            case 0:
+              _context.p = 0;
+              _context.n = 1;
+              return (0,_api_common__WEBPACK_IMPORTED_MODULE_3__.apiGet)(_api_user__WEBPACK_IMPORTED_MODULE_4__.userApi.profile);
+            case 1:
+              res = _context.v;
+              normalized = (0,_api_user_normalize__WEBPACK_IMPORTED_MODULE_10__.normalizeUserProfile)(res);
+              setUserInfo({
+                id: normalized.id || userInfo.id,
+                nickname: normalized.nickname || userInfo.nickname,
+                avatar: normalized.avatar || userInfo.avatar,
+                phone: normalized.phone || userInfo.phone,
+                accountName: normalized.accountName || userInfo.accountName,
+                gender: normalized.gender || userInfo.gender,
+                birthday: normalized.birthday || userInfo.birthday,
+                registerDate: normalized.registerDate || userInfo.registerDate,
+                email: normalized.email || userInfo.email,
+                isLoggedIn: true
+              });
+              _context.n = 3;
+              break;
+            case 2:
+              _context.p = 2;
+              _t = _context.v;
+              console.error('获取用户信息失败:', _t);
+            case 3:
+              return _context.a(2);
+          }
+        }, _callee, null, [[0, 2]]);
+      }));
+      return function fetchProfile() {
+        return _ref.apply(this, arguments);
+      };
+    }();
+    fetchProfile();
+  }, []);
+  var handleMenuItemClick = function handleMenuItemClick(title) {
+    switch (title) {
+      case '个人信息':
+        _tarojs_taro__WEBPACK_IMPORTED_MODULE_1___default().navigateTo({
+          url: '/pages/user/personal-info/index'
+        });
+        break;
+      default:
+        break;
+    }
+  };
+  var logout = function logout() {
+    _tarojs_taro__WEBPACK_IMPORTED_MODULE_1___default().showModal({
+      title: '确认退出',
+      content: '确定要退出登录吗？',
+      success: function success(res) {
+        if (res.confirm) {
+          // 清除用户信息（含 token 的 lxg_user 必须清除，否则未真正退出）
+          _tarojs_taro__WEBPACK_IMPORTED_MODULE_1___default().removeStorageSync('lxg_user');
+          _tarojs_taro__WEBPACK_IMPORTED_MODULE_1___default().removeStorageSync('userInfo');
+          setUserInfo((0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_11__["default"])((0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_11__["default"])({}, userInfo), {}, {
+            isLoggedIn: false
+          }));
+          _tarojs_taro__WEBPACK_IMPORTED_MODULE_1___default().showToast({
+            title: '已退出登录',
+            icon: 'success'
+          });
+          setTimeout(function () {
+            _tarojs_taro__WEBPACK_IMPORTED_MODULE_1___default().switchTab({
+              url: '/pages/home/index'
+            });
+          }, 1000);
+        }
+      }
+    });
+  };
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_12__.View, {
+    className: _styles_user_profile_module_scss__WEBPACK_IMPORTED_MODULE_6__["default"].profilePage,
+    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_12__.View, {
+      className: _styles_user_profile_module_scss__WEBPACK_IMPORTED_MODULE_6__["default"].profileHeader,
+      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_12__.View, {
+        className: _styles_user_profile_module_scss__WEBPACK_IMPORTED_MODULE_6__["default"].avatarSection,
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_12__.Image, {
+          src: (0,_utils_image__WEBPACK_IMPORTED_MODULE_5__.getImageUrl)(userInfo === null || userInfo === void 0 ? void 0 : userInfo.avatar) || 'https://picsum.photos/id/64/200/200',
+          className: _styles_user_profile_module_scss__WEBPACK_IMPORTED_MODULE_6__["default"].avatar,
+          mode: "aspectFill"
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_12__.Text, {
+          className: _styles_user_profile_module_scss__WEBPACK_IMPORTED_MODULE_6__["default"].nickname,
+          children: (userInfo === null || userInfo === void 0 ? void 0 : userInfo.nickname) || '乐享购用户'
+        })]
+      })
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_12__.View, {
+      className: _styles_user_profile_module_scss__WEBPACK_IMPORTED_MODULE_6__["default"].menuSection,
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_12__.View, {
+        className: _styles_user_profile_module_scss__WEBPACK_IMPORTED_MODULE_6__["default"].menuSectionTitle,
+        children: "\u8D26\u6237\u4E0E\u5B89\u5168"
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_12__.View, {
+        className: _styles_user_profile_module_scss__WEBPACK_IMPORTED_MODULE_6__["default"].menuItem,
+        onClick: function onClick() {
+          return handleMenuItemClick('个人信息');
+        },
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_12__.Text, {
+          className: _styles_user_profile_module_scss__WEBPACK_IMPORTED_MODULE_6__["default"].menuIcon,
+          children: "\uD83D\uDC64"
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_12__.Text, {
+          className: _styles_user_profile_module_scss__WEBPACK_IMPORTED_MODULE_6__["default"].menuTitle,
+          children: "\u4E2A\u4EBA\u4FE1\u606F"
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_12__.Text, {
+          className: _styles_user_profile_module_scss__WEBPACK_IMPORTED_MODULE_6__["default"].menuArrow,
+          children: "\u203A"
+        })]
+      })]
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_12__.View, {
+      className: _styles_user_profile_module_scss__WEBPACK_IMPORTED_MODULE_6__["default"].logoutBtn,
+      onClick: logout,
+      children: "\u9000\u51FA\u767B\u5F55"
+    })]
+  });
+};
+/* harmony default export */ __webpack_exports__["default"] = (ProfilePage);
+
+/***/ }),
+
+/***/ "./src/pages/user/profile/index.tsx":
+/*!******************************************!*\
+  !*** ./src/pages/user/profile/index.tsx ***!
+  \******************************************/
+/***/ (function(__unused_webpack_module, __unused_webpack___webpack_exports__, __webpack_require__) {
+
+/* harmony import */ var _tarojs_runtime__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @tarojs/runtime */ "./node_modules/@tarojs/runtime/dist/dsl/common.js");
+/* harmony import */ var _node_modules_tarojs_taro_loader_lib_entry_cache_js_name_pages_user_profile_index_index_tsx__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! !!../../../../node_modules/@tarojs/taro-loader/lib/entry-cache.js?name=pages/user/profile/index!./index.tsx */ "./node_modules/@tarojs/taro-loader/lib/entry-cache.js?name=pages/user/profile/index!./src/pages/user/profile/index.tsx");
+
+
+var config = {"navigationBarTitleText":"个人信息","enablePullDownRefresh":false};
+
+
+
+var taroOption = (0,_tarojs_runtime__WEBPACK_IMPORTED_MODULE_1__.createPageConfig)(_node_modules_tarojs_taro_loader_lib_entry_cache_js_name_pages_user_profile_index_index_tsx__WEBPACK_IMPORTED_MODULE_0__["default"], 'pages/user/profile/index', {root:{cn:[]}}, config || {})
+if (_node_modules_tarojs_taro_loader_lib_entry_cache_js_name_pages_user_profile_index_index_tsx__WEBPACK_IMPORTED_MODULE_0__["default"] && _node_modules_tarojs_taro_loader_lib_entry_cache_js_name_pages_user_profile_index_index_tsx__WEBPACK_IMPORTED_MODULE_0__["default"].behaviors) {
+  taroOption.behaviors = (taroOption.behaviors || []).concat(_node_modules_tarojs_taro_loader_lib_entry_cache_js_name_pages_user_profile_index_index_tsx__WEBPACK_IMPORTED_MODULE_0__["default"].behaviors)
+}
+var inst = Page(taroOption)
+
+
+
+/* unused harmony default export */ var __WEBPACK_DEFAULT_EXPORT__ = (_node_modules_tarojs_taro_loader_lib_entry_cache_js_name_pages_user_profile_index_index_tsx__WEBPACK_IMPORTED_MODULE_0__["default"]);
+
+
+/***/ }),
+
+/***/ "./src/styles/user/profile.module.scss":
+/*!*********************************************!*\
+  !*** ./src/styles/user/profile.module.scss ***!
+  \*********************************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__) {
+
+// extracted by mini-css-extract-plugin
+/* harmony default export */ __webpack_exports__["default"] = ({"profilePage":"profile-module__profilePage___dJDqr","profileHeader":"profile-module__profileHeader___nBI5W","avatarSection":"profile-module__avatarSection___GjOlG","avatar":"profile-module__avatar___Pms0r","nickname":"profile-module__nickname___QC10n","menuSection":"profile-module__menuSection___R3z0H","menuSectionTitle":"profile-module__menuSectionTitle___DEtcE","menuItem":"profile-module__menuItem___GAOmM","menuIcon":"profile-module__menuIcon___MQdVd","menuTitle":"profile-module__menuTitle___vpBMK","menuValue":"profile-module__menuValue___b7wxo","menuArrow":"profile-module__menuArrow___CClR6","logoutBtn":"profile-module__logoutBtn___aFSAp"});
+
+/***/ })
+
+},
+/******/ function(__webpack_require__) { // webpackRuntimeModules
+/******/ var __webpack_exec__ = function(moduleId) { return __webpack_require__(__webpack_require__.s = moduleId); }
+/******/ __webpack_require__.O(0, ["taro","vendors","common"], function() { return __webpack_exec__("./src/pages/user/profile/index.tsx"); });
+/******/ var __webpack_exports__ = __webpack_require__.O();
+/******/ }
+]);
+//# sourceMappingURL=index.js.map

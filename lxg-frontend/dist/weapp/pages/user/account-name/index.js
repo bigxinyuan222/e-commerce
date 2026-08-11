@@ -1,1 +1,236 @@
-"use strict";(wx["webpackJsonp"]=wx["webpackJsonp"]||[]).push([[90],{5892:function(e,n,a){var c=a(8870),t=a(1212),o=a(9379),s=a(467),i=a(5544),u=a(6540),l=a(118),_=a(758),r=a.n(_),d=a(63),m=a(2458),h=a(1432),p={accountNamePage:"account-name-module__accountNamePage___x8WJk",header:"account-name-module__header___OdViI",backBtn:"account-name-module__backBtn___O4KK7",backIcon:"account-name-module__backIcon___qTRVX",headerTitle:"account-name-module__headerTitle___tKf3c",headerRight:"account-name-module__headerRight___zgQe9",content:"account-name-module__content___CKbBQ",infoBox:"account-name-module__infoBox___iBTG0",label:"account-name-module__label___UATwJ",inputRow:"account-name-module__inputRow___pp5p7",input:"account-name-module__input___Soozn",tip:"account-name-module__tip___tbQUH",confirmBtn:"account-name-module__confirmBtn___Ef_IM",btnText:"account-name-module__btnText___OK91z"},f=a(4848),v=function(){var e=(0,d.Us)(),n=e.userInfo,a=e.setUserInfo,c=(0,u.useState)((null===n||void 0===n?void 0:n.accountName)||""),_=(0,i.A)(c,2),v=_[0],b=_[1],x=(0,u.useState)(!0),g=(0,i.A)(x,1),N=g[0],k=function(){r().navigateBack()},w=function(){!v||v.length<6?r().showToast({title:"\u8d26\u53f7\u540d\u81f3\u5c116\u4f4d",icon:"none"}):/[\s@#$%^&*()+=|{}':;',.<>/?~]/.test(v)?r().showToast({title:"\u8d26\u53f7\u540d\u4e0d\u80fd\u5305\u542b\u7279\u6b8a\u5b57\u7b26",icon:"none"}):r().showModal({title:"\u786e\u8ba4\u66f4\u6539",content:"\u8d26\u53f7\u540d\u4e00\u5e74\u4ec5\u5141\u8bb8\u66f4\u6539\u4e00\u6b21\uff0c\u786e\u5b9a\u8981\u66f4\u6539\u5417\uff1f",success:function(){var e=(0,s.A)((0,t.A)().m(function e(c){var s,i,u;return(0,t.A)().w(function(e){while(1)switch(e.p=e.n){case 0:if(!c.confirm){e.n=4;break}return e.p=1,r().showLoading({title:"\u4fdd\u5b58\u4e2d..."}),e.n=2,(0,m.$P)(h.i$.updateProfile,{nickname:(null===n||void 0===n?void 0:n.nickname)||"",avatar:(null===n||void 0===n?void 0:n.avatar)||"",gender:(null===n||void 0===n?void 0:n.gender)||"\u4fdd\u5bc6",birthday:(null===n||void 0===n?void 0:n.birthday)||"",accountName:v});case 2:r().hideLoading(),s=(0,o.A)((0,o.A)({},n),{},{accountName:v,isLoggedIn:!0}),a(s),r().showToast({title:"\u4fee\u6539\u6210\u529f",icon:"success"}),setTimeout(function(){r().navigateBack()},1500),e.n=4;break;case 3:e.p=3,u=e.v,r().hideLoading(),i=(0,o.A)((0,o.A)({},n),{},{accountName:v,isLoggedIn:!0}),a(i),r().showToast({title:u.message||"\u4fee\u6539\u5931\u8d25\uff0c\u5df2\u672c\u5730\u4fdd\u5b58",icon:"none"}),setTimeout(function(){r().navigateBack()},1500);case 4:return e.a(2)}},e,null,[[1,3]])}));function c(n){return e.apply(this,arguments)}return c}()})};return(0,f.jsxs)(l.Ss,{className:p.accountNamePage,children:[(0,f.jsxs)(l.Ss,{className:p.header,children:[(0,f.jsx)(l.Ss,{className:p.backBtn,onClick:k,children:(0,f.jsx)(l.EY,{className:p.backIcon,children:"\u2039"})}),(0,f.jsx)(l.EY,{className:p.headerTitle,children:"\u8ba4\u8bc1"}),(0,f.jsx)(l.Ss,{className:p.headerRight})]}),(0,f.jsxs)(l.Ss,{className:p.content,children:[(0,f.jsxs)(l.Ss,{className:p.infoBox,children:[(0,f.jsx)(l.EY,{className:p.label,children:"\u8d26\u53f7\u540d"}),(0,f.jsx)(l.Ss,{className:p.inputRow,children:(0,f.jsx)(l.pd,{className:p.input,type:"text",placeholder:"\u8bf7\u8f93\u5165\u8d26\u53f7\u540d",value:v,onInput:function(e){return b(e.detail.value)},disabled:!N})}),(0,f.jsx)(l.EY,{className:p.tip,children:"\u8d26\u53f7\u540d\u662f\u8d26\u53f7\u7684\u552f\u4e00\u51ed\u8bc1\uff0c\u4e00\u5e74\u4ec5\u5141\u8bb8\u66f4\u6539\u4e00\u6b21"})]}),(0,f.jsx)(l.Ss,{className:p.confirmBtn,onClick:w,children:(0,f.jsx)(l.EY,{className:p.btnText,children:"\u786e\u8ba4\u66f4\u6539"})})]})]})},b=v,x={},g=(0,c.eU)(b,"pages/user/account-name/index",{root:{cn:[]}},x||{});b&&b.behaviors&&(g.behaviors=(g.behaviors||[]).concat(b.behaviors));Page(g)}},function(e){var n=function(n){return e(e.s=n)};e.O(0,[907,96,76],function(){return n(5892)});e.O()}]);
+"use strict";
+(wx["webpackJsonp"] = wx["webpackJsonp"] || []).push([["pages/user/account-name/index"],{
+
+/***/ "./node_modules/@tarojs/taro-loader/lib/entry-cache.js?name=pages/user/account-name/index!./src/pages/user/account-name/index.tsx":
+/*!****************************************************************************************************************************************!*\
+  !*** ./node_modules/@tarojs/taro-loader/lib/entry-cache.js?name=pages/user/account-name/index!./src/pages/user/account-name/index.tsx ***!
+  \****************************************************************************************************************************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+/* harmony import */ var D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./node_modules/@babel/runtime/helpers/esm/regenerator.js */ "./node_modules/@babel/runtime/helpers/esm/regenerator.js");
+/* harmony import */ var D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./node_modules/@babel/runtime/helpers/esm/objectSpread2.js */ "./node_modules/@babel/runtime/helpers/esm/objectSpread2.js");
+/* harmony import */ var D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./node_modules/@babel/runtime/helpers/esm/asyncToGenerator.js */ "./node_modules/@babel/runtime/helpers/esm/asyncToGenerator.js");
+/* harmony import */ var D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_slicedToArray_js__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./node_modules/@babel/runtime/helpers/esm/slicedToArray.js */ "./node_modules/@babel/runtime/helpers/esm/slicedToArray.js");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _tarojs_components__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! @tarojs/components */ "./node_modules/@tarojs/plugin-platform-weapp/dist/components-react.js");
+/* harmony import */ var _tarojs_taro__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @tarojs/taro */ "./node_modules/@tarojs/taro/index.js");
+/* harmony import */ var _tarojs_taro__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_tarojs_taro__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _store_AppContext__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @/store/AppContext */ "./src/store/AppContext.tsx");
+/* harmony import */ var _api_common__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @/api/common */ "./src/api/common/index.ts");
+/* harmony import */ var _api_user__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @/api/user */ "./src/api/user/index.ts");
+/* harmony import */ var _styles_user_account_name_module_scss__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @/styles/user/account-name.module.scss */ "./src/styles/user/account-name.module.scss");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/cjs/react-jsx-runtime.production.min.js");
+
+
+
+
+
+
+
+
+
+
+
+
+var AccountNamePage = function AccountNamePage() {
+  var _useAppContext = (0,_store_AppContext__WEBPACK_IMPORTED_MODULE_2__.useAppContext)(),
+    userInfo = _useAppContext.userInfo,
+    setUserInfo = _useAppContext.setUserInfo;
+  var _useState = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)((userInfo === null || userInfo === void 0 ? void 0 : userInfo.accountName) || ''),
+    _useState2 = (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_slicedToArray_js__WEBPACK_IMPORTED_MODULE_7__["default"])(_useState, 2),
+    accountName = _useState2[0],
+    setAccountName = _useState2[1];
+  var _useState3 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(true),
+    _useState4 = (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_slicedToArray_js__WEBPACK_IMPORTED_MODULE_7__["default"])(_useState3, 1),
+    canModify = _useState4[0];
+  var handleBack = function handleBack() {
+    _tarojs_taro__WEBPACK_IMPORTED_MODULE_1___default().navigateBack();
+  };
+  var handleConfirm = function handleConfirm() {
+    if (!accountName || accountName.length < 6) {
+      _tarojs_taro__WEBPACK_IMPORTED_MODULE_1___default().showToast({
+        title: '账号名至少6位',
+        icon: 'none'
+      });
+      return;
+    }
+    if (/[\s@#$%^&*()+=|{}':;',.<>/?~]/.test(accountName)) {
+      _tarojs_taro__WEBPACK_IMPORTED_MODULE_1___default().showToast({
+        title: '账号名不能包含特殊字符',
+        icon: 'none'
+      });
+      return;
+    }
+    _tarojs_taro__WEBPACK_IMPORTED_MODULE_1___default().showModal({
+      title: '确认更改',
+      content: '账号名一年仅允许更改一次，确定要更改吗？',
+      success: function () {
+        var _success = (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_8__["default"])(/*#__PURE__*/(0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_9__["default"])().m(function _callee(res) {
+          var updatedUser, _updatedUser, _t;
+          return (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_9__["default"])().w(function (_context) {
+            while (1) switch (_context.p = _context.n) {
+              case 0:
+                if (!res.confirm) {
+                  _context.n = 4;
+                  break;
+                }
+                _context.p = 1;
+                _tarojs_taro__WEBPACK_IMPORTED_MODULE_1___default().showLoading({
+                  title: '保存中...'
+                });
+                // 合并当前必填字段，避免后端校验失败
+                _context.n = 2;
+                return (0,_api_common__WEBPACK_IMPORTED_MODULE_3__.apiPost)(_api_user__WEBPACK_IMPORTED_MODULE_4__.userApi.updateProfile, {
+                  nickname: (userInfo === null || userInfo === void 0 ? void 0 : userInfo.nickname) || '',
+                  avatar: (userInfo === null || userInfo === void 0 ? void 0 : userInfo.avatar) || '',
+                  gender: (userInfo === null || userInfo === void 0 ? void 0 : userInfo.gender) || '保密',
+                  birthday: (userInfo === null || userInfo === void 0 ? void 0 : userInfo.birthday) || '',
+                  accountName: accountName
+                });
+              case 2:
+                _tarojs_taro__WEBPACK_IMPORTED_MODULE_1___default().hideLoading();
+                updatedUser = (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_10__["default"])((0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_10__["default"])({}, userInfo), {}, {
+                  accountName: accountName,
+                  isLoggedIn: true
+                });
+                setUserInfo(updatedUser);
+                _tarojs_taro__WEBPACK_IMPORTED_MODULE_1___default().showToast({
+                  title: '修改成功',
+                  icon: 'success'
+                });
+                setTimeout(function () {
+                  _tarojs_taro__WEBPACK_IMPORTED_MODULE_1___default().navigateBack();
+                }, 1500);
+                _context.n = 4;
+                break;
+              case 3:
+                _context.p = 3;
+                _t = _context.v;
+                _tarojs_taro__WEBPACK_IMPORTED_MODULE_1___default().hideLoading();
+                // 即使接口失败，也本地更新
+                _updatedUser = (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_10__["default"])((0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_10__["default"])({}, userInfo), {}, {
+                  accountName: accountName,
+                  isLoggedIn: true
+                });
+                setUserInfo(_updatedUser);
+                _tarojs_taro__WEBPACK_IMPORTED_MODULE_1___default().showToast({
+                  title: _t.message || '修改失败，已本地保存',
+                  icon: 'none'
+                });
+                setTimeout(function () {
+                  _tarojs_taro__WEBPACK_IMPORTED_MODULE_1___default().navigateBack();
+                }, 1500);
+              case 4:
+                return _context.a(2);
+            }
+          }, _callee, null, [[1, 3]]);
+        }));
+        function success(_x) {
+          return _success.apply(this, arguments);
+        }
+        return success;
+      }()
+    });
+  };
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_11__.View, {
+    className: _styles_user_account_name_module_scss__WEBPACK_IMPORTED_MODULE_5__["default"].accountNamePage,
+    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_11__.View, {
+      className: _styles_user_account_name_module_scss__WEBPACK_IMPORTED_MODULE_5__["default"].header,
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_11__.View, {
+        className: _styles_user_account_name_module_scss__WEBPACK_IMPORTED_MODULE_5__["default"].backBtn,
+        onClick: handleBack,
+        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_11__.Text, {
+          className: _styles_user_account_name_module_scss__WEBPACK_IMPORTED_MODULE_5__["default"].backIcon,
+          children: "\u2039"
+        })
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_11__.Text, {
+        className: _styles_user_account_name_module_scss__WEBPACK_IMPORTED_MODULE_5__["default"].headerTitle,
+        children: "\u8BA4\u8BC1"
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_11__.View, {
+        className: _styles_user_account_name_module_scss__WEBPACK_IMPORTED_MODULE_5__["default"].headerRight
+      })]
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_11__.View, {
+      className: _styles_user_account_name_module_scss__WEBPACK_IMPORTED_MODULE_5__["default"].content,
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_11__.View, {
+        className: _styles_user_account_name_module_scss__WEBPACK_IMPORTED_MODULE_5__["default"].infoBox,
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_11__.Text, {
+          className: _styles_user_account_name_module_scss__WEBPACK_IMPORTED_MODULE_5__["default"].label,
+          children: "\u8D26\u53F7\u540D"
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_11__.View, {
+          className: _styles_user_account_name_module_scss__WEBPACK_IMPORTED_MODULE_5__["default"].inputRow,
+          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_11__.Input, {
+            className: _styles_user_account_name_module_scss__WEBPACK_IMPORTED_MODULE_5__["default"].input,
+            type: "text",
+            placeholder: "\u8BF7\u8F93\u5165\u8D26\u53F7\u540D",
+            value: accountName,
+            onInput: function onInput(e) {
+              return setAccountName(e.detail.value);
+            },
+            disabled: !canModify
+          })
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_11__.Text, {
+          className: _styles_user_account_name_module_scss__WEBPACK_IMPORTED_MODULE_5__["default"].tip,
+          children: "\u8D26\u53F7\u540D\u662F\u8D26\u53F7\u7684\u552F\u4E00\u51ED\u8BC1\uFF0C\u4E00\u5E74\u4EC5\u5141\u8BB8\u66F4\u6539\u4E00\u6B21"
+        })]
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_11__.View, {
+        className: _styles_user_account_name_module_scss__WEBPACK_IMPORTED_MODULE_5__["default"].confirmBtn,
+        onClick: handleConfirm,
+        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_11__.Text, {
+          className: _styles_user_account_name_module_scss__WEBPACK_IMPORTED_MODULE_5__["default"].btnText,
+          children: "\u786E\u8BA4\u66F4\u6539"
+        })
+      })]
+    })]
+  });
+};
+/* harmony default export */ __webpack_exports__["default"] = (AccountNamePage);
+
+/***/ }),
+
+/***/ "./src/pages/user/account-name/index.tsx":
+/*!***********************************************!*\
+  !*** ./src/pages/user/account-name/index.tsx ***!
+  \***********************************************/
+/***/ (function(__unused_webpack_module, __unused_webpack___webpack_exports__, __webpack_require__) {
+
+/* harmony import */ var _tarojs_runtime__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @tarojs/runtime */ "./node_modules/@tarojs/runtime/dist/dsl/common.js");
+/* harmony import */ var _node_modules_tarojs_taro_loader_lib_entry_cache_js_name_pages_user_account_name_index_index_tsx__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! !!../../../../node_modules/@tarojs/taro-loader/lib/entry-cache.js?name=pages/user/account-name/index!./index.tsx */ "./node_modules/@tarojs/taro-loader/lib/entry-cache.js?name=pages/user/account-name/index!./src/pages/user/account-name/index.tsx");
+
+
+var config = {};
+
+
+
+var taroOption = (0,_tarojs_runtime__WEBPACK_IMPORTED_MODULE_1__.createPageConfig)(_node_modules_tarojs_taro_loader_lib_entry_cache_js_name_pages_user_account_name_index_index_tsx__WEBPACK_IMPORTED_MODULE_0__["default"], 'pages/user/account-name/index', {root:{cn:[]}}, config || {})
+if (_node_modules_tarojs_taro_loader_lib_entry_cache_js_name_pages_user_account_name_index_index_tsx__WEBPACK_IMPORTED_MODULE_0__["default"] && _node_modules_tarojs_taro_loader_lib_entry_cache_js_name_pages_user_account_name_index_index_tsx__WEBPACK_IMPORTED_MODULE_0__["default"].behaviors) {
+  taroOption.behaviors = (taroOption.behaviors || []).concat(_node_modules_tarojs_taro_loader_lib_entry_cache_js_name_pages_user_account_name_index_index_tsx__WEBPACK_IMPORTED_MODULE_0__["default"].behaviors)
+}
+var inst = Page(taroOption)
+
+
+
+/* unused harmony default export */ var __WEBPACK_DEFAULT_EXPORT__ = (_node_modules_tarojs_taro_loader_lib_entry_cache_js_name_pages_user_account_name_index_index_tsx__WEBPACK_IMPORTED_MODULE_0__["default"]);
+
+
+/***/ }),
+
+/***/ "./src/styles/user/account-name.module.scss":
+/*!**************************************************!*\
+  !*** ./src/styles/user/account-name.module.scss ***!
+  \**************************************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__) {
+
+// extracted by mini-css-extract-plugin
+/* harmony default export */ __webpack_exports__["default"] = ({"accountNamePage":"account-name-module__accountNamePage___x8WJk","header":"account-name-module__header___OdViI","backBtn":"account-name-module__backBtn___O4KK7","backIcon":"account-name-module__backIcon___qTRVX","headerTitle":"account-name-module__headerTitle___tKf3c","headerRight":"account-name-module__headerRight___zgQe9","content":"account-name-module__content___CKbBQ","infoBox":"account-name-module__infoBox___iBTG0","label":"account-name-module__label___UATwJ","inputRow":"account-name-module__inputRow___pp5p7","input":"account-name-module__input___Soozn","tip":"account-name-module__tip___tbQUH","confirmBtn":"account-name-module__confirmBtn___Ef_IM","btnText":"account-name-module__btnText___OK91z"});
+
+/***/ })
+
+},
+/******/ function(__webpack_require__) { // webpackRuntimeModules
+/******/ var __webpack_exec__ = function(moduleId) { return __webpack_require__(__webpack_require__.s = moduleId); }
+/******/ __webpack_require__.O(0, ["taro","vendors","common"], function() { return __webpack_exec__("./src/pages/user/account-name/index.tsx"); });
+/******/ var __webpack_exports__ = __webpack_require__.O();
+/******/ }
+]);
+//# sourceMappingURL=index.js.map
