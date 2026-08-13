@@ -20,12 +20,12 @@ const ProductCard = React.memo(({ product, onClick }: { product: any; onClick: (
       {...lazyImgProps()}
     />
     <View className={styles.productInfo}>
-      <Text className={styles.productName}>{product.name}</Text>
-      <View className={styles.productTags}>
-        {product.tags?.slice(0, 1).map((tag: string) => (
-          <Text key={tag} className={styles.tag}>{tag}</Text>
-        ))}
-      </View>
+        <Text className={styles.productName}>{product.name}</Text>
+        <View className={styles.productTags}>
+          {Array.isArray(product.tags) && product.tags.slice(0, 1).map((tag: string) => (
+            <Text key={tag} className={styles.tag}>{tag}</Text>
+          ))}
+        </View>
       <View className={styles.productPrice}>
         <Text className={styles.priceSymbol}>¥</Text>
         <Text className={styles.currentPrice}>{product.price}</Text>

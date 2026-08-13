@@ -37,9 +37,13 @@ const SearchResultsPage: React.FC = () => {
   }, [searchResults]);
 
   const colorCategories = useMemo(() => {
-    const colors = ['黑色', '白色', '银色', '金色', '蓝色', '红色', '绿色', '紫色'];
-    return colors;
-  }, []);
+    const colorSet = new Set<string>();
+    searchResults.forEach(p => {
+      const color = p.color ?? p.colorName ?? p.colour ?? p.specColor ?? p.spec_color;
+      if (color) colorSet.add(String(color));
+    });
+    return Array.from(colorSet);
+  }, [searchResults]);
 
   useEffect(() => {
     const params = Taro.getCurrentInstance()?.router?.params || {};
@@ -262,20 +266,22 @@ const SearchResultsPage: React.FC = () => {
               </View>
             </View>
 
-            <View className={styles.filterSection}>
-              <Text className={styles.filterSectionTitle}>颜色分类</Text>
-              <View className={styles.filterOptions}>
-                {colorCategories.map((color) => (
-                  <View 
-                    key={color}
-                    className={`${styles.filterOption} ${filter.colorCategories.includes(color) ? styles.selected : ''}`}
-                    onClick={() => toggleColor(color)}
-                  >
-                    {color}
-                  </View>
-                ))}
+            {colorCategories.length > 0 && (
+              <View className={styles.filterSection}>
+                <Text className={styles.filterSectionTitle}>颜色分类</Text>
+                <View className={styles.filterOptions}>
+                  {colorCategories.map((color) => (
+                    <View 
+                      key={color}
+                      className={`${styles.filterOption} ${filter.colorCategories.includes(color) ? styles.selected : ''}`}
+                      onClick={() => toggleColor(color)}
+                    >
+                      {color}
+                    </View>
+                  ))}
+                </View>
               </View>
-            </View>
+            )}
           </ScrollView>
 
           <View className={styles.filterFooter}>

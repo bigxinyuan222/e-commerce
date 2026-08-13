@@ -112,7 +112,6 @@ interface ChatStoreActions {
   addMessage: (msg: ChatMessage) => void;
   updateMessage: (conversationId: string, msgId: string, patch: Partial<ChatMessage>) => void;
   getMessages: (conversationId: string) => ChatMessage[];
-  _sendViaHttp: (conversationId: string, payload: { type: string; content: string; extra?: any }, tempId: string) => void;
 
   // ---------- 未读数 ----------
   getTotalUnread: () => number;
@@ -148,7 +147,16 @@ function normalizeConversation(raw: any): ChatConversation {
 // ---------- 当前用户信息获取 ----------
 function _getCurrentUserId(): string | null {
   try {
-    const userInfoStr = localStorage.getItem('userInfo');
+    // 优先使用 Taro.getStorageSync（兼容小程序和 H5），回退到 localStorage
+    let userInfoStr: string | null = null;
+    try {
+      userInfoStr = Taro.getStorageSync('userInfo') || null;
+    } catch {
+      // H5 环境可能使用 localStorage
+      if (typeof localStorage !== 'undefined') {
+        userInfoStr = localStorage.getItem('userInfo');
+      }
+    }
     if (userInfoStr) {
       const info = JSON.parse(userInfoStr);
       return String(info.id ?? info.userId ?? info.user_id ?? info.ID ?? '');
@@ -353,8 +361,8 @@ export const useChatStore = create<ChatStore>((set, get) => ({
 
   async createConversation(payload = {}) {
     try {
-      // 项目约定：所有 POST 请求必须使用 form-urlencoded 格式
-      const res = await apiPost(chatApi.createConversation, payload, {}, {}, true);
+      // 后端使用 ShouldBindJSON 绑定，必须用 JSON 格式提交
+      const res = await apiPost(chatApi.createConversation, payload, {}, {}, false);
       const data = res?.data ?? res;
       const conv = normalizeConversation(data);
       if (!conv.id) {
@@ -438,34 +446,65 @@ export const useChatStore = create<ChatStore>((set, get) => ({
     set((s) => ({
       messagesLoadingMap: { ...s.messagesLoadingMap, [key]: true },
     }));
-    try {
-      const res = await apiGet(chatApi.messages, {}, { id: conversationId });
-      const data = res?.data ?? res?.result ?? res ?? [];
-      const rawList = Array.isArray(data) ? data : data?.list ?? data?.records ?? [];
-      
-      // 调试日志：打印后端返回的原始消息结构
-      console.log('[ChatStore] fetchMessages 原始数据:', {
-        conversationId,
-        count: rawList.length,
-        firstRaw: rawList[0] ? JSON.stringify(rawList[0], null, 2) : null,
-        allSenderFields: rawList.map((m: any) => ({
-          sender: m.sender ?? m.Sender ?? m.senderType ?? m.role ?? m.sender_role ?? m.userType ?? m.UserType ?? '(无)',
-          senderName: m.senderName ?? m.SenderName ?? m.sender_name ?? m.name ?? '(无)',
-          keys: Object.keys(m || {}),
-        })),
-      });
-      
-      const list: ChatMessage[] = rawList
-        .map((raw) => normalizeMessage(raw, conversationId))
-        .sort((a, b) => (a.timestamp ?? 0) - (b.timestamp ?? 0));
-      
-      console.log('[ChatStore] fetchMessages 标准化后:', list.map(m => ({ id: m.id, sender: m.sender, content: m.content?.slice(0, 20) })));
 
-      set((s) => ({
-        messagesMap: { ...s.messagesMap, [key]: list },
-        messagesLoadedMap: { ...s.messagesLoadedMap, [key]: true },
-      }));
-      return list;
+    // 后端无 HTTP 消息历史接口，通过 WebSocket 请求历史消息
+    try {
+      if (!get().wsConnected) {
+        console.log('[ChatStore] fetchMessages: WS 未连接，先建立连接');
+        chatWS.connect();
+      }
+
+      // 通过 WS 请求历史消息
+      const historyResult = await new Promise<ChatMessage[]>((resolve) => {
+        let resolved = false;
+        let unsubListener: (() => void) | null = null;
+
+        const cleanup = () => {
+          if (unsubListener) { unsubListener(); unsubListener = null; }
+        };
+
+        const timeoutId = setTimeout(() => {
+          if (!resolved) {
+            resolved = true;
+            cleanup();
+            console.log('[ChatStore] fetchMessages: WS 历史消息请求超时，返回已有消息');
+            resolve(state.messagesMap[key] ?? []);
+          }
+        }, 3000);
+
+        // 监听后端回推的历史消息
+        unsubListener = chatWS.onMessage((inbound) => {
+          if (resolved) return;
+          const { type, data } = inbound;
+          if (type === 'messages/history' || type === 'message/history' || type === 'history') {
+            resolved = true;
+            clearTimeout(timeoutId);
+            cleanup();
+            const rawList = Array.isArray(data) ? data : data?.list ?? data?.records ?? data?.messages ?? [];
+            const list: ChatMessage[] = rawList
+              .map((raw: any) => normalizeMessage(raw, conversationId))
+              .sort((a, b) => (a.timestamp ?? 0) - (b.timestamp ?? 0));
+            set((s) => ({
+              messagesMap: { ...s.messagesMap, [key]: list },
+              messagesLoadedMap: { ...s.messagesLoadedMap, [key]: true },
+            }));
+            resolve(list);
+          }
+        });
+
+        // 发送历史消息请求
+        chatWS.send({
+          type: 'messages/history' as any,
+          data: {
+            conversationId,
+            conversation_id: conversationId,
+            conv_id: conversationId,
+          },
+          id: `history-${Date.now()}`,
+        });
+      });
+
+      return historyResult;
     } catch (err: any) {
       console.error('[ChatStore] fetchMessages 失败:', err);
       return state.messagesMap[key] ?? [];
@@ -495,31 +534,35 @@ export const useChatStore = create<ChatStore>((set, get) => ({
 
     get().addMessage(optimisticMsg);
 
-    // 2. 确保 WS 已连接（若未连接，chatWS.send 会自动入队，连接后 flush）
+    // 2. 确保 WS 已连接（后端仅支持通过 WebSocket 发送消息并持久化，无 HTTP POST 接口）
     if (!get().wsConnected) {
+      console.log('[ChatStore] sendMessage: WS 未连接，正在建立连接...');
       chatWS.connect();
     }
 
-    // 3. 如果 WebSocket 未连接，同时通过 HTTP API 发送作为兜底
-    if (!get().wsConnected) {
-      get()._sendViaHttp(conversationId, payload, tempId);
-    }
-
-    // 4. 通过 WebSocket 发送消息（chatWS 内部有发送队列，未连接时会暂存）
-    const wsPayload = {
-      type: 'message/send' as const,
+    // 3. 通过 WebSocket 发送消息（后端 WS 处理器负责持久化到数据库 + 广播）
+    //    后端要求格式: { type: "chat", data: { conversationId: <number>, content: <string>, messageType: 1 } }
+    const wsMsg = {
+      type: 'chat' as const,
       data: {
-        conversationId,
-        type: payload.type,
+        conversationId: Number(conversationId),
         content: payload.content,
-        extra: payload.extra,
+        messageType: 1,  // 1=文本消息
       },
       id: tempId,
     };
+    console.log('[ChatStore] sendMessage: 通过 WebSocket 发送', {
+      wsStatus: get().wsStatus,
+      wsConnected: get().wsConnected,
+      msg: wsMsg,
+    });
+    const sent = chatWS.send(wsMsg);
+    if (!sent) {
+      console.warn('[ChatStore] sendMessage: WS 未就绪，消息已入队，将在连接后自动 flush');
+    }
 
-    chatWS.send(wsPayload);
-
-    // 5. 等待最多 8 秒确认：通过 WS 推送的新消息视为 ACK；超时则乐观设为 sent
+    // 4. 等待后端通过 WS 回推 message/new 确认（后端持久化后会广播该消息）
+    //    超时 3s 后乐观标记为 sent（后端无 HTTP 消息接口，WS 是唯一通道）
     return new Promise((resolve) => {
       let resolved = false;
       let unsubListener: (() => void) | null = null;
@@ -537,20 +580,22 @@ export const useChatStore = create<ChatStore>((set, get) => ({
           cleanup();
           const cur = get().getMessages(conversationId).find((m) => m.id === tempId);
           if (cur && cur.status === 'sending') {
+            // 超时仍未收到回推，乐观标记为 sent（消息已在 WS 发送队列中）
             get().updateMessage(conversationId, tempId, { status: 'sent' });
+            console.warn('[ChatStore] sendMessage: 等待 WS 回推超时，乐观标记为 sent');
           }
           resolve(cur ?? null);
         }
-      }, 8000);
+      }, 3000);
 
-      // 监听 WS 入站消息，捕捉后端回推的同内容消息或 ACK
+      // 监听 WS 入站消息，捕捉后端回推的同内容消息（确认持久化成功）
       unsubListener = chatWS.onMessage((inbound) => {
         if (resolved) return;
         const { type, data } = inbound;
 
-        // 后端广播了新的 user 消息
-        if (type === 'message/new' && data) {
-          const inConvId = String(data.conversationId ?? data.conv_id ?? '');
+        // 后端广播了新消息（type 可能是 "chat" 或 "message/new"，都视为新消息）
+        if ((type === 'chat' || type === 'message/new') && data) {
+          const inConvId = String(data.conversationId ?? data.conv_id ?? data.ConversationId ?? '');
           const isUserSender = !_isServiceSender(data);
           const inContent = String(data.content ?? data.Content ?? data.message ?? data.text ?? '');
           if (inConvId === conversationId && isUserSender && inContent === optimisticMsg.content) {
@@ -623,28 +668,8 @@ export const useChatStore = create<ChatStore>((set, get) => ({
     });
   },
 
-  /**
-   * 通过 HTTP API 发送消息（作为 WebSocket 的兜底方案）
-   */
-  _sendViaHttp(conversationId: string, payload: { type: string; content: string; extra?: any }, tempId: string) {
-    console.log('[ChatStore] _sendViaHttp: 通过 HTTP 发送消息兜底');
-    apiPost(chatApi.sendMessage, {
-      type: payload.type,
-      content: payload.content,
-    }, { id: conversationId }, {}, true)
-      .then((res: any) => {
-        console.log('[ChatStore] _sendViaHttp: HTTP 发送成功', res);
-        // 更新消息状态为 sent
-        get().updateMessage(conversationId, tempId, { status: 'sent' });
-        // 刷新消息列表
-        get().fetchMessages(conversationId, true).catch(() => {});
-      })
-      .catch((err: any) => {
-        console.error('[ChatStore] _sendViaHttp: HTTP 发送失败', err);
-        get().updateMessage(conversationId, tempId, { status: 'failed' });
-        Taro.showToast({ title: '消息发送失败', icon: 'none' });
-      });
-  },
+  // _sendViaHttp 已移除：后端未注册 POST /chat/conversations/:id/messages 路由（返回 404）
+  // 消息发送仅通过 WebSocket（type: 'message/send'），由后端 WS 处理器负责持久化 + 广播
 
   getMessages(conversationId) {
     return get().messagesMap[conversationId] ?? [];
@@ -693,20 +718,21 @@ function _handleWSMessage(msg: WSInboundMessage) {
   const { type, data } = msg;
 
   switch (type) {
+    case 'chat':
     case 'message/new': {
       if (!data) return;
-      const conversationId = String(data.conversationId ?? data.conv_id ?? store.currentConversationId ?? '');
-      
+      const conversationId = String(data.conversationId ?? data.conv_id ?? data.ConversationId ?? store.currentConversationId ?? '');
+
       // 调试日志：打印 WS 推送的消息结构
-      console.log('[ChatStore] WS message/new 原始数据:', {
+      console.log('[ChatStore] WS 收到消息(type=' + type + ') 原始数据:', {
         dataKeys: Object.keys(data || {}),
         sender: data.sender ?? data.Sender ?? data.senderType ?? data.role ?? data.sender_role ?? data.userType ?? '(无)',
         senderName: data.senderName ?? data.SenderName ?? data.sender_name ?? data.name ?? '(无)',
         raw: JSON.stringify(data).slice(0, 300),
       });
-      
+
       const chatMsg = normalizeMessage(data, conversationId);
-      console.log('[ChatStore] WS message/new 标准化后:', { id: chatMsg.id, sender: chatMsg.sender, content: chatMsg.content?.slice(0, 30) });
+      console.log('[ChatStore] WS 收到消息 标准化后:', { id: chatMsg.id, sender: chatMsg.sender, content: chatMsg.content?.slice(0, 30) });
       store.addMessage(chatMsg);
       // 如果不在当前会话 → 刷新未读（addMessage 内部已处理）
       break;

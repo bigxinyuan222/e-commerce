@@ -70,8 +70,8 @@ const ProfilePage: React.FC = () => {
     <View className={styles.profilePage}>
       <View className={styles.profileHeader}>
         <View className={styles.avatarSection}>
-          <Image src={getImageUrl(userInfo?.avatar) || 'https://picsum.photos/id/64/200/200'} className={styles.avatar} mode="aspectFill" />
-          <Text className={styles.nickname}>{userInfo?.nickname || '乐享购用户'}</Text>
+          <Image src={getImageUrl(userInfo?.avatar)} className={styles.avatar} mode="aspectFill" />
+          <Text className={styles.nickname}>{userInfo?.nickname || ''}</Text>
         </View>
       </View>
 

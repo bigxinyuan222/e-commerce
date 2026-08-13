@@ -7,8 +7,8 @@ import { getImageUrl } from '@/utils/image';
 import { formatTime } from '@/utils/time';
 import styles from '@/styles/message/customer-service.module.scss';
 
-const DEFAULT_AVATAR = 'https://picsum.photos/id/2/100/100';
-const USER_DEFAULT_AVATAR = 'https://picsum.photos/id/64/100/100';
+const DEFAULT_AVATAR = '';
+const USER_DEFAULT_AVATAR = '';
 
 const CustomerServicePage: React.FC = () => {
   const router = useRouter();
