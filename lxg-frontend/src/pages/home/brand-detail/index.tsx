@@ -209,11 +209,6 @@ const BrandDetailPage: React.FC = () => {
               <Text className={styles.statNum}>{brand.productsCount}</Text>
               <Text className={styles.statLabel}>款商品</Text>
             </Text>
-            <View className={styles.statDivider} />
-            <Text className={styles.statItem}>
-              <Text className={styles.statNum}>10万+</Text>
-              <Text className={styles.statLabel}>粉丝</Text>
-            </Text>
           </View>
         </View>
         {brand.isHot && (

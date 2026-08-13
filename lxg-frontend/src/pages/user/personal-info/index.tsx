@@ -11,12 +11,12 @@ const PersonalInfoPage: React.FC = () => {
   const { userInfo, setUserInfo } = useAppContext();
   
   const [formData, setFormData] = useState({
-    avatar: userInfo?.avatar || 'https://picsum.photos/id/64/200/200',
-    accountName: userInfo?.accountName || 'xgqfpKztPcYe',
-    nickname: userInfo?.nickname || '乐享购用户',
+    avatar: userInfo?.avatar || '',
+    accountName: userInfo?.accountName || '',
+    nickname: userInfo?.nickname || '',
     gender: userInfo?.gender || '保密',
-    birthday: userInfo?.birthday || '请填写您的生日',
-    registerDate: userInfo?.registerDate || '2023-08-15'
+    birthday: userInfo?.birthday || '',
+    registerDate: userInfo?.registerDate || ''
   });
 
   // 将中文日期 "2025年01月01日" 转换为后端要求的 "2025-01-01" 格式

@@ -1327,11 +1327,23 @@
       .selectedInfo {
         flex: 1;
         
+        .selectedPriceRow {
+          display: flex;
+          align-items: baseline;
+          margin-bottom: 8rpx;
+        }
+
         .selectedPrice {
           font-size: $font-size-xl;
           font-weight: $font-weight-bold;
           color: $color-primary;
-          margin-bottom: 8rpx;
+        }
+
+        .selectedOriginalPrice {
+          font-size: $font-size-sm;
+          color: $color-text-tertiary;
+          text-decoration: line-through;
+          margin-left: 12rpx;
         }
         
         .selectedStock {

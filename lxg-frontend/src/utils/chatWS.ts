@@ -340,15 +340,11 @@ class ChatWebSocketManager {
     this._reconnectAttempts = 0;
 
     // URL 已携带 token，握手成功即视为鉴权通过
-    // 同时发送首条 auth 消息作为兼容（部分后端可能需要双重鉴权）
-    if (token) {
-      this._sendAuthMessage(token);
-    } else {
-      console.warn('[ChatWS] 无 token，以匿名身份连接');
-      this._authSent = true;
-      this._startHeartbeat();
-      this._flushSendQueue();
-    }
+    // 直接设置 _authSent = true，不发 auth 消息（避免后端不认 auth 类型而断开连接）
+    this._authSent = true;
+    this._startHeartbeat();
+    this._flushSendQueue();
+    console.log('[ChatWS] 鉴权通过（URL token），开始心跳并 flush 发送队列');
   }
 
   /**
@@ -461,14 +457,19 @@ class ChatWebSocketManager {
   // ============== 内部：发送 ==============
 
   private _doSend(msg: WSOutboundMessage): boolean {
-    if (!this._ws || this._status !== 'open' || !this._authSent) return false;
+    if (!this._ws || this._status !== 'open' || !this._authSent) {
+      console.warn('[ChatWS] _doSend 拒绝: ws=', !!this._ws, 'status=', this._status, 'authSent=', this._authSent);
+      return false;
+    }
     try {
       const payload = JSON.stringify(msg);
+      console.log('[ChatWS] _doSend 发送:', payload);
       if (this._isH5) {
         (this._ws as WebSocket).send(payload);
       } else {
         (this._ws as Taro.SocketTask).send({
           data: payload,
+          fail: (err: any) => console.error('[ChatWS] 小程序 send 失败:', err),
           complete: () => {},
         });
       }

@@ -452,9 +452,9 @@ const CheckoutPage: React.FC = () => {
         <View className={styles.storeInfo}>
           <View className={styles.storeAvatar}>🏪</View>
           <View className={styles.storeDetails}>
-            <Text className={styles.storeName}>{currentStore?.name || '深圳南山科技园店'}</Text>
-            <Text className={styles.storeAddress}>{currentStore?.address || '广东省深圳市南山区科技园南区A2栋1楼'}</Text>
-            <Text className={styles.storeHours}>营业时间: {currentStore?.hours || '09:00-22:00'}</Text>
+            <Text className={styles.storeName}>{currentStore?.name || '请选择门店'}</Text>
+            <Text className={styles.storeAddress}>{currentStore?.address || ''}</Text>
+            <Text className={styles.storeHours}>营业时间: {currentStore?.hours || ''}</Text>
           </View>
           <Text className={styles.storeArrow}>›</Text>
         </View>

@@ -218,8 +218,9 @@ export function transformCartItem(raw: any): Record<string, any> {
         product.price ?? product.Price ?? product.salePrice ?? product.sale_price ?? 0
     );
 
-    // 当转换后关键信息仍缺失时打印完整原始数据，便于排查后端字段问题
-    if (!productName || !price || !image) {
+    // 当转换后关键信息缺失时打印完整原始数据，便于排查后端字段问题
+    // 注意：image 为空不算关键信息缺失（后端可能返回空 image，由 getImageUrl 补占位图）
+    if (!productName || (price === 0 && !raw.price && !raw.Price && !raw.amount)) {
         console.warn('[transformCartItem] 商品关键信息缺失，原始数据:', JSON.stringify(raw));
     }
 
