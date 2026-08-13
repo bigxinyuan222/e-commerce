@@ -3,7 +3,7 @@ import { computed, nextTick, onMounted, onUnmounted, ref } from 'vue'
 
 type Id = number | string
 interface Message { id: Id; from: 'me' | 'other'; content: string; time: string; isAI: boolean; isImage: boolean; senderName: string; senderRole: string }
-interface Chat { id: Id; userName: string; phone: string; avatar: string; status: 'pending' | 'active' | 'closed'; lastMessage: string; lastTime: string; unread: number; messages: Message[]; agentName: string; agentRole: string }
+interface Chat { id: Id; userName: string; phone: string; avatar: string; status: 'pending' | 'ai_active' | 'active' | 'closed'; lastMessage: string; lastTime: string; unread: number; messages: Message[]; agentName: string; agentRole: string }
 
 const props = defineProps<{ token?: string; agentName?: string; agentRole?: string }>()
 const chats = ref<Chat[]>([])
@@ -12,7 +12,7 @@ const pendingCount = ref(0)
 const total = ref(0)
 const page = ref(1)
 const pageSize = 20
-const status = ref<'all' | Chat['status']>('all')
+const status = ref<'all' | Chat['status'] | 'serving'>('all')
 const keyword = ref('')
 const messageInput = ref('')
 const imageInput = ref<HTMLInputElement | null>(null)
@@ -31,10 +31,11 @@ const totalPages = computed(() => Math.max(1, Math.ceil(total.value / pageSize))
 const selected = computed(() => chats.value.find(chat => String(chat.id) === String(selectedId.value)) ?? null)
 const filtered = computed(() => chats.value.filter(chat => {
   const search = keyword.value.trim().toLowerCase()
-  const matchesStatus = status.value === 'all' || chat.status === status.value
+  const matchesStatus = status.value === 'all' || (status.value === 'serving' ? (chat.status === 'ai_active' || chat.status === 'active') : chat.status === status.value)
   const matchesKeyword = !search || chat.userName.toLowerCase().includes(search) || chat.phone.includes(search) || chat.lastMessage.toLowerCase().includes(search)
   return matchesStatus && matchesKeyword
 }))
+const aiActiveCount = computed(() => chats.value.filter(chat => chat.status === 'ai_active').length)
 const activeCount = computed(() => chats.value.filter(chat => chat.status === 'active').length)
 const closedCount = computed(() => chats.value.filter(chat => chat.status === 'closed').length)
 
@@ -57,7 +58,9 @@ function messageView(row: any, userNickname = ''): Message {
 function normalizeChatStatus(value: unknown): Chat['status'] {
   const normalized = String(value ?? '').trim().toLowerCase()
   if (normalized === '0' || normalized === 'pending' || normalized === 'waiting') return 'pending'
-  if (normalized === '1' || normalized === 'active' || normalized === 'serving') return 'active'
+  if (normalized === '1' || normalized === 'ai_active' || normalized === 'ai') return 'ai_active'
+  if (normalized === '2' || normalized === 'active' || normalized === 'serving') return 'active'
+  if (normalized === '3' || normalized === 'closed') return 'closed'
   return 'closed'
 }
 function chatView(row: any): Chat {
@@ -104,7 +107,7 @@ async function accept(chat: Chat) { try { await requestJson(`/api/v1/admin/chat/
 async function closeChat() { if (!closeTarget.value) return; const chat = closeTarget.value; try { await requestJson(`/api/v1/admin/chat/conversations/${chat.id}/close`, { method: 'PUT', headers: headers(true), body: '{}' }); chat.status = 'closed'; closeTarget.value = null; notify('会话已关闭') } catch (cause) { notify(cause instanceof Error ? cause.message : '关闭失败', 'error') } }
 async function sendMessage() {
   const chat = selected.value; const content = messageInput.value.trim(); if (!chat || !content) return
-  try { if (chat.status === 'pending') await accept(chat); if (!socket || socket.readyState !== WebSocket.OPEN) { connectSocket(); throw new Error('客服实时连接未建立，请等待连接成功后再发送') }
+  try { if (chat.status === 'pending' || chat.status === 'ai_active') await accept(chat); if (!socket || socket.readyState !== WebSocket.OPEN) { connectSocket(); throw new Error('客服实时连接未建立，请等待连接成功后再发送') }
     socket.send(JSON.stringify({ type: 'chat', data: { conversationId: Number(chat.id) || chat.id, content, messageType: 1 } })); chat.messages.push({ id: `local-${Date.now()}`, from: 'me', content, time: new Date().toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' }), isAI: false, isImage: false, senderName: props.agentName || '当前客服', senderRole: roleText(props.agentRole) }); chat.lastMessage = content; messageInput.value = ''; await scrollBottom()
   } catch (cause) { notify(cause instanceof Error ? cause.message : '发送失败', 'error') }
 }
@@ -119,7 +122,7 @@ async function uploadImage(event: Event) {
     const data = await requestJson('/api/v1/user/upload', { method: 'POST', headers: headers(), body: form })
     const imageUrl = typeof data === 'string' ? data : data?.url ?? data?.imageUrl ?? data?.image_url
     if (!imageUrl) throw new Error('上传成功但未返回图片地址')
-    if (chat.status === 'pending') await accept(chat)
+    if (chat.status === 'pending' || chat.status === 'ai_active') await accept(chat)
     if (!socket || socket.readyState !== WebSocket.OPEN) { connectSocket(); throw new Error('图片已上传，但客服实时连接未建立，请稍后重试') }
     const content = String(imageUrl)
     socket.send(JSON.stringify({ type: 'chat', data: { conversationId: Number(chat.id) || chat.id, content, messageType: 2 } }))
@@ -128,7 +131,12 @@ async function uploadImage(event: Event) {
   } catch (cause) { notify(cause instanceof Error ? cause.message : '图片上传失败', 'error') }
   finally { imageUploading.value = false }
 }
-function badge(status: Chat['status']) { return status === 'pending' ? ['yellow', '待接入'] : status === 'active' ? ['green', '服务中'] : ['gray', '已关闭'] }
+function badge(status: Chat['status']) {
+  if (status === 'pending') return ['yellow', '待接入']
+  if (status === 'ai_active') return ['blue', 'AI接待中']
+  if (status === 'active') return ['green', '人工接待中']
+  return ['gray', '已关闭']
+}
 
 onMounted(async () => { await Promise.all([loadPending(), loadChats()]); connectSocket() })
 onUnmounted(() => { stopped = true; clearTimeout(reconnectTimer); socket?.close(); socket = null })
@@ -141,7 +149,8 @@ onUnmounted(() => { stopped = true; clearTimeout(reconnectTimer); socket?.close(
       <select v-model="status" @change="changeFilter">
         <option value="all">全部状态</option>
         <option value="pending">待接入</option>
-        <option value="active">服务中</option>
+        <option value="ai_active">AI接待中</option>
+        <option value="serving">人工接待中</option>
         <option value="closed">已关闭</option>
       </select>
       <button class="btn btn-primary"><i class="fas fa-search"></i> 搜索</button>
@@ -154,7 +163,11 @@ onUnmounted(() => { stopped = true; clearTimeout(reconnectTimer); socket?.close(
       <div class="value yellow">{{ pendingCount }}</div>
     </div>
     <div class="system-stat-card">
-      <div class="label"><i class="fas fa-headset"></i> 服务中</div>
+      <div class="label"><i class="fas fa-robot"></i> AI接待中</div>
+      <div class="value blue">{{ aiActiveCount }}</div>
+    </div>
+    <div class="system-stat-card">
+      <div class="label"><i class="fas fa-headset"></i> 人工接待中</div>
       <div class="value green">{{ activeCount }}</div>
     </div>
     <div class="system-stat-card">
@@ -206,8 +219,8 @@ onUnmounted(() => { stopped = true; clearTimeout(reconnectTimer); socket?.close(
             </div>
           </div>
           <div class="system-chat-main-header-actions">
-            <button v-if="selected.status==='pending'" class="btn btn-sm btn-primary" @click="accept(selected)"><i class="fas fa-phone"></i> 接入</button>
-            <button v-if="selected.status==='active'" class="btn btn-sm btn-danger" @click="closeTarget=selected"><i class="fas fa-times"></i> 关闭</button>
+            <button v-if="selected.status==='pending' || selected.status==='ai_active'" class="btn btn-sm btn-primary" @click="accept(selected)"><i class="fas fa-phone"></i> 接入</button>
+            <button v-if="selected.status==='active' || selected.status==='ai_active'" class="btn btn-sm btn-danger" @click="closeTarget=selected"><i class="fas fa-times"></i> 关闭</button>
           </div>
         </div>
         <div ref="messageBox" class="system-chat-messages">
