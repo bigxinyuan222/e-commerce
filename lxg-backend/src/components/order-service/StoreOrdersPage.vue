@@ -165,11 +165,23 @@ onMounted(() => { void loadStatusCounts(); void loadOrders() })
         <div class="table-wrap">
           <table>
             <thead>
-              <tr><th>订单号</th><th>用户</th><th>商品</th><th>金额</th><th>状态</th><th>下单时间</th><th>操作</th></tr>
+              <tr>
+                <th>订单号</th>
+                <th>用户</th>
+                <th>商品</th>
+                <th>金额</th>
+                <th>状态</th>
+                <th>下单时间</th>
+                <th>操作</th>
+              </tr>
             </thead>
             <tbody>
-              <tr v-if="loading"><td colspan="7" class="order-state"><i class="fas fa-spinner fa-spin"></i> 正在加载...</td></tr>
-              <tr v-else-if="!orders.length"><td colspan="7" class="order-state">暂无订单</td></tr>
+              <tr v-if="loading">
+                <td colspan="7" class="order-state"><i class="fas fa-spinner fa-spin"></i> 正在加载...</td>
+              </tr>
+              <tr v-else-if="!orders.length">
+                <td colspan="7" class="order-state">暂无订单</td>
+              </tr>
               <tr v-for="item in orders" v-else :key="item.id">
                 <td>{{ item.orderNo }}</td>
                 <td>{{ item.userName }}<small>{{ item.phone }}</small></td>
@@ -194,10 +206,15 @@ onMounted(() => { void loadStatusCounts(); void loadOrders() })
       </div>
     </section>
 
-    <div v-if="detailLoading" class="modal-overlay"><div class="modal-content medium order-state"><i class="fas fa-spinner fa-spin"></i> 正在加载详情...</div></div>
+    <div v-if="detailLoading" class="modal-overlay">
+      <div class="modal-content medium order-state"><i class="fas fa-spinner fa-spin"></i> 正在加载详情...</div>
+    </div>
     <div v-if="detail" class="modal-overlay" @click.self="detail = null">
       <div class="modal-content large">
-        <div class="modal-header"><h3><i class="fas fa-shopping-bag"></i> 订单详情</h3><button class="modal-close" @click="detail = null"><i class="fas fa-times"></i></button></div>
+        <div class="modal-header">
+          <h3><i class="fas fa-shopping-bag"></i> 订单详情</h3>
+          <button class="modal-close" @click="detail = null"><i class="fas fa-times"></i></button>
+        </div>
         <div class="modal-body order-detail">
           <div class="detail-grid">
             <div><span>订单号</span><strong>{{ detail.orderNo }}</strong></div>

@@ -135,13 +135,115 @@ onUnmounted(() => { stopped = true; clearTimeout(reconnectTimer); socket?.close(
 </script>
 
 <template>
-  <div class="flex-between mb-4"><div class="search-bar"><input v-model="keyword" id="chatSearchInput" placeholder="用户 / 手机号 / 消息" /><select v-model="status" @change="changeFilter"><option value="all">全部状态</option><option value="pending">待接入</option><option value="active">服务中</option><option value="closed">已关闭</option></select><button class="btn btn-primary"><i class="fas fa-search"></i> 搜索</button></div><span class="status-badge" :class="socketState === 'connected' ? 'green' : socketState === 'connecting' ? 'yellow' : 'red'"><span class="dot"></span> {{ socketState === 'connected' ? '实时连接' : socketState === 'connecting' ? '连接中' : '连接断开' }}</span></div>
-  <div class="system-stat-grid"><div class="system-stat-card"><div class="label"><i class="fas fa-clock"></i> 待接入</div><div class="value yellow">{{ pendingCount }}</div></div><div class="system-stat-card"><div class="label"><i class="fas fa-headset"></i> 服务中</div><div class="value green">{{ activeCount }}</div></div><div class="system-stat-card"><div class="label"><i class="fas fa-check-circle"></i> 已关闭</div><div class="value">{{ closedCount }}</div></div></div>
+  <div class="flex-between mb-4">
+    <div class="search-bar">
+      <input v-model="keyword" id="chatSearchInput" placeholder="用户 / 手机号 / 消息" />
+      <select v-model="status" @change="changeFilter">
+        <option value="all">全部状态</option>
+        <option value="pending">待接入</option>
+        <option value="active">服务中</option>
+        <option value="closed">已关闭</option>
+      </select>
+      <button class="btn btn-primary"><i class="fas fa-search"></i> 搜索</button>
+    </div>
+    <span class="status-badge" :class="socketState === 'connected' ? 'green' : socketState === 'connecting' ? 'yellow' : 'red'"><span class="dot"></span> {{ socketState === 'connected' ? '实时连接' : socketState === 'connecting' ? '连接中' : '连接断开' }}</span>
+  </div>
+  <div class="system-stat-grid">
+    <div class="system-stat-card">
+      <div class="label"><i class="fas fa-clock"></i> 待接入</div>
+      <div class="value yellow">{{ pendingCount }}</div>
+    </div>
+    <div class="system-stat-card">
+      <div class="label"><i class="fas fa-headset"></i> 服务中</div>
+      <div class="value green">{{ activeCount }}</div>
+    </div>
+    <div class="system-stat-card">
+      <div class="label"><i class="fas fa-check-circle"></i> 已关闭</div>
+      <div class="value">{{ closedCount }}</div>
+    </div>
+  </div>
   <div v-if="error" class="stock-list-error">{{ error }}</div>
-  <div class="card" style="flex:1"><div class="card-body no-pad system-chat-layout"><div class="system-chat-sidebar"><div class="system-chat-sidebar-header"><span class="title"><i class="fas fa-comments"></i> 会话列表</span><span class="count">共 {{ total }} 条</span></div><div class="system-chat-sidebar-body"><div v-if="loading" class="stock-table-state"><i class="fas fa-spinner fa-spin"></i></div><div v-for="chat in filtered" v-else :key="chat.id" class="system-chat-item" :class="{active:String(selectedId)===String(chat.id)}" @click="selectChat(chat)"><div class="system-chat-item-header"><div class="system-chat-item-avatar">{{ chat.avatar }}</div><div class="system-chat-item-info"><div class="name">{{ chat.userName }}</div><div class="phone">{{ chat.phone }}</div></div><div v-if="chat.unread" class="system-chat-item-unread">{{ chat.unread }}</div></div><div class="system-chat-item-footer"><div class="message">{{ chat.lastMessage }}</div><span class="time">{{ chat.lastTime }}</span></div><div style="margin-top:4px"><span class="status-badge" :class="badge(chat.status)[0]" style="font-size:11px"><span class="dot"></span> {{ badge(chat.status)[1] }}</span></div></div></div><div v-if="totalPages > 1" style="display:flex;align-items:center;justify-content:center;gap:8px;padding:10px;border-top:1px solid #e2e8f0"><button class="icon-btn" :disabled="page<=1" @click="changePage(page-1)"><i class="fas fa-angle-left"></i></button><span>{{ page }} / {{ totalPages }}</span><button class="icon-btn" :disabled="page>=totalPages" @click="changePage(page+1)"><i class="fas fa-angle-right"></i></button></div></div>
-    <div class="system-chat-main"><template v-if="selected"><div class="system-chat-main-header"><div class="system-chat-main-header-info"><div class="system-chat-main-header-avatar">{{ selected.avatar }}</div><div class="system-chat-main-header-details"><div class="name">{{ selected.userName }}</div><div class="info">{{ selected.phone }} · {{ badge(selected.status)[1] }}</div><div class="agent-identity"><i class="fas fa-headset"></i> {{ selected.agentName ? `接待客服：${selected.agentName}（${selected.agentRole}）` : '接待客服：暂未接入' }}</div></div></div><div class="system-chat-main-header-actions"><button v-if="selected.status==='pending'" class="btn btn-sm btn-primary" @click="accept(selected)"><i class="fas fa-phone"></i> 接入</button><button v-if="selected.status==='active'" class="btn btn-sm btn-danger" @click="closeTarget=selected"><i class="fas fa-times"></i> 关闭</button></div></div><div ref="messageBox" class="system-chat-messages"><div v-for="message in selected.messages" :key="message.id" class="system-chat-message" :class="message.from"><div class="system-chat-message-bubble"><div class="message-identity"><i :class="message.isAI ? 'fas fa-robot' : message.from === 'me' ? 'fas fa-headset' : 'fas fa-user'"></i> <span>{{ message.isAI ? message.senderRole : message.senderName ? `${message.senderName} · ${message.senderRole}` : message.senderRole }}</span></div><a v-if="message.isImage" :href="message.content" target="_blank" rel="noopener noreferrer"><img class="chat-message-image" :src="message.content" alt="聊天图片" /></a><div v-else class="message-content">{{ message.content }}</div><div class="system-chat-message-time">{{ message.time }}</div></div></div></div><div class="system-chat-input-area"><input ref="imageInput" type="file" accept="image/*" hidden @change="uploadImage" /><button class="btn btn-outline btn-sm" :disabled="imageUploading" title="上传并发送图片" @click="chooseImage"><i :class="imageUploading ? 'fas fa-spinner fa-spin' : 'fas fa-image'"></i></button><input v-model="messageInput" id="chatInput" class="system-chat-input" placeholder="输入消息，按回车发送……" @keydown.enter.prevent="sendMessage" /><button class="btn btn-primary" @click="sendMessage"><i class="fas fa-paper-plane"></i></button></div></template><div v-else class="system-chat-empty"><div><i class="fas fa-comments"></i></div><div class="system-chat-empty-text">请选择一个会话开始聊天</div></div></div>
+  <div class="card" style="flex:1">
+    <div class="card-body no-pad system-chat-layout">
+      <div class="system-chat-sidebar">
+        <div class="system-chat-sidebar-header">
+          <span class="title"><i class="fas fa-comments"></i> 会话列表</span>
+          <span class="count">共 {{ total }} 条</span>
+        </div>
+        <div class="system-chat-sidebar-body">
+          <div v-if="loading" class="stock-table-state"><i class="fas fa-spinner fa-spin"></i></div>
+          <div v-for="chat in filtered" v-else :key="chat.id" class="system-chat-item" :class="{active:String(selectedId)===String(chat.id)}" @click="selectChat(chat)">
+            <div class="system-chat-item-header">
+              <div class="system-chat-item-avatar">{{ chat.avatar }}</div>
+              <div class="system-chat-item-info">
+                <div class="name">{{ chat.userName }}</div>
+                <div class="phone">{{ chat.phone }}</div>
+              </div>
+              <div v-if="chat.unread" class="system-chat-item-unread">{{ chat.unread }}</div>
+            </div>
+            <div class="system-chat-item-footer">
+              <div class="message">{{ chat.lastMessage }}</div>
+              <span class="time">{{ chat.lastTime }}</span>
+            </div>
+            <div style="margin-top:4px"><span class="status-badge" :class="badge(chat.status)[0]" style="font-size:11px"><span class="dot"></span> {{ badge(chat.status)[1] }}</span></div>
+          </div>
+        </div>
+        <div v-if="totalPages > 1" style="display:flex;align-items:center;justify-content:center;gap:8px;padding:10px;border-top:1px solid #e2e8f0">
+          <button class="icon-btn" :disabled="page<=1" @click="changePage(page-1)"><i class="fas fa-angle-left"></i></button>
+          <span>{{ page }} / {{ totalPages }}</span>
+          <button class="icon-btn" :disabled="page>=totalPages" @click="changePage(page+1)"><i class="fas fa-angle-right"></i></button>
+        </div>
+      </div>
+    <div class="system-chat-main">
+      <template v-if="selected">
+        <div class="system-chat-main-header">
+          <div class="system-chat-main-header-info">
+            <div class="system-chat-main-header-avatar">{{ selected.avatar }}</div>
+            <div class="system-chat-main-header-details">
+              <div class="name">{{ selected.userName }}</div>
+              <div class="info">{{ selected.phone }} · {{ badge(selected.status)[1] }}</div>
+              <div class="agent-identity"><i class="fas fa-headset"></i> {{ selected.agentName ? `接待客服：${selected.agentName}（${selected.agentRole}）` : '接待客服：暂未接入' }}</div>
+            </div>
+          </div>
+          <div class="system-chat-main-header-actions">
+            <button v-if="selected.status==='pending'" class="btn btn-sm btn-primary" @click="accept(selected)"><i class="fas fa-phone"></i> 接入</button>
+            <button v-if="selected.status==='active'" class="btn btn-sm btn-danger" @click="closeTarget=selected"><i class="fas fa-times"></i> 关闭</button>
+          </div>
+        </div>
+        <div ref="messageBox" class="system-chat-messages">
+          <div v-for="message in selected.messages" :key="message.id" class="system-chat-message" :class="message.from">
+            <div class="system-chat-message-bubble">
+              <div class="message-identity"><i :class="message.isAI ? 'fas fa-robot' : message.from === 'me' ? 'fas fa-headset' : 'fas fa-user'"></i> <span>{{ message.isAI ? message.senderRole : message.senderName ? `${message.senderName} · ${message.senderRole}` : message.senderRole }}</span></div>
+              <a v-if="message.isImage" :href="message.content" target="_blank" rel="noopener noreferrer"><img class="chat-message-image" :src="message.content" alt="聊天图片" /></a>
+              <div v-else class="message-content">{{ message.content }}</div>
+              <div class="system-chat-message-time">{{ message.time }}</div>
+            </div>
+          </div>
+        </div>
+        <div class="system-chat-input-area">
+          <input ref="imageInput" type="file" accept="image/*" hidden @change="uploadImage" />
+          <button class="btn btn-outline btn-sm" :disabled="imageUploading" title="上传并发送图片" @click="chooseImage"><i :class="imageUploading ? 'fas fa-spinner fa-spin' : 'fas fa-image'"></i></button>
+          <input v-model="messageInput" id="chatInput" class="system-chat-input" placeholder="输入消息，按回车发送……" @keydown.enter.prevent="sendMessage" />
+          <button class="btn btn-primary" @click="sendMessage"><i class="fas fa-paper-plane"></i></button>
+        </div>
+      </template>
+      <div v-else class="system-chat-empty">
+        <div><i class="fas fa-comments"></i></div>
+        <div class="system-chat-empty-text">请选择一个会话开始聊天</div>
+      </div>
+    </div>
   </div></div>
-  <template v-if="closeTarget"><div class="modal-overlay" @click="closeTarget=null"></div><div class="modal-content"><div class="modal-header"><h3>确认操作</h3></div><div class="modal-body"><p>确定关闭此会话吗？</p></div><div class="modal-footer"><button class="btn btn-outline" @click="closeTarget=null">取消</button><button class="btn btn-primary" @click="closeChat">确认</button></div></div></template>
+  <template v-if="closeTarget">
+    <div class="modal-overlay" @click="closeTarget=null"></div>
+    <div class="modal-content">
+      <div class="modal-header"><h3>确认操作</h3></div>
+      <div class="modal-body"><p>确定关闭此会话吗？</p></div>
+      <div class="modal-footer">
+        <button class="btn btn-outline" @click="closeTarget=null">取消</button>
+        <button class="btn btn-primary" @click="closeChat">确认</button>
+      </div>
+    </div>
+  </template>
 </template>
 
 <style scoped>

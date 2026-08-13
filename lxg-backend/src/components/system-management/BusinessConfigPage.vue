@@ -134,17 +134,35 @@ onMounted(loadConfigs)
       <span class="card-title"><i :class="icon"></i> {{ title }}</span>
       <button class="btn btn-sm btn-primary" :disabled="loading || saving || !payloadConfigs().length" @click="save"><i class="fas" :class="saving ? 'fa-spinner fa-spin' : 'fa-save'"></i> {{ saving ? '保存中' : '保存' }}</button>
     </div>
-    <div v-if="loadError" class="business-config-error"><i class="fas fa-exclamation-circle"></i> {{ loadError }} <button class="btn btn-sm btn-outline" @click="loadConfigs">重试</button></div>
+    <div v-if="loadError" class="business-config-error">
+      <i class="fas fa-exclamation-circle"></i> {{ loadError }}
+      <button class="btn btn-sm btn-outline" @click="loadConfigs">重试</button>
+    </div>
     <div class="card-body">
       <div v-if="loading" class="business-config-state"><i class="fas fa-spinner fa-spin"></i> 配置加载中...</div>
       <div v-else-if="kind === 'order' && payloadConfigs().length" class="business-config-grid">
-        <label v-if="availableKeys.has('order_auto_cancel_minutes')"><span>待支付订单自动取消时间</span><span class="number-control"><input v-model.number="orderForm.autoCancelMinutes" type="number" min="1" step="1" /> 分钟</span></label>
-        <label v-if="availableKeys.has('order_auto_complete_days')"><span>确认收货自动完成时间</span><span class="number-control"><input v-model.number="orderForm.autoCompleteDays" type="number" min="1" step="1" /> 天</span></label>
-        <label v-if="availableKeys.has('order_after_sale_days')"><span>售后申请有效期</span><span class="number-control"><input v-model.number="orderForm.afterSaleDays" type="number" min="1" step="1" /> 天</span></label>
+        <label v-if="availableKeys.has('order_auto_cancel_minutes')">
+          <span>待支付订单自动取消时间</span>
+          <span class="number-control"><input v-model.number="orderForm.autoCancelMinutes" type="number" min="1" step="1" /> 分钟</span>
+        </label>
+        <label v-if="availableKeys.has('order_auto_complete_days')">
+          <span>确认收货自动完成时间</span>
+          <span class="number-control"><input v-model.number="orderForm.autoCompleteDays" type="number" min="1" step="1" /> 天</span>
+        </label>
+        <label v-if="availableKeys.has('order_after_sale_days')">
+          <span>售后申请有效期</span>
+          <span class="number-control"><input v-model.number="orderForm.afterSaleDays" type="number" min="1" step="1" /> 天</span>
+        </label>
       </div>
       <div v-else-if="kind === 'stock' && payloadConfigs().length" class="business-config-grid">
-        <label v-if="availableKeys.has('inventory_warning_value')"><span>库存预警阈值</span><span class="number-control"><input v-model.number="stockForm.warningThreshold" type="number" min="0" step="1" /> 件</span></label>
-        <label v-if="availableKeys.has('inventory_warning_enabled')" class="toggle-control"><input v-model="stockForm.warningEnabled" type="checkbox" /> <span>启用库存预警通知</span></label>
+        <label v-if="availableKeys.has('inventory_warning_value')">
+          <span>库存预警阈值</span>
+          <span class="number-control"><input v-model.number="stockForm.warningThreshold" type="number" min="0" step="1" /> 件</span>
+        </label>
+        <label v-if="availableKeys.has('inventory_warning_enabled')" class="toggle-control">
+          <input v-model="stockForm.warningEnabled" type="checkbox" />
+          <span>启用库存预警通知</span>
+        </label>
       </div>
       <div v-else class="business-config-state">接口未返回对应配置项</div>
     </div>

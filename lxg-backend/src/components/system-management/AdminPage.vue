@@ -262,10 +262,22 @@ onMounted(loadAdmins)
   </div>
 
   <div class="system-stat-grid">
-    <div class="system-stat-card"><div class="label"><i class="fas fa-user-shield"></i> 总管理员</div><div class="value">{{ rows.length }}</div></div>
-    <div class="system-stat-card"><div class="label"><i class="fas fa-check-circle"></i> 已启用</div><div class="value green">{{ activeCount }}</div></div>
-    <div class="system-stat-card"><div class="label"><i class="fas fa-lock"></i> 已停用</div><div class="value yellow">{{ inactiveCount }}</div></div>
-    <div class="system-stat-card"><div class="label"><i class="fas fa-store-alt"></i> 门店管理员</div><div class="value orange">{{ storeAdminCount }}</div></div>
+    <div class="system-stat-card">
+      <div class="label"><i class="fas fa-user-shield"></i> 总管理员</div>
+      <div class="value">{{ rows.length }}</div>
+    </div>
+    <div class="system-stat-card">
+      <div class="label"><i class="fas fa-check-circle"></i> 已启用</div>
+      <div class="value green">{{ activeCount }}</div>
+    </div>
+    <div class="system-stat-card">
+      <div class="label"><i class="fas fa-lock"></i> 已停用</div>
+      <div class="value yellow">{{ inactiveCount }}</div>
+    </div>
+    <div class="system-stat-card">
+      <div class="label"><i class="fas fa-store-alt"></i> 门店管理员</div>
+      <div class="value orange">{{ storeAdminCount }}</div>
+    </div>
   </div>
 
   <div class="card">
@@ -274,21 +286,48 @@ onMounted(loadAdmins)
       <span class="system-text-muted">共 {{ filtered.length }} 位管理员</span>
     </div>
     <div class="card-body no-pad">
-      <div v-if="error" class="admin-message error"><i class="fas fa-exclamation-circle"></i> {{ error }} <button class="btn btn-sm btn-outline" @click="loadAdmins">重新加载</button></div>
+      <div v-if="error" class="admin-message error">
+        <i class="fas fa-exclamation-circle"></i> {{ error }}
+        <button class="btn btn-sm btn-outline" @click="loadAdmins">重新加载</button>
+      </div>
       <div class="table-wrap">
         <table>
-          <thead><tr><th>管理员</th><th>手机号</th><th>角色</th><th>所属门店</th><th>创建时间</th><th>状态</th><th>操作</th></tr></thead>
+          <thead>
+            <tr>
+              <th>管理员</th>
+              <th>手机号</th>
+              <th>角色</th>
+              <th>所属门店</th>
+              <th>创建时间</th>
+              <th>状态</th>
+              <th>操作</th>
+            </tr>
+          </thead>
           <tbody>
-            <tr v-if="loading"><td colspan="7"><div class="admin-table-state"><i class="fas fa-spinner fa-spin"></i> 正在加载管理员...</div></td></tr>
-            <tr v-else-if="!filtered.length"><td colspan="7"><div class="admin-table-state"><i class="fas fa-inbox"></i> 暂无管理员数据</div></td></tr>
+            <tr v-if="loading">
+              <td colspan="7"><div class="admin-table-state"><i class="fas fa-spinner fa-spin"></i> 正在加载管理员...</div></td>
+            </tr>
+            <tr v-else-if="!filtered.length">
+              <td colspan="7"><div class="admin-table-state"><i class="fas fa-inbox"></i> 暂无管理员数据</div></td>
+            </tr>
             <tr v-for="row in filtered" v-else :key="row.id">
-              <td><div class="admin-identity"><span class="system-user-avatar-sm">{{ (row.name || row.username).charAt(0) }}</span><span><b>{{ row.name || '-' }}</b><small>{{ row.username }}</small></span></div></td>
+              <td>
+                <div class="admin-identity">
+                  <span class="system-user-avatar-sm">{{ (row.name || row.username).charAt(0) }}</span>
+                  <span><b>{{ row.name || '-' }}</b><small>{{ row.username }}</small></span>
+                </div>
+              </td>
               <td>{{ row.phone || '-' }}</td>
               <td><span class="system-tag primary">{{ row.roleName || row.roleId || '-' }}</span></td>
               <td>{{ row.storeName || '-' }}</td>
               <td>{{ row.createdAt }}</td>
               <td><span class="status-badge" :class="row.status === 1 ? 'green' : 'gray'"><span class="dot"></span>{{ row.status === 1 ? '启用' : '停用' }}</span></td>
-              <td class="admin-actions"><button class="btn btn-sm btn-outline" @click="openEditor(row)"><i class="fas fa-edit"></i> 编辑</button><button class="btn btn-sm btn-outline" @click="openPasswordEditor(row)"><i class="fas fa-key"></i> 修改密码</button><button class="btn btn-sm" :class="row.status === 1 ? 'btn-danger' : 'btn-success'" @click="toggle(row)">{{ row.status === 1 ? '停用' : '启用' }}</button><button class="btn btn-sm btn-danger" @click="remove(row)"><i class="fas fa-trash"></i></button></td>
+              <td class="admin-actions">
+                <button class="btn btn-sm btn-outline" @click="openEditor(row)"><i class="fas fa-edit"></i> 编辑</button>
+                <button class="btn btn-sm btn-outline" @click="openPasswordEditor(row)"><i class="fas fa-key"></i> 修改密码</button>
+                <button class="btn btn-sm" :class="row.status === 1 ? 'btn-danger' : 'btn-success'" @click="toggle(row)">{{ row.status === 1 ? '停用' : '启用' }}</button>
+                <button class="btn btn-sm btn-danger" @click="remove(row)"><i class="fas fa-trash"></i></button>
+              </td>
             </tr>
           </tbody>
         </table>
@@ -316,31 +355,76 @@ onMounted(loadAdmins)
   <template v-if="editing">
     <div class="modal-overlay" @click="editing = null"></div>
     <div class="modal-content admin-modal">
-      <div class="modal-header"><h3><i class="fas fa-user-shield"></i> {{ editing.id ? '编辑管理员' : '新增管理员' }}</h3><button class="modal-close" @click="editing = null"><i class="fas fa-times"></i></button></div>
+      <div class="modal-header">
+        <h3><i class="fas fa-user-shield"></i> {{ editing.id ? '编辑管理员' : '新增管理员' }}</h3>
+        <button class="modal-close" @click="editing = null"><i class="fas fa-times"></i></button>
+      </div>
       <div class="modal-body">
         <div class="admin-form-grid">
-          <label><span>用户名 <b>*</b></span><input v-model="form.username" class="system-form-input"></label>
-          <label><span>真实姓名 <b>*</b></span><input v-model="form.name" class="system-form-input"></label>
-          <label><span>手机号 <b>*</b></span><input v-model="form.phone" class="system-form-input"></label>
-          <label v-if="!editing.id"><span>密码 *</span><input v-model="form.password" type="password" class="system-form-input" placeholder="请输入登录密码"></label>
-          <label><span>角色 <b>*</b></span><select v-model="form.roleId" class="system-form-select"><option value="">请选择角色</option><option v-for="role in assignableRoles" :key="role.id" :value="String(role.id)">{{ role.name }}</option></select></label>
-          <label><span>所属门店</span><select v-model="form.storeId" class="system-form-select"><option value="">无</option><option v-for="store in stores" :key="store.id" :value="String(store.id)">{{ store.name }}</option></select></label>
+          <label>
+            <span>用户名 <b>*</b></span>
+            <input v-model="form.username" class="system-form-input">
+          </label>
+          <label>
+            <span>真实姓名 <b>*</b></span>
+            <input v-model="form.name" class="system-form-input">
+          </label>
+          <label>
+            <span>手机号 <b>*</b></span>
+            <input v-model="form.phone" class="system-form-input">
+          </label>
+          <label v-if="!editing.id">
+            <span>密码 *</span>
+            <input v-model="form.password" type="password" class="system-form-input" placeholder="请输入登录密码">
+          </label>
+          <label>
+            <span>角色 <b>*</b></span>
+            <select v-model="form.roleId" class="system-form-select">
+              <option value="">请选择角色</option>
+              <option v-for="role in assignableRoles" :key="role.id" :value="String(role.id)">{{ role.name }}</option>
+            </select>
+          </label>
+          <label>
+            <span>所属门店</span>
+            <select v-model="form.storeId" class="system-form-select">
+              <option value="">无</option>
+              <option v-for="store in stores" :key="store.id" :value="String(store.id)">{{ store.name }}</option>
+            </select>
+          </label>
         </div>
       </div>
-      <div class="modal-footer"><button class="btn btn-outline" @click="editing = null">取消</button><button class="btn btn-primary" :disabled="saving" @click="save"><i class="fas" :class="saving ? 'fa-spinner fa-spin' : 'fa-save'"></i> 保存</button></div>
+      <div class="modal-footer">
+        <button class="btn btn-outline" @click="editing = null">取消</button>
+        <button class="btn btn-primary" :disabled="saving" @click="save"><i class="fas" :class="saving ? 'fa-spinner fa-spin' : 'fa-save'"></i> 保存</button>
+      </div>
     </div>
   </template>
 
   <template v-if="passwordAdmin">
     <div class="modal-overlay" @click="!resettingPassword && (passwordAdmin = null)"></div>
     <div class="modal-content password-modal">
-      <div class="modal-header"><h3><i class="fas fa-key"></i> 修改管理员密码</h3><button class="modal-close" :disabled="resettingPassword" @click="passwordAdmin = null"><i class="fas fa-times"></i></button></div>
-      <div class="modal-body password-form">
-        <div class="password-target"><span class="system-user-avatar-sm">{{ (passwordAdmin.name || passwordAdmin.username).charAt(0) }}</span><div><strong>{{ passwordAdmin.name || passwordAdmin.username }}</strong><small>{{ passwordAdmin.username }}</small></div></div>
-        <label><span>新密码</span><input v-model="passwordForm.password" type="password" class="system-form-input" autocomplete="new-password" placeholder="至少输入 6 位" @keydown.enter="resetAdminPassword"></label>
-        <label><span>确认新密码</span><input v-model="passwordForm.confirmPassword" type="password" class="system-form-input" autocomplete="new-password" placeholder="请再次输入新密码" @keydown.enter="resetAdminPassword"></label>
+      <div class="modal-header">
+        <h3><i class="fas fa-key"></i> 修改管理员密码</h3>
+        <button class="modal-close" :disabled="resettingPassword" @click="passwordAdmin = null"><i class="fas fa-times"></i></button>
       </div>
-      <div class="modal-footer"><button class="btn btn-outline" :disabled="resettingPassword" @click="passwordAdmin = null">取消</button><button class="btn btn-primary" :disabled="resettingPassword" @click="resetAdminPassword"><i class="fas" :class="resettingPassword ? 'fa-spinner fa-spin' : 'fa-save'"></i> {{ resettingPassword ? '提交中...' : '确认修改' }}</button></div>
+      <div class="modal-body password-form">
+        <div class="password-target">
+          <span class="system-user-avatar-sm">{{ (passwordAdmin.name || passwordAdmin.username).charAt(0) }}</span>
+          <div><strong>{{ passwordAdmin.name || passwordAdmin.username }}</strong><small>{{ passwordAdmin.username }}</small></div>
+        </div>
+        <label>
+          <span>新密码</span>
+          <input v-model="passwordForm.password" type="password" class="system-form-input" autocomplete="new-password" placeholder="至少输入 6 位" @keydown.enter="resetAdminPassword">
+        </label>
+        <label>
+          <span>确认新密码</span>
+          <input v-model="passwordForm.confirmPassword" type="password" class="system-form-input" autocomplete="new-password" placeholder="请再次输入新密码" @keydown.enter="resetAdminPassword">
+        </label>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-outline" :disabled="resettingPassword" @click="passwordAdmin = null">取消</button>
+        <button class="btn btn-primary" :disabled="resettingPassword" @click="resetAdminPassword"><i class="fas" :class="resettingPassword ? 'fa-spinner fa-spin' : 'fa-save'"></i> {{ resettingPassword ? '提交中...' : '确认修改' }}</button>
+      </div>
     </div>
   </template>
 </template>

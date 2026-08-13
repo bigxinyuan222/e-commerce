@@ -203,31 +203,204 @@ onMounted(() => Promise.all([loadDashboard(), loadInventory(), loadLogs()]))
 <template>
   <div class="flex-between mb-4"><div class="stock-page-header"><span class="stock-warehouse-label">总仓</span></div></div>
   <div class="stats-grid stats-row-4">
-    <div class="stat-card"><div class="label"><i class="fas fa-boxes"></i> 当前总库存</div><div class="value">{{ summary.totalStock.toLocaleString() }}</div></div>
-    <div class="stat-card"><div class="label"><i class="fas fa-exclamation-triangle"></i> 低于阈值预警</div><div class="value" style="color:#ef4444">{{ summary.warningCount }}</div></div>
-    <div class="stat-card"><div class="label"><i class="fas fa-arrow-down"></i> 今日入库</div><div class="value">{{ summary.todayInbound.toLocaleString() }}</div></div>
-    <div class="stat-card"><div class="label"><i class="fas fa-arrow-up"></i> 今日出库</div><div class="value">{{ summary.todayOutbound.toLocaleString() }}</div></div>
+    <div class="stat-card">
+      <div class="label"><i class="fas fa-boxes"></i> 当前总库存</div>
+      <div class="value">{{ summary.totalStock.toLocaleString() }}</div>
+    </div>
+    <div class="stat-card">
+      <div class="label"><i class="fas fa-exclamation-triangle"></i> 低于阈值预警</div>
+      <div class="value" style="color:#ef4444">{{ summary.warningCount }}</div>
+    </div>
+    <div class="stat-card">
+      <div class="label"><i class="fas fa-arrow-down"></i> 今日入库</div>
+      <div class="value">{{ summary.todayInbound.toLocaleString() }}</div>
+    </div>
+    <div class="stat-card">
+      <div class="label"><i class="fas fa-arrow-up"></i> 今日出库</div>
+      <div class="value">{{ summary.todayOutbound.toLocaleString() }}</div>
+    </div>
   </div>
   <div v-if="dashboardError" class="stock-dashboard-error"><i class="fas fa-exclamation-circle"></i> {{ dashboardError }}</div>
 
-  <div class="card warning-card"><div class="card-header"><span class="card-title"><i class="fas fa-exclamation-triangle"></i> 低库存预警</span><span class="status-badge red"><span class="dot"></span> 低于预警阈值</span></div><div class="card-body">
-    <template v-if="warnings.length"><div class="grid-auto-fill"><div v-for="sku in visibleWarnings" :key="sku.skuCode" class="warning-item"><div class="item-header">{{ sku.skuCode }} · {{ sku.name }}</div><div class="item-spec">规格: {{ sku.spec }}</div><div class="item-stats"><span>当前库存</span><span class="stat-value">{{ sku.stock }}件</span></div><div class="item-stats"><span>预警阈值</span><span class="stat-threshold">{{ sku.threshold }}件</span></div><button class="btn btn-sm btn-primary warning-replenish-btn" @click="openAdjust(sku)"><i class="fas fa-plus"></i> 补货</button></div></div><div v-if="warningPages > 1" class="stock-pagination warning-pagination"><span>共 {{ warnings.length }} 个预警，第 {{ warningPage }} / {{ warningPages }} 页</span><div class="stock-pagination-actions"><button class="btn btn-sm btn-outline" :disabled="warningPage <= 1" @click="changeWarningPage(warningPage - 1)"><i class="fas fa-chevron-left"></i> 上一页</button><button class="btn btn-sm btn-outline" :disabled="warningPage >= warningPages" @click="changeWarningPage(warningPage + 1)">下一页 <i class="fas fa-chevron-right"></i></button></div></div></template>
-    <div v-else class="stock-warning-empty"><i class="fas fa-check-circle"></i><span>暂无低库存预警</span></div>
-  </div></div>
+  <div class="card warning-card">
+    <div class="card-header">
+      <span class="card-title"><i class="fas fa-exclamation-triangle"></i> 低库存预警</span>
+      <span class="status-badge red"><span class="dot"></span> 低于预警阈值</span>
+    </div>
+    <div class="card-body">
+      <template v-if="warnings.length">
+        <div class="grid-auto-fill">
+          <div v-for="sku in visibleWarnings" :key="sku.skuCode" class="warning-item">
+            <div class="item-header">{{ sku.skuCode }} · {{ sku.name }}</div>
+            <div class="item-spec">规格: {{ sku.spec }}</div>
+            <div class="item-stats"><span>当前库存</span><span class="stat-value">{{ sku.stock }}件</span></div>
+            <div class="item-stats"><span>预警阈值</span><span class="stat-threshold">{{ sku.threshold }}件</span></div>
+            <button class="btn btn-sm btn-primary warning-replenish-btn" @click="openAdjust(sku)"><i class="fas fa-plus"></i> 补货</button>
+          </div>
+        </div>
+        <div v-if="warningPages > 1" class="stock-pagination warning-pagination">
+          <span>共 {{ warnings.length }} 个预警，第 {{ warningPage }} / {{ warningPages }} 页</span>
+          <div class="stock-pagination-actions">
+            <button class="btn btn-sm btn-outline" :disabled="warningPage <= 1" @click="changeWarningPage(warningPage - 1)"><i class="fas fa-chevron-left"></i> 上一页</button>
+            <button class="btn btn-sm btn-outline" :disabled="warningPage >= warningPages" @click="changeWarningPage(warningPage + 1)">下一页 <i class="fas fa-chevron-right"></i></button>
+          </div>
+        </div>
+      </template>
+      <div v-else class="stock-warning-empty">
+        <i class="fas fa-check-circle"></i>
+        <span>暂无低库存预警</span>
+      </div>
+    </div>
+  </div>
 
-  <div class="card"><div class="card-header"><span class="card-title"><i class="fas fa-list"></i> 库存查询 · 按 SKU</span><div style="display:flex;align-items:center;gap:8px"><input v-model="inventoryKeywordInput" id="stockSearchInput" class="form-inline-input stock-search-input" placeholder="输入 SKU 或商品名称" @keyup.enter="searchInventory" /><button class="btn btn-sm btn-primary" @click="searchInventory"><i class="fas fa-search"></i> 查询</button><span class="stock-list-total">共 {{ inventoryTotal }} 条</span></div></div><div class="card-body no-pad">
-    <div v-if="inventoryError" class="stock-list-error"><i class="fas fa-exclamation-circle"></i> {{ inventoryError }}</div><div class="table-wrap"><table><thead><tr><th>SKU</th><th>商品</th><th>规格</th><th>当前库存</th><th>预警阈值</th><th>状态</th><th>操作</th></tr></thead><tbody>
-      <tr v-if="inventoryLoading"><td colspan="7"><div class="stock-table-state"><i class="fas fa-spinner fa-spin"></i> 正在加载库存...</div></td></tr><tr v-else-if="!inventory.length"><td colspan="7"><div class="stock-table-state"><i class="fas fa-inbox"></i> 暂无库存数据</div></td></tr>
-      <tr v-for="sku in inventory" v-else :key="sku.skuCode"><td>{{ sku.skuCode }}</td><td>{{ sku.name }}</td><td>{{ sku.spec }}</td><td>{{ sku.stock }}</td><td>{{ sku.threshold }}</td><td><span class="status-badge" :class="sku.status === 'warning' ? 'red' : 'green'"><span class="dot"></span> {{ sku.status === 'warning' ? '预警' : '正常' }}</span></td><td><button class="btn btn-sm btn-outline" @click="openAdjust(sku)">调整</button></td></tr>
-    </tbody></table></div><div class="stock-pagination"><span>第 {{ inventoryPage }} / {{ inventoryPages }} 页</span><div class="stock-pagination-actions"><button class="btn btn-sm btn-outline" :disabled="inventoryPage <= 1 || inventoryLoading" @click="changeInventoryPage(inventoryPage - 1)"><i class="fas fa-chevron-left"></i> 上一页</button><button class="btn btn-sm btn-outline" :disabled="inventoryPage >= inventoryPages || inventoryLoading" @click="changeInventoryPage(inventoryPage + 1)">下一页 <i class="fas fa-chevron-right"></i></button></div></div>
-  </div></div>
+  <div class="card">
+    <div class="card-header">
+      <span class="card-title"><i class="fas fa-list"></i> 库存查询 · 按 SKU</span>
+      <div style="display:flex;align-items:center;gap:8px">
+        <input v-model="inventoryKeywordInput" id="stockSearchInput" class="form-inline-input stock-search-input" placeholder="输入 SKU 或商品名称" @keyup.enter="searchInventory" />
+        <button class="btn btn-sm btn-primary" @click="searchInventory"><i class="fas fa-search"></i> 查询</button>
+        <span class="stock-list-total">共 {{ inventoryTotal }} 条</span>
+      </div>
+    </div>
+    <div class="card-body no-pad">
+      <div v-if="inventoryError" class="stock-list-error"><i class="fas fa-exclamation-circle"></i> {{ inventoryError }}</div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>SKU</th>
+              <th>商品</th>
+              <th>规格</th>
+              <th>当前库存</th>
+              <th>预警阈值</th>
+              <th>状态</th>
+              <th>操作</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-if="inventoryLoading"><td colspan="7"><div class="stock-table-state"><i class="fas fa-spinner fa-spin"></i> 正在加载库存...</div></td></tr>
+            <tr v-else-if="!inventory.length"><td colspan="7"><div class="stock-table-state"><i class="fas fa-inbox"></i> 暂无库存数据</div></td></tr>
+            <tr v-for="sku in inventory" v-else :key="sku.skuCode">
+              <td>{{ sku.skuCode }}</td>
+              <td>{{ sku.name }}</td>
+              <td>{{ sku.spec }}</td>
+              <td>{{ sku.stock }}</td>
+              <td>{{ sku.threshold }}</td>
+              <td><span class="status-badge" :class="sku.status === 'warning' ? 'red' : 'green'"><span class="dot"></span> {{ sku.status === 'warning' ? '预警' : '正常' }}</span></td>
+              <td><button class="btn btn-sm btn-outline" @click="openAdjust(sku)">调整</button></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="stock-pagination">
+        <span>第 {{ inventoryPage }} / {{ inventoryPages }} 页</span>
+        <div class="stock-pagination-actions">
+          <button class="btn btn-sm btn-outline" :disabled="inventoryPage <= 1 || inventoryLoading" @click="changeInventoryPage(inventoryPage - 1)"><i class="fas fa-chevron-left"></i> 上一页</button>
+          <button class="btn btn-sm btn-outline" :disabled="inventoryPage >= inventoryPages || inventoryLoading" @click="changeInventoryPage(inventoryPage + 1)">下一页 <i class="fas fa-chevron-right"></i></button>
+        </div>
+      </div>
+    </div>
+  </div>
 
-  <div class="card"><div class="card-header"><span class="card-title"><i class="fas fa-history"></i> 出入库记录</span><div style="display:flex;align-items:center;gap:8px"><input v-model="logKeywordInput" id="stockLogSkuInput" class="form-inline-input" style="width:120px" placeholder="按 SKU 筛选" @keyup.enter="searchLogs" /><input v-model="logDate" type="date" class="form-inline-input" style="width:auto" /><button class="btn btn-sm btn-primary" @click="searchLogs"><i class="fas fa-search"></i> 筛选</button><button class="btn btn-sm btn-outline" @click="logKeywordInput='';logKeyword='';logDate='';logPage=1;loadLogs()">重置</button></div></div><div class="card-body no-pad">
-    <div v-if="logError" class="stock-list-error"><i class="fas fa-exclamation-circle"></i> {{ logError }}</div><div class="table-wrap"><table><thead><tr><th>时间</th><th>SKU / 商品</th><th>类型</th><th>变动数量</th><th>变动前库存</th><th>变动后库存</th><th>原因</th><th>关联订单</th><th>操作人</th></tr></thead><tbody>
-      <tr v-if="logLoading"><td colspan="9"><div class="stock-table-state"><i class="fas fa-spinner fa-spin"></i> 正在加载出入库记录...</div></td></tr><tr v-else-if="!filteredLogs.length"><td colspan="9"><div class="stock-table-state"><i class="fas fa-inbox"></i> 暂无出入库记录</div></td></tr>
-      <tr v-for="log in filteredLogs" v-else :key="log.id"><td>{{ log.createdAt }}</td><td><div>{{ log.skuCode }} · {{ log.name }}</div><div class="stock-log-spec">{{ log.spec }}</div></td><td><span class="status-badge" :class="typeClass(log.type)"><span class="dot"></span> {{ typeText(log.type) }}</span></td><td :style="{fontWeight:600,color:log.quantity>0?'#22c55e':'#ef4444'}">{{ log.quantity > 0 ? '+' : '' }}{{ log.quantity }}</td><td>{{ log.beforeStock }}</td><td>{{ log.afterStock }}</td><td>{{ log.reason }}</td><td>{{ log.orderId }}</td><td>{{ log.operator }}</td></tr>
-    </tbody></table></div><div class="stock-pagination"><span>第 {{ logPage }} / {{ logPages }} 页，共 {{ logTotal }} 条</span><div class="stock-pagination-actions"><button class="btn btn-sm btn-outline" :disabled="logPage <= 1 || logLoading" @click="changeLogPage(logPage - 1)"><i class="fas fa-chevron-left"></i> 上一页</button><button class="btn btn-sm btn-outline" :disabled="logPage >= logPages || logLoading" @click="changeLogPage(logPage + 1)">下一页 <i class="fas fa-chevron-right"></i></button></div></div>
-  </div></div>
+  <div class="card">
+    <div class="card-header">
+      <span class="card-title"><i class="fas fa-history"></i> 出入库记录</span>
+      <div style="display:flex;align-items:center;gap:8px">
+        <input v-model="logKeywordInput" id="stockLogSkuInput" class="form-inline-input" style="width:120px" placeholder="按 SKU 筛选" @keyup.enter="searchLogs" />
+        <input v-model="logDate" type="date" class="form-inline-input" style="width:auto" />
+        <button class="btn btn-sm btn-primary" @click="searchLogs"><i class="fas fa-search"></i> 筛选</button>
+        <button class="btn btn-sm btn-outline" @click="logKeywordInput='';logKeyword='';logDate='';logPage=1;loadLogs()">重置</button>
+      </div>
+    </div>
+    <div class="card-body no-pad">
+      <div v-if="logError" class="stock-list-error"><i class="fas fa-exclamation-circle"></i> {{ logError }}</div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>时间</th>
+              <th>SKU / 商品</th>
+              <th>类型</th>
+              <th>变动数量</th>
+              <th>变动前库存</th>
+              <th>变动后库存</th>
+              <th>原因</th>
+              <th>关联订单</th>
+              <th>操作人</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-if="logLoading"><td colspan="9"><div class="stock-table-state"><i class="fas fa-spinner fa-spin"></i> 正在加载出入库记录...</div></td></tr>
+            <tr v-else-if="!filteredLogs.length"><td colspan="9"><div class="stock-table-state"><i class="fas fa-inbox"></i> 暂无出入库记录</div></td></tr>
+            <tr v-for="log in filteredLogs" v-else :key="log.id">
+              <td>{{ log.createdAt }}</td>
+              <td>
+                <div>{{ log.skuCode }} · {{ log.name }}</div>
+                <div class="stock-log-spec">{{ log.spec }}</div>
+              </td>
+              <td><span class="status-badge" :class="typeClass(log.type)"><span class="dot"></span> {{ typeText(log.type) }}</span></td>
+              <td :style="{fontWeight:600,color:log.quantity>0?'#22c55e':'#ef4444'}">{{ log.quantity > 0 ? '+' : '' }}{{ log.quantity }}</td>
+              <td>{{ log.beforeStock }}</td>
+              <td>{{ log.afterStock }}</td>
+              <td>{{ log.reason }}</td>
+              <td>{{ log.orderId }}</td>
+              <td>{{ log.operator }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="stock-pagination">
+        <span>第 {{ logPage }} / {{ logPages }} 页，共 {{ logTotal }} 条</span>
+        <div class="stock-pagination-actions">
+          <button class="btn btn-sm btn-outline" :disabled="logPage <= 1 || logLoading" @click="changeLogPage(logPage - 1)"><i class="fas fa-chevron-left"></i> 上一页</button>
+          <button class="btn btn-sm btn-outline" :disabled="logPage >= logPages || logLoading" @click="changeLogPage(logPage + 1)">下一页 <i class="fas fa-chevron-right"></i></button>
+        </div>
+      </div>
+    </div>
+  </div>
 
-  <template v-if="selectedSku"><div class="modal-overlay" @click="selectedSku=null"></div><div class="modal-content modal-width-sm"><div class="modal-header"><h3><i class="fas fa-edit"></i> 手动调整库存</h3><button class="modal-close" @click="selectedSku=null"><i class="fas fa-times"></i></button></div><div class="modal-body"><label class="form-label">调整类型</label><div class="type-radio-group stock-type-grid"><label v-for="item in adjustmentTypes" :key="item.value" class="type-radio-option" :class="{selected:adjustType===item.value}" @click="adjustType=item.value"><input v-model="adjustType" type="radio" name="stockType" :value="item.value" /><div class="option-title" :class="item.positive?'success-color':'warn-color'">{{ item.name }}</div><div class="option-desc">{{ item.desc }}</div></label></div><div style="margin:16px 0"><label class="form-label">调整商品</label><div class="selected-sku-info stock-selected-sku" style="display:block"><div class="sku-name">{{ selectedSku.name }} - {{ selectedSku.spec }}</div><div class="sku-code">{{ selectedSku.skuCode }}</div><div id="selectedSkuStock" class="sku-stock">SKU ID: {{ selectedSku.skuId }} · 当前库存: {{ selectedSku.stock }}件</div></div></div><label class="form-label">调整数量</label><div class="quantity-adjust-group"><button class="btn btn-outline btn-sm" @click="adjustQuantity=Math.max(1,adjustQuantity-10)"><i class="fas fa-minus"></i></button><button class="btn btn-outline btn-sm" @click="adjustQuantity=Math.max(1,adjustQuantity-1)"><i class="fas fa-minus"></i></button><input v-model.number="adjustQuantity" id="stockQuantity" type="number" class="quantity-input" /><button class="btn btn-outline btn-sm" @click="adjustQuantity++"><i class="fas fa-plus"></i></button><button class="btn btn-outline btn-sm" @click="adjustQuantity+=10"><i class="fas fa-plus"></i></button></div><div class="quantity-hint">填写正整数，系统会根据调整类型自动设置增减方向</div><div style="margin-top:16px"><label class="form-label">调整原因</label><textarea v-model="adjustReason" id="stockReason" rows="2" class="form-textarea" placeholder="请填写调整原因..."></textarea></div></div><div class="modal-footer"><button class="btn btn-outline" @click="selectedSku=null">取消</button><button id="stockAdjustSubmit" class="btn btn-primary" :disabled="submitting" @click="submitAdjust"><i class="fas" :class="submitting?'fa-spinner fa-spin':'fa-save'"></i> {{ submitting ? '提交中' : '确认调整' }}</button></div></div></template>
+  <template v-if="selectedSku">
+    <div class="modal-overlay" @click="selectedSku=null"></div>
+    <div class="modal-content modal-width-sm">
+      <div class="modal-header">
+        <h3><i class="fas fa-edit"></i> 手动调整库存</h3>
+        <button class="modal-close" @click="selectedSku=null"><i class="fas fa-times"></i></button>
+      </div>
+      <div class="modal-body">
+        <label class="form-label">调整类型</label>
+        <div class="type-radio-group stock-type-grid">
+          <label v-for="item in adjustmentTypes" :key="item.value" class="type-radio-option" :class="{selected:adjustType===item.value}" @click="adjustType=item.value">
+            <input v-model="adjustType" type="radio" name="stockType" :value="item.value" />
+            <div class="option-title" :class="item.positive?'success-color':'warn-color'">{{ item.name }}</div>
+            <div class="option-desc">{{ item.desc }}</div>
+          </label>
+        </div>
+        <div style="margin:16px 0">
+          <label class="form-label">调整商品</label>
+          <div class="selected-sku-info stock-selected-sku" style="display:block">
+            <div class="sku-name">{{ selectedSku.name }} - {{ selectedSku.spec }}</div>
+            <div class="sku-code">{{ selectedSku.skuCode }}</div>
+            <div id="selectedSkuStock" class="sku-stock">SKU ID: {{ selectedSku.skuId }} · 当前库存: {{ selectedSku.stock }}件</div>
+          </div>
+        </div>
+        <label class="form-label">调整数量</label>
+        <div class="quantity-adjust-group">
+          <button class="btn btn-outline btn-sm" @click="adjustQuantity=Math.max(1,adjustQuantity-10)"><i class="fas fa-minus"></i></button>
+          <button class="btn btn-outline btn-sm" @click="adjustQuantity=Math.max(1,adjustQuantity-1)"><i class="fas fa-minus"></i></button>
+          <input v-model.number="adjustQuantity" id="stockQuantity" type="number" class="quantity-input" />
+          <button class="btn btn-outline btn-sm" @click="adjustQuantity++"><i class="fas fa-plus"></i></button>
+          <button class="btn btn-outline btn-sm" @click="adjustQuantity+=10"><i class="fas fa-plus"></i></button>
+        </div>
+        <div class="quantity-hint">填写正整数，系统会根据调整类型自动设置增减方向</div>
+        <div style="margin-top:16px">
+          <label class="form-label">调整原因</label>
+          <textarea v-model="adjustReason" id="stockReason" rows="2" class="form-textarea" placeholder="请填写调整原因..."></textarea>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-outline" @click="selectedSku=null">取消</button>
+        <button id="stockAdjustSubmit" class="btn btn-primary" :disabled="submitting" @click="submitAdjust"><i class="fas" :class="submitting?'fa-spinner fa-spin':'fa-save'"></i> {{ submitting ? '提交中' : '确认调整' }}</button>
+      </div>
+    </div>
+  </template>
 </template>
