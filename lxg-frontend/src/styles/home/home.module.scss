@@ -4,6 +4,8 @@
   min-height: 100vh;
   background-color: $color-bg-page;
   padding-bottom: 120rpx;
+  display: flex;
+  flex-direction: column;
 }
 
 // 顶部搜索区域
@@ -39,7 +41,9 @@
 
 // 主体内容
 .content {
+  flex: 1;
   margin-top: -10rpx;
+  min-height: 200rpx;
 }
 
 // 轮播图
@@ -280,99 +284,18 @@
   }
 }
 
-// 秒杀商品横向滚动列表（位于框架上方，独立于渐变背景）
-.seckillProducts {
-  display: flex;
-  white-space: nowrap;
-  padding: 0 0 $spacing-md;
-
-  .seckillProduct {
-    flex: 0 0 auto;
-    width: 220rpx;
-    margin-right: $spacing-md;
-    background-color: $color-bg-card;
-    border-radius: $radius-lg;
-    padding: $spacing-md;
-    color: $color-text-primary;
-    display: inline-flex;
-    flex-direction: column;
-    box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.06);
-
-    &:last-child {
-      margin-right: 0;
-    }
-
-    .productImage {
-      width: 100%;
-      padding-top: 100%;
-      border-radius: $radius-md;
-      margin-bottom: $spacing-md;
-      background-color: $color-bg-page;
-      background-size: cover;
-      background-position: center;
-    }
-
-    .seckillPriceArea {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-
-      .seckillPrice {
-        font-size: $font-size-lg;
-        font-weight: $font-weight-bold;
-        color: $color-primary;
-        margin-bottom: $spacing-xs;
-      }
-
-      .originalPrice {
-        font-size: $font-size-sm;
-        color: $color-text-tertiary;
-        text-decoration: line-through;
-      }
-    }
-
-    .seckillBtn {
-      width: 100%;
-      height: 64rpx;
-      background: linear-gradient(135deg, $color-seckill 0%, #ff6b6b 100%);
-      color: #fff;
-      font-size: $font-size-md;
-      font-weight: $font-weight-bold;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border-radius: $radius-button;
-      margin-top: $spacing-md;
-      box-shadow: $shadow-btn;
-    }
-  }
-}
-
-// 秒杀空状态（位于框架上方，页面背景上）
-.seckillEmpty {
-  padding: $spacing-xl 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-
-  .seckillEmptyText {
-    font-size: $font-size-sm;
-    color: $color-text-tertiary;
-  }
-}
-
-// 秒杀框架：标题 + 倒计时 + 跳转箭头（渐变背景条栏）
+// 秒杀框架：渐变背景卡片，标题 + 倒计时 + 横向商品列表
 .seckillArea {
   background: linear-gradient(135deg, $color-seckill 0%, #ff7d00 100%);
   border-radius: $radius-xl;
-  padding: $spacing-lg $spacing-xl;
+  padding: $spacing-lg $spacing-xl $spacing-xl;
   color: $color-text-white;
 
   .seckillHeader {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    margin-bottom: $spacing-lg;
 
     .seckillTitle {
       font-size: $font-size-xl;
@@ -397,6 +320,13 @@
       display: flex;
       align-items: center;
       gap: $spacing-md;
+    }
+
+    .seckillTag {
+      font-size: $font-size-sm;
+      background-color: rgba(255, 255, 255, 0.2);
+      padding: $spacing-xs $spacing-md;
+      border-radius: $radius-button;
     }
 
     .countdown {
@@ -429,6 +359,109 @@
         font-size: 36rpx;
         color: #fff;
         font-weight: bold;
+      }
+    }
+  }
+
+  // 秒杀商品横向滚动列表（位于渐变框内部）
+  .seckillProducts {
+    display: flex;
+    white-space: nowrap;
+    margin: 0 (-$spacing-md);
+    padding: 0 $spacing-md;
+
+    .seckillProduct {
+      flex: 0 0 auto;
+      width: 210rpx;
+      margin-right: $spacing-md;
+      background-color: $color-bg-card;
+      border-radius: $radius-lg;
+      padding: $spacing-md;
+      color: $color-text-primary;
+      display: inline-flex;
+      flex-direction: column;
+      box-shadow: 0 6rpx 20rpx rgba(0, 0, 0, 0.1);
+      overflow: hidden;
+
+      &:last-child {
+        margin-right: 0;
+      }
+
+      .productImage {
+        width: 100%;
+        height: 160rpx;
+        border-radius: $radius-md;
+        margin-bottom: $spacing-md;
+        background-color: $color-bg-page;
+      }
+
+      .seckillName {
+        font-size: $font-size-sm;
+        color: $color-text-primary;
+        line-height: 1.3;
+        height: 2.6em;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        margin-bottom: $spacing-sm;
+      }
+
+      .seckillPriceArea {
+        display: flex;
+        flex-direction: column;
+        margin-bottom: $spacing-sm;
+
+        .seckillPrice {
+          font-size: $font-size-lg;
+          font-weight: $font-weight-bold;
+          color: $color-primary;
+          line-height: 1.2;
+        }
+
+        .originalPrice {
+          font-size: $font-size-xs;
+          color: $color-text-tertiary;
+          text-decoration: line-through;
+          margin-top: 2rpx;
+        }
+      }
+
+      .seckillProgress {
+        width: 100%;
+        height: 16rpx;
+        background-color: rgba(0, 0, 0, 0.06);
+        border-radius: $radius-button;
+        overflow: hidden;
+        margin-bottom: $spacing-sm;
+
+        .seckillProgressBar {
+          height: 100%;
+          background: linear-gradient(90deg, $color-seckill 0%, #ff6b6b 100%);
+          border-radius: $radius-button;
+          transition: width 0.3s ease;
+        }
+      }
+
+      .seckillProgressText {
+        font-size: $font-size-xs;
+        color: $color-text-tertiary;
+        margin-bottom: $spacing-sm;
+      }
+
+      .seckillBtn {
+        width: 100%;
+        height: 52rpx;
+        background: linear-gradient(135deg, $color-seckill 0%, #ff6b6b 100%);
+        color: #fff;
+        font-size: $font-size-sm;
+        font-weight: $font-weight-bold;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: $radius-button;
+        box-shadow: $shadow-btn;
       }
     }
   }

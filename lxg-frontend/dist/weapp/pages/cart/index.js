@@ -98,7 +98,7 @@ var CartItemComponent = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default(
           })]
         })]
       })]
-    }), isEditing && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_7__.View, {
+    }), isEditing && item.id && item.id !== '0' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_7__.View, {
       className: _styles_cart_cart_module_scss__WEBPACK_IMPORTED_MODULE_5__["default"].deleteBtn,
       onClick: function onClick() {
         return onDelete(item.id);
@@ -125,7 +125,7 @@ var CartPage = function CartPage() {
     loading = _useState4[0],
     setLoading = _useState4[1];
   var loadCart = (0,react__WEBPACK_IMPORTED_MODULE_0__.useCallback)(/*#__PURE__*/(0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_10__["default"])(/*#__PURE__*/(0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_11__["default"])().m(function _callee() {
-    var res, list, normalized, _t;
+    var res, list, normalized, mergedMap, _t;
     return (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_11__["default"])().w(function (_context) {
       while (1) switch (_context.p = _context.n) {
         case 0:
@@ -144,8 +144,34 @@ var CartPage = function CartPage() {
                 selected: (_transformed$selected = transformed.selected) !== null && _transformed$selected !== void 0 ? _transformed$selected : true,
                 image: (0,_utils_image__WEBPACK_IMPORTED_MODULE_4__.getImageUrl)(transformed.image)
               });
+            }); // 打印购物车图片调试信息，便于排查同商品图片不一致问题
+            console.log('[购物车] 加载记录:', normalized.map(function (it) {
+              return {
+                id: it.id,
+                productId: it.productId,
+                skuId: it.skuId,
+                productName: it.productName,
+                imageRaw: it.image,
+                imageValid: (0,_utils_image__WEBPACK_IMPORTED_MODULE_4__.isValidImageUrl)(it.image)
+              };
+            }));
+
+            // 合并相同 productId + skuId 的记录，优先保留有效图片
+            mergedMap = new Map();
+            normalized.forEach(function (item) {
+              var key = "".concat(item.productId, "-").concat(item.skuId);
+              var existing = mergedMap.get(key);
+              if (!existing) {
+                mergedMap.set(key, (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_8__["default"])({}, item));
+              } else {
+                existing.quantity += item.quantity;
+                existing.selected = existing.selected || item.selected;
+                if ((0,_utils_image__WEBPACK_IMPORTED_MODULE_4__.isValidImageUrl)(item.image) && !(0,_utils_image__WEBPACK_IMPORTED_MODULE_4__.isValidImageUrl)(existing.image)) {
+                  existing.image = item.image;
+                }
+              }
             });
-            setCartItems(normalized);
+            setCartItems(Array.from(mergedMap.values()));
           }
           _context.n = 3;
           break;
@@ -188,6 +214,30 @@ var CartPage = function CartPage() {
     });
   }, [selectedCount]);
   var handleDelete = (0,react__WEBPACK_IMPORTED_MODULE_0__.useCallback)(function (id) {
+    if (!id || id === '0') {
+      _tarojs_taro__WEBPACK_IMPORTED_MODULE_1___default().showToast({
+        title: '商品信息异常，请刷新购物车',
+        icon: 'none'
+      });
+      return;
+    }
+    // 前端本地临时 ID（未同步到后端），直接本地删除即可
+    if (String(id).startsWith('cart-')) {
+      _tarojs_taro__WEBPACK_IMPORTED_MODULE_1___default().showModal({
+        title: '确认删除',
+        content: '确定要删除该商品吗？',
+        success: function success(res) {
+          if (res.confirm) {
+            removeFromCart(id);
+            _tarojs_taro__WEBPACK_IMPORTED_MODULE_1___default().showToast({
+              title: '已删除',
+              icon: 'success'
+            });
+          }
+        }
+      });
+      return;
+    }
     _tarojs_taro__WEBPACK_IMPORTED_MODULE_1___default().showModal({
       title: '确认删除',
       content: '确定要删除该商品吗？',
@@ -215,6 +265,7 @@ var CartPage = function CartPage() {
               case 3:
                 _context2.p = 3;
                 _t2 = _context2.v;
+                console.error('[购物车删除] 失败，id:', id, 'error:', _t2);
                 _tarojs_taro__WEBPACK_IMPORTED_MODULE_1___default().showToast({
                   title: (_t2 === null || _t2 === void 0 ? void 0 : _t2.message) || '删除失败',
                   icon: 'none'
@@ -231,6 +282,9 @@ var CartPage = function CartPage() {
       }()
     });
   }, [removeFromCart]);
+  var isTempCartId = (0,react__WEBPACK_IMPORTED_MODULE_0__.useCallback)(function (id) {
+    return String(id).startsWith('cart-');
+  }, []);
   var decreaseQuantity = (0,react__WEBPACK_IMPORTED_MODULE_0__.useCallback)(/*#__PURE__*/function () {
     var _ref3 = (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_10__["default"])(/*#__PURE__*/(0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_11__["default"])().m(function _callee3(id, quantity) {
       var newQuantity, _t3;
@@ -244,6 +298,13 @@ var CartPage = function CartPage() {
             return _context3.a(2);
           case 1:
             newQuantity = quantity - 1;
+            if (!isTempCartId(id)) {
+              _context3.n = 2;
+              break;
+            }
+            updateCartQuantity(id, newQuantity);
+            return _context3.a(2);
+          case 2:
             _context3.p = 2;
             _context3.n = 3;
             return (0,_api_cart__WEBPACK_IMPORTED_MODULE_3__.updateCartItem)(id, {
@@ -256,6 +317,7 @@ var CartPage = function CartPage() {
           case 4:
             _context3.p = 4;
             _t3 = _context3.v;
+            console.error('[购物车减数量] 失败，id:', id, 'error:', _t3);
             _tarojs_taro__WEBPACK_IMPORTED_MODULE_1___default().showToast({
               title: (_t3 === null || _t3 === void 0 ? void 0 : _t3.message) || '更新失败',
               icon: 'none'
@@ -268,7 +330,7 @@ var CartPage = function CartPage() {
     return function (_x2, _x3) {
       return _ref3.apply(this, arguments);
     };
-  }(), [updateCartQuantity]);
+  }(), [updateCartQuantity, isTempCartId]);
   var increaseQuantity = (0,react__WEBPACK_IMPORTED_MODULE_0__.useCallback)(/*#__PURE__*/function () {
     var _ref4 = (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_10__["default"])(/*#__PURE__*/(0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_11__["default"])().m(function _callee4(id, quantity, stock) {
       var newQuantity, _t4;
@@ -286,6 +348,13 @@ var CartPage = function CartPage() {
             return _context4.a(2);
           case 1:
             newQuantity = quantity + 1;
+            if (!isTempCartId(id)) {
+              _context4.n = 2;
+              break;
+            }
+            updateCartQuantity(id, newQuantity);
+            return _context4.a(2);
+          case 2:
             _context4.p = 2;
             _context4.n = 3;
             return (0,_api_cart__WEBPACK_IMPORTED_MODULE_3__.updateCartItem)(id, {
@@ -298,6 +367,7 @@ var CartPage = function CartPage() {
           case 4:
             _context4.p = 4;
             _t4 = _context4.v;
+            console.error('[购物车加数量] 失败，id:', id, 'error:', _t4);
             _tarojs_taro__WEBPACK_IMPORTED_MODULE_1___default().showToast({
               title: (_t4 === null || _t4 === void 0 ? void 0 : _t4.message) || '更新失败',
               icon: 'none'
@@ -310,7 +380,7 @@ var CartPage = function CartPage() {
     return function (_x4, _x5, _x6) {
       return _ref4.apply(this, arguments);
     };
-  }(), [updateCartQuantity]);
+  }(), [updateCartQuantity, isTempCartId]);
   var handleSelectAll = (0,react__WEBPACK_IMPORTED_MODULE_0__.useCallback)(function () {
     selectAllCartItems(!allSelected);
   }, [selectAllCartItems, allSelected]);

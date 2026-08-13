@@ -84,8 +84,11 @@ export function normalizeSeckillProduct(raw: any): Record<string, any> {
         soldPercent,
         limitCount: Number(raw.limitCount ?? raw.limit_count ?? raw.LimitCount ?? raw.buyLimit ?? raw.buy_limit ?? raw.BuyLimit ?? 1),
         skuId: raw.skuId ?? raw.sku_id ?? raw.SkuId ?? raw.skuID
-            ?? (firstSku ? (firstSku.sku_id ?? firstSku.skuId ?? firstSku.seckill_sku_price_id ?? firstSku.id ?? '') : ''),
-        activityId: raw.activityId ?? raw.activity_id ?? raw.ActivityId ?? '',
+            ?? (firstSku ? (firstSku.sku_id ?? firstSku.skuId ?? firstSku.id ?? '') : ''),
+        seckillSkuPriceId: raw.seckillSkuPriceId ?? raw.seckill_sku_price_id ?? raw.SeckillSKUPriceID
+            ?? raw.SeckillSkuPriceId ?? raw.seckillSkuPriceID
+            ?? (firstSku ? (firstSku.seckill_sku_price_id ?? firstSku.seckillSkuPriceId ?? firstSku.SeckillSKUPriceID ?? '') : ''),
+        activityId: raw.activityId ?? raw.activity_id ?? raw.ActivityId ?? raw.ActivityID ?? '',
         // 附加原始数据，供页面需要时使用
         raw,
     };
@@ -100,7 +103,7 @@ export function normalizeSeckillActivity(raw: any): Record<string, any> {
             : (Array.isArray(raw.items) ? raw.items
                 : (Array.isArray(raw.productList) ? raw.productList : [])));
     return {
-        id: raw.id ?? raw.Id ?? raw.ID ?? raw.activityId ?? raw.activity_id ?? raw.ActivityId ?? '',
+        id: raw.id ?? raw.Id ?? raw.ID ?? raw.activityId ?? raw.activity_id ?? raw.ActivityId ?? raw.ActivityID ?? '',
         name: raw.name ?? raw.Name ?? raw.title ?? raw.Title ?? raw.activityName ?? raw.activity_name ?? raw.ActivityName ?? '限时秒杀',
         status: raw.status ?? raw.Status ?? raw.activityStatus ?? raw.activity_status ?? 'active',
         startTime: raw.startTime ?? raw.start_time ?? raw.StartTime ?? raw.beginTime ?? raw.begin_time ?? '',
@@ -144,7 +147,7 @@ export function normalizeSeckillPurchase(raw: any): Record<string, any> {
         id: raw.id ?? raw.Id ?? raw.ID ?? raw.purchaseId ?? raw.purchase_id ?? raw.PurchaseId ?? raw.orderId ?? raw.order_id ?? '',
         purchaseId: raw.purchaseId ?? raw.purchase_id ?? raw.PurchaseId ?? raw.id ?? raw.Id ?? '',
         orderId: raw.orderId ?? raw.order_id ?? raw.OrderId ?? raw.OrderID ?? raw.orderNo ?? raw.order_no ?? raw.OrderNo ?? '',
-        activityId: raw.activityId ?? raw.activity_id ?? raw.ActivityId ?? '',
+        activityId: raw.activityId ?? raw.activity_id ?? raw.ActivityId ?? raw.ActivityID ?? '',
         productId: raw.productId ?? raw.product_id ?? raw.ProductId ?? raw.ProductID ?? '',
         skuId: raw.skuId ?? raw.sku_id ?? raw.SkuId ?? '',
         quantity: Number(raw.quantity ?? raw.Quantity ?? raw.count ?? raw.Count ?? raw.num ?? 1),
@@ -233,28 +236,34 @@ export async function fetchProductSeckillActivity(params: {
 /**
  * 购买秒杀商品
  * POST /api/v1/seckill/purchases
- * @param payload activityId 活动ID / productId 商品ID / quantity 数量 / skuId 规格ID(可选) / addressId 地址ID(可选)
+ * 后端 Go 结构体 JSON tag 为 camelCase（错误消息用 PascalCase 字段名）：
+ *   activityId(required) / productId(required) / seckillSkuPriceId(required) / storeId(required)
+ *   skuId / quantity / addressId / paymentMethod
+ * 所有数字字段为 uint64，binding:"required" 拒绝零值 0，需用 JSON 提交保留数字类型
  */
 export async function createSeckillPurchase(payload: {
     activityId: string | number;
     productId: string | number;
+    seckillSkuPriceId: string | number;
+    storeId: string | number;
     quantity: number;
     skuId?: string | number;
     addressId?: string | number;
     paymentMethod?: string;
-    [key: string]: any;
 }) {
     const body: Record<string, any> = {
         activityId: toNumericId(payload.activityId),
         productId: toNumericId(payload.productId),
+        seckillSkuPriceId: toNumericId(payload.seckillSkuPriceId),
+        storeId: toNumericId(payload.storeId),
+        skuId: toNumericId(payload.skuId),
         quantity: payload.quantity,
     };
-    if (payload.skuId !== undefined) body.skuId = toNumericId(payload.skuId);
     if (payload.addressId !== undefined) body.addressId = toNumericId(payload.addressId);
     if (payload.paymentMethod !== undefined) body.paymentMethod = payload.paymentMethod;
 
-    // 后端用 ShouldBindJSON 绑定，含多个 uint64 数字字段（activityId/productId/skuId/addressId），
-    // 必须用 JSON 提交以保留数字类型；form-urlencoded 会将数字转为字符串导致"输入参数有误"
+    console.log('[秒杀购买] 请求体:', JSON.stringify(body));
+
     const res = await apiPost(seckillApi.purchases, body, {}, {}, false);
     if (res?.data) {
         return { ...res, data: normalizeSeckillPurchase(res.data) };

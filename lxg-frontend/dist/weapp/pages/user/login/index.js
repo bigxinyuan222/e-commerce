@@ -7,21 +7,23 @@
   \**************************************************************************************************************************/
 /***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
-/* harmony import */ var D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./node_modules/@babel/runtime/helpers/esm/regenerator.js */ "./node_modules/@babel/runtime/helpers/esm/regenerator.js");
-/* harmony import */ var D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./node_modules/@babel/runtime/helpers/esm/asyncToGenerator.js */ "./node_modules/@babel/runtime/helpers/esm/asyncToGenerator.js");
+/* harmony import */ var D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./node_modules/@babel/runtime/helpers/esm/regenerator.js */ "./node_modules/@babel/runtime/helpers/esm/regenerator.js");
+/* harmony import */ var D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./node_modules/@babel/runtime/helpers/esm/asyncToGenerator.js */ "./node_modules/@babel/runtime/helpers/esm/asyncToGenerator.js");
+/* harmony import */ var D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_typeof_js__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./node_modules/@babel/runtime/helpers/esm/typeof.js */ "./node_modules/@babel/runtime/helpers/esm/typeof.js");
 /* harmony import */ var D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_slicedToArray_js__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./node_modules/@babel/runtime/helpers/esm/slicedToArray.js */ "./node_modules/@babel/runtime/helpers/esm/slicedToArray.js");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _tarojs_components__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! @tarojs/components */ "./node_modules/@tarojs/plugin-platform-weapp/dist/components-react.js");
+/* harmony import */ var _tarojs_components__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! @tarojs/components */ "./node_modules/@tarojs/plugin-platform-weapp/dist/components-react.js");
 /* harmony import */ var _tarojs_taro__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @tarojs/taro */ "./node_modules/@tarojs/taro/index.js");
 /* harmony import */ var _tarojs_taro__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_tarojs_taro__WEBPACK_IMPORTED_MODULE_1__);
 /* harmony import */ var _store_AppContext__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @/store/AppContext */ "./src/store/AppContext.tsx");
 /* harmony import */ var _api_common__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @/api/common */ "./src/api/common/index.ts");
 /* harmony import */ var _api_user__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @/api/user */ "./src/api/user/index.ts");
-/* harmony import */ var _api_user_normalize__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! @/api/user/normalize */ "./src/api/user/normalize.ts");
+/* harmony import */ var _api_user_normalize__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! @/api/user/normalize */ "./src/api/user/normalize.ts");
 /* harmony import */ var _styles_user_login_module_scss__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @/styles/user/login.module.scss */ "./src/styles/user/login.module.scss");
 /* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/cjs/react-jsx-runtime.production.min.js");
 /* provided dependency */ var window = __webpack_require__(/*! @tarojs/runtime */ "./node_modules/@tarojs/runtime/dist/index.js")["window"];
+
 
 
 
@@ -179,9 +181,18 @@ var LoginPage = function LoginPage() {
     return function () {
       if (countdownRef.current) {
         clearInterval(countdownRef.current);
+        countdownRef.current = null;
       }
     };
   }, []);
+
+  // 页面隐藏时立即清除定时器，避免微信框架内部页面帧已销毁导致 __subPageFrameEndTime__ 报错
+  (0,_tarojs_taro__WEBPACK_IMPORTED_MODULE_1__.useDidHide)(function () {
+    if (countdownRef.current) {
+      clearInterval(countdownRef.current);
+      countdownRef.current = null;
+    }
+  });
   var getCurrentDate = function getCurrentDate() {
     var now = new Date();
     var year = now.getFullYear();
@@ -202,18 +213,21 @@ var LoginPage = function LoginPage() {
     }
   };
   var saveUserSession = function saveUserSession(result) {
-    var _ref, _result$data, _ref2, _ref3, _ref4, _ref5, _ref6, _ref7, _ref8, _ref9, _ref0, _ref1, _ref10, _ref11, _ref12, _payload$token, _payload$user, _payload$user2, _payload$user3, _payload$user4, _payload$user5, _payload$user6, _payload$data, _payload$data2, _ref13, _ref14, _ref15, _payload$user_login, _payload$data3;
-    var payload = (_ref = (_result$data = result === null || result === void 0 ? void 0 : result.data) !== null && _result$data !== void 0 ? _result$data : result) !== null && _ref !== void 0 ? _ref : {};
-    console.log('[微信登录] saveUserSession 原始响应:', JSON.stringify(result));
-    console.log('[微信登录] saveUserSession payload:', JSON.stringify(payload));
+    var _ref, _ref2, _ref3, _ref4, _ref5, _ref6, _ref7, _ref8, _ref9, _ref0, _ref1, _ref10, _ref11, _payload$token, _payload$user, _payload$user2, _payload$user3, _payload$user4, _payload$user5, _payload$user6, _payload$data, _payload$data2, _ref12, _ref13, _ref14, _payload$user_login, _payload$data3;
+    var source = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : '登录';
+    // data 可能为空字符串 ""（后端异常），需降级为空对象
+    var rawData = result === null || result === void 0 ? void 0 : result.data;
+    var payload = rawData && (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_typeof_js__WEBPACK_IMPORTED_MODULE_8__["default"])(rawData) === 'object' ? rawData : result && (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_typeof_js__WEBPACK_IMPORTED_MODULE_8__["default"])(result) === 'object' ? result : {};
+    console.log("[".concat(source, "] saveUserSession \u539F\u59CB\u54CD\u5E94:"), JSON.stringify(result));
+    console.log("[".concat(source, "] saveUserSession payload:"), JSON.stringify(payload));
     // 注意：不包含 tempToken —— 临时 token 不能作为登录态保存
     // 兼容 token 在顶层或嵌套在 user 对象中的多种返回结构
-    var token = (_ref2 = (_ref3 = (_ref4 = (_ref5 = (_ref6 = (_ref7 = (_ref8 = (_ref9 = (_ref0 = (_ref1 = (_ref10 = (_ref11 = (_ref12 = (_payload$token = payload.token) !== null && _payload$token !== void 0 ? _payload$token : payload.Token) !== null && _ref12 !== void 0 ? _ref12 : payload.accessToken) !== null && _ref11 !== void 0 ? _ref11 : payload.access_token) !== null && _ref10 !== void 0 ? _ref10 : payload.userToken) !== null && _ref1 !== void 0 ? _ref1 : payload.user_token) !== null && _ref0 !== void 0 ? _ref0 : (_payload$user = payload.user) === null || _payload$user === void 0 ? void 0 : _payload$user.token) !== null && _ref9 !== void 0 ? _ref9 : (_payload$user2 = payload.user) === null || _payload$user2 === void 0 ? void 0 : _payload$user2.Token) !== null && _ref8 !== void 0 ? _ref8 : (_payload$user3 = payload.user) === null || _payload$user3 === void 0 ? void 0 : _payload$user3.accessToken) !== null && _ref7 !== void 0 ? _ref7 : (_payload$user4 = payload.user) === null || _payload$user4 === void 0 ? void 0 : _payload$user4.access_token) !== null && _ref6 !== void 0 ? _ref6 : (_payload$user5 = payload.user) === null || _payload$user5 === void 0 ? void 0 : _payload$user5.userToken) !== null && _ref5 !== void 0 ? _ref5 : (_payload$user6 = payload.user) === null || _payload$user6 === void 0 ? void 0 : _payload$user6.user_token) !== null && _ref4 !== void 0 ? _ref4 : (_payload$data = payload.data) === null || _payload$data === void 0 ? void 0 : _payload$data.token) !== null && _ref3 !== void 0 ? _ref3 : (_payload$data2 = payload.data) === null || _payload$data2 === void 0 ? void 0 : _payload$data2.Token) !== null && _ref2 !== void 0 ? _ref2 : '';
-    var user = (_ref13 = (_ref14 = (_ref15 = (_payload$user_login = payload.user_login) !== null && _payload$user_login !== void 0 ? _payload$user_login : payload.user) !== null && _ref15 !== void 0 ? _ref15 : payload.userInfo) !== null && _ref14 !== void 0 ? _ref14 : (_payload$data3 = payload.data) === null || _payload$data3 === void 0 ? void 0 : _payload$data3.user) !== null && _ref13 !== void 0 ? _ref13 : payload;
-    console.log('[微信登录] 提取的 token:', token ? "".concat(token.substring(0, 10), "...\uFF08\u957F\u5EA6:").concat(token.length, "\uFF09") : '空');
-    console.log('[微信登录] 提取的 user:', user ? JSON.stringify(user).substring(0, 100) : '空');
+    var token = (_ref = (_ref2 = (_ref3 = (_ref4 = (_ref5 = (_ref6 = (_ref7 = (_ref8 = (_ref9 = (_ref0 = (_ref1 = (_ref10 = (_ref11 = (_payload$token = payload.token) !== null && _payload$token !== void 0 ? _payload$token : payload.Token) !== null && _ref11 !== void 0 ? _ref11 : payload.accessToken) !== null && _ref10 !== void 0 ? _ref10 : payload.access_token) !== null && _ref1 !== void 0 ? _ref1 : payload.userToken) !== null && _ref0 !== void 0 ? _ref0 : payload.user_token) !== null && _ref9 !== void 0 ? _ref9 : (_payload$user = payload.user) === null || _payload$user === void 0 ? void 0 : _payload$user.token) !== null && _ref8 !== void 0 ? _ref8 : (_payload$user2 = payload.user) === null || _payload$user2 === void 0 ? void 0 : _payload$user2.Token) !== null && _ref7 !== void 0 ? _ref7 : (_payload$user3 = payload.user) === null || _payload$user3 === void 0 ? void 0 : _payload$user3.accessToken) !== null && _ref6 !== void 0 ? _ref6 : (_payload$user4 = payload.user) === null || _payload$user4 === void 0 ? void 0 : _payload$user4.access_token) !== null && _ref5 !== void 0 ? _ref5 : (_payload$user5 = payload.user) === null || _payload$user5 === void 0 ? void 0 : _payload$user5.userToken) !== null && _ref4 !== void 0 ? _ref4 : (_payload$user6 = payload.user) === null || _payload$user6 === void 0 ? void 0 : _payload$user6.user_token) !== null && _ref3 !== void 0 ? _ref3 : (_payload$data = payload.data) === null || _payload$data === void 0 ? void 0 : _payload$data.token) !== null && _ref2 !== void 0 ? _ref2 : (_payload$data2 = payload.data) === null || _payload$data2 === void 0 ? void 0 : _payload$data2.Token) !== null && _ref !== void 0 ? _ref : '';
+    var user = (_ref12 = (_ref13 = (_ref14 = (_payload$user_login = payload.user_login) !== null && _payload$user_login !== void 0 ? _payload$user_login : payload.user) !== null && _ref14 !== void 0 ? _ref14 : payload.userInfo) !== null && _ref13 !== void 0 ? _ref13 : (_payload$data3 = payload.data) === null || _payload$data3 === void 0 ? void 0 : _payload$data3.user) !== null && _ref12 !== void 0 ? _ref12 : payload;
+    console.log("[".concat(source, "] \u63D0\u53D6\u7684 token:"), token ? "".concat(token.substring(0, 10), "...\uFF08\u957F\u5EA6:").concat(token.length, "\uFF09") : '空');
+    console.log("[".concat(source, "] \u63D0\u53D6\u7684 user:"), user ? JSON.stringify(user).substring(0, 100) : '空');
     if (!token) {
-      console.error('[微信登录] 登录响应中未找到有效 token，完整响应:', JSON.stringify(result));
+      console.error("[".concat(source, "] \u54CD\u5E94\u4E2D\u672A\u627E\u5230\u6709\u6548 token\uFF0C\u5B8C\u6574\u54CD\u5E94:"), JSON.stringify(result));
       throw new Error('登录失败：未获取到用户凭证');
     }
     _tarojs_taro__WEBPACK_IMPORTED_MODULE_1___default().setStorageSync('lxg_user', JSON.stringify({
@@ -251,11 +265,11 @@ var LoginPage = function LoginPage() {
     }, 1000);
   };
   var sendCode = /*#__PURE__*/function () {
-    var _ref16 = (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_8__["default"])(/*#__PURE__*/(0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_9__["default"])().m(function _callee() {
+    var _ref15 = (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_9__["default"])(/*#__PURE__*/(0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_10__["default"])().m(function _callee() {
       var scene,
         _args = arguments,
         _t;
-      return (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_9__["default"])().w(function (_context) {
+      return (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_10__["default"])().w(function (_context) {
         while (1) switch (_context.p = _context.n) {
           case 0:
             scene = _args.length > 0 && _args[0] !== undefined ? _args[0] : 'register';
@@ -312,13 +326,13 @@ var LoginPage = function LoginPage() {
       }, _callee, null, [[2, 6]]);
     }));
     return function sendCode() {
-      return _ref16.apply(this, arguments);
+      return _ref15.apply(this, arguments);
     };
   }();
   var doLogin = /*#__PURE__*/function () {
-    var _ref17 = (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_8__["default"])(/*#__PURE__*/(0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_9__["default"])().m(function _callee2() {
+    var _ref16 = (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_9__["default"])(/*#__PURE__*/(0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_10__["default"])().m(function _callee2() {
       var result, loggedInUser, profileRes, normalized, _t2, _t3;
-      return (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_9__["default"])().w(function (_context2) {
+      return (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_10__["default"])().w(function (_context2) {
         while (1) switch (_context2.p = _context2.n) {
           case 0:
             if (!(!phone || phone.length !== 11)) {
@@ -352,13 +366,13 @@ var LoginPage = function LoginPage() {
             }, {}, {}, true);
           case 4:
             result = _context2.v;
-            loggedInUser = saveUserSession(result); // 登录成功后获取完整用户信息
+            loggedInUser = saveUserSession(result, '账号登录'); // 登录成功后获取完整用户信息
             _context2.p = 5;
             _context2.n = 6;
             return (0,_api_common__WEBPACK_IMPORTED_MODULE_3__.apiGet)(_api_user__WEBPACK_IMPORTED_MODULE_4__.userApi.profile);
           case 6:
             profileRes = _context2.v;
-            normalized = (0,_api_user_normalize__WEBPACK_IMPORTED_MODULE_10__.normalizeUserProfile)(profileRes);
+            normalized = (0,_api_user_normalize__WEBPACK_IMPORTED_MODULE_11__.normalizeUserProfile)(profileRes);
             setUserInfo({
               id: normalized.id || loggedInUser.id,
               nickname: normalized.nickname || loggedInUser.nickname,
@@ -402,13 +416,13 @@ var LoginPage = function LoginPage() {
       }, _callee2, null, [[5, 7], [3, 9]]);
     }));
     return function doLogin() {
-      return _ref17.apply(this, arguments);
+      return _ref16.apply(this, arguments);
     };
   }();
   var doRegister = /*#__PURE__*/function () {
-    var _ref18 = (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_8__["default"])(/*#__PURE__*/(0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_9__["default"])().m(function _callee3() {
-      var result, _t4;
-      return (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_9__["default"])().w(function (_context3) {
+    var _ref17 = (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_9__["default"])(/*#__PURE__*/(0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_10__["default"])().m(function _callee3() {
+      var loginResult, loggedInUser, profileRes, normalized, _t4, _t5;
+      return (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_10__["default"])().w(function (_context3) {
         while (1) switch (_context3.p = _context3.n) {
           case 0:
             if (!(!phone || phone.length !== 11)) {
@@ -452,9 +466,44 @@ var LoginPage = function LoginPage() {
               password: password
             }, {}, {}, true);
           case 5:
-            result = _context3.v;
+            // 步骤2：注册成功后，用刚注册的手机号 + 密码调用登录接口获取 token
+            _tarojs_taro__WEBPACK_IMPORTED_MODULE_1___default().showLoading({
+              title: '登录中...'
+            });
+            _context3.n = 6;
+            return (0,_api_common__WEBPACK_IMPORTED_MODULE_3__.apiPost)(_api_user__WEBPACK_IMPORTED_MODULE_4__.authApi.login, {
+              phone: phone,
+              password: password
+            }, {}, {}, true);
+          case 6:
+            loginResult = _context3.v;
+            loggedInUser = saveUserSession(loginResult, '账号登录'); // 步骤3：登录成功后获取完整用户信息
+            _context3.p = 7;
+            _context3.n = 8;
+            return (0,_api_common__WEBPACK_IMPORTED_MODULE_3__.apiGet)(_api_user__WEBPACK_IMPORTED_MODULE_4__.userApi.profile);
+          case 8:
+            profileRes = _context3.v;
+            normalized = (0,_api_user_normalize__WEBPACK_IMPORTED_MODULE_11__.normalizeUserProfile)(profileRes);
+            setUserInfo({
+              id: normalized.id || loggedInUser.id,
+              nickname: normalized.nickname || loggedInUser.nickname,
+              avatar: normalized.avatar || loggedInUser.avatar,
+              phone: normalized.phone || loggedInUser.phone,
+              accountName: normalized.accountName || loggedInUser.accountName,
+              gender: normalized.gender || loggedInUser.gender,
+              birthday: normalized.birthday || loggedInUser.birthday,
+              registerDate: normalized.registerDate || loggedInUser.registerDate,
+              email: normalized.email || loggedInUser.email,
+              isLoggedIn: true
+            });
+            _context3.n = 10;
+            break;
+          case 9:
+            _context3.p = 9;
+            _t4 = _context3.v;
+            console.error('获取用户信息失败，使用登录返回信息:', _t4);
+          case 10:
             _tarojs_taro__WEBPACK_IMPORTED_MODULE_1___default().hideLoading();
-            saveUserSession(result);
             _tarojs_taro__WEBPACK_IMPORTED_MODULE_1___default().showToast({
               title: '注册成功',
               icon: 'success'
@@ -462,23 +511,23 @@ var LoginPage = function LoginPage() {
             setTimeout(function () {
               goBackOrHome();
             }, 1500);
-            _context3.n = 7;
+            _context3.n = 12;
             break;
-          case 6:
-            _context3.p = 6;
-            _t4 = _context3.v;
+          case 11:
+            _context3.p = 11;
+            _t5 = _context3.v;
             _tarojs_taro__WEBPACK_IMPORTED_MODULE_1___default().hideLoading();
             _tarojs_taro__WEBPACK_IMPORTED_MODULE_1___default().showToast({
-              title: _t4.message || '注册失败',
+              title: _t5.message || '注册失败',
               icon: 'none'
             });
-          case 7:
+          case 12:
             return _context3.a(2);
         }
-      }, _callee3, null, [[4, 6]]);
+      }, _callee3, null, [[7, 9], [4, 11]]);
     }));
     return function doRegister() {
-      return _ref18.apply(this, arguments);
+      return _ref17.apply(this, arguments);
     };
   }();
   var handleAccountLogin = function handleAccountLogin() {
@@ -488,17 +537,10 @@ var LoginPage = function LoginPage() {
       doLogin();
     }
   };
-  var handlePhoneLogin = function handlePhoneLogin() {
-    if (isRegister) {
-      doRegister();
-    } else {
-      doLogin();
-    }
-  };
   var handleForgotPassword = /*#__PURE__*/function () {
-    var _ref19 = (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_8__["default"])(/*#__PURE__*/(0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_9__["default"])().m(function _callee4() {
-      var _t5;
-      return (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_9__["default"])().w(function (_context4) {
+    var _ref18 = (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_9__["default"])(/*#__PURE__*/(0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_10__["default"])().m(function _callee4() {
+      var _t6;
+      return (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_10__["default"])().w(function (_context4) {
         while (1) switch (_context4.p = _context4.n) {
           case 0:
             if (!(!phone || phone.length !== 11)) {
@@ -568,10 +610,10 @@ var LoginPage = function LoginPage() {
             break;
           case 7:
             _context4.p = 7;
-            _t5 = _context4.v;
+            _t6 = _context4.v;
             _tarojs_taro__WEBPACK_IMPORTED_MODULE_1___default().hideLoading();
             _tarojs_taro__WEBPACK_IMPORTED_MODULE_1___default().showToast({
-              title: _t5.message || '重置密码失败',
+              title: _t6.message || '重置密码失败',
               icon: 'none'
             });
           case 8:
@@ -580,15 +622,15 @@ var LoginPage = function LoginPage() {
       }, _callee4, null, [[5, 7]]);
     }));
     return function handleForgotPassword() {
-      return _ref19.apply(this, arguments);
+      return _ref18.apply(this, arguments);
     };
   }();
 
   // 微信登录
   var handleWechatLogin = /*#__PURE__*/function () {
-    var _ref20 = (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_8__["default"])(/*#__PURE__*/(0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_9__["default"])().m(function _callee6() {
-      var fetchWechatCode, callWeixinLogin, isRetryableWechatError, _code, freshCode, _t6, _t7, _t8;
-      return (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_9__["default"])().w(function (_context6) {
+    var _ref19 = (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_9__["default"])(/*#__PURE__*/(0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_10__["default"])().m(function _callee6() {
+      var fetchWechatCode, callWeixinLogin, isRetryableWechatError, _code, freshCode, _t7, _t8, _t9;
+      return (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_10__["default"])().w(function (_context6) {
         while (1) switch (_context6.p = _context6.n) {
           case 0:
             if (!(wechatLoginLockRef.current || isWechatLogin)) {
@@ -618,10 +660,10 @@ var LoginPage = function LoginPage() {
               });
             }; // 核心登录逻辑：传入 code，调用后端接口并处理结果
             callWeixinLogin = /*#__PURE__*/function () {
-              var _ref21 = (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_8__["default"])(/*#__PURE__*/(0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_9__["default"])().m(function _callee5(code) {
-                var _ref22, _result$data2, _ref23, _ref24, _ref25, _ref26, _ref27, _ref28, _ref29, _ref30, _ref31, _ref32, _ref33, _ref34, _ref35, _payload$needPhone, _ref36, _ref37, _ref38, _payload$token2;
+              var _ref20 = (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_9__["default"])(/*#__PURE__*/(0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_10__["default"])().m(function _callee5(code) {
+                var _ref21, _result$data, _ref22, _ref23, _ref24, _ref25, _ref26, _ref27, _ref28, _ref29, _ref30, _ref31, _ref32, _ref33, _ref34, _payload$needPhone, _ref35, _ref36, _ref37, _payload$token2;
                 var result, payload, needPhone, rawToken, token, tokenParts;
-                return (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_9__["default"])().w(function (_context5) {
+                return (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_10__["default"])().w(function (_context5) {
                   while (1) switch (_context5.n) {
                     case 0:
                       _context5.n = 1;
@@ -631,9 +673,9 @@ var LoginPage = function LoginPage() {
                     case 1:
                       result = _context5.v;
                       // 步骤3：解析返回的 token 和布尔值
-                      payload = (_ref22 = (_result$data2 = result === null || result === void 0 ? void 0 : result.data) !== null && _result$data2 !== void 0 ? _result$data2 : result) !== null && _ref22 !== void 0 ? _ref22 : {};
-                      needPhone = (_ref23 = (_ref24 = (_ref25 = (_ref26 = (_ref27 = (_ref28 = (_ref29 = (_ref30 = (_ref31 = (_ref32 = (_ref33 = (_ref34 = (_ref35 = (_payload$needPhone = payload.needPhone) !== null && _payload$needPhone !== void 0 ? _payload$needPhone : payload.need_phone) !== null && _ref35 !== void 0 ? _ref35 : payload.NeedPhone) !== null && _ref34 !== void 0 ? _ref34 : payload.isNewUser) !== null && _ref33 !== void 0 ? _ref33 : payload.is_new_user) !== null && _ref32 !== void 0 ? _ref32 : payload.IsNewUser) !== null && _ref31 !== void 0 ? _ref31 : payload.bindPhone) !== null && _ref30 !== void 0 ? _ref30 : payload.bind_phone) !== null && _ref29 !== void 0 ? _ref29 : payload.BindPhone) !== null && _ref28 !== void 0 ? _ref28 : payload.needBindPhone) !== null && _ref27 !== void 0 ? _ref27 : payload.need_bind_phone) !== null && _ref26 !== void 0 ? _ref26 : payload.isRegister) !== null && _ref25 !== void 0 ? _ref25 : payload.is_register) !== null && _ref24 !== void 0 ? _ref24 : payload.IsRegister) !== null && _ref23 !== void 0 ? _ref23 : false; // 提取 token 并 trim，防止首尾空白/BOM 导致后端解析失败
-                      rawToken = (_ref36 = (_ref37 = (_ref38 = (_payload$token2 = payload.token) !== null && _payload$token2 !== void 0 ? _payload$token2 : payload.Token) !== null && _ref38 !== void 0 ? _ref38 : payload.tempToken) !== null && _ref37 !== void 0 ? _ref37 : payload.temp_token) !== null && _ref36 !== void 0 ? _ref36 : '';
+                      payload = (_ref21 = (_result$data = result === null || result === void 0 ? void 0 : result.data) !== null && _result$data !== void 0 ? _result$data : result) !== null && _ref21 !== void 0 ? _ref21 : {};
+                      needPhone = (_ref22 = (_ref23 = (_ref24 = (_ref25 = (_ref26 = (_ref27 = (_ref28 = (_ref29 = (_ref30 = (_ref31 = (_ref32 = (_ref33 = (_ref34 = (_payload$needPhone = payload.needPhone) !== null && _payload$needPhone !== void 0 ? _payload$needPhone : payload.need_phone) !== null && _ref34 !== void 0 ? _ref34 : payload.NeedPhone) !== null && _ref33 !== void 0 ? _ref33 : payload.isNewUser) !== null && _ref32 !== void 0 ? _ref32 : payload.is_new_user) !== null && _ref31 !== void 0 ? _ref31 : payload.IsNewUser) !== null && _ref30 !== void 0 ? _ref30 : payload.bindPhone) !== null && _ref29 !== void 0 ? _ref29 : payload.bind_phone) !== null && _ref28 !== void 0 ? _ref28 : payload.BindPhone) !== null && _ref27 !== void 0 ? _ref27 : payload.needBindPhone) !== null && _ref26 !== void 0 ? _ref26 : payload.need_bind_phone) !== null && _ref25 !== void 0 ? _ref25 : payload.isRegister) !== null && _ref24 !== void 0 ? _ref24 : payload.is_register) !== null && _ref23 !== void 0 ? _ref23 : payload.IsRegister) !== null && _ref22 !== void 0 ? _ref22 : false; // 提取 token 并 trim，防止首尾空白/BOM 导致后端解析失败
+                      rawToken = (_ref35 = (_ref36 = (_ref37 = (_payload$token2 = payload.token) !== null && _payload$token2 !== void 0 ? _payload$token2 : payload.Token) !== null && _ref37 !== void 0 ? _ref37 : payload.tempToken) !== null && _ref36 !== void 0 ? _ref36 : payload.temp_token) !== null && _ref35 !== void 0 ? _ref35 : '';
                       token = typeof rawToken === 'string' ? rawToken.trim() : ''; // 诊断日志：分析 weixinlogin 返回的 token 结构，帮助后端定位 weixinphone 解析失败问题
                       tokenParts = token ? token.split('.') : [];
                       console.log('[微信登录] weixinlogin 返回:', {
@@ -655,7 +697,7 @@ var LoginPage = function LoginPage() {
                         setShowPhoneAuthModal(true);
                       } else {
                         // 步骤5：布尔值为 false，token 是正常的 240 小时用户 token
-                        saveUserSession(result);
+                        saveUserSession(result, '微信登录');
                         _tarojs_taro__WEBPACK_IMPORTED_MODULE_1___default().showToast({
                           title: '登录成功',
                           icon: 'success'
@@ -670,7 +712,7 @@ var LoginPage = function LoginPage() {
                 }, _callee5);
               }));
               return function callWeixinLogin(_x) {
-                return _ref21.apply(this, arguments);
+                return _ref20.apply(this, arguments);
               };
             }(); // 判断是否为可重试的瞬时错误（40029 invalid code 等）
             isRetryableWechatError = function isRetryableWechatError(err) {
@@ -696,12 +738,12 @@ var LoginPage = function LoginPage() {
             break;
           case 7:
             _context6.p = 7;
-            _t6 = _context6.v;
-            if (!isRetryableWechatError(_t6)) {
+            _t7 = _context6.v;
+            if (!isRetryableWechatError(_t7)) {
               _context6.n = 10;
               break;
             }
-            console.warn('[微信登录] 首次请求失败（瞬时错误），重新获取 code 并重试:', _t6.message);
+            console.warn('[微信登录] 首次请求失败（瞬时错误），重新获取 code 并重试:', _t7.message);
             _tarojs_taro__WEBPACK_IMPORTED_MODULE_1___default().showLoading({
               title: '重新登录中...'
             });
@@ -716,15 +758,15 @@ var LoginPage = function LoginPage() {
             _context6.n = 11;
             break;
           case 10:
-            throw _t6;
+            throw _t7;
           case 11:
             _context6.n = 13;
             break;
           case 12:
             _context6.p = 12;
-            _t7 = _context6.v;
+            _t8 = _context6.v;
             _tarojs_taro__WEBPACK_IMPORTED_MODULE_1___default().showToast({
-              title: mapWechatError(_t7),
+              title: mapWechatError(_t8),
               icon: 'none'
             });
           case 13:
@@ -749,10 +791,10 @@ var LoginPage = function LoginPage() {
             break;
           case 15:
             _context6.p = 15;
-            _t8 = _context6.v;
+            _t9 = _context6.v;
             _tarojs_taro__WEBPACK_IMPORTED_MODULE_1___default().hideLoading();
             _tarojs_taro__WEBPACK_IMPORTED_MODULE_1___default().showToast({
-              title: mapWechatError(_t8),
+              title: mapWechatError(_t9),
               icon: 'none'
             });
             setIsWechatLogin(false);
@@ -763,7 +805,7 @@ var LoginPage = function LoginPage() {
       }, _callee6, null, [[5, 7], [3, 12, 13, 14], [2, 15]]);
     }));
     return function handleWechatLogin() {
-      return _ref20.apply(this, arguments);
+      return _ref19.apply(this, arguments);
     };
   }();
 
@@ -771,9 +813,9 @@ var LoginPage = function LoginPage() {
   // 步骤4（续）：用户点击「获取手机号」按钮后，微信返回一个与登录 code 不同的 phone code
   // 然后调用第二个接口 weixinphone，传递参数：code, token
   var handleGetPhoneNumber = /*#__PURE__*/function () {
-    var _ref39 = (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_8__["default"])(/*#__PURE__*/(0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_9__["default"])().m(function _callee8(e) {
-      var phoneCode, refreshTempToken, currentToken, tokenAge, result, savedToken, errMsg, freshToken, retryResult, retryToken, _t9, _t0;
-      return (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_9__["default"])().w(function (_context8) {
+    var _ref38 = (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_9__["default"])(/*#__PURE__*/(0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_10__["default"])().m(function _callee8(e) {
+      var phoneCode, refreshTempToken, currentToken, tokenAge, result, savedToken, errMsg, freshToken, retryResult, retryToken, _t0, _t1;
+      return (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_10__["default"])().w(function (_context8) {
         while (1) switch (_context8.p = _context8.n) {
           case 0:
             if (!(e.detail.errMsg && e.detail.errMsg.indexOf('ok') === -1)) {
@@ -811,10 +853,10 @@ var LoginPage = function LoginPage() {
             // 刷新临时 token：重新获取 loginCode 并调用 weixinlogin
             // 用于 token 过期或快过期时自动刷新，避免用户重新操作
             refreshTempToken = /*#__PURE__*/function () {
-              var _ref40 = (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_8__["default"])(/*#__PURE__*/(0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_9__["default"])().m(function _callee7() {
-                var _ref41, _loginResult$data, _ref42, _ref43, _ref44, _loginPayload$token;
+              var _ref39 = (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_9__["default"])(/*#__PURE__*/(0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_10__["default"])().m(function _callee7() {
+                var _ref40, _loginResult$data, _ref41, _ref42, _ref43, _loginPayload$token;
                 var newCode, loginResult, loginPayload, rawNewToken, newToken;
-                return (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_9__["default"])().w(function (_context7) {
+                return (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_10__["default"])().w(function (_context7) {
                   while (1) switch (_context7.n) {
                     case 0:
                       console.log('[微信登录] 临时 token 过期，自动刷新中...');
@@ -840,8 +882,8 @@ var LoginPage = function LoginPage() {
                       }, {}, {}, false);
                     case 2:
                       loginResult = _context7.v;
-                      loginPayload = (_ref41 = (_loginResult$data = loginResult === null || loginResult === void 0 ? void 0 : loginResult.data) !== null && _loginResult$data !== void 0 ? _loginResult$data : loginResult) !== null && _ref41 !== void 0 ? _ref41 : {};
-                      rawNewToken = (_ref42 = (_ref43 = (_ref44 = (_loginPayload$token = loginPayload.token) !== null && _loginPayload$token !== void 0 ? _loginPayload$token : loginPayload.Token) !== null && _ref44 !== void 0 ? _ref44 : loginPayload.tempToken) !== null && _ref43 !== void 0 ? _ref43 : loginPayload.temp_token) !== null && _ref42 !== void 0 ? _ref42 : '';
+                      loginPayload = (_ref40 = (_loginResult$data = loginResult === null || loginResult === void 0 ? void 0 : loginResult.data) !== null && _loginResult$data !== void 0 ? _loginResult$data : loginResult) !== null && _ref40 !== void 0 ? _ref40 : {};
+                      rawNewToken = (_ref41 = (_ref42 = (_ref43 = (_loginPayload$token = loginPayload.token) !== null && _loginPayload$token !== void 0 ? _loginPayload$token : loginPayload.Token) !== null && _ref43 !== void 0 ? _ref43 : loginPayload.tempToken) !== null && _ref42 !== void 0 ? _ref42 : loginPayload.temp_token) !== null && _ref41 !== void 0 ? _ref41 : '';
                       newToken = typeof rawNewToken === 'string' ? rawNewToken.trim() : '';
                       if (newToken) {
                         _context7.n = 3;
@@ -857,7 +899,7 @@ var LoginPage = function LoginPage() {
                 }, _callee7);
               }));
               return function refreshTempToken() {
-                return _ref40.apply(this, arguments);
+                return _ref39.apply(this, arguments);
               };
             }(); // 检查临时 token 是否快过期（超过 40 秒就刷新，确保 weixinphone 调用时 token 仍有效）
             currentToken = wechatTempToken;
@@ -902,7 +944,7 @@ var LoginPage = function LoginPage() {
             _tarojs_taro__WEBPACK_IMPORTED_MODULE_1___default().hideLoading();
 
             // 步骤6：获取登录成功响应
-            saveUserSession(result);
+            saveUserSession(result, '微信手机号');
 
             // 校验是否成功提取到用户 token
             savedToken = JSON.parse(_tarojs_taro__WEBPACK_IMPORTED_MODULE_1___default().getStorageSync('lxg_user') || '{}').token;
@@ -926,10 +968,10 @@ var LoginPage = function LoginPage() {
             break;
           case 10:
             _context8.p = 10;
-            _t9 = _context8.v;
+            _t0 = _context8.v;
             _tarojs_taro__WEBPACK_IMPORTED_MODULE_1___default().hideLoading();
             // 如果是 token 过期/解析失败，尝试刷新 token 并重试一次（phoneCode 仍有效）
-            errMsg = (_t9 === null || _t9 === void 0 ? void 0 : _t9.message) || (_t9 === null || _t9 === void 0 ? void 0 : _t9.msg) || '';
+            errMsg = (_t0 === null || _t0 === void 0 ? void 0 : _t0.message) || (_t0 === null || _t0 === void 0 ? void 0 : _t0.msg) || '';
             if (!(/token\s*(is\s*)?expired/i.test(errMsg) || errMsg.includes('token解析失败') || errMsg.includes('缺少认证信息'))) {
               _context8.n = 16;
               break;
@@ -953,7 +995,7 @@ var LoginPage = function LoginPage() {
           case 13:
             retryResult = _context8.v;
             _tarojs_taro__WEBPACK_IMPORTED_MODULE_1___default().hideLoading();
-            saveUserSession(retryResult);
+            saveUserSession(retryResult, '微信手机号');
             retryToken = JSON.parse(_tarojs_taro__WEBPACK_IMPORTED_MODULE_1___default().getStorageSync('lxg_user') || '{}').token;
             if (retryToken) {
               _context8.n = 14;
@@ -973,12 +1015,12 @@ var LoginPage = function LoginPage() {
             return _context8.a(2);
           case 15:
             _context8.p = 15;
-            _t0 = _context8.v;
+            _t1 = _context8.v;
             _tarojs_taro__WEBPACK_IMPORTED_MODULE_1___default().hideLoading();
-            console.error('[微信登录] 刷新 token 重试失败:', _t0);
+            console.error('[微信登录] 刷新 token 重试失败:', _t1);
             setWechatTempToken('');
             _tarojs_taro__WEBPACK_IMPORTED_MODULE_1___default().showToast({
-              title: mapWechatError(_t0),
+              title: mapWechatError(_t1),
               icon: 'none'
             });
             return _context8.a(2);
@@ -986,7 +1028,7 @@ var LoginPage = function LoginPage() {
             setWechatTempToken('');
             // 步骤6：获取登录失败响应
             _tarojs_taro__WEBPACK_IMPORTED_MODULE_1___default().showToast({
-              title: mapWechatError(_t9),
+              title: mapWechatError(_t0),
               icon: 'none'
             });
           case 17:
@@ -995,16 +1037,16 @@ var LoginPage = function LoginPage() {
       }, _callee8, null, [[11, 15], [4, 10]]);
     }));
     return function handleGetPhoneNumber(_x2) {
-      return _ref39.apply(this, arguments);
+      return _ref38.apply(this, arguments);
     };
   }();
 
   // 微信登录后设置密码
   // 调用 POST /api/v1/auth/setpassword，需用户已登录（带正式 token）
   var handleSetPassword = /*#__PURE__*/function () {
-    var _ref45 = (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_8__["default"])(/*#__PURE__*/(0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_9__["default"])().m(function _callee9() {
-      var _t1;
-      return (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_9__["default"])().w(function (_context9) {
+    var _ref44 = (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_9__["default"])(/*#__PURE__*/(0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_10__["default"])().m(function _callee9() {
+      var _t10;
+      return (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_10__["default"])().w(function (_context9) {
         while (1) switch (_context9.p = _context9.n) {
           case 0:
             if (!isSettingPassword) {
@@ -1058,11 +1100,11 @@ var LoginPage = function LoginPage() {
             break;
           case 6:
             _context9.p = 6;
-            _t1 = _context9.v;
+            _t10 = _context9.v;
             _tarojs_taro__WEBPACK_IMPORTED_MODULE_1___default().hideLoading();
-            console.error('[微信登录] 设置密码失败:', _t1);
+            console.error('[微信登录] 设置密码失败:', _t10);
             _tarojs_taro__WEBPACK_IMPORTED_MODULE_1___default().showToast({
-              title: (_t1 === null || _t1 === void 0 ? void 0 : _t1.message) || '设置密码失败',
+              title: (_t10 === null || _t10 === void 0 ? void 0 : _t10.message) || '设置密码失败',
               icon: 'none'
             });
           case 7:
@@ -1075,7 +1117,7 @@ var LoginPage = function LoginPage() {
       }, _callee9, null, [[4, 6, 7, 8]]);
     }));
     return function handleSetPassword() {
-      return _ref45.apply(this, arguments);
+      return _ref44.apply(this, arguments);
     };
   }();
 
@@ -1092,43 +1134,38 @@ var LoginPage = function LoginPage() {
     setConfirmPassword('');
     setCode('');
   };
-  var switchToPhoneLogin = function switchToPhoneLogin() {
-    setLoginMethod('phone');
-    setPassword('');
-    setConfirmPassword('');
-  };
   var switchToAccountLogin = function switchToAccountLogin() {
     setLoginMethod('account');
     setCode('');
   };
-  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_11__.View, {
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_12__.View, {
     className: _styles_user_login_module_scss__WEBPACK_IMPORTED_MODULE_5__["default"].loginPage,
-    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_11__.View, {
+    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_12__.View, {
       className: _styles_user_login_module_scss__WEBPACK_IMPORTED_MODULE_5__["default"].logoSection,
-      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_11__.View, {
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_12__.View, {
         className: _styles_user_login_module_scss__WEBPACK_IMPORTED_MODULE_5__["default"].logo,
         children: "\uD83D\uDED2"
-      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_11__.Text, {
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_12__.Text, {
         className: _styles_user_login_module_scss__WEBPACK_IMPORTED_MODULE_5__["default"].appName,
         children: "\u4E50\u4EAB\u8D2D"
       })]
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_11__.View, {
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_12__.View, {
       className: _styles_user_login_module_scss__WEBPACK_IMPORTED_MODULE_5__["default"].loginForm,
       children: isForgotPassword ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.Fragment, {
-        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_11__.Text, {
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_12__.Text, {
           className: _styles_user_login_module_scss__WEBPACK_IMPORTED_MODULE_5__["default"].formTitle,
           children: "\u5FD8\u8BB0\u5BC6\u7801"
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_11__.View, {
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_12__.View, {
           className: _styles_user_login_module_scss__WEBPACK_IMPORTED_MODULE_5__["default"].inputGroup,
-          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_11__.Text, {
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_12__.Text, {
             className: _styles_user_login_module_scss__WEBPACK_IMPORTED_MODULE_5__["default"].inputLabel,
             children: "\u624B\u673A\u53F7"
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_11__.View, {
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_12__.View, {
             className: _styles_user_login_module_scss__WEBPACK_IMPORTED_MODULE_5__["default"].inputRow,
-            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_11__.Text, {
+            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_12__.Text, {
               className: _styles_user_login_module_scss__WEBPACK_IMPORTED_MODULE_5__["default"].inputIcon,
               children: "\uD83D\uDCF1"
-            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_11__.Input, {
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_12__.Input, {
               className: _styles_user_login_module_scss__WEBPACK_IMPORTED_MODULE_5__["default"].input,
               type: "number",
               maxlength: 11,
@@ -1139,17 +1176,17 @@ var LoginPage = function LoginPage() {
               }
             })]
           })]
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_11__.View, {
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_12__.View, {
           className: _styles_user_login_module_scss__WEBPACK_IMPORTED_MODULE_5__["default"].inputGroup,
-          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_11__.Text, {
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_12__.Text, {
             className: _styles_user_login_module_scss__WEBPACK_IMPORTED_MODULE_5__["default"].inputLabel,
             children: "\u9A8C\u8BC1\u7801"
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_11__.View, {
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_12__.View, {
             className: _styles_user_login_module_scss__WEBPACK_IMPORTED_MODULE_5__["default"].inputRow,
-            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_11__.Text, {
+            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_12__.Text, {
               className: _styles_user_login_module_scss__WEBPACK_IMPORTED_MODULE_5__["default"].inputIcon,
               children: "\uD83D\uDD10"
-            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_11__.Input, {
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_12__.Input, {
               className: _styles_user_login_module_scss__WEBPACK_IMPORTED_MODULE_5__["default"].input,
               type: "number",
               maxlength: 6,
@@ -1158,7 +1195,7 @@ var LoginPage = function LoginPage() {
               onInput: function onInput(e) {
                 return setCode(e.detail.value);
               }
-            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_11__.View, {
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_12__.View, {
               className: "".concat(_styles_user_login_module_scss__WEBPACK_IMPORTED_MODULE_5__["default"].codeBtn, " ").concat(countdown > 0 ? _styles_user_login_module_scss__WEBPACK_IMPORTED_MODULE_5__["default"].disabled : ''),
               onClick: countdown === 0 ? function () {
                 return sendCode('reset');
@@ -1166,17 +1203,17 @@ var LoginPage = function LoginPage() {
               children: countdown > 0 ? "".concat(countdown, "s") : '获取验证码'
             })]
           })]
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_11__.View, {
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_12__.View, {
           className: _styles_user_login_module_scss__WEBPACK_IMPORTED_MODULE_5__["default"].inputGroup,
-          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_11__.Text, {
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_12__.Text, {
             className: _styles_user_login_module_scss__WEBPACK_IMPORTED_MODULE_5__["default"].inputLabel,
             children: "\u65B0\u5BC6\u7801"
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_11__.View, {
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_12__.View, {
             className: _styles_user_login_module_scss__WEBPACK_IMPORTED_MODULE_5__["default"].inputRow,
-            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_11__.Text, {
+            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_12__.Text, {
               className: _styles_user_login_module_scss__WEBPACK_IMPORTED_MODULE_5__["default"].inputIcon,
               children: "\uD83D\uDD11"
-            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_11__.Input, {
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_12__.Input, {
               className: _styles_user_login_module_scss__WEBPACK_IMPORTED_MODULE_5__["default"].input,
               password: true,
               placeholder: "\u8BF7\u8F93\u5165\u65B0\u5BC6\u7801\uFF08\u81F3\u5C116\u4F4D\uFF09",
@@ -1186,17 +1223,17 @@ var LoginPage = function LoginPage() {
               }
             })]
           })]
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_11__.View, {
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_12__.View, {
           className: _styles_user_login_module_scss__WEBPACK_IMPORTED_MODULE_5__["default"].inputGroup,
-          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_11__.Text, {
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_12__.Text, {
             className: _styles_user_login_module_scss__WEBPACK_IMPORTED_MODULE_5__["default"].inputLabel,
             children: "\u786E\u8BA4\u5BC6\u7801"
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_11__.View, {
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_12__.View, {
             className: _styles_user_login_module_scss__WEBPACK_IMPORTED_MODULE_5__["default"].inputRow,
-            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_11__.Text, {
+            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_12__.Text, {
               className: _styles_user_login_module_scss__WEBPACK_IMPORTED_MODULE_5__["default"].inputIcon,
               children: "\uD83D\uDD11"
-            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_11__.Input, {
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_12__.Input, {
               className: _styles_user_login_module_scss__WEBPACK_IMPORTED_MODULE_5__["default"].input,
               password: true,
               placeholder: "\u8BF7\u518D\u6B21\u8F93\u5165\u65B0\u5BC6\u7801",
@@ -1206,13 +1243,13 @@ var LoginPage = function LoginPage() {
               }
             })]
           })]
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_11__.View, {
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_12__.View, {
           className: _styles_user_login_module_scss__WEBPACK_IMPORTED_MODULE_5__["default"].loginBtn,
           onClick: handleForgotPassword,
           children: "\u91CD\u7F6E\u5BC6\u7801"
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_11__.View, {
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_12__.View, {
           className: _styles_user_login_module_scss__WEBPACK_IMPORTED_MODULE_5__["default"].toggleMode,
-          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_11__.Text, {
+          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_12__.Text, {
             className: _styles_user_login_module_scss__WEBPACK_IMPORTED_MODULE_5__["default"].toggleLink,
             onClick: function onClick() {
               setIsForgotPassword(false);
@@ -1224,21 +1261,21 @@ var LoginPage = function LoginPage() {
             children: "\u8FD4\u56DE\u767B\u5F55"
           })
         })]
-      }) : loginMethod === 'account' ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.Fragment, {
-        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_11__.Text, {
+      }) : /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.Fragment, {
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_12__.Text, {
           className: _styles_user_login_module_scss__WEBPACK_IMPORTED_MODULE_5__["default"].formTitle,
           children: isRegister ? '手机号注册' : '手机号登录'
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_11__.View, {
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_12__.View, {
           className: _styles_user_login_module_scss__WEBPACK_IMPORTED_MODULE_5__["default"].inputGroup,
-          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_11__.Text, {
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_12__.Text, {
             className: _styles_user_login_module_scss__WEBPACK_IMPORTED_MODULE_5__["default"].inputLabel,
             children: "\u624B\u673A\u53F7"
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_11__.View, {
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_12__.View, {
             className: _styles_user_login_module_scss__WEBPACK_IMPORTED_MODULE_5__["default"].inputRow,
-            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_11__.Text, {
+            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_12__.Text, {
               className: _styles_user_login_module_scss__WEBPACK_IMPORTED_MODULE_5__["default"].inputIcon,
               children: "\uD83D\uDCF1"
-            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_11__.Input, {
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_12__.Input, {
               className: _styles_user_login_module_scss__WEBPACK_IMPORTED_MODULE_5__["default"].input,
               type: "number",
               maxlength: 11,
@@ -1249,17 +1286,17 @@ var LoginPage = function LoginPage() {
               }
             })]
           })]
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_11__.View, {
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_12__.View, {
           className: _styles_user_login_module_scss__WEBPACK_IMPORTED_MODULE_5__["default"].inputGroup,
-          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_11__.Text, {
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_12__.Text, {
             className: _styles_user_login_module_scss__WEBPACK_IMPORTED_MODULE_5__["default"].inputLabel,
             children: isRegister ? '验证码' : '密码'
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_11__.View, {
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_12__.View, {
             className: _styles_user_login_module_scss__WEBPACK_IMPORTED_MODULE_5__["default"].inputRow,
-            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_11__.Text, {
+            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_12__.Text, {
               className: _styles_user_login_module_scss__WEBPACK_IMPORTED_MODULE_5__["default"].inputIcon,
               children: isRegister ? '🔐' : '🔑'
-            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_11__.Input, {
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_12__.Input, {
               className: _styles_user_login_module_scss__WEBPACK_IMPORTED_MODULE_5__["default"].input,
               type: isRegister ? 'number' : 'text',
               password: !isRegister,
@@ -1269,7 +1306,7 @@ var LoginPage = function LoginPage() {
               onInput: function onInput(e) {
                 return isRegister ? setCode(e.detail.value) : setPassword(e.detail.value);
               }
-            }), isRegister && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_11__.View, {
+            }), isRegister && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_12__.View, {
               className: "".concat(_styles_user_login_module_scss__WEBPACK_IMPORTED_MODULE_5__["default"].codeBtn, " ").concat(countdown > 0 ? _styles_user_login_module_scss__WEBPACK_IMPORTED_MODULE_5__["default"].disabled : ''),
               onClick: countdown === 0 ? function () {
                 return sendCode('register');
@@ -1277,17 +1314,17 @@ var LoginPage = function LoginPage() {
               children: countdown > 0 ? "".concat(countdown, "s") : '获取验证码'
             })]
           })]
-        }), isRegister && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_11__.View, {
+        }), isRegister && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_12__.View, {
           className: _styles_user_login_module_scss__WEBPACK_IMPORTED_MODULE_5__["default"].inputGroup,
-          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_11__.Text, {
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_12__.Text, {
             className: _styles_user_login_module_scss__WEBPACK_IMPORTED_MODULE_5__["default"].inputLabel,
             children: "\u5BC6\u7801"
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_11__.View, {
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_12__.View, {
             className: _styles_user_login_module_scss__WEBPACK_IMPORTED_MODULE_5__["default"].inputRow,
-            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_11__.Text, {
+            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_12__.Text, {
               className: _styles_user_login_module_scss__WEBPACK_IMPORTED_MODULE_5__["default"].inputIcon,
               children: "\uD83D\uDD11"
-            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_11__.Input, {
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_12__.Input, {
               className: _styles_user_login_module_scss__WEBPACK_IMPORTED_MODULE_5__["default"].input,
               password: true,
               placeholder: "\u8BF7\u8F93\u5165\u5BC6\u7801\uFF08\u81F3\u5C116\u4F4D\uFF09",
@@ -1297,139 +1334,33 @@ var LoginPage = function LoginPage() {
               }
             })]
           })]
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_11__.View, {
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_12__.View, {
           className: _styles_user_login_module_scss__WEBPACK_IMPORTED_MODULE_5__["default"].loginBtn,
           onClick: handleAccountLogin,
           children: isRegister ? '注册' : '登录'
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_11__.View, {
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_12__.View, {
           className: _styles_user_login_module_scss__WEBPACK_IMPORTED_MODULE_5__["default"].toggleMode,
           children: isRegister ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.Fragment, {
-            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_11__.Text, {
+            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_12__.Text, {
               className: _styles_user_login_module_scss__WEBPACK_IMPORTED_MODULE_5__["default"].toggleText,
               children: "\u5DF2\u6709\u8D26\u53F7\uFF1F"
-            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_11__.Text, {
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_12__.Text, {
               className: _styles_user_login_module_scss__WEBPACK_IMPORTED_MODULE_5__["default"].toggleLink,
               onClick: toggleRegisterMode,
               children: "\u7ACB\u5373\u767B\u5F55"
             })]
           }) : /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.Fragment, {
-            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_11__.Text, {
+            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_12__.Text, {
               className: _styles_user_login_module_scss__WEBPACK_IMPORTED_MODULE_5__["default"].toggleLink,
               onClick: function onClick() {
                 setIsForgotPassword(true);
                 setPassword('');
               },
               children: "\u5FD8\u8BB0\u5BC6\u7801"
-            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_11__.Text, {
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_12__.Text, {
               className: _styles_user_login_module_scss__WEBPACK_IMPORTED_MODULE_5__["default"].divider,
               children: "|"
-            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_11__.Text, {
-              className: _styles_user_login_module_scss__WEBPACK_IMPORTED_MODULE_5__["default"].toggleLink,
-              onClick: toggleRegisterMode,
-              children: "\u7ACB\u5373\u6CE8\u518C"
-            })]
-          })
-        })]
-      }) : /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.Fragment, {
-        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_11__.Text, {
-          className: _styles_user_login_module_scss__WEBPACK_IMPORTED_MODULE_5__["default"].formTitle,
-          children: isRegister ? '手机号注册' : '手机号登录'
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_11__.View, {
-          className: _styles_user_login_module_scss__WEBPACK_IMPORTED_MODULE_5__["default"].inputGroup,
-          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_11__.Text, {
-            className: _styles_user_login_module_scss__WEBPACK_IMPORTED_MODULE_5__["default"].inputLabel,
-            children: "\u624B\u673A\u53F7"
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_11__.View, {
-            className: _styles_user_login_module_scss__WEBPACK_IMPORTED_MODULE_5__["default"].inputRow,
-            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_11__.Text, {
-              className: _styles_user_login_module_scss__WEBPACK_IMPORTED_MODULE_5__["default"].inputIcon,
-              children: "\uD83D\uDCF1"
-            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_11__.Input, {
-              className: _styles_user_login_module_scss__WEBPACK_IMPORTED_MODULE_5__["default"].input,
-              type: "number",
-              maxlength: 11,
-              placeholder: "\u8BF7\u8F93\u5165\u624B\u673A\u53F7",
-              value: phone,
-              onInput: function onInput(e) {
-                return setPhone(e.detail.value);
-              }
-            })]
-          })]
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_11__.View, {
-          className: _styles_user_login_module_scss__WEBPACK_IMPORTED_MODULE_5__["default"].inputGroup,
-          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_11__.Text, {
-            className: _styles_user_login_module_scss__WEBPACK_IMPORTED_MODULE_5__["default"].inputLabel,
-            children: isRegister ? '验证码' : '密码'
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_11__.View, {
-            className: _styles_user_login_module_scss__WEBPACK_IMPORTED_MODULE_5__["default"].inputRow,
-            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_11__.Text, {
-              className: _styles_user_login_module_scss__WEBPACK_IMPORTED_MODULE_5__["default"].inputIcon,
-              children: isRegister ? '🔐' : '🔑'
-            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_11__.Input, {
-              className: _styles_user_login_module_scss__WEBPACK_IMPORTED_MODULE_5__["default"].input,
-              type: isRegister ? 'number' : 'text',
-              password: !isRegister,
-              maxlength: isRegister ? 6 : undefined,
-              placeholder: isRegister ? '请输入验证码' : '请输入密码（至少6位）',
-              value: isRegister ? code : password,
-              onInput: function onInput(e) {
-                return isRegister ? setCode(e.detail.value) : setPassword(e.detail.value);
-              }
-            }), isRegister && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_11__.View, {
-              className: "".concat(_styles_user_login_module_scss__WEBPACK_IMPORTED_MODULE_5__["default"].codeBtn, " ").concat(countdown > 0 ? _styles_user_login_module_scss__WEBPACK_IMPORTED_MODULE_5__["default"].disabled : ''),
-              onClick: countdown === 0 ? function () {
-                return sendCode('register');
-              } : undefined,
-              children: countdown > 0 ? "".concat(countdown, "s") : '获取验证码'
-            })]
-          })]
-        }), isRegister && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_11__.View, {
-          className: _styles_user_login_module_scss__WEBPACK_IMPORTED_MODULE_5__["default"].inputGroup,
-          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_11__.Text, {
-            className: _styles_user_login_module_scss__WEBPACK_IMPORTED_MODULE_5__["default"].inputLabel,
-            children: "\u5BC6\u7801"
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_11__.View, {
-            className: _styles_user_login_module_scss__WEBPACK_IMPORTED_MODULE_5__["default"].inputRow,
-            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_11__.Text, {
-              className: _styles_user_login_module_scss__WEBPACK_IMPORTED_MODULE_5__["default"].inputIcon,
-              children: "\uD83D\uDD11"
-            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_11__.Input, {
-              className: _styles_user_login_module_scss__WEBPACK_IMPORTED_MODULE_5__["default"].input,
-              password: true,
-              placeholder: "\u8BF7\u8F93\u5165\u5BC6\u7801\uFF08\u81F3\u5C116\u4F4D\uFF09",
-              value: password,
-              onInput: function onInput(e) {
-                return setPassword(e.detail.value);
-              }
-            })]
-          })]
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_11__.View, {
-          className: _styles_user_login_module_scss__WEBPACK_IMPORTED_MODULE_5__["default"].loginBtn,
-          onClick: handlePhoneLogin,
-          children: isRegister ? '注册' : '登录'
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_11__.View, {
-          className: _styles_user_login_module_scss__WEBPACK_IMPORTED_MODULE_5__["default"].toggleMode,
-          children: isRegister ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.Fragment, {
-            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_11__.Text, {
-              className: _styles_user_login_module_scss__WEBPACK_IMPORTED_MODULE_5__["default"].toggleText,
-              children: "\u5DF2\u6709\u8D26\u53F7\uFF1F"
-            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_11__.Text, {
-              className: _styles_user_login_module_scss__WEBPACK_IMPORTED_MODULE_5__["default"].toggleLink,
-              onClick: toggleRegisterMode,
-              children: "\u7ACB\u5373\u767B\u5F55"
-            })]
-          }) : /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.Fragment, {
-            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_11__.Text, {
-              className: _styles_user_login_module_scss__WEBPACK_IMPORTED_MODULE_5__["default"].toggleLink,
-              onClick: function onClick() {
-                setIsForgotPassword(true);
-                setPassword('');
-              },
-              children: "\u5FD8\u8BB0\u5BC6\u7801"
-            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_11__.Text, {
-              className: _styles_user_login_module_scss__WEBPACK_IMPORTED_MODULE_5__["default"].divider,
-              children: "|"
-            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_11__.Text, {
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_12__.Text, {
               className: _styles_user_login_module_scss__WEBPACK_IMPORTED_MODULE_5__["default"].toggleLink,
               onClick: toggleRegisterMode,
               children: "\u7ACB\u5373\u6CE8\u518C"
@@ -1437,92 +1368,79 @@ var LoginPage = function LoginPage() {
           })
         })]
       })
-    }), !isRegister && !isForgotPassword && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_11__.View, {
+    }), !isRegister && !isForgotPassword && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_12__.View, {
       className: _styles_user_login_module_scss__WEBPACK_IMPORTED_MODULE_5__["default"].thirdPartyLogin,
-      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_11__.View, {
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_12__.View, {
         className: _styles_user_login_module_scss__WEBPACK_IMPORTED_MODULE_5__["default"].divider,
-        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_11__.View, {
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_12__.View, {
           className: _styles_user_login_module_scss__WEBPACK_IMPORTED_MODULE_5__["default"].dividerLine
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_11__.Text, {
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_12__.Text, {
           className: _styles_user_login_module_scss__WEBPACK_IMPORTED_MODULE_5__["default"].dividerText,
           children: "\u5176\u4ED6\u767B\u5F55\u65B9\u5F0F"
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_11__.View, {
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_12__.View, {
           className: _styles_user_login_module_scss__WEBPACK_IMPORTED_MODULE_5__["default"].dividerLine
         })]
-      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_11__.View, {
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_12__.View, {
         className: _styles_user_login_module_scss__WEBPACK_IMPORTED_MODULE_5__["default"].loginMethods,
-        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_11__.View, {
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_12__.View, {
           className: _styles_user_login_module_scss__WEBPACK_IMPORTED_MODULE_5__["default"].methodItem,
           onClick: switchToAccountLogin,
-          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_11__.View, {
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_12__.View, {
             className: _styles_user_login_module_scss__WEBPACK_IMPORTED_MODULE_5__["default"].methodIcon,
-            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_11__.Text, {
+            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_12__.Text, {
               className: _styles_user_login_module_scss__WEBPACK_IMPORTED_MODULE_5__["default"].iconText,
               children: "\uD83D\uDC64"
             })
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_11__.Text, {
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_12__.Text, {
             className: _styles_user_login_module_scss__WEBPACK_IMPORTED_MODULE_5__["default"].methodLabel,
             children: "\u8D26\u53F7"
           })]
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_11__.View, {
-          className: _styles_user_login_module_scss__WEBPACK_IMPORTED_MODULE_5__["default"].methodItem,
-          onClick: switchToPhoneLogin,
-          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_11__.View, {
-            className: _styles_user_login_module_scss__WEBPACK_IMPORTED_MODULE_5__["default"].methodIcon,
-            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_11__.Text, {
-              className: _styles_user_login_module_scss__WEBPACK_IMPORTED_MODULE_5__["default"].iconText,
-              children: "\uD83D\uDCF1"
-            })
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_11__.Text, {
-            className: _styles_user_login_module_scss__WEBPACK_IMPORTED_MODULE_5__["default"].methodLabel,
-            children: "\u624B\u673A"
-          })]
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_11__.View, {
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_12__.View, {
           className: "".concat(_styles_user_login_module_scss__WEBPACK_IMPORTED_MODULE_5__["default"].methodItem, " ").concat(isWechatLogin ? _styles_user_login_module_scss__WEBPACK_IMPORTED_MODULE_5__["default"].disabledMethod : '', " ").concat(showWechatLogin ? '' : _styles_user_login_module_scss__WEBPACK_IMPORTED_MODULE_5__["default"].methodItemHidden),
           onClick: isWechatLogin ? undefined : handleWechatLogin,
-          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_11__.View, {
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_12__.View, {
             className: _styles_user_login_module_scss__WEBPACK_IMPORTED_MODULE_5__["default"].methodIcon,
-            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_11__.Text, {
+            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_12__.Text, {
               className: _styles_user_login_module_scss__WEBPACK_IMPORTED_MODULE_5__["default"].iconText,
               children: "\uD83D\uDCAC"
             })
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_11__.Text, {
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_12__.Text, {
             className: _styles_user_login_module_scss__WEBPACK_IMPORTED_MODULE_5__["default"].methodLabel,
             children: "\u5FAE\u4FE1"
           })]
         })]
       })]
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_11__.View, {
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_12__.View, {
       className: _styles_user_login_module_scss__WEBPACK_IMPORTED_MODULE_5__["default"].agreement,
-      children: [isRegister ? '注册即表示同意' : '登录即表示同意', /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_11__.Text, {
+      children: [isRegister ? '注册即表示同意' : '登录即表示同意', /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_12__.Text, {
         className: _styles_user_login_module_scss__WEBPACK_IMPORTED_MODULE_5__["default"].link,
         children: "\u300A\u7528\u6237\u534F\u8BAE\u300B"
-      }), "\u548C", /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_11__.Text, {
+      }), "\u548C", /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_12__.Text, {
         className: _styles_user_login_module_scss__WEBPACK_IMPORTED_MODULE_5__["default"].link,
         children: "\u300A\u9690\u79C1\u653F\u7B56\u300B"
       })]
-    }), showPhoneAuthModal && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_11__.View, {
+    }), showPhoneAuthModal && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_12__.View, {
       className: _styles_user_login_module_scss__WEBPACK_IMPORTED_MODULE_5__["default"].modalOverlay,
       onClick: function onClick() {
         return setShowPhoneAuthModal(false);
       },
-      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_11__.View, {
+      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_12__.View, {
         className: _styles_user_login_module_scss__WEBPACK_IMPORTED_MODULE_5__["default"].modalContent,
         onClick: function onClick(e) {
           return e.stopPropagation();
         },
-        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_11__.Text, {
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_12__.Text, {
           className: _styles_user_login_module_scss__WEBPACK_IMPORTED_MODULE_5__["default"].modalTitle,
           children: "\u7ED1\u5B9A\u624B\u673A\u53F7"
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_11__.Text, {
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_12__.Text, {
           className: _styles_user_login_module_scss__WEBPACK_IMPORTED_MODULE_5__["default"].modalDesc,
           children: "\u5FAE\u4FE1\u767B\u5F55\u9700\u8981\u7ED1\u5B9A\u624B\u673A\u53F7\uFF0C\u8BF7\u5C3D\u5FEB\u70B9\u51FB\u4E0B\u65B9\u6309\u94AE\u5B8C\u6210\u6388\u6743\uFF081\u5206\u949F\u5185\u6709\u6548\uFF09"
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_11__.Button, {
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_12__.Button, {
           className: _styles_user_login_module_scss__WEBPACK_IMPORTED_MODULE_5__["default"].modalBtn,
           openType: "getPhoneNumber",
           onGetPhoneNumber: handleGetPhoneNumber,
           children: "\u83B7\u53D6\u624B\u673A\u53F7"
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_11__.View, {
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_12__.View, {
           className: _styles_user_login_module_scss__WEBPACK_IMPORTED_MODULE_5__["default"].modalBtn,
           onClick: function onClick() {
             // H5 端模拟获取手机号
@@ -1534,7 +1452,7 @@ var LoginPage = function LoginPage() {
             });
           },
           children: "\u83B7\u53D6\u624B\u673A\u53F7"
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_11__.View, {
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_12__.View, {
           className: _styles_user_login_module_scss__WEBPACK_IMPORTED_MODULE_5__["default"].modalCancel,
           onClick: function onClick() {
             setShowPhoneAuthModal(false);
@@ -1544,33 +1462,33 @@ var LoginPage = function LoginPage() {
           children: "\u53D6\u6D88"
         })]
       })
-    }), showSetPasswordModal && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_11__.View, {
+    }), showSetPasswordModal && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_12__.View, {
       className: _styles_user_login_module_scss__WEBPACK_IMPORTED_MODULE_5__["default"].modalOverlay,
       onClick: function onClick(e) {
         return e.stopPropagation();
       },
-      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_11__.View, {
+      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_12__.View, {
         className: _styles_user_login_module_scss__WEBPACK_IMPORTED_MODULE_5__["default"].modalContent,
         onClick: function onClick(e) {
           return e.stopPropagation();
         },
-        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_11__.Text, {
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_12__.Text, {
           className: _styles_user_login_module_scss__WEBPACK_IMPORTED_MODULE_5__["default"].modalTitle,
           children: "\u8BBE\u7F6E\u767B\u5F55\u5BC6\u7801"
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_11__.Text, {
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_12__.Text, {
           className: _styles_user_login_module_scss__WEBPACK_IMPORTED_MODULE_5__["default"].modalDesc,
           children: "\u5FAE\u4FE1\u767B\u5F55\u6210\u529F\uFF0C\u8BF7\u4E3A\u8D26\u53F7\u8BBE\u7F6E\u767B\u5F55\u5BC6\u7801\uFF0C\u4EE5\u4FBF\u540E\u7EED\u4F7F\u7528\u8D26\u53F7\u5BC6\u7801\u767B\u5F55"
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_11__.View, {
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_12__.View, {
           className: _styles_user_login_module_scss__WEBPACK_IMPORTED_MODULE_5__["default"].modalInputGroup,
-          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_11__.Text, {
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_12__.Text, {
             className: _styles_user_login_module_scss__WEBPACK_IMPORTED_MODULE_5__["default"].modalInputLabel,
             children: "\u65B0\u5BC6\u7801"
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_11__.View, {
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_12__.View, {
             className: _styles_user_login_module_scss__WEBPACK_IMPORTED_MODULE_5__["default"].modalInputRow,
-            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_11__.Text, {
+            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_12__.Text, {
               className: _styles_user_login_module_scss__WEBPACK_IMPORTED_MODULE_5__["default"].modalInputIcon,
               children: "\uD83D\uDD11"
-            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_11__.Input, {
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_12__.Input, {
               className: _styles_user_login_module_scss__WEBPACK_IMPORTED_MODULE_5__["default"].modalInput,
               password: true,
               placeholder: "\u8BF7\u8F93\u5165\u65B0\u5BC6\u7801\uFF08\u81F3\u5C116\u4F4D\uFF09",
@@ -1580,17 +1498,17 @@ var LoginPage = function LoginPage() {
               }
             })]
           })]
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_11__.View, {
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_12__.View, {
           className: _styles_user_login_module_scss__WEBPACK_IMPORTED_MODULE_5__["default"].modalInputGroup,
-          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_11__.Text, {
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_12__.Text, {
             className: _styles_user_login_module_scss__WEBPACK_IMPORTED_MODULE_5__["default"].modalInputLabel,
             children: "\u786E\u8BA4\u5BC6\u7801"
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_11__.View, {
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_12__.View, {
             className: _styles_user_login_module_scss__WEBPACK_IMPORTED_MODULE_5__["default"].modalInputRow,
-            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_11__.Text, {
+            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_12__.Text, {
               className: _styles_user_login_module_scss__WEBPACK_IMPORTED_MODULE_5__["default"].modalInputIcon,
               children: "\uD83D\uDD11"
-            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_11__.Input, {
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_12__.Input, {
               className: _styles_user_login_module_scss__WEBPACK_IMPORTED_MODULE_5__["default"].modalInput,
               password: true,
               placeholder: "\u8BF7\u518D\u6B21\u8F93\u5165\u65B0\u5BC6\u7801",
@@ -1600,11 +1518,11 @@ var LoginPage = function LoginPage() {
               }
             })]
           })]
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_11__.View, {
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_12__.View, {
           className: "".concat(_styles_user_login_module_scss__WEBPACK_IMPORTED_MODULE_5__["default"].modalLoginBtn, " ").concat(isSettingPassword ? _styles_user_login_module_scss__WEBPACK_IMPORTED_MODULE_5__["default"].disabled : ''),
           onClick: isSettingPassword ? undefined : handleSetPassword,
           children: isSettingPassword ? '设置中...' : '确认设置'
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_11__.View, {
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_12__.View, {
           className: _styles_user_login_module_scss__WEBPACK_IMPORTED_MODULE_5__["default"].modalCancel,
           onClick: skipSetPassword,
           children: "\u8DF3\u8FC7"

@@ -229,6 +229,14 @@ var SeckillPage = function SeckillPage() {
       }
     };
   }, [updateCountdown, currentActivity]);
+
+  // 页面隐藏时立即清除定时器，避免微信框架内部页面帧已销毁导致 __subPageFrameEndTime__ 报错
+  (0,_tarojs_taro__WEBPACK_IMPORTED_MODULE_1__.useDidHide)(function () {
+    if (timerRef.current) {
+      clearInterval(timerRef.current);
+      timerRef.current = null;
+    }
+  });
   var goToProductDetail = function goToProductDetail(product) {
     var productId = product.productId || product.id;
     var activityId = (currentActivity === null || currentActivity === void 0 ? void 0 : currentActivity.id) || '';

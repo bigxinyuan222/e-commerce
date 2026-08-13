@@ -252,6 +252,62 @@ var ProductDetailPage = function ProductDetailPage() {
     _useState34 = (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_slicedToArray_js__WEBPACK_IMPORTED_MODULE_13__["default"])(_useState33, 2),
     purchasing = _useState34[0],
     setPurchasing = _useState34[1];
+  // 秒杀倒计时定时器引用（useDidHide 时需清除，避免微信框架 __subPageFrameEndTime__ 报错）
+  var seckillTimerRef = (0,react__WEBPACK_IMPORTED_MODULE_0__.useRef)(null);
+
+  // 健壮解析各种时间格式（ISO 8601、YYYY-MM-DD HH:mm:ss、时间戳等）
+  var parseTime = (0,react__WEBPACK_IMPORTED_MODULE_0__.useCallback)(function (timeStr) {
+    if (timeStr === undefined || timeStr === null || timeStr === '') return NaN;
+    if (typeof timeStr === 'number') return timeStr;
+    var t = new Date(timeStr).getTime();
+    if (!isNaN(t)) return t;
+    t = new Date(String(timeStr).replace(/-/g, '/')).getTime();
+    if (!isNaN(t)) return t;
+    t = new Date(String(timeStr).replace(/\//g, '-')).getTime();
+    if (!isNaN(t)) return t;
+    // 尝试解析纯数字时间戳（秒级转毫秒级）
+    var numeric = Number(timeStr);
+    if (!isNaN(numeric) && String(timeStr).trim() !== '') {
+      return numeric < 1e12 ? numeric * 1000 : numeric;
+    }
+    return NaN;
+  }, []);
+
+  // 当前秒杀价：活动对象时从 products 匹配，单个商品对象时直接取
+  var seckillPrice = (0,react__WEBPACK_IMPORTED_MODULE_0__.useMemo)(function () {
+    if (!isSeckill || !seckillInfo) return null;
+    var pid = product === null || product === void 0 ? void 0 : product.id;
+    if (Array.isArray(seckillInfo.products) && pid) {
+      var matched = seckillInfo.products.find(function (p) {
+        return String(p.productId || p.id) === String(pid);
+      });
+      if (matched && matched.seckillPrice !== undefined && matched.seckillPrice !== null) {
+        return Number(matched.seckillPrice);
+      }
+    }
+    if (seckillInfo.seckillPrice !== undefined && seckillInfo.seckillPrice !== null) {
+      return Number(seckillInfo.seckillPrice);
+    }
+    return null;
+  }, [isSeckill, seckillInfo, product === null || product === void 0 ? void 0 : product.id]);
+
+  // 当前秒杀活动结束时间
+  var seckillEndTime = (0,react__WEBPACK_IMPORTED_MODULE_0__.useMemo)(function () {
+    if (!isSeckill || !seckillInfo) return null;
+    if (seckillInfo.endTime) return String(seckillInfo.endTime);
+    if (seckillInfo.end_time) return String(seckillInfo.end_time);
+    var raw = seckillInfo.raw;
+    if (raw) {
+      var _raw$activity, _raw$activity2;
+      if (raw.endTime) return String(raw.endTime);
+      if (raw.end_time) return String(raw.end_time);
+      if ((_raw$activity = raw.activity) !== null && _raw$activity !== void 0 && _raw$activity.endTime) return String(raw.activity.endTime);
+      if ((_raw$activity2 = raw.activity) !== null && _raw$activity2 !== void 0 && _raw$activity2.end_time) return String(raw.activity.end_time);
+      if (raw.activity_end_time) return String(raw.activity_end_time);
+      if (raw.activityEndTime) return String(raw.activityEndTime);
+    }
+    return null;
+  }, [isSeckill, seckillInfo]);
   var onBannerChange = (0,react__WEBPACK_IMPORTED_MODULE_0__.useCallback)(function (e) {
     setCurrentImage(e.detail.current);
   }, []);
@@ -382,7 +438,7 @@ var ProductDetailPage = function ProductDetailPage() {
 
   // 秒杀购买流程：创建秒杀订单 -> 轮询购买结果
   var handleSeckillPurchase = (0,react__WEBPACK_IMPORTED_MODULE_0__.useCallback)(/*#__PURE__*/(0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_16__["default"])(/*#__PURE__*/(0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_17__["default"])().m(function _callee2() {
-    var _purchaseRes$data, _purchaseRes$data2, _purchaseRes$data3, _result$status, purchaseRes, purchaseId, _purchaseRes$data4, _purchaseRes$data5, _status, statusText, _purchaseRes$data6, result, status, _t2;
+    var seckillSkuPriceId, matched, rawSeckill, _purchaseRes$data, _purchaseRes$data2, _purchaseRes$data3, _result$status, purchaseRes, purchaseId, _purchaseRes$data4, _purchaseRes$data5, _status, statusText, _purchaseRes$data6, result, status, _t2;
     return (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_17__["default"])().w(function (_context2) {
       while (1) switch (_context2.p = _context2.n) {
         case 0:
@@ -398,24 +454,63 @@ var ProductDetailPage = function ProductDetailPage() {
           }
           return _context2.a(2);
         case 2:
+          if (seckillActivityId) {
+            _context2.n = 3;
+            break;
+          }
+          _tarojs_taro__WEBPACK_IMPORTED_MODULE_1___default().showToast({
+            title: '活动信息加载中，请稍后再试',
+            icon: 'none'
+          });
+          return _context2.a(2);
+        case 3:
+          // 从秒杀活动信息中提取 SeckillSKUPriceID
+          seckillSkuPriceId = '';
+          if (seckillInfo) {
+            if (Array.isArray(seckillInfo.products) && seckillInfo.products.length > 0) {
+              matched = seckillInfo.products.find(function (p) {
+                return String(p.productId || p.id) === String(product.id);
+              });
+              seckillSkuPriceId = (matched === null || matched === void 0 ? void 0 : matched.seckillSkuPriceId) || '';
+            } else {
+              seckillSkuPriceId = seckillInfo.seckillSkuPriceId || '';
+            }
+          }
+          // 兜底：从原始秒杀数据或 SKU 中提取
+          if (!seckillSkuPriceId) {
+            rawSeckill = (seckillInfo === null || seckillInfo === void 0 ? void 0 : seckillInfo.raw) || seckillInfo;
+            seckillSkuPriceId = (rawSeckill === null || rawSeckill === void 0 ? void 0 : rawSeckill.seckill_sku_price_id) || (rawSeckill === null || rawSeckill === void 0 ? void 0 : rawSeckill.SeckillSKUPriceID) || (rawSeckill === null || rawSeckill === void 0 ? void 0 : rawSeckill.seckillSkuPriceId) || (selectedSku === null || selectedSku === void 0 ? void 0 : selectedSku.seckill_sku_price_id) || (selectedSku === null || selectedSku === void 0 ? void 0 : selectedSku.SeckillSKUPriceID) || (selectedSku === null || selectedSku === void 0 ? void 0 : selectedSku.seckillSkuPriceId) || '';
+          }
+          if (seckillSkuPriceId) {
+            _context2.n = 4;
+            break;
+          }
+          _tarojs_taro__WEBPACK_IMPORTED_MODULE_1___default().showToast({
+            title: '秒杀规格信息缺失，请刷新重试',
+            icon: 'none'
+          });
+          return _context2.a(2);
+        case 4:
           setPurchasing(true);
           _tarojs_taro__WEBPACK_IMPORTED_MODULE_1___default().showLoading({
             title: '抢购中...',
             mask: true
           });
-          _context2.p = 3;
-          _context2.n = 4;
+          _context2.p = 5;
+          _context2.n = 6;
           return (0,_api_seckill__WEBPACK_IMPORTED_MODULE_6__.createSeckillPurchase)({
             activityId: seckillActivityId,
             productId: product.id,
-            skuId: selectedSku === null || selectedSku === void 0 ? void 0 : selectedSku.id,
-            quantity: quantity
+            seckillSkuPriceId: seckillSkuPriceId,
+            storeId: (currentStore === null || currentStore === void 0 ? void 0 : currentStore.id) || 1,
+            quantity: quantity,
+            skuId: selectedSku === null || selectedSku === void 0 ? void 0 : selectedSku.id
           });
-        case 4:
+        case 6:
           purchaseRes = _context2.v;
           purchaseId = (purchaseRes === null || purchaseRes === void 0 || (_purchaseRes$data = purchaseRes.data) === null || _purchaseRes$data === void 0 ? void 0 : _purchaseRes$data.purchaseId) || (purchaseRes === null || purchaseRes === void 0 || (_purchaseRes$data2 = purchaseRes.data) === null || _purchaseRes$data2 === void 0 ? void 0 : _purchaseRes$data2.id) || (purchaseRes === null || purchaseRes === void 0 || (_purchaseRes$data3 = purchaseRes.data) === null || _purchaseRes$data3 === void 0 ? void 0 : _purchaseRes$data3.orderId) || '';
           if (purchaseId) {
-            _context2.n = 5;
+            _context2.n = 7;
             break;
           }
           // 未返回 purchaseId：后端可能为同步处理，直接展示返回结果
@@ -434,13 +529,13 @@ var ProductDetailPage = function ProductDetailPage() {
             });
           }
           return _context2.a(2);
-        case 5:
-          _context2.n = 6;
+        case 7:
+          _context2.n = 8;
           return (0,_api_seckill__WEBPACK_IMPORTED_MODULE_6__.pollSeckillPurchaseResult)(purchaseId, {
             interval: 1500,
             timeout: 15000
           });
-        case 6:
+        case 8:
           result = _context2.v;
           _tarojs_taro__WEBPACK_IMPORTED_MODULE_1___default().hideLoading();
           status = String((_result$status = result.status) !== null && _result$status !== void 0 ? _result$status : '');
@@ -470,10 +565,10 @@ var ProductDetailPage = function ProductDetailPage() {
               icon: 'none'
             });
           }
-          _context2.n = 8;
+          _context2.n = 10;
           break;
-        case 7:
-          _context2.p = 7;
+        case 9:
+          _context2.p = 9;
           _t2 = _context2.v;
           _tarojs_taro__WEBPACK_IMPORTED_MODULE_1___default().hideLoading();
           console.error('Seckill purchase failed:', _t2);
@@ -481,15 +576,15 @@ var ProductDetailPage = function ProductDetailPage() {
             title: (_t2 === null || _t2 === void 0 ? void 0 : _t2.message) || '抢购失败，请重试',
             icon: 'none'
           });
-        case 8:
-          _context2.p = 8;
+        case 10:
+          _context2.p = 10;
           setPurchasing(false);
-          return _context2.f(8);
-        case 9:
+          return _context2.f(10);
+        case 11:
           return _context2.a(2);
       }
-    }, _callee2, null, [[3, 7, 8, 9]]);
-  })), [product, selectedSku, quantity, seckillActivityId, purchasing]);
+    }, _callee2, null, [[5, 9, 10, 11]]);
+  })), [product, selectedSku, quantity, seckillActivityId, seckillInfo, currentStore, purchasing]);
   var handleBuyNow = (0,react__WEBPACK_IMPORTED_MODULE_0__.useCallback)(function () {
     if (!product) return;
     if (!selectedSku) {
@@ -775,7 +870,7 @@ var ProductDetailPage = function ProductDetailPage() {
     setProductId(id);
     var loadProduct = /*#__PURE__*/function () {
       var _ref13 = (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_16__["default"])(/*#__PURE__*/(0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_17__["default"])().m(function _callee6() {
-        var requestList, _yield$Promise$all, _yield$Promise$all2, productRes, reviewRes, statsRes, aiRes, seckillRes, rawData, productData, allSpecOptions, allSpecKeys, firstSpecKey, initialSelections, matchedSku, reviewList, data, _t6;
+        var requestList, _yield$Promise$all, _yield$Promise$all2, productRes, reviewRes, statsRes, aiRes, seckillRes, rawData, productData, allSpecOptions, allSpecKeys, firstSpecKey, initialSelections, matchedSku, reviewList, currentSeckillInfo, data, activitiesRes, activities, matchedActivity, merged, _t6, _t7;
         return (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_17__["default"])().w(function (_context6) {
           while (1) switch (_context6.p = _context6.n) {
             case 0:
@@ -895,6 +990,7 @@ var ProductDetailPage = function ProductDetailPage() {
               setAiLoading(false);
 
               // 处理秒杀活动信息
+              currentSeckillInfo = null;
               if (seckillRes !== null && seckillRes !== void 0 && seckillRes.data) {
                 data = seckillRes.data; // 如果返回的是数组，取第一个元素
                 if (Array.isArray(data) && data.length > 0) {
@@ -903,33 +999,67 @@ var ProductDetailPage = function ProductDetailPage() {
                 if (data && (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_typeof_js__WEBPACK_IMPORTED_MODULE_19__["default"])(data) === 'object') {
                   // fetchProductSeckillActivity 可能返回活动对象（含 products）或单个商品活动
                   if (data.products || data.endTime) {
+                    currentSeckillInfo = data;
                     setSeckillInfo(data);
                     if (data.id) setSeckillActivityId(String(data.id));
                   } else if (data.seckillPrice !== undefined || data.seckill_price !== undefined) {
+                    currentSeckillInfo = data;
                     setSeckillInfo(data);
                     if (data.activityId) setSeckillActivityId(String(data.activityId));
                   }
                 }
               }
-              _context6.n = 4;
-              break;
-            case 3:
+
+              // 补充活动时间：如果当前秒杀数据没有 endTime，尝试从活动列表获取
+              if (!(isSeckillPage && activityId && currentSeckillInfo && !currentSeckillInfo.endTime && !currentSeckillInfo.end_time)) {
+                _context6.n = 6;
+                break;
+              }
               _context6.p = 3;
+              _context6.n = 4;
+              return fetchSeckillActivities({
+                status: 'active'
+              });
+            case 4:
+              activitiesRes = _context6.v;
+              activities = Array.isArray(activitiesRes === null || activitiesRes === void 0 ? void 0 : activitiesRes.data) ? activitiesRes.data : [];
+              matchedActivity = activities.find(function (a) {
+                return String(a.id) === String(activityId);
+              });
+              if (matchedActivity !== null && matchedActivity !== void 0 && matchedActivity.endTime) {
+                merged = (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_11__["default"])((0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_11__["default"])({}, currentSeckillInfo), {}, {
+                  endTime: matchedActivity.endTime,
+                  startTime: matchedActivity.startTime
+                });
+                currentSeckillInfo = merged;
+                setSeckillInfo(merged);
+              }
+              _context6.n = 6;
+              break;
+            case 5:
+              _context6.p = 5;
               _t6 = _context6.v;
-              console.error('Failed to load product:', _t6);
+              console.error('[秒杀详情] 补充活动时间失败:', _t6);
+            case 6:
+              _context6.n = 8;
+              break;
+            case 7:
+              _context6.p = 7;
+              _t7 = _context6.v;
+              console.error('Failed to load product:', _t7);
               _tarojs_taro__WEBPACK_IMPORTED_MODULE_1___default().showToast({
                 title: '加载失败',
                 icon: 'none'
               });
-            case 4:
-              _context6.p = 4;
+            case 8:
+              _context6.p = 8;
               setLoading(false);
               setAiLoading(false);
-              return _context6.f(4);
-            case 5:
+              return _context6.f(8);
+            case 9:
               return _context6.a(2);
           }
-        }, _callee6, null, [[1, 3, 4, 5]]);
+        }, _callee6, null, [[3, 5], [1, 7, 8, 9]]);
       }));
       return function loadProduct() {
         return _ref13.apply(this, arguments);
@@ -940,10 +1070,16 @@ var ProductDetailPage = function ProductDetailPage() {
   (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(function () {
     if (!isSeckill) return;
     var updateCountdown = function updateCountdown() {
-      // 优先使用秒杀活动返回的 endTime，兜底默认 12 小时后
-      var endTimeStr = (seckillInfo === null || seckillInfo === void 0 ? void 0 : seckillInfo.endTime) || (seckillInfo === null || seckillInfo === void 0 ? void 0 : seckillInfo.end_time) || new Date(Date.now() + 12 * 60 * 60 * 1000).toISOString();
+      if (!seckillEndTime) {
+        setSeckillCountdown('');
+        return;
+      }
       var now = new Date().getTime();
-      var endTime = new Date(String(endTimeStr).replace(/-/g, '/')).getTime();
+      var endTime = parseTime(seckillEndTime);
+      if (isNaN(endTime)) {
+        setSeckillCountdown('');
+        return;
+      }
       var diff = endTime - now;
       if (diff <= 0) {
         setSeckillCountdown('已结束');
@@ -954,17 +1090,28 @@ var ProductDetailPage = function ProductDetailPage() {
       var minutes = Math.floor(diff % (1000 * 60 * 60) / (1000 * 60));
       var seconds = Math.floor(diff % (1000 * 60) / 1000);
       if (days > 0) {
-        setSeckillCountdown("".concat(days, "\u5929").concat(hours, "\u65F6").concat(minutes, "\u5206"));
+        setSeckillCountdown("".concat(days, "\u5929 ").concat(String(hours).padStart(2, '0'), ":").concat(String(minutes).padStart(2, '0'), ":").concat(String(seconds).padStart(2, '0')));
       } else {
         setSeckillCountdown("".concat(String(hours).padStart(2, '0'), ":").concat(String(minutes).padStart(2, '0'), ":").concat(String(seconds).padStart(2, '0')));
       }
     };
     updateCountdown();
-    var timer = setInterval(updateCountdown, 1000);
+    seckillTimerRef.current = setInterval(updateCountdown, 1000);
     return function () {
-      return clearInterval(timer);
+      if (seckillTimerRef.current) {
+        clearInterval(seckillTimerRef.current);
+        seckillTimerRef.current = null;
+      }
     };
-  }, [isSeckill, seckillInfo]);
+  }, [isSeckill, seckillEndTime]);
+
+  // 页面隐藏时立即清除定时器，避免微信框架内部页面帧已销毁导致 __subPageFrameEndTime__ 报错
+  (0,_tarojs_taro__WEBPACK_IMPORTED_MODULE_1__.useDidHide)(function () {
+    if (seckillTimerRef.current) {
+      clearInterval(seckillTimerRef.current);
+      seckillTimerRef.current = null;
+    }
+  });
   if (loading || !product) {
     return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_10__.View, {
       className: _styles_home_detail_module_scss__WEBPACK_IMPORTED_MODULE_8__["default"].productDetailPage,
@@ -1027,8 +1174,11 @@ var ProductDetailPage = function ProductDetailPage() {
           className: _styles_home_detail_module_scss__WEBPACK_IMPORTED_MODULE_8__["default"].priceRow,
           children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_10__.Text, {
             className: _styles_home_detail_module_scss__WEBPACK_IMPORTED_MODULE_8__["default"].currentPrice,
-            children: ["\xA5", (selectedSku === null || selectedSku === void 0 ? void 0 : selectedSku.price) || product.price]
-          }), product.originalPrice && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_10__.Text, {
+            children: ["\xA5", isSeckill && seckillPrice !== null ? seckillPrice : (selectedSku === null || selectedSku === void 0 ? void 0 : selectedSku.price) || product.price]
+          }), isSeckill && seckillPrice !== null && product.price > 0 && product.price !== seckillPrice && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_10__.Text, {
+            className: _styles_home_detail_module_scss__WEBPACK_IMPORTED_MODULE_8__["default"].originalPrice,
+            children: ["\xA5", product.price]
+          }), !isSeckill && product.originalPrice && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_10__.Text, {
             className: _styles_home_detail_module_scss__WEBPACK_IMPORTED_MODULE_8__["default"].originalPrice,
             children: ["\xA5", product.originalPrice]
           }), isSeckill && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_10__.View, {
@@ -1036,7 +1186,7 @@ var ProductDetailPage = function ProductDetailPage() {
             children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_10__.Text, {
               className: _styles_home_detail_module_scss__WEBPACK_IMPORTED_MODULE_8__["default"].seckillBadgeText,
               children: "\u9650\u65F6\u79D2\u6740"
-            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_10__.Text, {
+            }), seckillCountdown && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_10__.Text, {
               className: _styles_home_detail_module_scss__WEBPACK_IMPORTED_MODULE_8__["default"].seckillBadgeTime,
               children: seckillCountdown
             })]
@@ -1283,6 +1433,9 @@ var ProductDetailPage = function ProductDetailPage() {
       className: _styles_home_detail_module_scss__WEBPACK_IMPORTED_MODULE_8__["default"].bottomBar,
       children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_10__.View, {
         className: _styles_home_detail_module_scss__WEBPACK_IMPORTED_MODULE_8__["default"].actionIcons,
+        style: {
+          width: isSeckill ? '150rpx' : '220rpx'
+        },
         children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_10__.View, {
           className: _styles_home_detail_module_scss__WEBPACK_IMPORTED_MODULE_8__["default"].actionItem,
           onClick: goHome,
@@ -1301,7 +1454,7 @@ var ProductDetailPage = function ProductDetailPage() {
           }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_10__.Text, {
             children: "\u5BA2\u670D"
           })]
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_10__.View, {
+        }), !isSeckill && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_10__.View, {
           className: _styles_home_detail_module_scss__WEBPACK_IMPORTED_MODULE_8__["default"].actionItem,
           onClick: goToCart,
           children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_10__.Text, {
@@ -1313,14 +1466,14 @@ var ProductDetailPage = function ProductDetailPage() {
         })]
       }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_10__.View, {
         className: _styles_home_detail_module_scss__WEBPACK_IMPORTED_MODULE_8__["default"].actionButtons,
-        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_10__.View, {
+        children: [!isSeckill && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_10__.View, {
           className: _styles_home_detail_module_scss__WEBPACK_IMPORTED_MODULE_8__["default"].addCartBtn,
           onClick: function onClick() {
             return openSkuModal('cart');
           },
           children: "\u52A0\u5165\u8D2D\u7269\u8F66"
         }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_10__.View, {
-          className: "".concat(_styles_home_detail_module_scss__WEBPACK_IMPORTED_MODULE_8__["default"].buyNowBtn, " ").concat(purchasing ? _styles_home_detail_module_scss__WEBPACK_IMPORTED_MODULE_8__["default"].disabled : ''),
+          className: "".concat(_styles_home_detail_module_scss__WEBPACK_IMPORTED_MODULE_8__["default"].buyNowBtn, " ").concat(purchasing ? _styles_home_detail_module_scss__WEBPACK_IMPORTED_MODULE_8__["default"].disabled : '', " ").concat(isSeckill ? _styles_home_detail_module_scss__WEBPACK_IMPORTED_MODULE_8__["default"].seckillBuyBtn : ''),
           onClick: function onClick() {
             return !purchasing && openSkuModal('buy');
           },
@@ -1352,7 +1505,7 @@ var ProductDetailPage = function ProductDetailPage() {
             className: _styles_home_detail_module_scss__WEBPACK_IMPORTED_MODULE_8__["default"].selectedInfo,
             children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_10__.Text, {
               className: _styles_home_detail_module_scss__WEBPACK_IMPORTED_MODULE_8__["default"].selectedPrice,
-              children: ["\xA5", (selectedSku === null || selectedSku === void 0 ? void 0 : selectedSku.price) || product.price]
+              children: ["\xA5", isSeckill && seckillPrice !== null ? seckillPrice : (selectedSku === null || selectedSku === void 0 ? void 0 : selectedSku.price) || product.price]
             }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_10__.Text, {
               className: _styles_home_detail_module_scss__WEBPACK_IMPORTED_MODULE_8__["default"].selectedStock,
               children: ["\u5E93\u5B58: ", (selectedSku === null || selectedSku === void 0 ? void 0 : selectedSku.stock) || 0, " \u4EF6"]
@@ -1401,9 +1554,9 @@ var ProductDetailPage = function ProductDetailPage() {
         }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_10__.View, {
           className: _styles_home_detail_module_scss__WEBPACK_IMPORTED_MODULE_8__["default"].modalFooter,
           children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_10__.View, {
-            className: _styles_home_detail_module_scss__WEBPACK_IMPORTED_MODULE_8__["default"].confirmBtn,
-            onClick: skuModalType === 'cart' ? handleAddToCart : handleBuyNow,
-            children: ["\u786E\u5B9A", skuModalType === 'cart' ? '加入购物车' : '立即购买']
+            className: "".concat(_styles_home_detail_module_scss__WEBPACK_IMPORTED_MODULE_8__["default"].confirmBtn, " ").concat(isSeckill ? _styles_home_detail_module_scss__WEBPACK_IMPORTED_MODULE_8__["default"].seckillConfirmBtn : ''),
+            onClick: isSeckill ? handleBuyNow : skuModalType === 'cart' ? handleAddToCart : handleBuyNow,
+            children: ["\u786E\u5B9A", isSeckill ? '立即抢购' : skuModalType === 'cart' ? '加入购物车' : '立即购买']
           })
         })]
       })]

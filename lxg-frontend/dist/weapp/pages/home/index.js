@@ -105,9 +105,11 @@ var BrandCard = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().memo(f
   }, brand.id);
 });
 var SeckillProductCard = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().memo(function (_ref3) {
-  var _product$images2;
+  var _ref4, _product$soldPercent, _product$images2;
   var product = _ref3.product,
     _onClick3 = _ref3.onClick;
+  var soldPercent = Math.min(Math.max(Number((_ref4 = (_product$soldPercent = product.soldPercent) !== null && _product$soldPercent !== void 0 ? _product$soldPercent : product.sold_percent) !== null && _ref4 !== void 0 ? _ref4 : 0), 0), 100);
+  var soldText = soldPercent > 0 ? "\u5DF2\u62A2".concat(soldPercent, "%") : '热卖中';
   return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_9__.View, {
     className: _styles_home_home_module_scss__WEBPACK_IMPORTED_MODULE_7__["default"].seckillProduct,
     onClick: function onClick() {
@@ -117,7 +119,10 @@ var SeckillProductCard = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default
       src: (0,_utils_image__WEBPACK_IMPORTED_MODULE_5__.getImageUrl)(product.image || ((_product$images2 = product.images) === null || _product$images2 === void 0 ? void 0 : _product$images2[0])),
       className: _styles_home_home_module_scss__WEBPACK_IMPORTED_MODULE_7__["default"].productImage,
       mode: "aspectFill"
-    }, (0,_utils_image__WEBPACK_IMPORTED_MODULE_5__.lazyImgProps)())), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_9__.View, {
+    }, (0,_utils_image__WEBPACK_IMPORTED_MODULE_5__.lazyImgProps)())), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_9__.Text, {
+      className: _styles_home_home_module_scss__WEBPACK_IMPORTED_MODULE_7__["default"].seckillName,
+      children: product.productName || product.name || '秒杀商品'
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_9__.View, {
       className: _styles_home_home_module_scss__WEBPACK_IMPORTED_MODULE_7__["default"].seckillPriceArea,
       children: [(product.seckillPrice || product.price) > 0 && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_9__.View, {
         className: _styles_home_home_module_scss__WEBPACK_IMPORTED_MODULE_7__["default"].seckillPrice,
@@ -127,14 +132,25 @@ var SeckillProductCard = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default
         children: ["\xA5", product.originalPrice]
       })]
     }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_9__.View, {
+      className: _styles_home_home_module_scss__WEBPACK_IMPORTED_MODULE_7__["default"].seckillProgress,
+      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_9__.View, {
+        className: _styles_home_home_module_scss__WEBPACK_IMPORTED_MODULE_7__["default"].seckillProgressBar,
+        style: {
+          width: "".concat(soldPercent, "%")
+        }
+      })
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_9__.Text, {
+      className: _styles_home_home_module_scss__WEBPACK_IMPORTED_MODULE_7__["default"].seckillProgressText,
+      children: soldText
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_9__.View, {
       className: _styles_home_home_module_scss__WEBPACK_IMPORTED_MODULE_7__["default"].seckillBtn,
-      children: "\u62A2"
+      children: "\u9A6C\u4E0A\u62A2"
     })]
   });
 });
-var CategoryNavItem = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().memo(function (_ref4) {
-  var category = _ref4.category,
-    _onClick4 = _ref4.onClick;
+var CategoryNavItem = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().memo(function (_ref5) {
+  var category = _ref5.category,
+    _onClick4 = _ref5.onClick;
   var iconSrc = (0,_utils_categoryIcons__WEBPACK_IMPORTED_MODULE_6__.getCategoryIcon)(category.name, category.icon);
   return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_9__.View, {
     className: _styles_home_home_module_scss__WEBPACK_IMPORTED_MODULE_7__["default"].categoryItem,
@@ -160,18 +176,18 @@ var CategoryNavItem = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().
  * 新接口 /product/recommend 已返回完整商品数据，无需再调用 /product/detail 补全
  */
 function normalizeRecommendProduct(item) {
-  var _ref5, _ref6, _ref7, _item$id, _ref8, _ref9, _ref0, _item$name, _ref1, _ref10, _ref11, _item$price, _ref12, _ref13, _ref14, _item$originalPrice, _ref15, _ref16, _ref17, _item$images, _ref18, _ref19, _ref20, _item$image, _ref21, _ref22, _ref23, _item$sales, _ref24, _ref25, _item$tags;
+  var _ref6, _ref7, _ref8, _item$id, _ref9, _ref0, _ref1, _item$name, _ref10, _ref11, _ref12, _item$price, _ref13, _ref14, _ref15, _item$originalPrice, _ref16, _ref17, _ref18, _item$images, _ref19, _ref20, _ref21, _item$image, _ref22, _ref23, _ref24, _item$sales, _ref25, _ref26, _item$tags;
   if (!item) return null;
-  var id = (_ref5 = (_ref6 = (_ref7 = (_item$id = item.id) !== null && _item$id !== void 0 ? _item$id : item.ID) !== null && _ref7 !== void 0 ? _ref7 : item.productId) !== null && _ref6 !== void 0 ? _ref6 : item.ProductId) !== null && _ref5 !== void 0 ? _ref5 : '';
+  var id = (_ref6 = (_ref7 = (_ref8 = (_item$id = item.id) !== null && _item$id !== void 0 ? _item$id : item.ID) !== null && _ref8 !== void 0 ? _ref8 : item.productId) !== null && _ref7 !== void 0 ? _ref7 : item.ProductId) !== null && _ref6 !== void 0 ? _ref6 : '';
   return (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_10__["default"])((0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_10__["default"])({}, item), {}, {
     id: id !== '' ? String(id) : '',
-    name: (_ref8 = (_ref9 = (_ref0 = (_item$name = item.name) !== null && _item$name !== void 0 ? _item$name : item.Name) !== null && _ref0 !== void 0 ? _ref0 : item.productName) !== null && _ref9 !== void 0 ? _ref9 : item.ProductName) !== null && _ref8 !== void 0 ? _ref8 : '',
-    price: (_ref1 = (_ref10 = (_ref11 = (_item$price = item.price) !== null && _item$price !== void 0 ? _item$price : item.Price) !== null && _ref11 !== void 0 ? _ref11 : item.salePrice) !== null && _ref10 !== void 0 ? _ref10 : item.SalePrice) !== null && _ref1 !== void 0 ? _ref1 : 0,
-    originalPrice: (_ref12 = (_ref13 = (_ref14 = (_item$originalPrice = item.originalPrice) !== null && _item$originalPrice !== void 0 ? _item$originalPrice : item.OriginalPrice) !== null && _ref14 !== void 0 ? _ref14 : item.marketPrice) !== null && _ref13 !== void 0 ? _ref13 : item.MarketPrice) !== null && _ref12 !== void 0 ? _ref12 : 0,
-    images: (_ref15 = (_ref16 = (_ref17 = (_item$images = item.images) !== null && _item$images !== void 0 ? _item$images : item.Images) !== null && _ref17 !== void 0 ? _ref17 : item.imageList) !== null && _ref16 !== void 0 ? _ref16 : item.ImageList) !== null && _ref15 !== void 0 ? _ref15 : [],
-    image: (_ref18 = (_ref19 = (_ref20 = (_item$image = item.image) !== null && _item$image !== void 0 ? _item$image : item.Image) !== null && _ref20 !== void 0 ? _ref20 : item.cover) !== null && _ref19 !== void 0 ? _ref19 : item.Cover) !== null && _ref18 !== void 0 ? _ref18 : '',
-    sales: (_ref21 = (_ref22 = (_ref23 = (_item$sales = item.sales) !== null && _item$sales !== void 0 ? _item$sales : item.Sales) !== null && _ref23 !== void 0 ? _ref23 : item.soldCount) !== null && _ref22 !== void 0 ? _ref22 : item.SoldCount) !== null && _ref21 !== void 0 ? _ref21 : 0,
-    tags: (_ref24 = (_ref25 = (_item$tags = item.tags) !== null && _item$tags !== void 0 ? _item$tags : item.Tags) !== null && _ref25 !== void 0 ? _ref25 : item.tagList) !== null && _ref24 !== void 0 ? _ref24 : []
+    name: (_ref9 = (_ref0 = (_ref1 = (_item$name = item.name) !== null && _item$name !== void 0 ? _item$name : item.Name) !== null && _ref1 !== void 0 ? _ref1 : item.productName) !== null && _ref0 !== void 0 ? _ref0 : item.ProductName) !== null && _ref9 !== void 0 ? _ref9 : '',
+    price: (_ref10 = (_ref11 = (_ref12 = (_item$price = item.price) !== null && _item$price !== void 0 ? _item$price : item.Price) !== null && _ref12 !== void 0 ? _ref12 : item.salePrice) !== null && _ref11 !== void 0 ? _ref11 : item.SalePrice) !== null && _ref10 !== void 0 ? _ref10 : 0,
+    originalPrice: (_ref13 = (_ref14 = (_ref15 = (_item$originalPrice = item.originalPrice) !== null && _item$originalPrice !== void 0 ? _item$originalPrice : item.OriginalPrice) !== null && _ref15 !== void 0 ? _ref15 : item.marketPrice) !== null && _ref14 !== void 0 ? _ref14 : item.MarketPrice) !== null && _ref13 !== void 0 ? _ref13 : 0,
+    images: (_ref16 = (_ref17 = (_ref18 = (_item$images = item.images) !== null && _item$images !== void 0 ? _item$images : item.Images) !== null && _ref18 !== void 0 ? _ref18 : item.imageList) !== null && _ref17 !== void 0 ? _ref17 : item.ImageList) !== null && _ref16 !== void 0 ? _ref16 : [],
+    image: (_ref19 = (_ref20 = (_ref21 = (_item$image = item.image) !== null && _item$image !== void 0 ? _item$image : item.Image) !== null && _ref21 !== void 0 ? _ref21 : item.cover) !== null && _ref20 !== void 0 ? _ref20 : item.Cover) !== null && _ref19 !== void 0 ? _ref19 : '',
+    sales: (_ref22 = (_ref23 = (_ref24 = (_item$sales = item.sales) !== null && _item$sales !== void 0 ? _item$sales : item.Sales) !== null && _ref24 !== void 0 ? _ref24 : item.soldCount) !== null && _ref23 !== void 0 ? _ref23 : item.SoldCount) !== null && _ref22 !== void 0 ? _ref22 : 0,
+    tags: (_ref25 = (_ref26 = (_item$tags = item.tags) !== null && _item$tags !== void 0 ? _item$tags : item.Tags) !== null && _ref26 !== void 0 ? _ref26 : item.tagList) !== null && _ref25 !== void 0 ? _ref25 : []
   });
 }
 
@@ -179,10 +195,10 @@ function normalizeRecommendProduct(item) {
  * 规范化推荐位结构:统一字段命名,products 做字段兼容
  */
 function normalizeRecommendSlot(slot) {
-  var _ref26, _ref27, _slot$id, _ref28, _ref29, _ref30, _slot$name;
+  var _ref27, _ref28, _slot$id, _ref29, _ref30, _ref31, _slot$name;
   if (!slot) return null;
-  var id = (_ref26 = (_ref27 = (_slot$id = slot.id) !== null && _slot$id !== void 0 ? _slot$id : slot.ID) !== null && _ref27 !== void 0 ? _ref27 : slot.slotId) !== null && _ref26 !== void 0 ? _ref26 : '';
-  var name = (_ref28 = (_ref29 = (_ref30 = (_slot$name = slot.name) !== null && _slot$name !== void 0 ? _slot$name : slot.Name) !== null && _ref30 !== void 0 ? _ref30 : slot.slotName) !== null && _ref29 !== void 0 ? _ref29 : slot.title) !== null && _ref28 !== void 0 ? _ref28 : '';
+  var id = (_ref27 = (_ref28 = (_slot$id = slot.id) !== null && _slot$id !== void 0 ? _slot$id : slot.ID) !== null && _ref28 !== void 0 ? _ref28 : slot.slotId) !== null && _ref27 !== void 0 ? _ref27 : '';
+  var name = (_ref29 = (_ref30 = (_ref31 = (_slot$name = slot.name) !== null && _slot$name !== void 0 ? _slot$name : slot.Name) !== null && _ref31 !== void 0 ? _ref31 : slot.slotName) !== null && _ref30 !== void 0 ? _ref30 : slot.title) !== null && _ref29 !== void 0 ? _ref29 : '';
   var rawProducts = Array.isArray(slot.products) ? slot.products : Array.isArray(slot.Products) ? slot.Products : Array.isArray(slot.items) ? slot.items : [];
   return (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_10__["default"])((0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_10__["default"])({}, slot), {}, {
     id: id !== '' ? id : name,
@@ -240,6 +256,10 @@ var HomePage = function HomePage() {
     _useState14 = (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_slicedToArray_js__WEBPACK_IMPORTED_MODULE_11__["default"])(_useState13, 2),
     loading = _useState14[0],
     setLoading = _useState14[1];
+  var _useState15 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(null),
+    _useState16 = (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_slicedToArray_js__WEBPACK_IMPORTED_MODULE_11__["default"])(_useState15, 2),
+    error = _useState16[0],
+    setError = _useState16[1];
   var timerRef = (0,react__WEBPACK_IMPORTED_MODULE_0__.useRef)(null);
 
   // 动态推荐位 tab 列表（由接口返回的推荐位生成）
@@ -277,13 +297,17 @@ var HomePage = function HomePage() {
     });
   }, []);
 
-  // 秒杀商品点击：携带活动ID与秒杀标识进入详情页
+  // 秒杀商品点击：有真实活动则携带秒杀标识，兜底推荐商品走普通详情
   var goToSeckillProductDetail = (0,react__WEBPACK_IMPORTED_MODULE_0__.useCallback)(function (productId) {
     var activityId = seckillActivity.id || '';
-    _tarojs_taro__WEBPACK_IMPORTED_MODULE_1___default().navigateTo({
-      url: "/pages/home/detail/index?id=".concat(productId, "&seckill=1").concat(activityId ? "&activityId=".concat(activityId) : '')
-    });
-  }, [seckillActivity.id]);
+    if (activityId) {
+      _tarojs_taro__WEBPACK_IMPORTED_MODULE_1___default().navigateTo({
+        url: "/pages/home/detail/index?id=".concat(productId, "&seckill=1&activityId=").concat(activityId)
+      });
+    } else {
+      goToProductDetail(productId);
+    }
+  }, [seckillActivity.id, goToProductDetail]);
   var goToCategory = (0,react__WEBPACK_IMPORTED_MODULE_0__.useCallback)(function (categoryId) {
     if (categoryId) {
       _tarojs_taro__WEBPACK_IMPORTED_MODULE_1___default().setStorageSync('targetCategoryId', categoryId);
@@ -307,12 +331,13 @@ var HomePage = function HomePage() {
 
   // 加载首页数据
   var loadData = /*#__PURE__*/function () {
-    var _ref31 = (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_12__["default"])(/*#__PURE__*/(0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_13__["default"])().m(function _callee() {
-      var _yield$Promise$all, _yield$Promise$all2, bannerRes, categoryRes, seckillRes, brandRes, recommendRes, _bannerRes$data, _bannerRes$data2, _bannerRes$data3, rawBanners, normalized, _categoryRes$data, _categoryRes$data2, rawData, catData, seckillData, _brandRes$data, _brandRes$data2, _rawData, _normalized, slots, _t;
+    var _ref32 = (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_12__["default"])(/*#__PURE__*/(0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_13__["default"])().m(function _callee() {
+      var _yield$Promise$all, _yield$Promise$all2, bannerRes, categoryRes, seckillRes, brandRes, recommendRes, _bannerRes$data, _bannerRes$data2, _bannerRes$data3, rawBanners, normalized, _categoryRes$data, _categoryRes$data2, rawData, catData, makeFallbackProducts, seckillData, realProducts, _brandRes$data, _brandRes$data2, _rawData, _normalized, slots, msg, _t;
       return (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_13__["default"])().w(function (_context) {
         while (1) switch (_context.p = _context.n) {
           case 0:
             setLoading(true);
+            setError(null);
             _context.p = 1;
             _context.n = 2;
             return Promise.all([(0,_api_common__WEBPACK_IMPORTED_MODULE_2__.apiGet)(_api_home__WEBPACK_IMPORTED_MODULE_3__.homeApi.banners).catch(function () {
@@ -339,12 +364,12 @@ var HomePage = function HomePage() {
             if (bannerRes !== null && bannerRes !== void 0 && bannerRes.data) {
               rawBanners = Array.isArray(bannerRes.data) ? bannerRes.data : ((_bannerRes$data = bannerRes.data) === null || _bannerRes$data === void 0 ? void 0 : _bannerRes$data.list) || ((_bannerRes$data2 = bannerRes.data) === null || _bannerRes$data2 === void 0 ? void 0 : _bannerRes$data2.data) || ((_bannerRes$data3 = bannerRes.data) === null || _bannerRes$data3 === void 0 ? void 0 : _bannerRes$data3.banners) || [];
               normalized = rawBanners.map(function (item) {
-                var _ref32, _ref33, _item$id2, _ref34, _ref35, _ref36, _ref37, _ref38, _item$image2, _ref39, _ref40, _item$type, _ref41, _ref42, _ref43, _item$targetId;
+                var _ref33, _ref34, _item$id2, _ref35, _ref36, _ref37, _ref38, _ref39, _item$image2, _ref40, _ref41, _item$type, _ref42, _ref43, _ref44, _item$targetId;
                 return {
-                  id: (_ref32 = (_ref33 = (_item$id2 = item.id) !== null && _item$id2 !== void 0 ? _item$id2 : item.ID) !== null && _ref33 !== void 0 ? _ref33 : item.bannerId) !== null && _ref32 !== void 0 ? _ref32 : String(Math.random()),
-                  image: (_ref34 = (_ref35 = (_ref36 = (_ref37 = (_ref38 = (_item$image2 = item.image) !== null && _item$image2 !== void 0 ? _item$image2 : item.Image) !== null && _ref38 !== void 0 ? _ref38 : item.imageUrl) !== null && _ref37 !== void 0 ? _ref37 : item.ImageUrl) !== null && _ref36 !== void 0 ? _ref36 : item.pic) !== null && _ref35 !== void 0 ? _ref35 : item.Pic) !== null && _ref34 !== void 0 ? _ref34 : '',
-                  type: (_ref39 = (_ref40 = (_item$type = item.type) !== null && _item$type !== void 0 ? _item$type : item.Type) !== null && _ref40 !== void 0 ? _ref40 : item.linkType) !== null && _ref39 !== void 0 ? _ref39 : '',
-                  targetId: (_ref41 = (_ref42 = (_ref43 = (_item$targetId = item.targetId) !== null && _item$targetId !== void 0 ? _item$targetId : item.TargetId) !== null && _ref43 !== void 0 ? _ref43 : item.productId) !== null && _ref42 !== void 0 ? _ref42 : item.linkId) !== null && _ref41 !== void 0 ? _ref41 : ''
+                  id: (_ref33 = (_ref34 = (_item$id2 = item.id) !== null && _item$id2 !== void 0 ? _item$id2 : item.ID) !== null && _ref34 !== void 0 ? _ref34 : item.bannerId) !== null && _ref33 !== void 0 ? _ref33 : String(Math.random()),
+                  image: (_ref35 = (_ref36 = (_ref37 = (_ref38 = (_ref39 = (_item$image2 = item.image) !== null && _item$image2 !== void 0 ? _item$image2 : item.Image) !== null && _ref39 !== void 0 ? _ref39 : item.imageUrl) !== null && _ref38 !== void 0 ? _ref38 : item.ImageUrl) !== null && _ref37 !== void 0 ? _ref37 : item.pic) !== null && _ref36 !== void 0 ? _ref36 : item.Pic) !== null && _ref35 !== void 0 ? _ref35 : '',
+                  type: (_ref40 = (_ref41 = (_item$type = item.type) !== null && _item$type !== void 0 ? _item$type : item.Type) !== null && _ref41 !== void 0 ? _ref41 : item.linkType) !== null && _ref40 !== void 0 ? _ref40 : '',
+                  targetId: (_ref42 = (_ref43 = (_ref44 = (_item$targetId = item.targetId) !== null && _item$targetId !== void 0 ? _item$targetId : item.TargetId) !== null && _ref44 !== void 0 ? _ref44 : item.productId) !== null && _ref43 !== void 0 ? _ref43 : item.linkId) !== null && _ref42 !== void 0 ? _ref42 : ''
                 };
               });
               setBanners(normalized);
@@ -352,28 +377,45 @@ var HomePage = function HomePage() {
             if (categoryRes !== null && categoryRes !== void 0 && categoryRes.data) {
               rawData = Array.isArray(categoryRes.data) ? categoryRes.data : ((_categoryRes$data = categoryRes.data) === null || _categoryRes$data === void 0 ? void 0 : _categoryRes$data.list) || ((_categoryRes$data2 = categoryRes.data) === null || _categoryRes$data2 === void 0 ? void 0 : _categoryRes$data2.data) || [];
               catData = rawData.map(function (item) {
-                var _ref44, _ref45, _item$id3, _ref46, _ref47, _item$name2, _ref48, _ref49, _ref50, _item$icon;
+                var _ref45, _ref46, _item$id3, _ref47, _ref48, _item$name2, _ref49, _ref50, _ref51, _item$icon;
                 return {
-                  id: (_ref44 = (_ref45 = (_item$id3 = item.id) !== null && _item$id3 !== void 0 ? _item$id3 : item.ID) !== null && _ref45 !== void 0 ? _ref45 : item.categoryId) !== null && _ref44 !== void 0 ? _ref44 : '',
-                  name: (_ref46 = (_ref47 = (_item$name2 = item.name) !== null && _item$name2 !== void 0 ? _item$name2 : item.Name) !== null && _ref47 !== void 0 ? _ref47 : item.categoryName) !== null && _ref46 !== void 0 ? _ref46 : '',
-                  icon: (_ref48 = (_ref49 = (_ref50 = (_item$icon = item.icon) !== null && _item$icon !== void 0 ? _item$icon : item.Icon) !== null && _ref50 !== void 0 ? _ref50 : item.image) !== null && _ref49 !== void 0 ? _ref49 : item.Image) !== null && _ref48 !== void 0 ? _ref48 : ''
+                  id: (_ref45 = (_ref46 = (_item$id3 = item.id) !== null && _item$id3 !== void 0 ? _item$id3 : item.ID) !== null && _ref46 !== void 0 ? _ref46 : item.categoryId) !== null && _ref45 !== void 0 ? _ref45 : '',
+                  name: (_ref47 = (_ref48 = (_item$name2 = item.name) !== null && _item$name2 !== void 0 ? _item$name2 : item.Name) !== null && _ref48 !== void 0 ? _ref48 : item.categoryName) !== null && _ref47 !== void 0 ? _ref47 : '',
+                  icon: (_ref49 = (_ref50 = (_ref51 = (_item$icon = item.icon) !== null && _item$icon !== void 0 ? _item$icon : item.Icon) !== null && _ref51 !== void 0 ? _ref51 : item.image) !== null && _ref50 !== void 0 ? _ref50 : item.Image) !== null && _ref49 !== void 0 ? _ref49 : ''
                 };
               });
               setCategories(catData.slice(0, 8));
             }
+
+            // 构造秒杀兜底商品：从推荐商品取前 3 个
+            makeFallbackProducts = function makeFallbackProducts() {
+              var fallbackSlots = recommendRes !== null && recommendRes !== void 0 && recommendRes.data ? extractAllRecommendSlots(recommendRes.data) : [];
+              return fallbackSlots.flatMap(function (slot) {
+                return (slot === null || slot === void 0 ? void 0 : slot.products) || [];
+              }).filter(Boolean).slice(0, 3).map(function (item) {
+                var _ref52, _item$price2, _ref53, _item$originalPrice2, _item$images2;
+                return (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_10__["default"])((0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_10__["default"])({}, item), {}, {
+                  productId: item.id || item.productId,
+                  seckillPrice: (_ref52 = (_item$price2 = item.price) !== null && _item$price2 !== void 0 ? _item$price2 : item.seckillPrice) !== null && _ref52 !== void 0 ? _ref52 : 0,
+                  originalPrice: (_ref53 = (_item$originalPrice2 = item.originalPrice) !== null && _item$originalPrice2 !== void 0 ? _item$originalPrice2 : item.marketPrice) !== null && _ref53 !== void 0 ? _ref53 : 0,
+                  image: item.image || ((_item$images2 = item.images) === null || _item$images2 === void 0 ? void 0 : _item$images2[0])
+                });
+              });
+            };
             if (seckillRes !== null && seckillRes !== void 0 && seckillRes.data && Array.isArray(seckillRes.data) && seckillRes.data.length > 0) {
-              // 接口返回有效活动，取第一个展示
+              // 接口返回有效活动，取第一个展示；若活动本身没有商品，则用推荐商品兜底
               seckillData = seckillRes.data[0];
+              realProducts = seckillData.products || [];
               setSeckillActivity({
                 id: seckillData.id || '',
-                products: seckillData.products || [],
+                products: realProducts.length > 0 ? realProducts : makeFallbackProducts(),
                 endTime: seckillData.endTime || new Date(Date.now() + 3600000).toISOString()
               });
             } else {
-              // 接口无活动数据，秒杀板块显示空状态
+              // 接口无活动数据，直接用推荐商品兜底
               setSeckillActivity({
                 id: '',
-                products: [],
+                products: makeFallbackProducts(),
                 endTime: ''
               });
             }
@@ -381,10 +423,10 @@ var HomePage = function HomePage() {
               // 品牌树返回数据规范化：兼容多字段命名，过滤占位符 logo
               _rawData = Array.isArray(brandRes.data) ? brandRes.data : ((_brandRes$data = brandRes.data) === null || _brandRes$data === void 0 ? void 0 : _brandRes$data.list) || ((_brandRes$data2 = brandRes.data) === null || _brandRes$data2 === void 0 ? void 0 : _brandRes$data2.data) || [];
               _normalized = _rawData.map(function (item) {
-                var _ref51, _ref52, _ref53, _ref54, _ref55, _item$id4, _ref56, _ref57, _ref58, _item$name3, _ref59, _ref60, _ref61, _ref62, _ref63, _item$logo;
-                var id = (_ref51 = (_ref52 = (_ref53 = (_ref54 = (_ref55 = (_item$id4 = item.id) !== null && _item$id4 !== void 0 ? _item$id4 : item.ID) !== null && _ref55 !== void 0 ? _ref55 : item.brandId) !== null && _ref54 !== void 0 ? _ref54 : item.BrandId) !== null && _ref53 !== void 0 ? _ref53 : item.code) !== null && _ref52 !== void 0 ? _ref52 : item.Code) !== null && _ref51 !== void 0 ? _ref51 : '';
-                var name = (_ref56 = (_ref57 = (_ref58 = (_item$name3 = item.name) !== null && _item$name3 !== void 0 ? _item$name3 : item.Name) !== null && _ref58 !== void 0 ? _ref58 : item.brandName) !== null && _ref57 !== void 0 ? _ref57 : item.BrandName) !== null && _ref56 !== void 0 ? _ref56 : '';
-                var logo = (_ref59 = (_ref60 = (_ref61 = (_ref62 = (_ref63 = (_item$logo = item.logo) !== null && _item$logo !== void 0 ? _item$logo : item.Logo) !== null && _ref63 !== void 0 ? _ref63 : item.icon) !== null && _ref62 !== void 0 ? _ref62 : item.Icon) !== null && _ref61 !== void 0 ? _ref61 : item.image) !== null && _ref60 !== void 0 ? _ref60 : item.Image) !== null && _ref59 !== void 0 ? _ref59 : '';
+                var _ref54, _ref55, _ref56, _ref57, _ref58, _item$id4, _ref59, _ref60, _ref61, _item$name3, _ref62, _ref63, _ref64, _ref65, _ref66, _item$logo;
+                var id = (_ref54 = (_ref55 = (_ref56 = (_ref57 = (_ref58 = (_item$id4 = item.id) !== null && _item$id4 !== void 0 ? _item$id4 : item.ID) !== null && _ref58 !== void 0 ? _ref58 : item.brandId) !== null && _ref57 !== void 0 ? _ref57 : item.BrandId) !== null && _ref56 !== void 0 ? _ref56 : item.code) !== null && _ref55 !== void 0 ? _ref55 : item.Code) !== null && _ref54 !== void 0 ? _ref54 : '';
+                var name = (_ref59 = (_ref60 = (_ref61 = (_item$name3 = item.name) !== null && _item$name3 !== void 0 ? _item$name3 : item.Name) !== null && _ref61 !== void 0 ? _ref61 : item.brandName) !== null && _ref60 !== void 0 ? _ref60 : item.BrandName) !== null && _ref59 !== void 0 ? _ref59 : '';
+                var logo = (_ref62 = (_ref63 = (_ref64 = (_ref65 = (_ref66 = (_item$logo = item.logo) !== null && _item$logo !== void 0 ? _item$logo : item.Logo) !== null && _ref66 !== void 0 ? _ref66 : item.icon) !== null && _ref65 !== void 0 ? _ref65 : item.Icon) !== null && _ref64 !== void 0 ? _ref64 : item.image) !== null && _ref63 !== void 0 ? _ref63 : item.Image) !== null && _ref62 !== void 0 ? _ref62 : '';
                 // 保留原始 logo，交由 getBrandIcon 判断占位符域名并回退到本地 SVG 图标
                 // 若先用 getImageUrl 处理，占位符域名会被替换成无效的默认占位图 URL，导致本地 SVG 兜底失效
                 return {
@@ -412,8 +454,10 @@ var HomePage = function HomePage() {
             _context.p = 3;
             _t = _context.v;
             console.error('Failed to load home data:', _t);
+            msg = (_t === null || _t === void 0 ? void 0 : _t.message) || '加载失败，请下拉刷新重试';
+            setError(msg);
             _tarojs_taro__WEBPACK_IMPORTED_MODULE_1___default().showToast({
-              title: '加载失败，下拉刷新',
+              title: msg,
               icon: 'none'
             });
           case 4:
@@ -426,7 +470,7 @@ var HomePage = function HomePage() {
       }, _callee, null, [[1, 3, 4, 5]]);
     }));
     return function loadData() {
-      return _ref31.apply(this, arguments);
+      return _ref32.apply(this, arguments);
     };
   }();
   (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(function () {
@@ -459,9 +503,18 @@ var HomePage = function HomePage() {
     return function () {
       if (timerRef.current) {
         clearInterval(timerRef.current);
+        timerRef.current = null;
       }
     };
   }, [seckillActivity.endTime]);
+
+  // 页面隐藏时立即清除定时器，避免微信框架内部页面帧已销毁导致 __subPageFrameEndTime__ 报错
+  (0,_tarojs_taro__WEBPACK_IMPORTED_MODULE_1__.useDidHide)(function () {
+    if (timerRef.current) {
+      clearInterval(timerRef.current);
+      timerRef.current = null;
+    }
+  });
   var displayCategories = (0,react__WEBPACK_IMPORTED_MODULE_0__.useMemo)(function () {
     return categories.slice(0, 8);
   }, [categories]);
@@ -575,27 +628,11 @@ var HomePage = function HomePage() {
             }, brand.id);
           })
         })]
-      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_9__.View, {
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_9__.View, {
         className: _styles_home_home_module_scss__WEBPACK_IMPORTED_MODULE_7__["default"].activitySection,
-        children: [seckillActivity.products.length > 0 ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_9__.ScrollView, {
-          scrollX: true,
-          className: _styles_home_home_module_scss__WEBPACK_IMPORTED_MODULE_7__["default"].seckillProducts,
-          showScrollbar: false,
-          children: seckillActivity.products.map(function (product) {
-            return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(SeckillProductCard, {
-              product: product,
-              onClick: goToSeckillProductDetail
-            }, product.id || product.productId);
-          })
-        }) : /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_9__.View, {
-          className: _styles_home_home_module_scss__WEBPACK_IMPORTED_MODULE_7__["default"].seckillEmpty,
-          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_9__.Text, {
-            className: _styles_home_home_module_scss__WEBPACK_IMPORTED_MODULE_7__["default"].seckillEmptyText,
-            children: "\u6682\u65E0\u79D2\u6740\u5546\u54C1"
-          })
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_9__.View, {
+        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_9__.View, {
           className: _styles_home_home_module_scss__WEBPACK_IMPORTED_MODULE_7__["default"].seckillArea,
-          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_9__.View, {
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_9__.View, {
             className: _styles_home_home_module_scss__WEBPACK_IMPORTED_MODULE_7__["default"].seckillHeader,
             children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_9__.View, {
               children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_9__.Text, {
@@ -607,7 +644,7 @@ var HomePage = function HomePage() {
               })]
             }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_9__.View, {
               className: _styles_home_home_module_scss__WEBPACK_IMPORTED_MODULE_7__["default"].seckillHeaderRight,
-              children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_9__.View, {
+              children: [seckillActivity.id ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_9__.View, {
                 className: _styles_home_home_module_scss__WEBPACK_IMPORTED_MODULE_7__["default"].countdown,
                 children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_9__.Text, {
                   children: "\u8DDD\u7ED3\u675F"
@@ -625,6 +662,9 @@ var HomePage = function HomePage() {
                   className: _styles_home_home_module_scss__WEBPACK_IMPORTED_MODULE_7__["default"].countdownItem,
                   children: countdown.seconds
                 })]
+              }) : /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_9__.Text, {
+                className: _styles_home_home_module_scss__WEBPACK_IMPORTED_MODULE_7__["default"].seckillTag,
+                children: "\u7CBE\u9009\u597D\u7269"
               }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_9__.View, {
                 className: _styles_home_home_module_scss__WEBPACK_IMPORTED_MODULE_7__["default"].seckillArrow,
                 onClick: goToSeckill,
@@ -634,8 +674,18 @@ var HomePage = function HomePage() {
                 })
               })]
             })]
-          })
-        })]
+          }), seckillActivity.products.length > 0 && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_9__.ScrollView, {
+            scrollX: true,
+            className: _styles_home_home_module_scss__WEBPACK_IMPORTED_MODULE_7__["default"].seckillProducts,
+            showScrollbar: false,
+            children: seckillActivity.products.map(function (product) {
+              return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(SeckillProductCard, {
+                product: product,
+                onClick: goToSeckillProductDetail
+              }, product.id || product.productId);
+            })
+          })]
+        })
       }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_9__.View, {
         className: _styles_home_home_module_scss__WEBPACK_IMPORTED_MODULE_7__["default"].recommendSection,
         children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_9__.View, {
@@ -680,6 +730,35 @@ var HomePage = function HomePage() {
             children: "\u8BE5\u63A8\u8350\u4F4D\u6682\u65E0\u5546\u54C1"
           })
         })]
+      }), !banners.length && !displayCategories.length && !hotBrands.length && !seckillActivity.products.length && !recommendedProducts.length && !loading && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_9__.View, {
+        style: {
+          padding: '200rpx 40rpx',
+          textAlign: 'center'
+        },
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_9__.Text, {
+          style: {
+            color: '#999',
+            fontSize: '28rpx',
+            lineHeight: '1.6'
+          },
+          children: error || '首页内容为空，请下拉刷新重试'
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_9__.View, {
+          style: {
+            marginTop: '32rpx',
+            display: 'inline-block',
+            padding: '16rpx 48rpx',
+            background: 'linear-gradient(135deg, #e2231a 0%, #ff7d00 100%)',
+            borderRadius: '40rpx'
+          },
+          onClick: loadData,
+          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_9__.Text, {
+            style: {
+              color: '#fff',
+              fontSize: '28rpx'
+            },
+            children: "\u91CD\u65B0\u52A0\u8F7D"
+          })
+        })]
       })]
     })]
   });
@@ -722,7 +801,7 @@ var inst = Page(taroOption)
 /***/ (function(__unused_webpack_module, __webpack_exports__) {
 
 // extracted by mini-css-extract-plugin
-/* harmony default export */ __webpack_exports__["default"] = ({"homePage":"home-module__homePage___gpLL9","header":"home-module__header___hFd8x","searchBox":"home-module__searchBox___tBwm_","searchIcon":"home-module__searchIcon___DtY81","searchText":"home-module__searchText___ShVt0","content":"home-module__content___qfPqY","banner":"home-module__banner___W3u6h","swiper-pagination-bullet":"home-module__swiper-pagination-bullet___AoOKz","swiper-pagination-bullet-active":"home-module__swiper-pagination-bullet-active___Kadu6","categoryNavWrap":"home-module__categoryNavWrap___oGT3B","categoryNavInner":"home-module__categoryNavInner___L9meQ","categoryItem":"home-module__categoryItem___zQ8_l","categoryIcon":"home-module__categoryIcon___k7xtB","categoryIconImg":"home-module__categoryIconImg___ADAxe","categoryName":"home-module__categoryName___GEBF1","categoryNav":"home-module__categoryNav___TdagT","categoryNavFill":"home-module__categoryNavFill___dpFZi","brandsSection":"home-module__brandsSection___Grurl","brandsHeader":"home-module__brandsHeader___dxzwX","brandsTitleWrap":"home-module__brandsTitleWrap___WaPix","brandsTitle":"home-module__brandsTitle___IEVjk","brandsSubtitle":"home-module__brandsSubtitle___xxQ6p","brandsMore":"home-module__brandsMore___yw3oA","brandsList":"home-module__brandsList___AXIDA","brandItem":"home-module__brandItem___syJmF","brandIconWrap":"home-module__brandIconWrap___yl1dx","brandIconImg":"home-module__brandIconImg___FADvF","brandIconSvg":"home-module__brandIconSvg___d96jw","brandName":"home-module__brandName___O0qI2","activitySection":"home-module__activitySection___IQXb7","sectionHeader":"home-module__sectionHeader___oa072","sectionTitle":"home-module__sectionTitle___gKIyo","moreBtn":"home-module__moreBtn___K82WN","seckillProducts":"home-module__seckillProducts___jUo6K","seckillProduct":"home-module__seckillProduct___NuSZ9","productImage":"home-module__productImage___Fy4mD","seckillPriceArea":"home-module__seckillPriceArea___mAeSm","seckillPrice":"home-module__seckillPrice___bykOz","originalPrice":"home-module__originalPrice___liqTH","seckillBtn":"home-module__seckillBtn___VFtGp","seckillEmpty":"home-module__seckillEmpty___hlaZz","seckillEmptyText":"home-module__seckillEmptyText___FBixm","seckillArea":"home-module__seckillArea___ju4h7","seckillHeader":"home-module__seckillHeader___dmfWl","seckillTitle":"home-module__seckillTitle___wpEbE","seckillSubtitle":"home-module__seckillSubtitle____WK4I","seckillHeaderRight":"home-module__seckillHeaderRight___lpT1T","countdown":"home-module__countdown___PAWFw","countdownItem":"home-module__countdownItem___pdC59","seckillArrow":"home-module__seckillArrow___ioSEF","arrowIcon":"home-module__arrowIcon___JLbCT","recommendSection":"home-module__recommendSection___iVE2E","recommendHeader":"home-module__recommendHeader___Lqvnh","recommendLine":"home-module__recommendLine___gPiLo","recommendTitle":"home-module__recommendTitle___HZCoN","recommendTabs":"home-module__recommendTabs___uCz1H","recommendTab":"home-module__recommendTab___xHvWY","recommendTabText":"home-module__recommendTabText___vqO55","recommendTabActive":"home-module__recommendTabActive___Noz3_","productGrid":"home-module__productGrid___vabQw","productCard":"home-module__productCard___eqvIf","productInfo":"home-module__productInfo___xYtl8","productName":"home-module__productName___PqOUU","productTags":"home-module__productTags___aFFOA","tag":"home-module__tag___JDC0z","productPrice":"home-module__productPrice___O2MUC","priceSymbol":"home-module__priceSymbol___Orfad","currentPrice":"home-module__currentPrice___Kk_mK","salesInfo":"home-module__salesInfo___dMMqr"});
+/* harmony default export */ __webpack_exports__["default"] = ({"homePage":"home-module__homePage___gpLL9","header":"home-module__header___hFd8x","searchBox":"home-module__searchBox___tBwm_","searchIcon":"home-module__searchIcon___DtY81","searchText":"home-module__searchText___ShVt0","content":"home-module__content___qfPqY","banner":"home-module__banner___W3u6h","swiper-pagination-bullet":"home-module__swiper-pagination-bullet___AoOKz","swiper-pagination-bullet-active":"home-module__swiper-pagination-bullet-active___Kadu6","categoryNavWrap":"home-module__categoryNavWrap___oGT3B","categoryNavInner":"home-module__categoryNavInner___L9meQ","categoryItem":"home-module__categoryItem___zQ8_l","categoryIcon":"home-module__categoryIcon___k7xtB","categoryIconImg":"home-module__categoryIconImg___ADAxe","categoryName":"home-module__categoryName___GEBF1","categoryNav":"home-module__categoryNav___TdagT","categoryNavFill":"home-module__categoryNavFill___dpFZi","brandsSection":"home-module__brandsSection___Grurl","brandsHeader":"home-module__brandsHeader___dxzwX","brandsTitleWrap":"home-module__brandsTitleWrap___WaPix","brandsTitle":"home-module__brandsTitle___IEVjk","brandsSubtitle":"home-module__brandsSubtitle___xxQ6p","brandsMore":"home-module__brandsMore___yw3oA","brandsList":"home-module__brandsList___AXIDA","brandItem":"home-module__brandItem___syJmF","brandIconWrap":"home-module__brandIconWrap___yl1dx","brandIconImg":"home-module__brandIconImg___FADvF","brandIconSvg":"home-module__brandIconSvg___d96jw","brandName":"home-module__brandName___O0qI2","activitySection":"home-module__activitySection___IQXb7","sectionHeader":"home-module__sectionHeader___oa072","sectionTitle":"home-module__sectionTitle___gKIyo","moreBtn":"home-module__moreBtn___K82WN","seckillArea":"home-module__seckillArea___ju4h7","seckillHeader":"home-module__seckillHeader___dmfWl","seckillTitle":"home-module__seckillTitle___wpEbE","seckillSubtitle":"home-module__seckillSubtitle____WK4I","seckillHeaderRight":"home-module__seckillHeaderRight___lpT1T","seckillTag":"home-module__seckillTag___a6XGm","countdown":"home-module__countdown___PAWFw","countdownItem":"home-module__countdownItem___pdC59","seckillArrow":"home-module__seckillArrow___ioSEF","arrowIcon":"home-module__arrowIcon___JLbCT","seckillProducts":"home-module__seckillProducts___jUo6K","seckillProduct":"home-module__seckillProduct___NuSZ9","productImage":"home-module__productImage___Fy4mD","seckillName":"home-module__seckillName___wDMyq","seckillPriceArea":"home-module__seckillPriceArea___mAeSm","seckillPrice":"home-module__seckillPrice___bykOz","originalPrice":"home-module__originalPrice___liqTH","seckillProgress":"home-module__seckillProgress___YUKeD","seckillProgressBar":"home-module__seckillProgressBar___Dl5b0","seckillProgressText":"home-module__seckillProgressText___zAk1_","seckillBtn":"home-module__seckillBtn___VFtGp","recommendSection":"home-module__recommendSection___iVE2E","recommendHeader":"home-module__recommendHeader___Lqvnh","recommendLine":"home-module__recommendLine___gPiLo","recommendTitle":"home-module__recommendTitle___HZCoN","recommendTabs":"home-module__recommendTabs___uCz1H","recommendTab":"home-module__recommendTab___xHvWY","recommendTabText":"home-module__recommendTabText___vqO55","recommendTabActive":"home-module__recommendTabActive___Noz3_","productGrid":"home-module__productGrid___vabQw","productCard":"home-module__productCard___eqvIf","productInfo":"home-module__productInfo___xYtl8","productName":"home-module__productName___PqOUU","productTags":"home-module__productTags___aFFOA","tag":"home-module__tag___JDC0z","productPrice":"home-module__productPrice___O2MUC","priceSymbol":"home-module__priceSymbol___Orfad","currentPrice":"home-module__currentPrice___Kk_mK","salesInfo":"home-module__salesInfo___dMMqr"});
 
 /***/ })
 

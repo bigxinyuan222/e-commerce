@@ -114,6 +114,14 @@ const MinePage: React.FC = () => {
     Taro.navigateTo({ url: `/pages/cart/order/list/index?status=${status || 'all'}` });
   }, [isLoggedIn, goToLogin]);
 
+  const goToRefundList = useCallback(() => {
+    if (!isLoggedIn) {
+      goToLogin();
+      return;
+    }
+    Taro.navigateTo({ url: '/pages/cart/order/refund-list/index' });
+  }, [isLoggedIn, goToLogin]);
+
   const goToMyCoupons = useCallback(() => {
     if (!isLoggedIn) {
       goToLogin();
@@ -195,7 +203,7 @@ const MinePage: React.FC = () => {
             <OrderStatusItem 
               icon="💳" 
               label="退款/售后" 
-              onClick={() => goToOrderList('refunding')} 
+              onClick={() => goToRefundList()} 
             />
           </View>
         </View>

@@ -517,8 +517,8 @@ var OrderDetailPage = function OrderDetailPage() {
         })]
       }), isPendingDelivery && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_10__.View, {
         className: _styles_cart_order_detail_module_scss__WEBPACK_IMPORTED_MODULE_5__["default"].actionBtn,
-        onClick: handleCancel,
-        children: "\u53D6\u6D88\u8BA2\u5355"
+        onClick: handleRefund,
+        children: "\u7533\u8BF7\u9000\u6B3E"
       }), isPendingPickup && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.Fragment, {
         children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_10__.View, {
           className: _styles_cart_order_detail_module_scss__WEBPACK_IMPORTED_MODULE_5__["default"].actionBtn,

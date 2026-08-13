@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { View, Text, Image, ScrollView } from '@tarojs/components';
-import Taro from '@tarojs/taro';
+import Taro, { useDidHide } from '@tarojs/taro';
 import { fetchSeckillActivities, fetchProductSeckillActivity } from '@/api/seckill';
 import { getImageUrl, lazyImgProps } from '@/utils/image';
 import styles from '@/styles/home/seckill.module.scss';
@@ -139,6 +139,14 @@ const SeckillPage: React.FC = () => {
       }
     };
   }, [updateCountdown, currentActivity]);
+
+  // 页面隐藏时立即清除定时器，避免微信框架内部页面帧已销毁导致 __subPageFrameEndTime__ 报错
+  useDidHide(() => {
+    if (timerRef.current) {
+      clearInterval(timerRef.current);
+      timerRef.current = null;
+    }
+  });
 
   const goToProductDetail = (product: any) => {
     const productId = product.productId || product.id;

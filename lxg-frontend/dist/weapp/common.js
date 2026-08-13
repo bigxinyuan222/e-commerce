@@ -107,46 +107,132 @@ function pickFirstValidId() {
   }
   return '';
 }
+
+/**
+ * 兜底提取商品信息：兼容后端把商品字段平铺在退款记录上，或嵌套在 product/sku/goods/orderItem 等结构里
+ */
+function extractFallbackProduct(raw) {
+  var _ref, _ref2, _ref3, _ref4, _ref5, _ref6, _ref7, _ref8, _ref9, _raw$product, _ref0, _ref1, _ref10, _raw$sku, _ref11, _ref12, _ref13, _ref14, _ref15, _ref16, _ref17, _ref18, _ref19, _ref20, _ref21, _ref22, _ref23, _ref24, _ref25, _raw$productName, _ref26, _ref27, _ref28, _ref29, _ref30, _ref31, _ref32, _ref33, _ref34, _ref35, _raw$skuName, _ref36, _ref37, _ref38, _ref39, _ref40, _ref41, _ref42, _ref43, _ref44, _ref45, _raw$productImage, _ref50, _ref51, _ref52, _ref53, _ref54, _ref55, _ref56, _ref57, _ref58, _ref59, _raw$price, _ref60, _ref61, _ref62, _ref63, _ref64, _ref65, _ref66, _raw$quantity;
+  if (!raw || (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_typeof_js__WEBPACK_IMPORTED_MODULE_1__["default"])(raw) !== 'object') return null;
+  var product = (_ref = (_ref2 = (_ref3 = (_ref4 = (_ref5 = (_ref6 = (_ref7 = (_ref8 = (_ref9 = (_raw$product = raw.product) !== null && _raw$product !== void 0 ? _raw$product : raw.Product) !== null && _ref9 !== void 0 ? _ref9 : raw.goods) !== null && _ref8 !== void 0 ? _ref8 : raw.Goods) !== null && _ref7 !== void 0 ? _ref7 : raw.item) !== null && _ref6 !== void 0 ? _ref6 : raw.Item) !== null && _ref5 !== void 0 ? _ref5 : raw.orderItem) !== null && _ref4 !== void 0 ? _ref4 : raw.OrderItem) !== null && _ref3 !== void 0 ? _ref3 : raw.refundItem) !== null && _ref2 !== void 0 ? _ref2 : raw.RefundItem) !== null && _ref !== void 0 ? _ref : {};
+  var sku = (_ref0 = (_ref1 = (_ref10 = (_raw$sku = raw.sku) !== null && _raw$sku !== void 0 ? _raw$sku : raw.Sku) !== null && _ref10 !== void 0 ? _ref10 : product.sku) !== null && _ref1 !== void 0 ? _ref1 : product.Sku) !== null && _ref0 !== void 0 ? _ref0 : {};
+  var productName = (_ref11 = (_ref12 = (_ref13 = (_ref14 = (_ref15 = (_ref16 = (_ref17 = (_ref18 = (_ref19 = (_ref20 = (_ref21 = (_ref22 = (_ref23 = (_ref24 = (_ref25 = (_raw$productName = raw.productName) !== null && _raw$productName !== void 0 ? _raw$productName : raw.product_name) !== null && _ref25 !== void 0 ? _ref25 : raw.ProductName) !== null && _ref24 !== void 0 ? _ref24 : raw.name) !== null && _ref23 !== void 0 ? _ref23 : raw.Name) !== null && _ref22 !== void 0 ? _ref22 : raw.title) !== null && _ref21 !== void 0 ? _ref21 : raw.Title) !== null && _ref20 !== void 0 ? _ref20 : raw.goodsName) !== null && _ref19 !== void 0 ? _ref19 : raw.goods_name) !== null && _ref18 !== void 0 ? _ref18 : raw.GoodsName) !== null && _ref17 !== void 0 ? _ref17 : product.name) !== null && _ref16 !== void 0 ? _ref16 : product.Name) !== null && _ref15 !== void 0 ? _ref15 : product.productName) !== null && _ref14 !== void 0 ? _ref14 : product.title) !== null && _ref13 !== void 0 ? _ref13 : product.Title) !== null && _ref12 !== void 0 ? _ref12 : product.goodsName) !== null && _ref11 !== void 0 ? _ref11 : '';
+  var skuName = (_ref26 = (_ref27 = (_ref28 = (_ref29 = (_ref30 = (_ref31 = (_ref32 = (_ref33 = (_ref34 = (_ref35 = (_raw$skuName = raw.skuName) !== null && _raw$skuName !== void 0 ? _raw$skuName : raw.sku_name) !== null && _ref35 !== void 0 ? _ref35 : raw.SkuName) !== null && _ref34 !== void 0 ? _ref34 : raw.specName) !== null && _ref33 !== void 0 ? _ref33 : raw.spec_name) !== null && _ref32 !== void 0 ? _ref32 : raw.SpecName) !== null && _ref31 !== void 0 ? _ref31 : raw.specs) !== null && _ref30 !== void 0 ? _ref30 : sku.name) !== null && _ref29 !== void 0 ? _ref29 : sku.skuName) !== null && _ref28 !== void 0 ? _ref28 : sku.specName) !== null && _ref27 !== void 0 ? _ref27 : sku.specs) !== null && _ref26 !== void 0 ? _ref26 : '';
+  if (!skuName && (raw.specValues || sku.specValues)) {
+    var sv = raw.specValues || sku.specValues;
+    if ((0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_typeof_js__WEBPACK_IMPORTED_MODULE_1__["default"])(sv) === 'object') {
+      skuName = Object.values(sv).join('/') || '';
+    }
+  }
+  var image = (_ref36 = (_ref37 = (_ref38 = (_ref39 = (_ref40 = (_ref41 = (_ref42 = (_ref43 = (_ref44 = (_ref45 = (_raw$productImage = raw.productImage) !== null && _raw$productImage !== void 0 ? _raw$productImage : raw.product_image) !== null && _ref45 !== void 0 ? _ref45 : raw.ProductImage) !== null && _ref44 !== void 0 ? _ref44 : raw.image) !== null && _ref43 !== void 0 ? _ref43 : raw.Image) !== null && _ref42 !== void 0 ? _ref42 : raw.pic) !== null && _ref41 !== void 0 ? _ref41 : raw.Pic) !== null && _ref40 !== void 0 ? _ref40 : product.image) !== null && _ref39 !== void 0 ? _ref39 : product.Image) !== null && _ref38 !== void 0 ? _ref38 : product.pic) !== null && _ref37 !== void 0 ? _ref37 : product.Pic) !== null && _ref36 !== void 0 ? _ref36 : '';
+  if (!image) {
+    var _ref46, _ref47, _ref48, _ref49, _product$images;
+    var arr = (_ref46 = (_ref47 = (_ref48 = (_ref49 = (_product$images = product.images) !== null && _product$images !== void 0 ? _product$images : product.Images) !== null && _ref49 !== void 0 ? _ref49 : product.imageList) !== null && _ref48 !== void 0 ? _ref48 : product.ImageList) !== null && _ref47 !== void 0 ? _ref47 : sku.images) !== null && _ref46 !== void 0 ? _ref46 : sku.Images;
+    if (Array.isArray(arr) && arr.length > 0) {
+      image = arr[0];
+    }
+  }
+  if (typeof image === 'string') {
+    if (image.startsWith('[')) {
+      try {
+        var parsed = JSON.parse(image);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          image = String(parsed[0]).replace(/^`|`$/g, '');
+        }
+      } catch (_unused) {/* ignore */}
+    } else {
+      image = image.replace(/^`|`$/g, '');
+    }
+  }
+  var price = Number((_ref50 = (_ref51 = (_ref52 = (_ref53 = (_ref54 = (_ref55 = (_ref56 = (_ref57 = (_ref58 = (_ref59 = (_raw$price = raw.price) !== null && _raw$price !== void 0 ? _raw$price : raw.Price) !== null && _ref59 !== void 0 ? _ref59 : raw.refundPrice) !== null && _ref58 !== void 0 ? _ref58 : raw.refund_price) !== null && _ref57 !== void 0 ? _ref57 : raw.RefundPrice) !== null && _ref56 !== void 0 ? _ref56 : raw.amount) !== null && _ref55 !== void 0 ? _ref55 : raw.Amount) !== null && _ref54 !== void 0 ? _ref54 : sku.price) !== null && _ref53 !== void 0 ? _ref53 : sku.Price) !== null && _ref52 !== void 0 ? _ref52 : product.price) !== null && _ref51 !== void 0 ? _ref51 : product.Price) !== null && _ref50 !== void 0 ? _ref50 : 0);
+  var quantity = Number((_ref60 = (_ref61 = (_ref62 = (_ref63 = (_ref64 = (_ref65 = (_ref66 = (_raw$quantity = raw.quantity) !== null && _raw$quantity !== void 0 ? _raw$quantity : raw.Quantity) !== null && _ref66 !== void 0 ? _ref66 : raw.count) !== null && _ref65 !== void 0 ? _ref65 : raw.Count) !== null && _ref64 !== void 0 ? _ref64 : raw.num) !== null && _ref63 !== void 0 ? _ref63 : raw.Num) !== null && _ref62 !== void 0 ? _ref62 : sku.quantity) !== null && _ref61 !== void 0 ? _ref61 : product.quantity) !== null && _ref60 !== void 0 ? _ref60 : 1);
+  if (!productName && !image) return null;
+  return {
+    productName: productName,
+    skuName: skuName,
+    image: image,
+    price: price,
+    quantity: quantity
+  };
+}
 function transformCartItem(raw) {
-  var _ref, _ref2, _ref3, _raw$skuName, _ref4, _ref5, _ref6, _ref7, _raw$image, _ref8, _ref9, _ref0, _raw$productName, _ref1, _ref10, _ref11, _ref12, _ref13, _raw$price, _ref14, _ref15, _ref16, _raw$quantity, _ref17, _ref18, _raw$stock, _ref19, _raw$selected, _ref20, _ref21, _raw$isSeckill, _ref22, _ref23, _raw$seckillPrice, _ref24, _ref25, _ref26, _raw$originalPrice, _ref27, _ref28, _raw$storeId, _ref29, _ref30, _raw$storeName, _ref31, _raw$checked, _ref32, _ref33, _raw$skuCode, _ref34, _ref35, _raw$productCode, _ref36, _ref37, _ref38, _raw$createTime, _ref39, _ref40, _ref41, _raw$updateTime;
+  var _ref67, _ref68, _ref69, _raw$sku2, _ref70, _ref71, _ref72, _ref73, _ref74, _ref75, _ref76, _ref77, _ref78, _raw$product2, _ref79, _ref80, _ref81, _ref82, _ref83, _ref84, _ref85, _ref86, _ref87, _ref88, _raw$skuName2, _rawSku$product, _rawSku$product2, _rawSku$product3, _rawSku$product4, _rawSku$product5, _rawSku$product6, _product$images2, _product$Images, _ref89, _ref90, _ref91, _ref92, _ref93, _ref94, _ref95, _ref96, _ref97, _ref98, _raw$productName2, _ref99, _ref100, _ref101, _ref102, _ref103, _ref104, _ref105, _ref106, _ref107, _ref108, _ref109, _ref110, _ref111, _ref112, _raw$price2, _rawSku$product7, _rawSku$product8, _ref113, _ref114, _ref115, _raw$quantity2, _ref116, _ref117, _ref118, _ref119, _ref120, _ref121, _raw$stock, _ref122, _raw$selected, _ref123, _ref124, _ref125, _ref126, _raw$isSeckill, _ref127, _ref128, _ref129, _ref130, _ref131, _raw$seckillPrice, _ref132, _ref133, _ref134, _ref135, _ref136, _raw$originalPrice, _ref137, _ref138, _ref139, _ref140, _raw$storeId, _ref141, _ref142, _ref143, _ref144, _raw$storeName, _ref145, _raw$checked, _ref146, _ref147, _ref148, _ref149, _ref150, _raw$skuCode, _ref151, _ref152, _ref153, _ref154, _raw$productCode, _ref155, _ref156, _ref157, _raw$createTime, _ref158, _ref159, _ref160, _raw$updateTime;
+  var id = pickFirstValidId(raw.id, raw.Id, raw.ID, raw.cartId, raw.cart_id, raw.CartId, raw.Cart_id, raw.cartItemId, raw.cart_item_id, raw.CartItemId, raw.CartItemID, raw.cartItemID, raw.cid, raw.Cid, raw.CID, raw.itemId, raw.item_id, raw.ItemId, raw.ItemID, raw.shoppingCartId, raw.shopping_cart_id, raw.ShoppingCartId, raw.shoppingCartItemId, raw.shopping_cart_item_id, raw.ShoppingCartItemId);
+  if (!id) {
+    console.warn('[transformCartItem] 无法提取有效购物车ID，原始数据:', JSON.stringify(raw));
+  }
+
+  // 兼容后端返回的嵌套商品/SKU结构：
+  // 1. { product: {...}, sku: {...}, quantity: 1 }
+  // 2. { sku: { product: {...}, ... }, quantity: 1 }
+  var rawSku = (_ref67 = (_ref68 = (_ref69 = (_raw$sku2 = raw.sku) !== null && _raw$sku2 !== void 0 ? _raw$sku2 : raw.Sku) !== null && _ref69 !== void 0 ? _ref69 : raw.skuInfo) !== null && _ref68 !== void 0 ? _ref68 : raw.SkuInfo) !== null && _ref67 !== void 0 ? _ref67 : {};
+  var product = (_ref70 = (_ref71 = (_ref72 = (_ref73 = (_ref74 = (_ref75 = (_ref76 = (_ref77 = (_ref78 = (_raw$product2 = raw.product) !== null && _raw$product2 !== void 0 ? _raw$product2 : raw.Product) !== null && _ref78 !== void 0 ? _ref78 : raw.goods) !== null && _ref77 !== void 0 ? _ref77 : raw.Goods) !== null && _ref76 !== void 0 ? _ref76 : raw.item) !== null && _ref75 !== void 0 ? _ref75 : raw.Item) !== null && _ref74 !== void 0 ? _ref74 : rawSku.product) !== null && _ref73 !== void 0 ? _ref73 : rawSku.Product) !== null && _ref72 !== void 0 ? _ref72 : rawSku.goods) !== null && _ref71 !== void 0 ? _ref71 : rawSku.Goods) !== null && _ref70 !== void 0 ? _ref70 : {};
+
   // 处理 specValues：后端返回对象 {"颜色":"红色"}，需要转为字符串
-  var skuName = (_ref = (_ref2 = (_ref3 = (_raw$skuName = raw.skuName) !== null && _raw$skuName !== void 0 ? _raw$skuName : raw.sku_name) !== null && _ref3 !== void 0 ? _ref3 : raw.SkuName) !== null && _ref2 !== void 0 ? _ref2 : raw.specName) !== null && _ref !== void 0 ? _ref : '';
+  var skuName = (_ref79 = (_ref80 = (_ref81 = (_ref82 = (_ref83 = (_ref84 = (_ref85 = (_ref86 = (_ref87 = (_ref88 = (_raw$skuName2 = raw.skuName) !== null && _raw$skuName2 !== void 0 ? _raw$skuName2 : raw.sku_name) !== null && _ref88 !== void 0 ? _ref88 : raw.SkuName) !== null && _ref87 !== void 0 ? _ref87 : raw.specName) !== null && _ref86 !== void 0 ? _ref86 : rawSku.name) !== null && _ref85 !== void 0 ? _ref85 : rawSku.skuName) !== null && _ref84 !== void 0 ? _ref84 : rawSku.sku_name) !== null && _ref83 !== void 0 ? _ref83 : rawSku.SkuName) !== null && _ref82 !== void 0 ? _ref82 : rawSku.specName) !== null && _ref81 !== void 0 ? _ref81 : rawSku.title) !== null && _ref80 !== void 0 ? _ref80 : rawSku.Title) !== null && _ref79 !== void 0 ? _ref79 : '';
   if (!skuName && raw.specValues && (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_typeof_js__WEBPACK_IMPORTED_MODULE_1__["default"])(raw.specValues) === 'object') {
     skuName = Object.values(raw.specValues).join('/') || '';
   }
+  if (!skuName && rawSku.specValues && (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_typeof_js__WEBPACK_IMPORTED_MODULE_1__["default"])(rawSku.specValues) === 'object') {
+    skuName = Object.values(rawSku.specValues).join('/') || '';
+  }
+  if (!skuName && rawSku.specs && (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_typeof_js__WEBPACK_IMPORTED_MODULE_1__["default"])(rawSku.specs) === 'object') {
+    skuName = Object.values(rawSku.specs).join('/') || '';
+  }
+  if (!skuName && product.specs && (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_typeof_js__WEBPACK_IMPORTED_MODULE_1__["default"])(product.specs) === 'object') {
+    skuName = Object.values(product.specs).join('/') || '';
+  }
 
-  // 处理 image：后端可能返回 JSON 字符串 '["url"]' 或普通字符串
-  var image = (_ref4 = (_ref5 = (_ref6 = (_ref7 = (_raw$image = raw.image) !== null && _raw$image !== void 0 ? _raw$image : raw.imageUrl) !== null && _ref7 !== void 0 ? _ref7 : raw.image_url) !== null && _ref6 !== void 0 ? _ref6 : raw.Image) !== null && _ref5 !== void 0 ? _ref5 : raw.pic) !== null && _ref4 !== void 0 ? _ref4 : '';
-  if (typeof image === 'string' && image.startsWith('[')) {
-    try {
-      var parsed = JSON.parse(image);
-      if (Array.isArray(parsed) && parsed.length > 0) {
-        // 去除模板字符串的反引号
-        image = parsed[0].replace(/^`|`$/g, '');
-      }
-    } catch (_unused) {/* ignore */}
+  // 处理 image：后端可能返回 JSON 字符串 '["url"]' 或普通字符串，URL 前后可能带反引号
+  var imageCandidates = [raw.image, raw.imageUrl, raw.image_url, raw.Image, raw.pic, raw.mainImage, raw.main_image, raw.MainImage, raw.cover, raw.Cover, raw.thumbnail, raw.Thumbnail, raw.productImage, raw.product_image, raw.ProductImage, rawSku.image, rawSku.Image, rawSku.pic, rawSku.skuImage, rawSku.SkuImage, rawSku.mainImage, rawSku.main_image, rawSku.MainImage, rawSku.cover, rawSku.Cover, rawSku.thumbnail, rawSku.Thumbnail, (_rawSku$product = rawSku.product) === null || _rawSku$product === void 0 || (_rawSku$product = _rawSku$product.images) === null || _rawSku$product === void 0 ? void 0 : _rawSku$product[0], (_rawSku$product2 = rawSku.product) === null || _rawSku$product2 === void 0 || (_rawSku$product2 = _rawSku$product2.Images) === null || _rawSku$product2 === void 0 ? void 0 : _rawSku$product2[0], (_rawSku$product3 = rawSku.product) === null || _rawSku$product3 === void 0 ? void 0 : _rawSku$product3.mainImage, (_rawSku$product4 = rawSku.product) === null || _rawSku$product4 === void 0 ? void 0 : _rawSku$product4.MainImage, (_rawSku$product5 = rawSku.product) === null || _rawSku$product5 === void 0 ? void 0 : _rawSku$product5.image, (_rawSku$product6 = rawSku.product) === null || _rawSku$product6 === void 0 ? void 0 : _rawSku$product6.Image, product.image, product.Image, product.pic, (_product$images2 = product.images) === null || _product$images2 === void 0 ? void 0 : _product$images2[0], (_product$Images = product.Images) === null || _product$Images === void 0 ? void 0 : _product$Images[0], product.mainImage, product.MainImage, product.main_image, product.imageUrl, product.image_url, product.ImageUrl, product.cover, product.Cover, product.thumbnail, product.Thumbnail];
+  var image = '';
+  for (var _i2 = 0, _imageCandidates = imageCandidates; _i2 < _imageCandidates.length; _i2++) {
+    var candidate = _imageCandidates[_i2];
+    if (candidate !== undefined && candidate !== null && candidate !== '') {
+      image = candidate;
+      break;
+    }
+  }
+  if (typeof image === 'string') {
+    if (image.startsWith('[')) {
+      try {
+        var parsed = JSON.parse(image);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          image = String(parsed[0]).replace(/^`|`$/g, '');
+        }
+      } catch (_unused2) {/* ignore */}
+    } else {
+      image = image.replace(/^`|`$/g, '');
+    }
+  }
+  var productName = (_ref89 = (_ref90 = (_ref91 = (_ref92 = (_ref93 = (_ref94 = (_ref95 = (_ref96 = (_ref97 = (_ref98 = (_raw$productName2 = raw.productName) !== null && _raw$productName2 !== void 0 ? _raw$productName2 : raw.product_name) !== null && _ref98 !== void 0 ? _ref98 : raw.ProductName) !== null && _ref97 !== void 0 ? _ref97 : raw.name) !== null && _ref96 !== void 0 ? _ref96 : raw.title) !== null && _ref95 !== void 0 ? _ref95 : product.name) !== null && _ref94 !== void 0 ? _ref94 : product.Name) !== null && _ref93 !== void 0 ? _ref93 : product.title) !== null && _ref92 !== void 0 ? _ref92 : product.Title) !== null && _ref91 !== void 0 ? _ref91 : product.productName) !== null && _ref90 !== void 0 ? _ref90 : product.product_name) !== null && _ref89 !== void 0 ? _ref89 : '';
+  var price = Number((_ref99 = (_ref100 = (_ref101 = (_ref102 = (_ref103 = (_ref104 = (_ref105 = (_ref106 = (_ref107 = (_ref108 = (_ref109 = (_ref110 = (_ref111 = (_ref112 = (_raw$price2 = raw.price) !== null && _raw$price2 !== void 0 ? _raw$price2 : raw.Price) !== null && _ref112 !== void 0 ? _ref112 : raw.salePrice) !== null && _ref111 !== void 0 ? _ref111 : raw.sale_price) !== null && _ref110 !== void 0 ? _ref110 : raw.discountPrice) !== null && _ref109 !== void 0 ? _ref109 : raw.amount) !== null && _ref108 !== void 0 ? _ref108 : rawSku.price) !== null && _ref107 !== void 0 ? _ref107 : rawSku.Price) !== null && _ref106 !== void 0 ? _ref106 : rawSku.salePrice) !== null && _ref105 !== void 0 ? _ref105 : rawSku.sale_price) !== null && _ref104 !== void 0 ? _ref104 : rawSku.discountPrice) !== null && _ref103 !== void 0 ? _ref103 : product.price) !== null && _ref102 !== void 0 ? _ref102 : product.Price) !== null && _ref101 !== void 0 ? _ref101 : product.salePrice) !== null && _ref100 !== void 0 ? _ref100 : product.sale_price) !== null && _ref99 !== void 0 ? _ref99 : 0);
+
+  // 当转换后关键信息仍缺失时打印完整原始数据，便于排查后端字段问题
+  if (!productName || !price || !image) {
+    console.warn('[transformCartItem] 商品关键信息缺失，原始数据:', JSON.stringify(raw));
   }
   return {
-    id: pickFirstValidId(raw.id, raw.Id, raw.cartId, raw.cart_id, raw.cartItemId, raw.cart_item_id, raw.CartItemId, raw.cid, raw.itemId, raw.item_id, raw.ID),
-    productId: pickFirstValidId(raw.productId, raw.product_id, raw.ProductId, raw.pid, raw.productID),
-    productName: (_ref8 = (_ref9 = (_ref0 = (_raw$productName = raw.productName) !== null && _raw$productName !== void 0 ? _raw$productName : raw.product_name) !== null && _ref0 !== void 0 ? _ref0 : raw.ProductName) !== null && _ref9 !== void 0 ? _ref9 : raw.name) !== null && _ref8 !== void 0 ? _ref8 : '',
-    skuId: pickFirstValidId(raw.skuId, raw.sku_id, raw.SkuId, raw.skuID),
+    id: id,
+    productId: pickFirstValidId(raw.productId, raw.product_id, raw.ProductId, raw.pid, raw.productID, product.id, product.Id, product.ID, rawSku.productId, (_rawSku$product7 = rawSku.product) === null || _rawSku$product7 === void 0 ? void 0 : _rawSku$product7.id, (_rawSku$product8 = rawSku.product) === null || _rawSku$product8 === void 0 ? void 0 : _rawSku$product8.ID),
+    productName: productName,
+    skuId: pickFirstValidId(raw.skuId, raw.sku_id, raw.SkuId, raw.skuID, rawSku.id, rawSku.Id, rawSku.ID),
     skuName: skuName,
-    price: Number((_ref1 = (_ref10 = (_ref11 = (_ref12 = (_ref13 = (_raw$price = raw.price) !== null && _raw$price !== void 0 ? _raw$price : raw.Price) !== null && _ref13 !== void 0 ? _ref13 : raw.salePrice) !== null && _ref12 !== void 0 ? _ref12 : raw.sale_price) !== null && _ref11 !== void 0 ? _ref11 : raw.discountPrice) !== null && _ref10 !== void 0 ? _ref10 : raw.amount) !== null && _ref1 !== void 0 ? _ref1 : 0),
-    quantity: Number((_ref14 = (_ref15 = (_ref16 = (_raw$quantity = raw.quantity) !== null && _raw$quantity !== void 0 ? _raw$quantity : raw.Quantity) !== null && _ref16 !== void 0 ? _ref16 : raw.count) !== null && _ref15 !== void 0 ? _ref15 : raw.num) !== null && _ref14 !== void 0 ? _ref14 : 1),
-    stock: Number((_ref17 = (_ref18 = (_raw$stock = raw.stock) !== null && _raw$stock !== void 0 ? _raw$stock : raw.Stock) !== null && _ref18 !== void 0 ? _ref18 : raw.maxQuantity) !== null && _ref17 !== void 0 ? _ref17 : 999),
+    price: price,
+    quantity: Number((_ref113 = (_ref114 = (_ref115 = (_raw$quantity2 = raw.quantity) !== null && _raw$quantity2 !== void 0 ? _raw$quantity2 : raw.Quantity) !== null && _ref115 !== void 0 ? _ref115 : raw.count) !== null && _ref114 !== void 0 ? _ref114 : raw.num) !== null && _ref113 !== void 0 ? _ref113 : 1),
+    stock: Number((_ref116 = (_ref117 = (_ref118 = (_ref119 = (_ref120 = (_ref121 = (_raw$stock = raw.stock) !== null && _raw$stock !== void 0 ? _raw$stock : raw.Stock) !== null && _ref121 !== void 0 ? _ref121 : raw.maxQuantity) !== null && _ref120 !== void 0 ? _ref120 : rawSku.stock) !== null && _ref119 !== void 0 ? _ref119 : rawSku.Stock) !== null && _ref118 !== void 0 ? _ref118 : product.stock) !== null && _ref117 !== void 0 ? _ref117 : product.Stock) !== null && _ref116 !== void 0 ? _ref116 : 999),
     image: image,
-    selected: (_ref19 = (_raw$selected = raw.selected) !== null && _raw$selected !== void 0 ? _raw$selected : raw.Selected) !== null && _ref19 !== void 0 ? _ref19 : true,
-    isSeckill: (_ref20 = (_ref21 = (_raw$isSeckill = raw.isSeckill) !== null && _raw$isSeckill !== void 0 ? _raw$isSeckill : raw.is_seckill) !== null && _ref21 !== void 0 ? _ref21 : raw.IsSeckill) !== null && _ref20 !== void 0 ? _ref20 : false,
-    seckillPrice: (_ref22 = (_ref23 = (_raw$seckillPrice = raw.seckillPrice) !== null && _raw$seckillPrice !== void 0 ? _raw$seckillPrice : raw.seckill_price) !== null && _ref23 !== void 0 ? _ref23 : raw.SeckillPrice) !== null && _ref22 !== void 0 ? _ref22 : null,
-    originalPrice: (_ref24 = (_ref25 = (_ref26 = (_raw$originalPrice = raw.originalPrice) !== null && _raw$originalPrice !== void 0 ? _raw$originalPrice : raw.original_price) !== null && _ref26 !== void 0 ? _ref26 : raw.OriginalPrice) !== null && _ref25 !== void 0 ? _ref25 : raw.marketPrice) !== null && _ref24 !== void 0 ? _ref24 : null,
-    storeId: (_ref27 = (_ref28 = (_raw$storeId = raw.storeId) !== null && _raw$storeId !== void 0 ? _raw$storeId : raw.store_id) !== null && _ref28 !== void 0 ? _ref28 : raw.StoreId) !== null && _ref27 !== void 0 ? _ref27 : null,
-    storeName: (_ref29 = (_ref30 = (_raw$storeName = raw.storeName) !== null && _raw$storeName !== void 0 ? _raw$storeName : raw.store_name) !== null && _ref30 !== void 0 ? _ref30 : raw.StoreName) !== null && _ref29 !== void 0 ? _ref29 : '',
-    checked: (_ref31 = (_raw$checked = raw.checked) !== null && _raw$checked !== void 0 ? _raw$checked : raw.Checked) !== null && _ref31 !== void 0 ? _ref31 : null,
-    skuCode: (_ref32 = (_ref33 = (_raw$skuCode = raw.skuCode) !== null && _raw$skuCode !== void 0 ? _raw$skuCode : raw.sku_code) !== null && _ref33 !== void 0 ? _ref33 : raw.SkuCode) !== null && _ref32 !== void 0 ? _ref32 : '',
-    productCode: (_ref34 = (_ref35 = (_raw$productCode = raw.productCode) !== null && _raw$productCode !== void 0 ? _raw$productCode : raw.product_code) !== null && _ref35 !== void 0 ? _ref35 : raw.ProductCode) !== null && _ref34 !== void 0 ? _ref34 : '',
-    createTime: (_ref36 = (_ref37 = (_ref38 = (_raw$createTime = raw.createTime) !== null && _raw$createTime !== void 0 ? _raw$createTime : raw.create_time) !== null && _ref38 !== void 0 ? _ref38 : raw.CreateTime) !== null && _ref37 !== void 0 ? _ref37 : raw.CreatedAt) !== null && _ref36 !== void 0 ? _ref36 : '',
-    updateTime: (_ref39 = (_ref40 = (_ref41 = (_raw$updateTime = raw.updateTime) !== null && _raw$updateTime !== void 0 ? _raw$updateTime : raw.update_time) !== null && _ref41 !== void 0 ? _ref41 : raw.UpdateTime) !== null && _ref40 !== void 0 ? _ref40 : raw.UpdatedAt) !== null && _ref39 !== void 0 ? _ref39 : ''
+    selected: (_ref122 = (_raw$selected = raw.selected) !== null && _raw$selected !== void 0 ? _raw$selected : raw.Selected) !== null && _ref122 !== void 0 ? _ref122 : true,
+    isSeckill: (_ref123 = (_ref124 = (_ref125 = (_ref126 = (_raw$isSeckill = raw.isSeckill) !== null && _raw$isSeckill !== void 0 ? _raw$isSeckill : raw.is_seckill) !== null && _ref126 !== void 0 ? _ref126 : raw.IsSeckill) !== null && _ref125 !== void 0 ? _ref125 : product.isSeckill) !== null && _ref124 !== void 0 ? _ref124 : product.is_seckill) !== null && _ref123 !== void 0 ? _ref123 : false,
+    seckillPrice: (_ref127 = (_ref128 = (_ref129 = (_ref130 = (_ref131 = (_raw$seckillPrice = raw.seckillPrice) !== null && _raw$seckillPrice !== void 0 ? _raw$seckillPrice : raw.seckill_price) !== null && _ref131 !== void 0 ? _ref131 : raw.SeckillPrice) !== null && _ref130 !== void 0 ? _ref130 : rawSku.seckillPrice) !== null && _ref129 !== void 0 ? _ref129 : rawSku.seckill_price) !== null && _ref128 !== void 0 ? _ref128 : product.seckillPrice) !== null && _ref127 !== void 0 ? _ref127 : null,
+    originalPrice: (_ref132 = (_ref133 = (_ref134 = (_ref135 = (_ref136 = (_raw$originalPrice = raw.originalPrice) !== null && _raw$originalPrice !== void 0 ? _raw$originalPrice : raw.original_price) !== null && _ref136 !== void 0 ? _ref136 : raw.OriginalPrice) !== null && _ref135 !== void 0 ? _ref135 : raw.marketPrice) !== null && _ref134 !== void 0 ? _ref134 : rawSku.originalPrice) !== null && _ref133 !== void 0 ? _ref133 : product.originalPrice) !== null && _ref132 !== void 0 ? _ref132 : null,
+    storeId: (_ref137 = (_ref138 = (_ref139 = (_ref140 = (_raw$storeId = raw.storeId) !== null && _raw$storeId !== void 0 ? _raw$storeId : raw.store_id) !== null && _ref140 !== void 0 ? _ref140 : raw.StoreId) !== null && _ref139 !== void 0 ? _ref139 : product.storeId) !== null && _ref138 !== void 0 ? _ref138 : product.store_id) !== null && _ref137 !== void 0 ? _ref137 : null,
+    storeName: (_ref141 = (_ref142 = (_ref143 = (_ref144 = (_raw$storeName = raw.storeName) !== null && _raw$storeName !== void 0 ? _raw$storeName : raw.store_name) !== null && _ref144 !== void 0 ? _ref144 : raw.StoreName) !== null && _ref143 !== void 0 ? _ref143 : product.storeName) !== null && _ref142 !== void 0 ? _ref142 : product.store_name) !== null && _ref141 !== void 0 ? _ref141 : '',
+    checked: (_ref145 = (_raw$checked = raw.checked) !== null && _raw$checked !== void 0 ? _raw$checked : raw.Checked) !== null && _ref145 !== void 0 ? _ref145 : null,
+    skuCode: (_ref146 = (_ref147 = (_ref148 = (_ref149 = (_ref150 = (_raw$skuCode = raw.skuCode) !== null && _raw$skuCode !== void 0 ? _raw$skuCode : raw.sku_code) !== null && _ref150 !== void 0 ? _ref150 : raw.SkuCode) !== null && _ref149 !== void 0 ? _ref149 : rawSku.skuCode) !== null && _ref148 !== void 0 ? _ref148 : rawSku.sku_code) !== null && _ref147 !== void 0 ? _ref147 : rawSku.SkuCode) !== null && _ref146 !== void 0 ? _ref146 : '',
+    productCode: (_ref151 = (_ref152 = (_ref153 = (_ref154 = (_raw$productCode = raw.productCode) !== null && _raw$productCode !== void 0 ? _raw$productCode : raw.product_code) !== null && _ref154 !== void 0 ? _ref154 : raw.ProductCode) !== null && _ref153 !== void 0 ? _ref153 : product.productCode) !== null && _ref152 !== void 0 ? _ref152 : product.product_code) !== null && _ref151 !== void 0 ? _ref151 : '',
+    createTime: (_ref155 = (_ref156 = (_ref157 = (_raw$createTime = raw.createTime) !== null && _raw$createTime !== void 0 ? _raw$createTime : raw.create_time) !== null && _ref157 !== void 0 ? _ref157 : raw.CreateTime) !== null && _ref156 !== void 0 ? _ref156 : raw.CreatedAt) !== null && _ref155 !== void 0 ? _ref155 : '',
+    updateTime: (_ref158 = (_ref159 = (_ref160 = (_raw$updateTime = raw.updateTime) !== null && _raw$updateTime !== void 0 ? _raw$updateTime : raw.update_time) !== null && _ref160 !== void 0 ? _ref160 : raw.UpdateTime) !== null && _ref159 !== void 0 ? _ref159 : raw.UpdatedAt) !== null && _ref158 !== void 0 ? _ref158 : ''
   };
 }
 
@@ -162,26 +248,26 @@ var orderStatusCodeMap = {
   5: 'cancelled'
 };
 function transformOrderItem(raw) {
-  var _ref42, _ref43, _raw$status, _orderStatusCodeMap$r, _ref44, _ref45, _raw$totalAmount, _ref46, _ref47, _raw$payAmount, _ref48, _ref49, _raw$freightAmount, _ref50, _ref51, _ref52, _ref53, _raw$couponAmount, _ref54, _ref55, _raw$itemCount, _ref56, _ref57, _ref58, _ref59, _raw$createdAt, _ref60, _ref61, _ref62, _ref63, _raw$payAt, _ref64, _raw$address, _ref65, _ref66, _ref67, _raw$storeName2, _raw$store, _ref68, _raw$store2, _ref69, _raw$remark, _ref70, _ref71, _ref72, _ref73, _raw$isReviewed;
-  var rawStatus = (_ref42 = (_ref43 = (_raw$status = raw.status) !== null && _raw$status !== void 0 ? _raw$status : raw.Status) !== null && _ref43 !== void 0 ? _ref43 : raw.orderStatus) !== null && _ref42 !== void 0 ? _ref42 : '';
+  var _ref161, _ref162, _raw$status, _orderStatusCodeMap$r, _ref163, _ref164, _raw$totalAmount, _ref165, _ref166, _raw$payAmount, _ref167, _ref168, _raw$freightAmount, _ref169, _ref170, _ref171, _ref172, _raw$couponAmount, _ref173, _ref174, _raw$itemCount, _ref175, _ref176, _ref177, _ref178, _raw$createdAt, _ref179, _ref180, _ref181, _ref182, _raw$payAt, _ref183, _raw$address, _ref184, _ref185, _ref186, _raw$storeName2, _raw$store, _ref187, _raw$store2, _ref188, _raw$remark, _ref189, _ref190, _ref191, _ref192, _raw$isReviewed;
+  var rawStatus = (_ref161 = (_ref162 = (_raw$status = raw.status) !== null && _raw$status !== void 0 ? _raw$status : raw.Status) !== null && _ref162 !== void 0 ? _ref162 : raw.orderStatus) !== null && _ref161 !== void 0 ? _ref161 : '';
   var status = typeof rawStatus === 'number' ? (_orderStatusCodeMap$r = orderStatusCodeMap[rawStatus]) !== null && _orderStatusCodeMap$r !== void 0 ? _orderStatusCodeMap$r : String(rawStatus) : rawStatus;
   return {
     id: pickFirstValidId(raw.id, raw.Id, raw.ID, raw.orderId, raw.order_id),
     orderNo: pickFirstValidId(raw.orderNo, raw.order_no, raw.OrderNo, raw.OrderNO),
     status: status,
-    totalAmount: Number((_ref44 = (_ref45 = (_raw$totalAmount = raw.totalAmount) !== null && _raw$totalAmount !== void 0 ? _raw$totalAmount : raw.total_amount) !== null && _ref45 !== void 0 ? _ref45 : raw.TotalAmount) !== null && _ref44 !== void 0 ? _ref44 : 0),
-    payAmount: Number((_ref46 = (_ref47 = (_raw$payAmount = raw.payAmount) !== null && _raw$payAmount !== void 0 ? _raw$payAmount : raw.pay_amount) !== null && _ref47 !== void 0 ? _ref47 : raw.PayAmount) !== null && _ref46 !== void 0 ? _ref46 : 0),
-    freightAmount: Number((_ref48 = (_ref49 = (_raw$freightAmount = raw.freightAmount) !== null && _raw$freightAmount !== void 0 ? _raw$freightAmount : raw.freight_amount) !== null && _ref49 !== void 0 ? _ref49 : raw.FreightAmount) !== null && _ref48 !== void 0 ? _ref48 : 0),
-    couponAmount: Number((_ref50 = (_ref51 = (_ref52 = (_ref53 = (_raw$couponAmount = raw.couponAmount) !== null && _raw$couponAmount !== void 0 ? _raw$couponAmount : raw.coupon_amount) !== null && _ref53 !== void 0 ? _ref53 : raw.CouponAmount) !== null && _ref52 !== void 0 ? _ref52 : raw.discountAmount) !== null && _ref51 !== void 0 ? _ref51 : raw.discount_amount) !== null && _ref50 !== void 0 ? _ref50 : 0),
-    itemCount: Number((_ref54 = (_ref55 = (_raw$itemCount = raw.itemCount) !== null && _raw$itemCount !== void 0 ? _raw$itemCount : raw.item_count) !== null && _ref55 !== void 0 ? _ref55 : raw.ItemCount) !== null && _ref54 !== void 0 ? _ref54 : Array.isArray(raw.items) ? raw.items.length : 0),
-    createdAt: (_ref56 = (_ref57 = (_ref58 = (_ref59 = (_raw$createdAt = raw.createdAt) !== null && _raw$createdAt !== void 0 ? _raw$createdAt : raw.created_at) !== null && _ref59 !== void 0 ? _ref59 : raw.createTime) !== null && _ref58 !== void 0 ? _ref58 : raw.CreateTime) !== null && _ref57 !== void 0 ? _ref57 : raw.CreatedAt) !== null && _ref56 !== void 0 ? _ref56 : '',
-    payAt: (_ref60 = (_ref61 = (_ref62 = (_ref63 = (_raw$payAt = raw.payAt) !== null && _raw$payAt !== void 0 ? _raw$payAt : raw.pay_at) !== null && _ref63 !== void 0 ? _ref63 : raw.PayAt) !== null && _ref62 !== void 0 ? _ref62 : raw.paidAt) !== null && _ref61 !== void 0 ? _ref61 : raw.PaidAt) !== null && _ref60 !== void 0 ? _ref60 : '',
+    totalAmount: Number((_ref163 = (_ref164 = (_raw$totalAmount = raw.totalAmount) !== null && _raw$totalAmount !== void 0 ? _raw$totalAmount : raw.total_amount) !== null && _ref164 !== void 0 ? _ref164 : raw.TotalAmount) !== null && _ref163 !== void 0 ? _ref163 : 0),
+    payAmount: Number((_ref165 = (_ref166 = (_raw$payAmount = raw.payAmount) !== null && _raw$payAmount !== void 0 ? _raw$payAmount : raw.pay_amount) !== null && _ref166 !== void 0 ? _ref166 : raw.PayAmount) !== null && _ref165 !== void 0 ? _ref165 : 0),
+    freightAmount: Number((_ref167 = (_ref168 = (_raw$freightAmount = raw.freightAmount) !== null && _raw$freightAmount !== void 0 ? _raw$freightAmount : raw.freight_amount) !== null && _ref168 !== void 0 ? _ref168 : raw.FreightAmount) !== null && _ref167 !== void 0 ? _ref167 : 0),
+    couponAmount: Number((_ref169 = (_ref170 = (_ref171 = (_ref172 = (_raw$couponAmount = raw.couponAmount) !== null && _raw$couponAmount !== void 0 ? _raw$couponAmount : raw.coupon_amount) !== null && _ref172 !== void 0 ? _ref172 : raw.CouponAmount) !== null && _ref171 !== void 0 ? _ref171 : raw.discountAmount) !== null && _ref170 !== void 0 ? _ref170 : raw.discount_amount) !== null && _ref169 !== void 0 ? _ref169 : 0),
+    itemCount: Number((_ref173 = (_ref174 = (_raw$itemCount = raw.itemCount) !== null && _raw$itemCount !== void 0 ? _raw$itemCount : raw.item_count) !== null && _ref174 !== void 0 ? _ref174 : raw.ItemCount) !== null && _ref173 !== void 0 ? _ref173 : Array.isArray(raw.items) ? raw.items.length : 0),
+    createdAt: (_ref175 = (_ref176 = (_ref177 = (_ref178 = (_raw$createdAt = raw.createdAt) !== null && _raw$createdAt !== void 0 ? _raw$createdAt : raw.created_at) !== null && _ref178 !== void 0 ? _ref178 : raw.createTime) !== null && _ref177 !== void 0 ? _ref177 : raw.CreateTime) !== null && _ref176 !== void 0 ? _ref176 : raw.CreatedAt) !== null && _ref175 !== void 0 ? _ref175 : '',
+    payAt: (_ref179 = (_ref180 = (_ref181 = (_ref182 = (_raw$payAt = raw.payAt) !== null && _raw$payAt !== void 0 ? _raw$payAt : raw.pay_at) !== null && _ref182 !== void 0 ? _ref182 : raw.PayAt) !== null && _ref181 !== void 0 ? _ref181 : raw.paidAt) !== null && _ref180 !== void 0 ? _ref180 : raw.PaidAt) !== null && _ref179 !== void 0 ? _ref179 : '',
     items: Array.isArray(raw.items) ? raw.items.map(transformCartItem) : [],
-    address: (_ref64 = (_raw$address = raw.address) !== null && _raw$address !== void 0 ? _raw$address : raw.Address) !== null && _ref64 !== void 0 ? _ref64 : null,
-    storeName: (_ref65 = (_ref66 = (_ref67 = (_raw$storeName2 = raw.storeName) !== null && _raw$storeName2 !== void 0 ? _raw$storeName2 : raw.store_name) !== null && _ref67 !== void 0 ? _ref67 : raw.StoreName) !== null && _ref66 !== void 0 ? _ref66 : (_raw$store = raw.store) === null || _raw$store === void 0 ? void 0 : _raw$store.name) !== null && _ref65 !== void 0 ? _ref65 : '',
-    store: (_ref68 = (_raw$store2 = raw.store) !== null && _raw$store2 !== void 0 ? _raw$store2 : raw.Store) !== null && _ref68 !== void 0 ? _ref68 : null,
-    remark: (_ref69 = (_raw$remark = raw.remark) !== null && _raw$remark !== void 0 ? _raw$remark : raw.Remark) !== null && _ref69 !== void 0 ? _ref69 : '',
-    isReviewed: (_ref70 = (_ref71 = (_ref72 = (_ref73 = (_raw$isReviewed = raw.isReviewed) !== null && _raw$isReviewed !== void 0 ? _raw$isReviewed : raw.is_reviewed) !== null && _ref73 !== void 0 ? _ref73 : raw.IsReviewed) !== null && _ref72 !== void 0 ? _ref72 : raw.reviewed) !== null && _ref71 !== void 0 ? _ref71 : raw.Reviewed) !== null && _ref70 !== void 0 ? _ref70 : false
+    address: (_ref183 = (_raw$address = raw.address) !== null && _raw$address !== void 0 ? _raw$address : raw.Address) !== null && _ref183 !== void 0 ? _ref183 : null,
+    storeName: (_ref184 = (_ref185 = (_ref186 = (_raw$storeName2 = raw.storeName) !== null && _raw$storeName2 !== void 0 ? _raw$storeName2 : raw.store_name) !== null && _ref186 !== void 0 ? _ref186 : raw.StoreName) !== null && _ref185 !== void 0 ? _ref185 : (_raw$store = raw.store) === null || _raw$store === void 0 ? void 0 : _raw$store.name) !== null && _ref184 !== void 0 ? _ref184 : '',
+    store: (_ref187 = (_raw$store2 = raw.store) !== null && _raw$store2 !== void 0 ? _raw$store2 : raw.Store) !== null && _ref187 !== void 0 ? _ref187 : null,
+    remark: (_ref188 = (_raw$remark = raw.remark) !== null && _raw$remark !== void 0 ? _raw$remark : raw.Remark) !== null && _ref188 !== void 0 ? _ref188 : '',
+    isReviewed: (_ref189 = (_ref190 = (_ref191 = (_ref192 = (_raw$isReviewed = raw.isReviewed) !== null && _raw$isReviewed !== void 0 ? _raw$isReviewed : raw.is_reviewed) !== null && _ref192 !== void 0 ? _ref192 : raw.IsReviewed) !== null && _ref191 !== void 0 ? _ref191 : raw.reviewed) !== null && _ref190 !== void 0 ? _ref190 : raw.Reviewed) !== null && _ref189 !== void 0 ? _ref189 : false
   };
 }
 
@@ -201,7 +287,7 @@ function fetchCartList() {
  */
 function _fetchCartList() {
   _fetchCartList = (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_2__["default"])(/*#__PURE__*/(0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_3__["default"])().m(function _callee() {
-    var _ref333, _res$data$list, _res$data, _res$data2;
+    var _ref452, _res$data$list, _res$data, _res$data2;
     var params,
       res,
       list,
@@ -214,7 +300,7 @@ function _fetchCartList() {
           return (0,_api_common__WEBPACK_IMPORTED_MODULE_0__.apiGet)(cartApi.list, params);
         case 1:
           res = _context.v;
-          list = Array.isArray(res === null || res === void 0 ? void 0 : res.data) ? res.data : (_ref333 = (_res$data$list = res === null || res === void 0 || (_res$data = res.data) === null || _res$data === void 0 ? void 0 : _res$data.list) !== null && _res$data$list !== void 0 ? _res$data$list : res === null || res === void 0 || (_res$data2 = res.data) === null || _res$data2 === void 0 ? void 0 : _res$data2.items) !== null && _ref333 !== void 0 ? _ref333 : []; // 临时调试
+          list = Array.isArray(res === null || res === void 0 ? void 0 : res.data) ? res.data : (_ref452 = (_res$data$list = res === null || res === void 0 || (_res$data = res.data) === null || _res$data === void 0 ? void 0 : _res$data.list) !== null && _res$data$list !== void 0 ? _res$data$list : res === null || res === void 0 || (_res$data2 = res.data) === null || _res$data2 === void 0 ? void 0 : _res$data2.items) !== null && _ref452 !== void 0 ? _ref452 : []; // 临时调试
           if (list.length > 0) {
             console.log('[fetchCartList] 后端原始第一条:', JSON.stringify(list[0], null, 2));
           }
@@ -276,6 +362,7 @@ function _updateCartItem() {
             _context3.n = 1;
             break;
           }
+          console.error('[updateCartItem] 无效的购物车ID:', id, '类型:', (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_typeof_js__WEBPACK_IMPORTED_MODULE_1__["default"])(id));
           throw new Error('无效的购物车ID');
         case 1:
           body = {};
@@ -312,6 +399,7 @@ function _deleteCartItem() {
             _context4.n = 1;
             break;
           }
+          console.error('[deleteCartItem] 无效的购物车ID:', id, '类型:', (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_typeof_js__WEBPACK_IMPORTED_MODULE_1__["default"])(id));
           throw new Error('无效的购物车ID');
         case 1:
           _context4.n = 2;
@@ -430,7 +518,7 @@ function fetchOrderList() {
  */
 function _fetchOrderList() {
   _fetchOrderList = (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_2__["default"])(/*#__PURE__*/(0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_3__["default"])().m(function _callee7() {
-    var _ref334, _res$data$list2, _res$data3, _res$data4;
+    var _ref453, _res$data$list2, _res$data3, _res$data4;
     var params,
       res,
       list,
@@ -443,7 +531,7 @@ function _fetchOrderList() {
           return (0,_api_common__WEBPACK_IMPORTED_MODULE_0__.apiGet)(orderApi.list, params);
         case 1:
           res = _context7.v;
-          list = Array.isArray(res === null || res === void 0 ? void 0 : res.data) ? res.data : (_ref334 = (_res$data$list2 = res === null || res === void 0 || (_res$data3 = res.data) === null || _res$data3 === void 0 ? void 0 : _res$data3.list) !== null && _res$data$list2 !== void 0 ? _res$data$list2 : res === null || res === void 0 || (_res$data4 = res.data) === null || _res$data4 === void 0 ? void 0 : _res$data4.items) !== null && _ref334 !== void 0 ? _ref334 : [];
+          list = Array.isArray(res === null || res === void 0 ? void 0 : res.data) ? res.data : (_ref453 = (_res$data$list2 = res === null || res === void 0 || (_res$data3 = res.data) === null || _res$data3 === void 0 ? void 0 : _res$data3.list) !== null && _res$data$list2 !== void 0 ? _res$data$list2 : res === null || res === void 0 || (_res$data4 = res.data) === null || _res$data4 === void 0 ? void 0 : _res$data4.items) !== null && _ref453 !== void 0 ? _ref453 : [];
           return _context7.a(2, (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_4__["default"])((0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_4__["default"])({}, res), {}, {
             data: list.map(transformOrderItem)
           }));
@@ -571,19 +659,19 @@ function _paymentCallback() {
   return _paymentCallback.apply(this, arguments);
 }
 function normalizePaymentStatus(raw) {
-  var _ref74, _ref75, _ref76, _ref77, _raw$status2, _ref78, _ref79, _ref80, _raw$orderId, _ref81, _ref82, _raw$orderNo, _ref83, _ref84, _ref85, _ref86, _raw$paymentMethod, _ref87, _ref88, _ref89, _raw$transactionId, _ref90, _ref91, _ref92, _ref93, _raw$amount, _ref94, _ref95, _ref96, _ref97, _ref98, _raw$paidAt, _ref99, _ref100, _raw$message;
-  var status = (_ref74 = (_ref75 = (_ref76 = (_ref77 = (_raw$status2 = raw.status) !== null && _raw$status2 !== void 0 ? _raw$status2 : raw.Status) !== null && _ref77 !== void 0 ? _ref77 : raw.payStatus) !== null && _ref76 !== void 0 ? _ref76 : raw.pay_status) !== null && _ref75 !== void 0 ? _ref75 : raw.paymentStatus) !== null && _ref74 !== void 0 ? _ref74 : '';
+  var _ref193, _ref194, _ref195, _ref196, _raw$status2, _ref197, _ref198, _ref199, _raw$orderId, _ref200, _ref201, _raw$orderNo, _ref202, _ref203, _ref204, _ref205, _raw$paymentMethod, _ref206, _ref207, _ref208, _raw$transactionId, _ref209, _ref210, _ref211, _ref212, _raw$amount, _ref213, _ref214, _ref215, _ref216, _ref217, _raw$paidAt, _ref218, _ref219, _raw$message;
+  var status = (_ref193 = (_ref194 = (_ref195 = (_ref196 = (_raw$status2 = raw.status) !== null && _raw$status2 !== void 0 ? _raw$status2 : raw.Status) !== null && _ref196 !== void 0 ? _ref196 : raw.payStatus) !== null && _ref195 !== void 0 ? _ref195 : raw.pay_status) !== null && _ref194 !== void 0 ? _ref194 : raw.paymentStatus) !== null && _ref193 !== void 0 ? _ref193 : '';
   var isPaid = status === 'paid' || status === 'success' || status === 'SUCCESS' || status === 1 || status === '1' || raw.isPaid === true || raw.IsPaid === true || raw.is_paid === true;
   return {
-    orderId: (_ref78 = (_ref79 = (_ref80 = (_raw$orderId = raw.orderId) !== null && _raw$orderId !== void 0 ? _raw$orderId : raw.order_id) !== null && _ref80 !== void 0 ? _ref80 : raw.OrderId) !== null && _ref79 !== void 0 ? _ref79 : raw.OrderID) !== null && _ref78 !== void 0 ? _ref78 : '',
-    orderNo: (_ref81 = (_ref82 = (_raw$orderNo = raw.orderNo) !== null && _raw$orderNo !== void 0 ? _raw$orderNo : raw.order_no) !== null && _ref82 !== void 0 ? _ref82 : raw.OrderNo) !== null && _ref81 !== void 0 ? _ref81 : '',
+    orderId: (_ref197 = (_ref198 = (_ref199 = (_raw$orderId = raw.orderId) !== null && _raw$orderId !== void 0 ? _raw$orderId : raw.order_id) !== null && _ref199 !== void 0 ? _ref199 : raw.OrderId) !== null && _ref198 !== void 0 ? _ref198 : raw.OrderID) !== null && _ref197 !== void 0 ? _ref197 : '',
+    orderNo: (_ref200 = (_ref201 = (_raw$orderNo = raw.orderNo) !== null && _raw$orderNo !== void 0 ? _raw$orderNo : raw.order_no) !== null && _ref201 !== void 0 ? _ref201 : raw.OrderNo) !== null && _ref200 !== void 0 ? _ref200 : '',
     status: status,
     isPaid: isPaid,
-    paymentMethod: (_ref83 = (_ref84 = (_ref85 = (_ref86 = (_raw$paymentMethod = raw.paymentMethod) !== null && _raw$paymentMethod !== void 0 ? _raw$paymentMethod : raw.payment_method) !== null && _ref86 !== void 0 ? _ref86 : raw.PaymentMethod) !== null && _ref85 !== void 0 ? _ref85 : raw.payType) !== null && _ref84 !== void 0 ? _ref84 : raw.pay_type) !== null && _ref83 !== void 0 ? _ref83 : '',
-    transactionId: (_ref87 = (_ref88 = (_ref89 = (_raw$transactionId = raw.transactionId) !== null && _raw$transactionId !== void 0 ? _raw$transactionId : raw.transaction_id) !== null && _ref89 !== void 0 ? _ref89 : raw.TransactionId) !== null && _ref88 !== void 0 ? _ref88 : raw.TransactionID) !== null && _ref87 !== void 0 ? _ref87 : '',
-    amount: Number((_ref90 = (_ref91 = (_ref92 = (_ref93 = (_raw$amount = raw.amount) !== null && _raw$amount !== void 0 ? _raw$amount : raw.Amount) !== null && _ref93 !== void 0 ? _ref93 : raw.payAmount) !== null && _ref92 !== void 0 ? _ref92 : raw.pay_amount) !== null && _ref91 !== void 0 ? _ref91 : raw.PayAmount) !== null && _ref90 !== void 0 ? _ref90 : 0),
-    paidAt: (_ref94 = (_ref95 = (_ref96 = (_ref97 = (_ref98 = (_raw$paidAt = raw.paidAt) !== null && _raw$paidAt !== void 0 ? _raw$paidAt : raw.paid_at) !== null && _ref98 !== void 0 ? _ref98 : raw.PaidAt) !== null && _ref97 !== void 0 ? _ref97 : raw.payTime) !== null && _ref96 !== void 0 ? _ref96 : raw.pay_time) !== null && _ref95 !== void 0 ? _ref95 : raw.PayTime) !== null && _ref94 !== void 0 ? _ref94 : '',
-    message: (_ref99 = (_ref100 = (_raw$message = raw.message) !== null && _raw$message !== void 0 ? _raw$message : raw.Message) !== null && _ref100 !== void 0 ? _ref100 : raw.msg) !== null && _ref99 !== void 0 ? _ref99 : ''
+    paymentMethod: (_ref202 = (_ref203 = (_ref204 = (_ref205 = (_raw$paymentMethod = raw.paymentMethod) !== null && _raw$paymentMethod !== void 0 ? _raw$paymentMethod : raw.payment_method) !== null && _ref205 !== void 0 ? _ref205 : raw.PaymentMethod) !== null && _ref204 !== void 0 ? _ref204 : raw.payType) !== null && _ref203 !== void 0 ? _ref203 : raw.pay_type) !== null && _ref202 !== void 0 ? _ref202 : '',
+    transactionId: (_ref206 = (_ref207 = (_ref208 = (_raw$transactionId = raw.transactionId) !== null && _raw$transactionId !== void 0 ? _raw$transactionId : raw.transaction_id) !== null && _ref208 !== void 0 ? _ref208 : raw.TransactionId) !== null && _ref207 !== void 0 ? _ref207 : raw.TransactionID) !== null && _ref206 !== void 0 ? _ref206 : '',
+    amount: Number((_ref209 = (_ref210 = (_ref211 = (_ref212 = (_raw$amount = raw.amount) !== null && _raw$amount !== void 0 ? _raw$amount : raw.Amount) !== null && _ref212 !== void 0 ? _ref212 : raw.payAmount) !== null && _ref211 !== void 0 ? _ref211 : raw.pay_amount) !== null && _ref210 !== void 0 ? _ref210 : raw.PayAmount) !== null && _ref209 !== void 0 ? _ref209 : 0),
+    paidAt: (_ref213 = (_ref214 = (_ref215 = (_ref216 = (_ref217 = (_raw$paidAt = raw.paidAt) !== null && _raw$paidAt !== void 0 ? _raw$paidAt : raw.paid_at) !== null && _ref217 !== void 0 ? _ref217 : raw.PaidAt) !== null && _ref216 !== void 0 ? _ref216 : raw.payTime) !== null && _ref215 !== void 0 ? _ref215 : raw.pay_time) !== null && _ref214 !== void 0 ? _ref214 : raw.PayTime) !== null && _ref213 !== void 0 ? _ref213 : '',
+    message: (_ref218 = (_ref219 = (_raw$message = raw.message) !== null && _raw$message !== void 0 ? _raw$message : raw.Message) !== null && _ref219 !== void 0 ? _ref219 : raw.msg) !== null && _ref218 !== void 0 ? _ref218 : ''
   };
 }
 
@@ -705,25 +793,25 @@ function _refundOrder() {
   return _refundOrder.apply(this, arguments);
 }
 function normalizeReview(raw) {
-  var _ref101, _ref102, _ref103, _ref104, _raw$id, _ref105, _ref106, _ref107, _raw$orderId2, _ref108, _ref109, _ref110, _raw$productId, _ref111, _ref112, _ref113, _raw$productName2, _ref114, _ref115, _ref116, _raw$skuId, _ref117, _ref118, _ref119, _raw$skuName2, _ref120, _ref121, _ref122, _raw$rating, _ref123, _ref124, _raw$ratingType, _ref125, _ref126, _ref127, _ref128, _ref129, _raw$content, _ref130, _ref131, _ref132, _raw$anonymous, _ref133, _ref134, _ref135, _raw$createdAt2, _ref136, _ref137, _raw$userId, _ref138, _ref139, _ref140, _ref141, _raw$userName, _ref142, _ref143, _ref144, _ref145, _raw$userAvatar, _ref146, _ref147, _ref148, _raw$reply, _ref149, _ref150, _raw$replyAt;
+  var _ref220, _ref221, _ref222, _ref223, _raw$id, _ref224, _ref225, _ref226, _raw$orderId2, _ref227, _ref228, _ref229, _raw$productId, _ref230, _ref231, _ref232, _raw$productName3, _ref233, _ref234, _ref235, _raw$skuId, _ref236, _ref237, _ref238, _raw$skuName3, _ref239, _ref240, _ref241, _raw$rating, _ref242, _ref243, _raw$ratingType, _ref244, _ref245, _ref246, _ref247, _ref248, _raw$content, _ref249, _ref250, _ref251, _raw$anonymous, _ref252, _ref253, _ref254, _raw$createdAt2, _ref255, _ref256, _raw$userId, _ref257, _ref258, _ref259, _ref260, _raw$userName, _ref261, _ref262, _ref263, _ref264, _raw$userAvatar, _ref265, _ref266, _ref267, _raw$reply, _ref268, _ref269, _raw$replyAt;
   return {
-    id: (_ref101 = (_ref102 = (_ref103 = (_ref104 = (_raw$id = raw.id) !== null && _raw$id !== void 0 ? _raw$id : raw.Id) !== null && _ref104 !== void 0 ? _ref104 : raw.reviewId) !== null && _ref103 !== void 0 ? _ref103 : raw.review_id) !== null && _ref102 !== void 0 ? _ref102 : raw.ID) !== null && _ref101 !== void 0 ? _ref101 : '',
-    orderId: (_ref105 = (_ref106 = (_ref107 = (_raw$orderId2 = raw.orderId) !== null && _raw$orderId2 !== void 0 ? _raw$orderId2 : raw.order_id) !== null && _ref107 !== void 0 ? _ref107 : raw.OrderId) !== null && _ref106 !== void 0 ? _ref106 : raw.OrderID) !== null && _ref105 !== void 0 ? _ref105 : '',
-    productId: (_ref108 = (_ref109 = (_ref110 = (_raw$productId = raw.productId) !== null && _raw$productId !== void 0 ? _raw$productId : raw.product_id) !== null && _ref110 !== void 0 ? _ref110 : raw.ProductId) !== null && _ref109 !== void 0 ? _ref109 : raw.ProductID) !== null && _ref108 !== void 0 ? _ref108 : '',
-    productName: (_ref111 = (_ref112 = (_ref113 = (_raw$productName2 = raw.productName) !== null && _raw$productName2 !== void 0 ? _raw$productName2 : raw.product_name) !== null && _ref113 !== void 0 ? _ref113 : raw.ProductName) !== null && _ref112 !== void 0 ? _ref112 : raw.name) !== null && _ref111 !== void 0 ? _ref111 : '',
-    skuId: (_ref114 = (_ref115 = (_ref116 = (_raw$skuId = raw.skuId) !== null && _raw$skuId !== void 0 ? _raw$skuId : raw.sku_id) !== null && _ref116 !== void 0 ? _ref116 : raw.SkuId) !== null && _ref115 !== void 0 ? _ref115 : raw.SkuID) !== null && _ref114 !== void 0 ? _ref114 : '',
-    skuName: (_ref117 = (_ref118 = (_ref119 = (_raw$skuName2 = raw.skuName) !== null && _raw$skuName2 !== void 0 ? _raw$skuName2 : raw.sku_name) !== null && _ref119 !== void 0 ? _ref119 : raw.SkuName) !== null && _ref118 !== void 0 ? _ref118 : raw.specName) !== null && _ref117 !== void 0 ? _ref117 : '',
-    rating: Number((_ref120 = (_ref121 = (_ref122 = (_raw$rating = raw.rating) !== null && _raw$rating !== void 0 ? _raw$rating : raw.Rating) !== null && _ref122 !== void 0 ? _ref122 : raw.score) !== null && _ref121 !== void 0 ? _ref121 : raw.Score) !== null && _ref120 !== void 0 ? _ref120 : 5),
-    ratingType: (_ref123 = (_ref124 = (_raw$ratingType = raw.ratingType) !== null && _raw$ratingType !== void 0 ? _raw$ratingType : raw.rating_type) !== null && _ref124 !== void 0 ? _ref124 : raw.RatingType) !== null && _ref123 !== void 0 ? _ref123 : raw.rating >= 4 ? 'good' : raw.rating <= 2 ? 'bad' : 'neutral',
-    content: (_ref125 = (_ref126 = (_ref127 = (_ref128 = (_ref129 = (_raw$content = raw.content) !== null && _raw$content !== void 0 ? _raw$content : raw.Content) !== null && _ref129 !== void 0 ? _ref129 : raw.reviewContent) !== null && _ref128 !== void 0 ? _ref128 : raw.review_content) !== null && _ref127 !== void 0 ? _ref127 : raw.comment) !== null && _ref126 !== void 0 ? _ref126 : raw.Comment) !== null && _ref125 !== void 0 ? _ref125 : '',
+    id: (_ref220 = (_ref221 = (_ref222 = (_ref223 = (_raw$id = raw.id) !== null && _raw$id !== void 0 ? _raw$id : raw.Id) !== null && _ref223 !== void 0 ? _ref223 : raw.reviewId) !== null && _ref222 !== void 0 ? _ref222 : raw.review_id) !== null && _ref221 !== void 0 ? _ref221 : raw.ID) !== null && _ref220 !== void 0 ? _ref220 : '',
+    orderId: (_ref224 = (_ref225 = (_ref226 = (_raw$orderId2 = raw.orderId) !== null && _raw$orderId2 !== void 0 ? _raw$orderId2 : raw.order_id) !== null && _ref226 !== void 0 ? _ref226 : raw.OrderId) !== null && _ref225 !== void 0 ? _ref225 : raw.OrderID) !== null && _ref224 !== void 0 ? _ref224 : '',
+    productId: (_ref227 = (_ref228 = (_ref229 = (_raw$productId = raw.productId) !== null && _raw$productId !== void 0 ? _raw$productId : raw.product_id) !== null && _ref229 !== void 0 ? _ref229 : raw.ProductId) !== null && _ref228 !== void 0 ? _ref228 : raw.ProductID) !== null && _ref227 !== void 0 ? _ref227 : '',
+    productName: (_ref230 = (_ref231 = (_ref232 = (_raw$productName3 = raw.productName) !== null && _raw$productName3 !== void 0 ? _raw$productName3 : raw.product_name) !== null && _ref232 !== void 0 ? _ref232 : raw.ProductName) !== null && _ref231 !== void 0 ? _ref231 : raw.name) !== null && _ref230 !== void 0 ? _ref230 : '',
+    skuId: (_ref233 = (_ref234 = (_ref235 = (_raw$skuId = raw.skuId) !== null && _raw$skuId !== void 0 ? _raw$skuId : raw.sku_id) !== null && _ref235 !== void 0 ? _ref235 : raw.SkuId) !== null && _ref234 !== void 0 ? _ref234 : raw.SkuID) !== null && _ref233 !== void 0 ? _ref233 : '',
+    skuName: (_ref236 = (_ref237 = (_ref238 = (_raw$skuName3 = raw.skuName) !== null && _raw$skuName3 !== void 0 ? _raw$skuName3 : raw.sku_name) !== null && _ref238 !== void 0 ? _ref238 : raw.SkuName) !== null && _ref237 !== void 0 ? _ref237 : raw.specName) !== null && _ref236 !== void 0 ? _ref236 : '',
+    rating: Number((_ref239 = (_ref240 = (_ref241 = (_raw$rating = raw.rating) !== null && _raw$rating !== void 0 ? _raw$rating : raw.Rating) !== null && _ref241 !== void 0 ? _ref241 : raw.score) !== null && _ref240 !== void 0 ? _ref240 : raw.Score) !== null && _ref239 !== void 0 ? _ref239 : 5),
+    ratingType: (_ref242 = (_ref243 = (_raw$ratingType = raw.ratingType) !== null && _raw$ratingType !== void 0 ? _raw$ratingType : raw.rating_type) !== null && _ref243 !== void 0 ? _ref243 : raw.RatingType) !== null && _ref242 !== void 0 ? _ref242 : raw.rating >= 4 ? 'good' : raw.rating <= 2 ? 'bad' : 'neutral',
+    content: (_ref244 = (_ref245 = (_ref246 = (_ref247 = (_ref248 = (_raw$content = raw.content) !== null && _raw$content !== void 0 ? _raw$content : raw.Content) !== null && _ref248 !== void 0 ? _ref248 : raw.reviewContent) !== null && _ref247 !== void 0 ? _ref247 : raw.review_content) !== null && _ref246 !== void 0 ? _ref246 : raw.comment) !== null && _ref245 !== void 0 ? _ref245 : raw.Comment) !== null && _ref244 !== void 0 ? _ref244 : '',
     images: Array.isArray(raw.images) ? raw.images : Array.isArray(raw.Images) ? raw.Images : Array.isArray(raw.pics) ? raw.pics : Array.isArray(raw.imageList) ? raw.imageList : [],
-    anonymous: (_ref130 = (_ref131 = (_ref132 = (_raw$anonymous = raw.anonymous) !== null && _raw$anonymous !== void 0 ? _raw$anonymous : raw.Anonymous) !== null && _ref132 !== void 0 ? _ref132 : raw.isAnonymous) !== null && _ref131 !== void 0 ? _ref131 : raw.is_anonymous) !== null && _ref130 !== void 0 ? _ref130 : false,
-    createdAt: (_ref133 = (_ref134 = (_ref135 = (_raw$createdAt2 = raw.createdAt) !== null && _raw$createdAt2 !== void 0 ? _raw$createdAt2 : raw.created_at) !== null && _ref135 !== void 0 ? _ref135 : raw.CreateTime) !== null && _ref134 !== void 0 ? _ref134 : raw.createTime) !== null && _ref133 !== void 0 ? _ref133 : '',
-    userId: (_ref136 = (_ref137 = (_raw$userId = raw.userId) !== null && _raw$userId !== void 0 ? _raw$userId : raw.user_id) !== null && _ref137 !== void 0 ? _ref137 : raw.UserId) !== null && _ref136 !== void 0 ? _ref136 : '',
-    userName: (_ref138 = (_ref139 = (_ref140 = (_ref141 = (_raw$userName = raw.userName) !== null && _raw$userName !== void 0 ? _raw$userName : raw.user_name) !== null && _ref141 !== void 0 ? _ref141 : raw.UserName) !== null && _ref140 !== void 0 ? _ref140 : raw.nickname) !== null && _ref139 !== void 0 ? _ref139 : raw.NickName) !== null && _ref138 !== void 0 ? _ref138 : '',
-    userAvatar: (_ref142 = (_ref143 = (_ref144 = (_ref145 = (_raw$userAvatar = raw.userAvatar) !== null && _raw$userAvatar !== void 0 ? _raw$userAvatar : raw.user_avatar) !== null && _ref145 !== void 0 ? _ref145 : raw.UserAvatar) !== null && _ref144 !== void 0 ? _ref144 : raw.avatar) !== null && _ref143 !== void 0 ? _ref143 : raw.Avatar) !== null && _ref142 !== void 0 ? _ref142 : '',
-    reply: (_ref146 = (_ref147 = (_ref148 = (_raw$reply = raw.reply) !== null && _raw$reply !== void 0 ? _raw$reply : raw.Reply) !== null && _ref148 !== void 0 ? _ref148 : raw.replyContent) !== null && _ref147 !== void 0 ? _ref147 : raw.reply_content) !== null && _ref146 !== void 0 ? _ref146 : '',
-    replyAt: (_ref149 = (_ref150 = (_raw$replyAt = raw.replyAt) !== null && _raw$replyAt !== void 0 ? _raw$replyAt : raw.reply_at) !== null && _ref150 !== void 0 ? _ref150 : raw.ReplyAt) !== null && _ref149 !== void 0 ? _ref149 : ''
+    anonymous: (_ref249 = (_ref250 = (_ref251 = (_raw$anonymous = raw.anonymous) !== null && _raw$anonymous !== void 0 ? _raw$anonymous : raw.Anonymous) !== null && _ref251 !== void 0 ? _ref251 : raw.isAnonymous) !== null && _ref250 !== void 0 ? _ref250 : raw.is_anonymous) !== null && _ref249 !== void 0 ? _ref249 : false,
+    createdAt: (_ref252 = (_ref253 = (_ref254 = (_raw$createdAt2 = raw.createdAt) !== null && _raw$createdAt2 !== void 0 ? _raw$createdAt2 : raw.created_at) !== null && _ref254 !== void 0 ? _ref254 : raw.CreateTime) !== null && _ref253 !== void 0 ? _ref253 : raw.createTime) !== null && _ref252 !== void 0 ? _ref252 : '',
+    userId: (_ref255 = (_ref256 = (_raw$userId = raw.userId) !== null && _raw$userId !== void 0 ? _raw$userId : raw.user_id) !== null && _ref256 !== void 0 ? _ref256 : raw.UserId) !== null && _ref255 !== void 0 ? _ref255 : '',
+    userName: (_ref257 = (_ref258 = (_ref259 = (_ref260 = (_raw$userName = raw.userName) !== null && _raw$userName !== void 0 ? _raw$userName : raw.user_name) !== null && _ref260 !== void 0 ? _ref260 : raw.UserName) !== null && _ref259 !== void 0 ? _ref259 : raw.nickname) !== null && _ref258 !== void 0 ? _ref258 : raw.NickName) !== null && _ref257 !== void 0 ? _ref257 : '',
+    userAvatar: (_ref261 = (_ref262 = (_ref263 = (_ref264 = (_raw$userAvatar = raw.userAvatar) !== null && _raw$userAvatar !== void 0 ? _raw$userAvatar : raw.user_avatar) !== null && _ref264 !== void 0 ? _ref264 : raw.UserAvatar) !== null && _ref263 !== void 0 ? _ref263 : raw.avatar) !== null && _ref262 !== void 0 ? _ref262 : raw.Avatar) !== null && _ref261 !== void 0 ? _ref261 : '',
+    reply: (_ref265 = (_ref266 = (_ref267 = (_raw$reply = raw.reply) !== null && _raw$reply !== void 0 ? _raw$reply : raw.Reply) !== null && _ref267 !== void 0 ? _ref267 : raw.replyContent) !== null && _ref266 !== void 0 ? _ref266 : raw.reply_content) !== null && _ref265 !== void 0 ? _ref265 : '',
+    replyAt: (_ref268 = (_ref269 = (_raw$replyAt = raw.replyAt) !== null && _raw$replyAt !== void 0 ? _raw$replyAt : raw.reply_at) !== null && _ref269 !== void 0 ? _ref269 : raw.ReplyAt) !== null && _ref268 !== void 0 ? _ref268 : ''
   };
 }
 
@@ -739,6 +827,8 @@ function submitOrderReview(_x15, _x16) {
 /**
  * 获取订单评价列表
  * GET /api/v1/orders/{id}/reviews
+ * 注意：该接口在后端未实现时返回 404，此处静默处理为空评价列表，
+ *      避免订单列表页兜底查询评价时在控制台刷屏报错。
  */
 function _submitOrderReview() {
   _submitOrderReview = (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_2__["default"])(/*#__PURE__*/(0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_3__["default"])().m(function _callee14(id, payload) {
@@ -786,34 +876,41 @@ function fetchOrderReviews(_x17) {
  */
 function _fetchOrderReviews() {
   _fetchOrderReviews = (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_2__["default"])(/*#__PURE__*/(0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_3__["default"])().m(function _callee15(id) {
-    var _ref335, _res$data$list3, _res$data5, _res$data6;
-    var res, list;
+    var _ref454, _res$data$list3, _res$data5, _res$data6, res, list, _t;
     return (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_3__["default"])().w(function (_context15) {
-      while (1) switch (_context15.n) {
+      while (1) switch (_context15.p = _context15.n) {
         case 0:
+          _context15.p = 0;
           _context15.n = 1;
           return (0,_api_common__WEBPACK_IMPORTED_MODULE_0__.apiGet)(orderApi.reviewList, {}, {
             id: id
-          });
+          }, true);
         case 1:
           res = _context15.v;
-          list = Array.isArray(res === null || res === void 0 ? void 0 : res.data) ? res.data : (_ref335 = (_res$data$list3 = res === null || res === void 0 || (_res$data5 = res.data) === null || _res$data5 === void 0 ? void 0 : _res$data5.list) !== null && _res$data$list3 !== void 0 ? _res$data$list3 : res === null || res === void 0 || (_res$data6 = res.data) === null || _res$data6 === void 0 ? void 0 : _res$data6.items) !== null && _ref335 !== void 0 ? _ref335 : [];
+          list = Array.isArray(res === null || res === void 0 ? void 0 : res.data) ? res.data : (_ref454 = (_res$data$list3 = res === null || res === void 0 || (_res$data5 = res.data) === null || _res$data5 === void 0 ? void 0 : _res$data5.list) !== null && _res$data$list3 !== void 0 ? _res$data$list3 : res === null || res === void 0 || (_res$data6 = res.data) === null || _res$data6 === void 0 ? void 0 : _res$data6.items) !== null && _ref454 !== void 0 ? _ref454 : [];
           return _context15.a(2, (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_4__["default"])((0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_4__["default"])({}, res), {}, {
             data: list.map(normalizeReview)
           }));
+        case 2:
+          _context15.p = 2;
+          _t = _context15.v;
+          return _context15.a(2, {
+            code: 200,
+            data: []
+          });
       }
-    }, _callee15);
+    }, _callee15, null, [[0, 2]]);
   }));
   return _fetchOrderReviews.apply(this, arguments);
 }
 function normalizeRefundReason(raw) {
-  var _ref151, _ref152, _ref153, _ref154, _ref155, _raw$id2, _ref156, _ref157, _ref158, _ref159, _ref160, _ref161, _ref162, _ref163, _ref164, _raw$name, _ref165, _ref166, _ref167, _ref168, _ref169, _raw$sort, _ref170, _ref171, _ref172, _ref173, _ref174, _raw$enabled, _ref175, _ref176, _ref177, _ref178, _ref179, _raw$description;
+  var _ref270, _ref271, _ref272, _ref273, _ref274, _raw$id2, _ref275, _ref276, _ref277, _ref278, _ref279, _ref280, _ref281, _ref282, _ref283, _raw$name, _ref284, _ref285, _ref286, _ref287, _ref288, _raw$sort, _ref289, _ref290, _ref291, _ref292, _ref293, _raw$enabled, _ref294, _ref295, _ref296, _ref297, _ref298, _raw$description;
   return {
-    id: (_ref151 = (_ref152 = (_ref153 = (_ref154 = (_ref155 = (_raw$id2 = raw.id) !== null && _raw$id2 !== void 0 ? _raw$id2 : raw.Id) !== null && _ref155 !== void 0 ? _ref155 : raw.reasonId) !== null && _ref154 !== void 0 ? _ref154 : raw.reason_id) !== null && _ref153 !== void 0 ? _ref153 : raw.ID) !== null && _ref152 !== void 0 ? _ref152 : raw.code) !== null && _ref151 !== void 0 ? _ref151 : '',
-    name: (_ref156 = (_ref157 = (_ref158 = (_ref159 = (_ref160 = (_ref161 = (_ref162 = (_ref163 = (_ref164 = (_raw$name = raw.name) !== null && _raw$name !== void 0 ? _raw$name : raw.Name) !== null && _ref164 !== void 0 ? _ref164 : raw.reasonName) !== null && _ref163 !== void 0 ? _ref163 : raw.reason_name) !== null && _ref162 !== void 0 ? _ref162 : raw.title) !== null && _ref161 !== void 0 ? _ref161 : raw.Title) !== null && _ref160 !== void 0 ? _ref160 : raw.label) !== null && _ref159 !== void 0 ? _ref159 : raw.Label) !== null && _ref158 !== void 0 ? _ref158 : raw.content) !== null && _ref157 !== void 0 ? _ref157 : raw.Content) !== null && _ref156 !== void 0 ? _ref156 : '',
-    sort: Number((_ref165 = (_ref166 = (_ref167 = (_ref168 = (_ref169 = (_raw$sort = raw.sort) !== null && _raw$sort !== void 0 ? _raw$sort : raw.Sort) !== null && _ref169 !== void 0 ? _ref169 : raw.order) !== null && _ref168 !== void 0 ? _ref168 : raw.Order) !== null && _ref167 !== void 0 ? _ref167 : raw.seq) !== null && _ref166 !== void 0 ? _ref166 : raw.Seq) !== null && _ref165 !== void 0 ? _ref165 : 0),
-    enabled: (_ref170 = (_ref171 = (_ref172 = (_ref173 = (_ref174 = (_raw$enabled = raw.enabled) !== null && _raw$enabled !== void 0 ? _raw$enabled : raw.Enabled) !== null && _ref174 !== void 0 ? _ref174 : raw.status) !== null && _ref173 !== void 0 ? _ref173 : raw.Status) !== null && _ref172 !== void 0 ? _ref172 : raw.active) !== null && _ref171 !== void 0 ? _ref171 : raw.Active) !== null && _ref170 !== void 0 ? _ref170 : true,
-    description: (_ref175 = (_ref176 = (_ref177 = (_ref178 = (_ref179 = (_raw$description = raw.description) !== null && _raw$description !== void 0 ? _raw$description : raw.Description) !== null && _ref179 !== void 0 ? _ref179 : raw.desc) !== null && _ref178 !== void 0 ? _ref178 : raw.Desc) !== null && _ref177 !== void 0 ? _ref177 : raw.remark) !== null && _ref176 !== void 0 ? _ref176 : raw.Remark) !== null && _ref175 !== void 0 ? _ref175 : ''
+    id: (_ref270 = (_ref271 = (_ref272 = (_ref273 = (_ref274 = (_raw$id2 = raw.id) !== null && _raw$id2 !== void 0 ? _raw$id2 : raw.Id) !== null && _ref274 !== void 0 ? _ref274 : raw.reasonId) !== null && _ref273 !== void 0 ? _ref273 : raw.reason_id) !== null && _ref272 !== void 0 ? _ref272 : raw.ID) !== null && _ref271 !== void 0 ? _ref271 : raw.code) !== null && _ref270 !== void 0 ? _ref270 : '',
+    name: (_ref275 = (_ref276 = (_ref277 = (_ref278 = (_ref279 = (_ref280 = (_ref281 = (_ref282 = (_ref283 = (_raw$name = raw.name) !== null && _raw$name !== void 0 ? _raw$name : raw.Name) !== null && _ref283 !== void 0 ? _ref283 : raw.reasonName) !== null && _ref282 !== void 0 ? _ref282 : raw.reason_name) !== null && _ref281 !== void 0 ? _ref281 : raw.title) !== null && _ref280 !== void 0 ? _ref280 : raw.Title) !== null && _ref279 !== void 0 ? _ref279 : raw.label) !== null && _ref278 !== void 0 ? _ref278 : raw.Label) !== null && _ref277 !== void 0 ? _ref277 : raw.content) !== null && _ref276 !== void 0 ? _ref276 : raw.Content) !== null && _ref275 !== void 0 ? _ref275 : '',
+    sort: Number((_ref284 = (_ref285 = (_ref286 = (_ref287 = (_ref288 = (_raw$sort = raw.sort) !== null && _raw$sort !== void 0 ? _raw$sort : raw.Sort) !== null && _ref288 !== void 0 ? _ref288 : raw.order) !== null && _ref287 !== void 0 ? _ref287 : raw.Order) !== null && _ref286 !== void 0 ? _ref286 : raw.seq) !== null && _ref285 !== void 0 ? _ref285 : raw.Seq) !== null && _ref284 !== void 0 ? _ref284 : 0),
+    enabled: (_ref289 = (_ref290 = (_ref291 = (_ref292 = (_ref293 = (_raw$enabled = raw.enabled) !== null && _raw$enabled !== void 0 ? _raw$enabled : raw.Enabled) !== null && _ref293 !== void 0 ? _ref293 : raw.status) !== null && _ref292 !== void 0 ? _ref292 : raw.Status) !== null && _ref291 !== void 0 ? _ref291 : raw.active) !== null && _ref290 !== void 0 ? _ref290 : raw.Active) !== null && _ref289 !== void 0 ? _ref289 : true,
+    description: (_ref294 = (_ref295 = (_ref296 = (_ref297 = (_ref298 = (_raw$description = raw.description) !== null && _raw$description !== void 0 ? _raw$description : raw.Description) !== null && _ref298 !== void 0 ? _ref298 : raw.desc) !== null && _ref297 !== void 0 ? _ref297 : raw.Desc) !== null && _ref296 !== void 0 ? _ref296 : raw.remark) !== null && _ref295 !== void 0 ? _ref295 : raw.Remark) !== null && _ref294 !== void 0 ? _ref294 : ''
   };
 }
 
@@ -821,17 +918,12 @@ function normalizeRefundReason(raw) {
  * 退款数据规范化：兼容 snake_case / PascalCase / camelCase
  */
 function normalizeRefund(raw) {
-  var _ref180, _ref181, _raw$status3, _ref182, _ref183, _ref184, _ref185, _raw$type, _ref186, _ref187, _ref188, _ref189, _raw$id3, _ref190, _ref191, _ref192, _ref193, _ref194, _ref195, _ref196, _raw$refundNo, _ref197, _ref198, _ref199, _ref200, _ref201, _ref202, _raw$orderId3, _ref203, _ref204, _ref205, _raw$orderNo2, _ref206, _ref207, _ref208, _raw$userId2, _ref209, _ref210, _ref211, _typeTextMap, _ref212, _ref213, _ref214, _ref215, _raw$statusText, _ref216, _ref217, _ref218, _raw$reason, _ref219, _ref220, _ref221, _raw$reasonId, _ref222, _ref223, _ref224, _ref225, _ref226, _ref227, _raw$amount2, _ref228, _ref229, _ref230, _ref231, _ref232, _raw$payAmount2, _ref233, _ref234, _raw$freightAmount2, _ref235, _ref236, _raw$couponAmount2, _ref237, _ref238, _ref239, _ref240, _ref241, _raw$quantity2, _ref242, _ref243, _ref244, _ref245, _ref246, _raw$description2, _ref247, _ref248, _ref249, _ref250, _ref251, _ref252, _ref253, _ref254, _raw$applyTime, _ref255, _ref256, _ref257, _ref258, _ref259, _raw$auditTime, _ref260, _ref261, _ref262, _ref263, _ref264, _raw$auditRemark, _ref265, _ref266, _ref267, _ref268, _ref269, _raw$refundTime, _ref270, _ref271, _ref272, _ref273, _ref274, _ref275, _ref276, _ref277, _raw$trackingNo, _ref278, _ref279, _ref280, _ref281, _ref282, _ref283, _ref284, _ref285, _raw$trackingCompany, _ref286, _ref287, _ref288, _ref289, _raw$receiverName, _ref290, _ref291, _ref292, _ref293, _ref294, _ref295, _raw$receiverPhone, _ref296, _ref297, _ref298, _ref299, _raw$receiverAddress;
-  var rawStatus = (_ref180 = (_ref181 = (_raw$status3 = raw.status) !== null && _raw$status3 !== void 0 ? _raw$status3 : raw.Status) !== null && _ref181 !== void 0 ? _ref181 : raw.refundStatus) !== null && _ref180 !== void 0 ? _ref180 : raw.refund_status;
+  var _ref299, _ref300, _raw$status3, _ref301, _ref302, _ref303, _ref304, _raw$type, _ref305, _ref306, _ref307, _ref308, _raw$id3, _ref309, _ref310, _ref311, _ref312, _ref313, _ref314, _ref315, _raw$refundNo, _ref316, _ref317, _ref318, _ref319, _ref320, _ref321, _raw$orderId3, _ref322, _ref323, _ref324, _raw$orderNo2, _ref325, _ref326, _ref327, _raw$userId2, _ref328, _ref329, _ref330, _typeTextMap, _ref331, _ref332, _ref333, _ref334, _raw$statusText, _ref335, _ref336, _ref337, _raw$reason, _ref338, _ref339, _ref340, _raw$reasonId, _ref341, _ref342, _ref343, _ref344, _ref345, _ref346, _raw$amount2, _ref347, _ref348, _ref349, _ref350, _ref351, _raw$payAmount2, _ref352, _ref353, _raw$freightAmount2, _ref354, _ref355, _raw$couponAmount2, _ref356, _ref357, _ref358, _ref359, _ref360, _raw$quantity3, _ref361, _ref362, _ref363, _ref364, _ref365, _raw$description2, _ref366, _ref367, _ref368, _ref369, _ref370, _ref371, _ref372, _ref373, _raw$applyTime, _ref374, _ref375, _ref376, _ref377, _ref378, _raw$auditTime, _ref379, _ref380, _ref381, _ref382, _ref383, _raw$auditRemark, _ref384, _ref385, _ref386, _ref387, _ref388, _raw$refundTime, _ref389, _ref390, _ref391, _ref392, _ref393, _ref394, _ref395, _ref396, _raw$trackingNo, _ref397, _ref398, _ref399, _ref400, _ref401, _ref402, _ref403, _ref404, _raw$trackingCompany, _ref405, _ref406, _ref407, _ref408, _raw$receiverName, _ref409, _ref410, _ref411, _ref412, _ref413, _ref414, _raw$receiverPhone, _ref415, _ref416, _ref417, _ref418, _raw$receiverAddress;
+  var rawStatus = (_ref299 = (_ref300 = (_raw$status3 = raw.status) !== null && _raw$status3 !== void 0 ? _raw$status3 : raw.Status) !== null && _ref300 !== void 0 ? _ref300 : raw.refundStatus) !== null && _ref299 !== void 0 ? _ref299 : raw.refund_status;
   var statusTextMap = {
-    'pending': '待处理',
-    'processing': '处理中',
-    'approved': '已同意',
+    'pending': '待审核',
+    'approved': '已通过',
     'rejected': '已拒绝',
-    'refunding': '退款中',
-    'refund_rejected': '商家已拒绝',
-    'refunded': '已退款',
-    'cancelled': '已取消',
     'completed': '已完成'
   };
   var typeTextMap = {
@@ -846,17 +938,13 @@ function normalizeRefund(raw) {
     statusCode = rawStatus;
     var numericMap = {
       0: 'pending',
-      1: 'processing',
-      2: 'approved',
-      3: 'rejected',
-      4: 'cancelled',
-      5: 'refunding',
-      6: 'refund_rejected',
-      7: 'refunded'
+      1: 'approved',
+      2: 'rejected',
+      3: 'completed'
     };
     status = numericMap[rawStatus] || 'pending';
   }
-  var rawType = (_ref182 = (_ref183 = (_ref184 = (_ref185 = (_raw$type = raw.type) !== null && _raw$type !== void 0 ? _raw$type : raw.Type) !== null && _ref185 !== void 0 ? _ref185 : raw.refundType) !== null && _ref184 !== void 0 ? _ref184 : raw.refund_type) !== null && _ref183 !== void 0 ? _ref183 : raw.applyType) !== null && _ref182 !== void 0 ? _ref182 : raw.apply_type;
+  var rawType = (_ref301 = (_ref302 = (_ref303 = (_ref304 = (_raw$type = raw.type) !== null && _raw$type !== void 0 ? _raw$type : raw.Type) !== null && _ref304 !== void 0 ? _ref304 : raw.refundType) !== null && _ref303 !== void 0 ? _ref303 : raw.refund_type) !== null && _ref302 !== void 0 ? _ref302 : raw.applyType) !== null && _ref301 !== void 0 ? _ref301 : raw.apply_type;
   var type = rawType;
   if (typeof rawType === 'number') {
     var typeNumericMap = {
@@ -865,37 +953,56 @@ function normalizeRefund(raw) {
     };
     type = typeNumericMap[rawType] || 'refund_only';
   }
-  var items = Array.isArray(raw.items) ? raw.items.map(transformCartItem) : Array.isArray(raw.Items) ? raw.Items.map(transformCartItem) : Array.isArray(raw.refundItems) ? raw.refundItems.map(transformCartItem) : Array.isArray(raw.goodsList) ? raw.goodsList.map(transformCartItem) : [];
+  var itemKeys = ['items', 'Items', 'refundItems', 'RefundItems', 'goodsList', 'GoodsList', 'orderItems', 'OrderItems', 'products', 'Products', 'goods', 'Goods', 'list', 'List', 'records', 'Records', 'data', 'Data'];
+  var rawItems = itemKeys.map(function (k) {
+    return raw[k];
+  }).find(Array.isArray) || [];
+  var items = rawItems.map(transformCartItem).map(function (item, index) {
+    // 如果 transformCartItem 没有解析出商品关键信息，尝试从原始元素兜底提取
+    if ((item.productName || item.image) && item.quantity) return item;
+    var fallback = extractFallbackProduct(rawItems[index]);
+    return fallback ? (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_4__["default"])({
+      id: item.id || ''
+    }, fallback) : item;
+  });
+
+  // 兜底：后端未返回商品项时，从退款记录自身的商品字段构建一条商品信息
+  if (!items || items.length === 0) {
+    var fallback = extractFallbackProduct(raw);
+    if (fallback) {
+      items = [fallback];
+    }
+  }
   return {
-    id: (_ref186 = (_ref187 = (_ref188 = (_ref189 = (_raw$id3 = raw.id) !== null && _raw$id3 !== void 0 ? _raw$id3 : raw.Id) !== null && _ref189 !== void 0 ? _ref189 : raw.refundId) !== null && _ref188 !== void 0 ? _ref188 : raw.refund_id) !== null && _ref187 !== void 0 ? _ref187 : raw.ID) !== null && _ref186 !== void 0 ? _ref186 : '',
-    refundNo: (_ref190 = (_ref191 = (_ref192 = (_ref193 = (_ref194 = (_ref195 = (_ref196 = (_raw$refundNo = raw.refundNo) !== null && _raw$refundNo !== void 0 ? _raw$refundNo : raw.refund_no) !== null && _ref196 !== void 0 ? _ref196 : raw.RefundNo) !== null && _ref195 !== void 0 ? _ref195 : raw.RefundNO) !== null && _ref194 !== void 0 ? _ref194 : raw.sn) !== null && _ref193 !== void 0 ? _ref193 : raw.SN) !== null && _ref192 !== void 0 ? _ref192 : raw.code) !== null && _ref191 !== void 0 ? _ref191 : raw.Code) !== null && _ref190 !== void 0 ? _ref190 : '',
-    orderId: (_ref197 = (_ref198 = (_ref199 = (_ref200 = (_ref201 = (_ref202 = (_raw$orderId3 = raw.orderId) !== null && _raw$orderId3 !== void 0 ? _raw$orderId3 : raw.order_id) !== null && _ref202 !== void 0 ? _ref202 : raw.OrderId) !== null && _ref201 !== void 0 ? _ref201 : raw.OrderID) !== null && _ref200 !== void 0 ? _ref200 : raw.orderNo) !== null && _ref199 !== void 0 ? _ref199 : raw.order_no) !== null && _ref198 !== void 0 ? _ref198 : raw.OrderNo) !== null && _ref197 !== void 0 ? _ref197 : '',
-    orderNo: (_ref203 = (_ref204 = (_ref205 = (_raw$orderNo2 = raw.orderNo) !== null && _raw$orderNo2 !== void 0 ? _raw$orderNo2 : raw.order_no) !== null && _ref205 !== void 0 ? _ref205 : raw.OrderNo) !== null && _ref204 !== void 0 ? _ref204 : raw.OrderNO) !== null && _ref203 !== void 0 ? _ref203 : '',
-    userId: (_ref206 = (_ref207 = (_ref208 = (_raw$userId2 = raw.userId) !== null && _raw$userId2 !== void 0 ? _raw$userId2 : raw.user_id) !== null && _ref208 !== void 0 ? _ref208 : raw.UserId) !== null && _ref207 !== void 0 ? _ref207 : raw.UserID) !== null && _ref206 !== void 0 ? _ref206 : '',
+    id: (_ref305 = (_ref306 = (_ref307 = (_ref308 = (_raw$id3 = raw.id) !== null && _raw$id3 !== void 0 ? _raw$id3 : raw.Id) !== null && _ref308 !== void 0 ? _ref308 : raw.refundId) !== null && _ref307 !== void 0 ? _ref307 : raw.refund_id) !== null && _ref306 !== void 0 ? _ref306 : raw.ID) !== null && _ref305 !== void 0 ? _ref305 : '',
+    refundNo: (_ref309 = (_ref310 = (_ref311 = (_ref312 = (_ref313 = (_ref314 = (_ref315 = (_raw$refundNo = raw.refundNo) !== null && _raw$refundNo !== void 0 ? _raw$refundNo : raw.refund_no) !== null && _ref315 !== void 0 ? _ref315 : raw.RefundNo) !== null && _ref314 !== void 0 ? _ref314 : raw.RefundNO) !== null && _ref313 !== void 0 ? _ref313 : raw.sn) !== null && _ref312 !== void 0 ? _ref312 : raw.SN) !== null && _ref311 !== void 0 ? _ref311 : raw.code) !== null && _ref310 !== void 0 ? _ref310 : raw.Code) !== null && _ref309 !== void 0 ? _ref309 : '',
+    orderId: (_ref316 = (_ref317 = (_ref318 = (_ref319 = (_ref320 = (_ref321 = (_raw$orderId3 = raw.orderId) !== null && _raw$orderId3 !== void 0 ? _raw$orderId3 : raw.order_id) !== null && _ref321 !== void 0 ? _ref321 : raw.OrderId) !== null && _ref320 !== void 0 ? _ref320 : raw.OrderID) !== null && _ref319 !== void 0 ? _ref319 : raw.orderNo) !== null && _ref318 !== void 0 ? _ref318 : raw.order_no) !== null && _ref317 !== void 0 ? _ref317 : raw.OrderNo) !== null && _ref316 !== void 0 ? _ref316 : '',
+    orderNo: (_ref322 = (_ref323 = (_ref324 = (_raw$orderNo2 = raw.orderNo) !== null && _raw$orderNo2 !== void 0 ? _raw$orderNo2 : raw.order_no) !== null && _ref324 !== void 0 ? _ref324 : raw.OrderNo) !== null && _ref323 !== void 0 ? _ref323 : raw.OrderNO) !== null && _ref322 !== void 0 ? _ref322 : '',
+    userId: (_ref325 = (_ref326 = (_ref327 = (_raw$userId2 = raw.userId) !== null && _raw$userId2 !== void 0 ? _raw$userId2 : raw.user_id) !== null && _ref327 !== void 0 ? _ref327 : raw.UserId) !== null && _ref326 !== void 0 ? _ref326 : raw.UserID) !== null && _ref325 !== void 0 ? _ref325 : '',
     type: type,
-    typeText: (_ref209 = (_ref210 = (_ref211 = (_typeTextMap = typeTextMap[type]) !== null && _typeTextMap !== void 0 ? _typeTextMap : raw.typeText) !== null && _ref211 !== void 0 ? _ref211 : raw.type_text) !== null && _ref210 !== void 0 ? _ref210 : raw.TypeText) !== null && _ref209 !== void 0 ? _ref209 : type === 'return_refund' ? '退货退款' : '仅退款',
+    typeText: (_ref328 = (_ref329 = (_ref330 = (_typeTextMap = typeTextMap[type]) !== null && _typeTextMap !== void 0 ? _typeTextMap : raw.typeText) !== null && _ref330 !== void 0 ? _ref330 : raw.type_text) !== null && _ref329 !== void 0 ? _ref329 : raw.TypeText) !== null && _ref328 !== void 0 ? _ref328 : type === 'return_refund' ? '退货退款' : '仅退款',
     status: status,
     statusCode: statusCode,
-    statusText: (_ref212 = (_ref213 = (_ref214 = (_ref215 = (_raw$statusText = raw.statusText) !== null && _raw$statusText !== void 0 ? _raw$statusText : raw.status_text) !== null && _ref215 !== void 0 ? _ref215 : raw.StatusText) !== null && _ref214 !== void 0 ? _ref214 : statusTextMap[status]) !== null && _ref213 !== void 0 ? _ref213 : status) !== null && _ref212 !== void 0 ? _ref212 : '',
-    reason: (_ref216 = (_ref217 = (_ref218 = (_raw$reason = raw.reason) !== null && _raw$reason !== void 0 ? _raw$reason : raw.Reason) !== null && _ref218 !== void 0 ? _ref218 : raw.refundReason) !== null && _ref217 !== void 0 ? _ref217 : raw.refund_reason) !== null && _ref216 !== void 0 ? _ref216 : '',
-    reasonId: (_ref219 = (_ref220 = (_ref221 = (_raw$reasonId = raw.reasonId) !== null && _raw$reasonId !== void 0 ? _raw$reasonId : raw.reason_id) !== null && _ref221 !== void 0 ? _ref221 : raw.ReasonId) !== null && _ref220 !== void 0 ? _ref220 : raw.ReasonID) !== null && _ref219 !== void 0 ? _ref219 : '',
-    amount: Number((_ref222 = (_ref223 = (_ref224 = (_ref225 = (_ref226 = (_ref227 = (_raw$amount2 = raw.amount) !== null && _raw$amount2 !== void 0 ? _raw$amount2 : raw.Amount) !== null && _ref227 !== void 0 ? _ref227 : raw.refundAmount) !== null && _ref226 !== void 0 ? _ref226 : raw.refund_amount) !== null && _ref225 !== void 0 ? _ref225 : raw.totalAmount) !== null && _ref224 !== void 0 ? _ref224 : raw.total_amount) !== null && _ref223 !== void 0 ? _ref223 : raw.TotalAmount) !== null && _ref222 !== void 0 ? _ref222 : 0),
-    payAmount: Number((_ref228 = (_ref229 = (_ref230 = (_ref231 = (_ref232 = (_raw$payAmount2 = raw.payAmount) !== null && _raw$payAmount2 !== void 0 ? _raw$payAmount2 : raw.pay_amount) !== null && _ref232 !== void 0 ? _ref232 : raw.PayAmount) !== null && _ref231 !== void 0 ? _ref231 : raw.orderAmount) !== null && _ref230 !== void 0 ? _ref230 : raw.order_amount) !== null && _ref229 !== void 0 ? _ref229 : raw.OrderAmount) !== null && _ref228 !== void 0 ? _ref228 : 0),
-    freightAmount: Number((_ref233 = (_ref234 = (_raw$freightAmount2 = raw.freightAmount) !== null && _raw$freightAmount2 !== void 0 ? _raw$freightAmount2 : raw.freight_amount) !== null && _ref234 !== void 0 ? _ref234 : raw.FreightAmount) !== null && _ref233 !== void 0 ? _ref233 : 0),
-    couponAmount: Number((_ref235 = (_ref236 = (_raw$couponAmount2 = raw.couponAmount) !== null && _raw$couponAmount2 !== void 0 ? _raw$couponAmount2 : raw.coupon_amount) !== null && _ref236 !== void 0 ? _ref236 : raw.CouponAmount) !== null && _ref235 !== void 0 ? _ref235 : 0),
-    quantity: Number((_ref237 = (_ref238 = (_ref239 = (_ref240 = (_ref241 = (_raw$quantity2 = raw.quantity) !== null && _raw$quantity2 !== void 0 ? _raw$quantity2 : raw.Quantity) !== null && _ref241 !== void 0 ? _ref241 : raw.count) !== null && _ref240 !== void 0 ? _ref240 : raw.Count) !== null && _ref239 !== void 0 ? _ref239 : raw.num) !== null && _ref238 !== void 0 ? _ref238 : raw.Num) !== null && _ref237 !== void 0 ? _ref237 : 0),
-    description: (_ref242 = (_ref243 = (_ref244 = (_ref245 = (_ref246 = (_raw$description2 = raw.description) !== null && _raw$description2 !== void 0 ? _raw$description2 : raw.Description) !== null && _ref246 !== void 0 ? _ref246 : raw.remark) !== null && _ref245 !== void 0 ? _ref245 : raw.Remark) !== null && _ref244 !== void 0 ? _ref244 : raw.desc) !== null && _ref243 !== void 0 ? _ref243 : raw.Desc) !== null && _ref242 !== void 0 ? _ref242 : '',
+    statusText: (_ref331 = (_ref332 = (_ref333 = (_ref334 = (_raw$statusText = raw.statusText) !== null && _raw$statusText !== void 0 ? _raw$statusText : raw.status_text) !== null && _ref334 !== void 0 ? _ref334 : raw.StatusText) !== null && _ref333 !== void 0 ? _ref333 : statusTextMap[status]) !== null && _ref332 !== void 0 ? _ref332 : status) !== null && _ref331 !== void 0 ? _ref331 : '',
+    reason: (_ref335 = (_ref336 = (_ref337 = (_raw$reason = raw.reason) !== null && _raw$reason !== void 0 ? _raw$reason : raw.Reason) !== null && _ref337 !== void 0 ? _ref337 : raw.refundReason) !== null && _ref336 !== void 0 ? _ref336 : raw.refund_reason) !== null && _ref335 !== void 0 ? _ref335 : '',
+    reasonId: (_ref338 = (_ref339 = (_ref340 = (_raw$reasonId = raw.reasonId) !== null && _raw$reasonId !== void 0 ? _raw$reasonId : raw.reason_id) !== null && _ref340 !== void 0 ? _ref340 : raw.ReasonId) !== null && _ref339 !== void 0 ? _ref339 : raw.ReasonID) !== null && _ref338 !== void 0 ? _ref338 : '',
+    amount: Number((_ref341 = (_ref342 = (_ref343 = (_ref344 = (_ref345 = (_ref346 = (_raw$amount2 = raw.amount) !== null && _raw$amount2 !== void 0 ? _raw$amount2 : raw.Amount) !== null && _ref346 !== void 0 ? _ref346 : raw.refundAmount) !== null && _ref345 !== void 0 ? _ref345 : raw.refund_amount) !== null && _ref344 !== void 0 ? _ref344 : raw.totalAmount) !== null && _ref343 !== void 0 ? _ref343 : raw.total_amount) !== null && _ref342 !== void 0 ? _ref342 : raw.TotalAmount) !== null && _ref341 !== void 0 ? _ref341 : 0),
+    payAmount: Number((_ref347 = (_ref348 = (_ref349 = (_ref350 = (_ref351 = (_raw$payAmount2 = raw.payAmount) !== null && _raw$payAmount2 !== void 0 ? _raw$payAmount2 : raw.pay_amount) !== null && _ref351 !== void 0 ? _ref351 : raw.PayAmount) !== null && _ref350 !== void 0 ? _ref350 : raw.orderAmount) !== null && _ref349 !== void 0 ? _ref349 : raw.order_amount) !== null && _ref348 !== void 0 ? _ref348 : raw.OrderAmount) !== null && _ref347 !== void 0 ? _ref347 : 0),
+    freightAmount: Number((_ref352 = (_ref353 = (_raw$freightAmount2 = raw.freightAmount) !== null && _raw$freightAmount2 !== void 0 ? _raw$freightAmount2 : raw.freight_amount) !== null && _ref353 !== void 0 ? _ref353 : raw.FreightAmount) !== null && _ref352 !== void 0 ? _ref352 : 0),
+    couponAmount: Number((_ref354 = (_ref355 = (_raw$couponAmount2 = raw.couponAmount) !== null && _raw$couponAmount2 !== void 0 ? _raw$couponAmount2 : raw.coupon_amount) !== null && _ref355 !== void 0 ? _ref355 : raw.CouponAmount) !== null && _ref354 !== void 0 ? _ref354 : 0),
+    quantity: Number((_ref356 = (_ref357 = (_ref358 = (_ref359 = (_ref360 = (_raw$quantity3 = raw.quantity) !== null && _raw$quantity3 !== void 0 ? _raw$quantity3 : raw.Quantity) !== null && _ref360 !== void 0 ? _ref360 : raw.count) !== null && _ref359 !== void 0 ? _ref359 : raw.Count) !== null && _ref358 !== void 0 ? _ref358 : raw.num) !== null && _ref357 !== void 0 ? _ref357 : raw.Num) !== null && _ref356 !== void 0 ? _ref356 : 0),
+    description: (_ref361 = (_ref362 = (_ref363 = (_ref364 = (_ref365 = (_raw$description2 = raw.description) !== null && _raw$description2 !== void 0 ? _raw$description2 : raw.Description) !== null && _ref365 !== void 0 ? _ref365 : raw.remark) !== null && _ref364 !== void 0 ? _ref364 : raw.Remark) !== null && _ref363 !== void 0 ? _ref363 : raw.desc) !== null && _ref362 !== void 0 ? _ref362 : raw.Desc) !== null && _ref361 !== void 0 ? _ref361 : '',
     images: Array.isArray(raw.images) ? raw.images : Array.isArray(raw.Images) ? raw.Images : Array.isArray(raw.pics) ? raw.pics : Array.isArray(raw.vouchers) ? raw.vouchers : Array.isArray(raw.imageList) ? raw.imageList : [],
     items: items,
-    applyTime: (_ref247 = (_ref248 = (_ref249 = (_ref250 = (_ref251 = (_ref252 = (_ref253 = (_ref254 = (_raw$applyTime = raw.applyTime) !== null && _raw$applyTime !== void 0 ? _raw$applyTime : raw.apply_time) !== null && _ref254 !== void 0 ? _ref254 : raw.ApplyTime) !== null && _ref253 !== void 0 ? _ref253 : raw.createTime) !== null && _ref252 !== void 0 ? _ref252 : raw.create_time) !== null && _ref251 !== void 0 ? _ref251 : raw.CreateTime) !== null && _ref250 !== void 0 ? _ref250 : raw.createdAt) !== null && _ref249 !== void 0 ? _ref249 : raw.created_at) !== null && _ref248 !== void 0 ? _ref248 : raw.CreatedAt) !== null && _ref247 !== void 0 ? _ref247 : '',
-    auditTime: (_ref255 = (_ref256 = (_ref257 = (_ref258 = (_ref259 = (_raw$auditTime = raw.auditTime) !== null && _raw$auditTime !== void 0 ? _raw$auditTime : raw.audit_time) !== null && _ref259 !== void 0 ? _ref259 : raw.AuditTime) !== null && _ref258 !== void 0 ? _ref258 : raw.reviewTime) !== null && _ref257 !== void 0 ? _ref257 : raw.review_time) !== null && _ref256 !== void 0 ? _ref256 : raw.ReviewTime) !== null && _ref255 !== void 0 ? _ref255 : '',
-    auditRemark: (_ref260 = (_ref261 = (_ref262 = (_ref263 = (_ref264 = (_raw$auditRemark = raw.auditRemark) !== null && _raw$auditRemark !== void 0 ? _raw$auditRemark : raw.audit_remark) !== null && _ref264 !== void 0 ? _ref264 : raw.AuditRemark) !== null && _ref263 !== void 0 ? _ref263 : raw.rejectReason) !== null && _ref262 !== void 0 ? _ref262 : raw.reject_reason) !== null && _ref261 !== void 0 ? _ref261 : raw.RejectReason) !== null && _ref260 !== void 0 ? _ref260 : '',
-    refundTime: (_ref265 = (_ref266 = (_ref267 = (_ref268 = (_ref269 = (_raw$refundTime = raw.refundTime) !== null && _raw$refundTime !== void 0 ? _raw$refundTime : raw.refund_time) !== null && _ref269 !== void 0 ? _ref269 : raw.RefundTime) !== null && _ref268 !== void 0 ? _ref268 : raw.completeTime) !== null && _ref267 !== void 0 ? _ref267 : raw.complete_time) !== null && _ref266 !== void 0 ? _ref266 : raw.CompleteTime) !== null && _ref265 !== void 0 ? _ref265 : '',
-    trackingNo: (_ref270 = (_ref271 = (_ref272 = (_ref273 = (_ref274 = (_ref275 = (_ref276 = (_ref277 = (_raw$trackingNo = raw.trackingNo) !== null && _raw$trackingNo !== void 0 ? _raw$trackingNo : raw.tracking_no) !== null && _ref277 !== void 0 ? _ref277 : raw.TrackingNo) !== null && _ref276 !== void 0 ? _ref276 : raw.expressNo) !== null && _ref275 !== void 0 ? _ref275 : raw.express_no) !== null && _ref274 !== void 0 ? _ref274 : raw.ExpressNo) !== null && _ref273 !== void 0 ? _ref273 : raw.logisticsNo) !== null && _ref272 !== void 0 ? _ref272 : raw.logistics_no) !== null && _ref271 !== void 0 ? _ref271 : raw.LogisticsNo) !== null && _ref270 !== void 0 ? _ref270 : '',
-    trackingCompany: (_ref278 = (_ref279 = (_ref280 = (_ref281 = (_ref282 = (_ref283 = (_ref284 = (_ref285 = (_raw$trackingCompany = raw.trackingCompany) !== null && _raw$trackingCompany !== void 0 ? _raw$trackingCompany : raw.tracking_company) !== null && _ref285 !== void 0 ? _ref285 : raw.TrackingCompany) !== null && _ref284 !== void 0 ? _ref284 : raw.expressCompany) !== null && _ref283 !== void 0 ? _ref283 : raw.express_company) !== null && _ref282 !== void 0 ? _ref282 : raw.ExpressCompany) !== null && _ref281 !== void 0 ? _ref281 : raw.logisticsCompany) !== null && _ref280 !== void 0 ? _ref280 : raw.logistics_company) !== null && _ref279 !== void 0 ? _ref279 : raw.LogisticsCompany) !== null && _ref278 !== void 0 ? _ref278 : '',
-    receiverName: (_ref286 = (_ref287 = (_ref288 = (_ref289 = (_raw$receiverName = raw.receiverName) !== null && _raw$receiverName !== void 0 ? _raw$receiverName : raw.receiver_name) !== null && _ref289 !== void 0 ? _ref289 : raw.ReceiverName) !== null && _ref288 !== void 0 ? _ref288 : raw.consignee) !== null && _ref287 !== void 0 ? _ref287 : raw.Consignee) !== null && _ref286 !== void 0 ? _ref286 : '',
-    receiverPhone: (_ref290 = (_ref291 = (_ref292 = (_ref293 = (_ref294 = (_ref295 = (_raw$receiverPhone = raw.receiverPhone) !== null && _raw$receiverPhone !== void 0 ? _raw$receiverPhone : raw.receiver_phone) !== null && _ref295 !== void 0 ? _ref295 : raw.ReceiverPhone) !== null && _ref294 !== void 0 ? _ref294 : raw.mobile) !== null && _ref293 !== void 0 ? _ref293 : raw.Mobile) !== null && _ref292 !== void 0 ? _ref292 : raw.phone) !== null && _ref291 !== void 0 ? _ref291 : raw.Phone) !== null && _ref290 !== void 0 ? _ref290 : '',
-    receiverAddress: (_ref296 = (_ref297 = (_ref298 = (_ref299 = (_raw$receiverAddress = raw.receiverAddress) !== null && _raw$receiverAddress !== void 0 ? _raw$receiverAddress : raw.receiver_address) !== null && _ref299 !== void 0 ? _ref299 : raw.ReceiverAddress) !== null && _ref298 !== void 0 ? _ref298 : raw.address) !== null && _ref297 !== void 0 ? _ref297 : raw.Address) !== null && _ref296 !== void 0 ? _ref296 : ''
+    applyTime: (_ref366 = (_ref367 = (_ref368 = (_ref369 = (_ref370 = (_ref371 = (_ref372 = (_ref373 = (_raw$applyTime = raw.applyTime) !== null && _raw$applyTime !== void 0 ? _raw$applyTime : raw.apply_time) !== null && _ref373 !== void 0 ? _ref373 : raw.ApplyTime) !== null && _ref372 !== void 0 ? _ref372 : raw.createTime) !== null && _ref371 !== void 0 ? _ref371 : raw.create_time) !== null && _ref370 !== void 0 ? _ref370 : raw.CreateTime) !== null && _ref369 !== void 0 ? _ref369 : raw.createdAt) !== null && _ref368 !== void 0 ? _ref368 : raw.created_at) !== null && _ref367 !== void 0 ? _ref367 : raw.CreatedAt) !== null && _ref366 !== void 0 ? _ref366 : '',
+    auditTime: (_ref374 = (_ref375 = (_ref376 = (_ref377 = (_ref378 = (_raw$auditTime = raw.auditTime) !== null && _raw$auditTime !== void 0 ? _raw$auditTime : raw.audit_time) !== null && _ref378 !== void 0 ? _ref378 : raw.AuditTime) !== null && _ref377 !== void 0 ? _ref377 : raw.reviewTime) !== null && _ref376 !== void 0 ? _ref376 : raw.review_time) !== null && _ref375 !== void 0 ? _ref375 : raw.ReviewTime) !== null && _ref374 !== void 0 ? _ref374 : '',
+    auditRemark: (_ref379 = (_ref380 = (_ref381 = (_ref382 = (_ref383 = (_raw$auditRemark = raw.auditRemark) !== null && _raw$auditRemark !== void 0 ? _raw$auditRemark : raw.audit_remark) !== null && _ref383 !== void 0 ? _ref383 : raw.AuditRemark) !== null && _ref382 !== void 0 ? _ref382 : raw.rejectReason) !== null && _ref381 !== void 0 ? _ref381 : raw.reject_reason) !== null && _ref380 !== void 0 ? _ref380 : raw.RejectReason) !== null && _ref379 !== void 0 ? _ref379 : '',
+    refundTime: (_ref384 = (_ref385 = (_ref386 = (_ref387 = (_ref388 = (_raw$refundTime = raw.refundTime) !== null && _raw$refundTime !== void 0 ? _raw$refundTime : raw.refund_time) !== null && _ref388 !== void 0 ? _ref388 : raw.RefundTime) !== null && _ref387 !== void 0 ? _ref387 : raw.completeTime) !== null && _ref386 !== void 0 ? _ref386 : raw.complete_time) !== null && _ref385 !== void 0 ? _ref385 : raw.CompleteTime) !== null && _ref384 !== void 0 ? _ref384 : '',
+    trackingNo: (_ref389 = (_ref390 = (_ref391 = (_ref392 = (_ref393 = (_ref394 = (_ref395 = (_ref396 = (_raw$trackingNo = raw.trackingNo) !== null && _raw$trackingNo !== void 0 ? _raw$trackingNo : raw.tracking_no) !== null && _ref396 !== void 0 ? _ref396 : raw.TrackingNo) !== null && _ref395 !== void 0 ? _ref395 : raw.expressNo) !== null && _ref394 !== void 0 ? _ref394 : raw.express_no) !== null && _ref393 !== void 0 ? _ref393 : raw.ExpressNo) !== null && _ref392 !== void 0 ? _ref392 : raw.logisticsNo) !== null && _ref391 !== void 0 ? _ref391 : raw.logistics_no) !== null && _ref390 !== void 0 ? _ref390 : raw.LogisticsNo) !== null && _ref389 !== void 0 ? _ref389 : '',
+    trackingCompany: (_ref397 = (_ref398 = (_ref399 = (_ref400 = (_ref401 = (_ref402 = (_ref403 = (_ref404 = (_raw$trackingCompany = raw.trackingCompany) !== null && _raw$trackingCompany !== void 0 ? _raw$trackingCompany : raw.tracking_company) !== null && _ref404 !== void 0 ? _ref404 : raw.TrackingCompany) !== null && _ref403 !== void 0 ? _ref403 : raw.expressCompany) !== null && _ref402 !== void 0 ? _ref402 : raw.express_company) !== null && _ref401 !== void 0 ? _ref401 : raw.ExpressCompany) !== null && _ref400 !== void 0 ? _ref400 : raw.logisticsCompany) !== null && _ref399 !== void 0 ? _ref399 : raw.logistics_company) !== null && _ref398 !== void 0 ? _ref398 : raw.LogisticsCompany) !== null && _ref397 !== void 0 ? _ref397 : '',
+    receiverName: (_ref405 = (_ref406 = (_ref407 = (_ref408 = (_raw$receiverName = raw.receiverName) !== null && _raw$receiverName !== void 0 ? _raw$receiverName : raw.receiver_name) !== null && _ref408 !== void 0 ? _ref408 : raw.ReceiverName) !== null && _ref407 !== void 0 ? _ref407 : raw.consignee) !== null && _ref406 !== void 0 ? _ref406 : raw.Consignee) !== null && _ref405 !== void 0 ? _ref405 : '',
+    receiverPhone: (_ref409 = (_ref410 = (_ref411 = (_ref412 = (_ref413 = (_ref414 = (_raw$receiverPhone = raw.receiverPhone) !== null && _raw$receiverPhone !== void 0 ? _raw$receiverPhone : raw.receiver_phone) !== null && _ref414 !== void 0 ? _ref414 : raw.ReceiverPhone) !== null && _ref413 !== void 0 ? _ref413 : raw.mobile) !== null && _ref412 !== void 0 ? _ref412 : raw.Mobile) !== null && _ref411 !== void 0 ? _ref411 : raw.phone) !== null && _ref410 !== void 0 ? _ref410 : raw.Phone) !== null && _ref409 !== void 0 ? _ref409 : '',
+    receiverAddress: (_ref415 = (_ref416 = (_ref417 = (_ref418 = (_raw$receiverAddress = raw.receiverAddress) !== null && _raw$receiverAddress !== void 0 ? _raw$receiverAddress : raw.receiver_address) !== null && _ref418 !== void 0 ? _ref418 : raw.ReceiverAddress) !== null && _ref417 !== void 0 ? _ref417 : raw.address) !== null && _ref416 !== void 0 ? _ref416 : raw.Address) !== null && _ref415 !== void 0 ? _ref415 : ''
   };
 }
 
@@ -913,7 +1020,7 @@ function fetchRefundReasons() {
  */
 function _fetchRefundReasons() {
   _fetchRefundReasons = (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_2__["default"])(/*#__PURE__*/(0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_3__["default"])().m(function _callee16() {
-    var _ref336, _ref337, _res$data$list4, _res$data7, _res$data8, _res$data9;
+    var _ref455, _ref456, _res$data$list4, _res$data7, _res$data8, _res$data9;
     var params,
       query,
       res,
@@ -931,7 +1038,7 @@ function _fetchRefundReasons() {
           return (0,_api_common__WEBPACK_IMPORTED_MODULE_0__.apiGet)(refundApi.reasonList, query);
         case 1:
           res = _context16.v;
-          list = Array.isArray(res === null || res === void 0 ? void 0 : res.data) ? res.data : (_ref336 = (_ref337 = (_res$data$list4 = res === null || res === void 0 || (_res$data7 = res.data) === null || _res$data7 === void 0 ? void 0 : _res$data7.list) !== null && _res$data$list4 !== void 0 ? _res$data$list4 : res === null || res === void 0 || (_res$data8 = res.data) === null || _res$data8 === void 0 ? void 0 : _res$data8.items) !== null && _ref337 !== void 0 ? _ref337 : res === null || res === void 0 || (_res$data9 = res.data) === null || _res$data9 === void 0 ? void 0 : _res$data9.records) !== null && _ref336 !== void 0 ? _ref336 : [];
+          list = Array.isArray(res === null || res === void 0 ? void 0 : res.data) ? res.data : (_ref455 = (_ref456 = (_res$data$list4 = res === null || res === void 0 || (_res$data7 = res.data) === null || _res$data7 === void 0 ? void 0 : _res$data7.list) !== null && _res$data$list4 !== void 0 ? _res$data$list4 : res === null || res === void 0 || (_res$data8 = res.data) === null || _res$data8 === void 0 ? void 0 : _res$data8.items) !== null && _ref456 !== void 0 ? _ref456 : res === null || res === void 0 || (_res$data9 = res.data) === null || _res$data9 === void 0 ? void 0 : _res$data9.records) !== null && _ref455 !== void 0 ? _ref455 : [];
           return _context16.a(2, (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_4__["default"])((0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_4__["default"])({}, res), {}, {
             data: list.map(normalizeRefundReason)
           }));
@@ -961,7 +1068,7 @@ function fetchRefundList() {
  */
 function _fetchRefundList() {
   _fetchRefundList = (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_2__["default"])(/*#__PURE__*/(0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_3__["default"])().m(function _callee17() {
-    var _ref338, _ref339, _res$data$list5, _res$data0, _res$data1, _res$data10;
+    var _ref457, _ref458, _res$data$list5, _res$data0, _res$data1, _res$data10;
     var params,
       query,
       res,
@@ -981,7 +1088,7 @@ function _fetchRefundList() {
           return (0,_api_common__WEBPACK_IMPORTED_MODULE_0__.apiGet)(refundApi.list, query);
         case 1:
           res = _context17.v;
-          list = Array.isArray(res === null || res === void 0 ? void 0 : res.data) ? res.data : (_ref338 = (_ref339 = (_res$data$list5 = res === null || res === void 0 || (_res$data0 = res.data) === null || _res$data0 === void 0 ? void 0 : _res$data0.list) !== null && _res$data$list5 !== void 0 ? _res$data$list5 : res === null || res === void 0 || (_res$data1 = res.data) === null || _res$data1 === void 0 ? void 0 : _res$data1.items) !== null && _ref339 !== void 0 ? _ref339 : res === null || res === void 0 || (_res$data10 = res.data) === null || _res$data10 === void 0 ? void 0 : _res$data10.records) !== null && _ref338 !== void 0 ? _ref338 : [];
+          list = Array.isArray(res === null || res === void 0 ? void 0 : res.data) ? res.data : (_ref457 = (_ref458 = (_res$data$list5 = res === null || res === void 0 || (_res$data0 = res.data) === null || _res$data0 === void 0 ? void 0 : _res$data0.list) !== null && _res$data$list5 !== void 0 ? _res$data$list5 : res === null || res === void 0 || (_res$data1 = res.data) === null || _res$data1 === void 0 ? void 0 : _res$data1.items) !== null && _ref458 !== void 0 ? _ref458 : res === null || res === void 0 || (_res$data10 = res.data) === null || _res$data10 === void 0 ? void 0 : _res$data10.records) !== null && _ref457 !== void 0 ? _ref457 : [];
           return _context17.a(2, (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_4__["default"])((0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_4__["default"])({}, res), {}, {
             data: list.map(normalizeRefund)
           }));
@@ -1059,17 +1166,17 @@ function _fetchRefundDetail() {
   return _fetchRefundDetail.apply(this, arguments);
 }
 function normalizeAddress(raw) {
-  var _ref300, _ref301, _ref302, _raw$id4, _ref303, _ref304, _ref305, _ref306, _ref307, _raw$consignee, _ref308, _ref309, _ref310, _ref311, _ref312, _raw$phone, _ref313, _ref314, _ref315, _raw$province, _ref316, _ref317, _ref318, _raw$city, _ref319, _ref320, _ref321, _ref322, _ref323, _raw$district, _ref324, _ref325, _ref326, _ref327, _ref328, _raw$detail, _ref329, _ref330, _ref331, _ref332, _raw$isDefault;
+  var _ref419, _ref420, _ref421, _raw$id4, _ref422, _ref423, _ref424, _ref425, _ref426, _raw$consignee, _ref427, _ref428, _ref429, _ref430, _ref431, _raw$phone, _ref432, _ref433, _ref434, _raw$province, _ref435, _ref436, _ref437, _raw$city, _ref438, _ref439, _ref440, _ref441, _ref442, _raw$district, _ref443, _ref444, _ref445, _ref446, _ref447, _raw$detail, _ref448, _ref449, _ref450, _ref451, _raw$isDefault;
   if (!raw || (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_typeof_js__WEBPACK_IMPORTED_MODULE_1__["default"])(raw) !== 'object') return {};
   return {
-    id: (_ref300 = (_ref301 = (_ref302 = (_raw$id4 = raw.id) !== null && _raw$id4 !== void 0 ? _raw$id4 : raw.ID) !== null && _ref302 !== void 0 ? _ref302 : raw.addressId) !== null && _ref301 !== void 0 ? _ref301 : raw.address_id) !== null && _ref300 !== void 0 ? _ref300 : '',
-    consignee: (_ref303 = (_ref304 = (_ref305 = (_ref306 = (_ref307 = (_raw$consignee = raw.consignee) !== null && _raw$consignee !== void 0 ? _raw$consignee : raw.Consignee) !== null && _ref307 !== void 0 ? _ref307 : raw.name) !== null && _ref306 !== void 0 ? _ref306 : raw.receiver) !== null && _ref305 !== void 0 ? _ref305 : raw.receiverName) !== null && _ref304 !== void 0 ? _ref304 : raw.receiver_name) !== null && _ref303 !== void 0 ? _ref303 : '',
-    phone: (_ref308 = (_ref309 = (_ref310 = (_ref311 = (_ref312 = (_raw$phone = raw.phone) !== null && _raw$phone !== void 0 ? _raw$phone : raw.Phone) !== null && _ref312 !== void 0 ? _ref312 : raw.mobile) !== null && _ref311 !== void 0 ? _ref311 : raw.tel) !== null && _ref310 !== void 0 ? _ref310 : raw.phoneNumber) !== null && _ref309 !== void 0 ? _ref309 : raw.phone_number) !== null && _ref308 !== void 0 ? _ref308 : '',
-    province: (_ref313 = (_ref314 = (_ref315 = (_raw$province = raw.province) !== null && _raw$province !== void 0 ? _raw$province : raw.Province) !== null && _ref315 !== void 0 ? _ref315 : raw.provinceName) !== null && _ref314 !== void 0 ? _ref314 : raw.province_name) !== null && _ref313 !== void 0 ? _ref313 : '',
-    city: (_ref316 = (_ref317 = (_ref318 = (_raw$city = raw.city) !== null && _raw$city !== void 0 ? _raw$city : raw.City) !== null && _ref318 !== void 0 ? _ref318 : raw.cityName) !== null && _ref317 !== void 0 ? _ref317 : raw.city_name) !== null && _ref316 !== void 0 ? _ref316 : '',
-    district: (_ref319 = (_ref320 = (_ref321 = (_ref322 = (_ref323 = (_raw$district = raw.district) !== null && _raw$district !== void 0 ? _raw$district : raw.District) !== null && _ref323 !== void 0 ? _ref323 : raw.area) !== null && _ref322 !== void 0 ? _ref322 : raw.Area) !== null && _ref321 !== void 0 ? _ref321 : raw.districtName) !== null && _ref320 !== void 0 ? _ref320 : raw.district_name) !== null && _ref319 !== void 0 ? _ref319 : '',
-    detail: (_ref324 = (_ref325 = (_ref326 = (_ref327 = (_ref328 = (_raw$detail = raw.detail) !== null && _raw$detail !== void 0 ? _raw$detail : raw.Detail) !== null && _ref328 !== void 0 ? _ref328 : raw.address) !== null && _ref327 !== void 0 ? _ref327 : raw.Address) !== null && _ref326 !== void 0 ? _ref326 : raw.addressDetail) !== null && _ref325 !== void 0 ? _ref325 : raw.address_detail) !== null && _ref324 !== void 0 ? _ref324 : '',
-    isDefault: (_ref329 = (_ref330 = (_ref331 = (_ref332 = (_raw$isDefault = raw.isDefault) !== null && _raw$isDefault !== void 0 ? _raw$isDefault : raw.is_default) !== null && _ref332 !== void 0 ? _ref332 : raw.IsDefault) !== null && _ref331 !== void 0 ? _ref331 : raw.default) !== null && _ref330 !== void 0 ? _ref330 : raw.Default) !== null && _ref329 !== void 0 ? _ref329 : false
+    id: (_ref419 = (_ref420 = (_ref421 = (_raw$id4 = raw.id) !== null && _raw$id4 !== void 0 ? _raw$id4 : raw.ID) !== null && _ref421 !== void 0 ? _ref421 : raw.addressId) !== null && _ref420 !== void 0 ? _ref420 : raw.address_id) !== null && _ref419 !== void 0 ? _ref419 : '',
+    consignee: (_ref422 = (_ref423 = (_ref424 = (_ref425 = (_ref426 = (_raw$consignee = raw.consignee) !== null && _raw$consignee !== void 0 ? _raw$consignee : raw.Consignee) !== null && _ref426 !== void 0 ? _ref426 : raw.name) !== null && _ref425 !== void 0 ? _ref425 : raw.receiver) !== null && _ref424 !== void 0 ? _ref424 : raw.receiverName) !== null && _ref423 !== void 0 ? _ref423 : raw.receiver_name) !== null && _ref422 !== void 0 ? _ref422 : '',
+    phone: (_ref427 = (_ref428 = (_ref429 = (_ref430 = (_ref431 = (_raw$phone = raw.phone) !== null && _raw$phone !== void 0 ? _raw$phone : raw.Phone) !== null && _ref431 !== void 0 ? _ref431 : raw.mobile) !== null && _ref430 !== void 0 ? _ref430 : raw.tel) !== null && _ref429 !== void 0 ? _ref429 : raw.phoneNumber) !== null && _ref428 !== void 0 ? _ref428 : raw.phone_number) !== null && _ref427 !== void 0 ? _ref427 : '',
+    province: (_ref432 = (_ref433 = (_ref434 = (_raw$province = raw.province) !== null && _raw$province !== void 0 ? _raw$province : raw.Province) !== null && _ref434 !== void 0 ? _ref434 : raw.provinceName) !== null && _ref433 !== void 0 ? _ref433 : raw.province_name) !== null && _ref432 !== void 0 ? _ref432 : '',
+    city: (_ref435 = (_ref436 = (_ref437 = (_raw$city = raw.city) !== null && _raw$city !== void 0 ? _raw$city : raw.City) !== null && _ref437 !== void 0 ? _ref437 : raw.cityName) !== null && _ref436 !== void 0 ? _ref436 : raw.city_name) !== null && _ref435 !== void 0 ? _ref435 : '',
+    district: (_ref438 = (_ref439 = (_ref440 = (_ref441 = (_ref442 = (_raw$district = raw.district) !== null && _raw$district !== void 0 ? _raw$district : raw.District) !== null && _ref442 !== void 0 ? _ref442 : raw.area) !== null && _ref441 !== void 0 ? _ref441 : raw.Area) !== null && _ref440 !== void 0 ? _ref440 : raw.districtName) !== null && _ref439 !== void 0 ? _ref439 : raw.district_name) !== null && _ref438 !== void 0 ? _ref438 : '',
+    detail: (_ref443 = (_ref444 = (_ref445 = (_ref446 = (_ref447 = (_raw$detail = raw.detail) !== null && _raw$detail !== void 0 ? _raw$detail : raw.Detail) !== null && _ref447 !== void 0 ? _ref447 : raw.address) !== null && _ref446 !== void 0 ? _ref446 : raw.Address) !== null && _ref445 !== void 0 ? _ref445 : raw.addressDetail) !== null && _ref444 !== void 0 ? _ref444 : raw.address_detail) !== null && _ref443 !== void 0 ? _ref443 : '',
+    isDefault: (_ref448 = (_ref449 = (_ref450 = (_ref451 = (_raw$isDefault = raw.isDefault) !== null && _raw$isDefault !== void 0 ? _raw$isDefault : raw.is_default) !== null && _ref451 !== void 0 ? _ref451 : raw.IsDefault) !== null && _ref450 !== void 0 ? _ref450 : raw.default) !== null && _ref449 !== void 0 ? _ref449 : raw.Default) !== null && _ref448 !== void 0 ? _ref448 : false
   };
 }
 
@@ -1391,11 +1498,14 @@ function _apiRequest() {
           }
           // 读取后端返回的 message 字段，方便定位错误
           backendMsg = ((_response$data = response.data) === null || _response$data === void 0 ? void 0 : _response$data.message) || ((_response$data2 = response.data) === null || _response$data2 === void 0 ? void 0 : _response$data2.msg); // 控制台输出完整调试信息（含 URL、状态码、响应内容）
-          console.error('[API Error]', {
-            url: url,
-            statusCode: response.statusCode,
-            data: response.data
-          });
+          // silent=true 时（如订单评价兜底查询、商品 AI 评价摘要等可选数据）不打印，避免未实现接口刷屏
+          if (!options.silent) {
+            console.error('[API Error]', {
+              url: url,
+              statusCode: response.statusCode,
+              data: response.data
+            });
+          }
           // 抛给用户的错误信息：优先用后端 message，否则用友好提示（不暴露 URL 等技术细节）
           errMsg = backendMsg || friendlyHttpError(response.statusCode);
           err = new Error(errMsg);
@@ -2436,7 +2546,7 @@ var seckillApi = {
  * 秒杀商品数据规范化：兼容 snake_case / PascalCase / camelCase 字段名
  */
 function normalizeSeckillProduct(raw) {
-  var _ref, _ref2, _ref3, _ref4, _ref5, _ref6, _raw$image, _ref7, _ref8, _ref9, _ref0, _ref1, _ref10, _ref11, _ref12, _ref13, _ref14, _raw$originalPrice, _ref15, _ref16, _firstSku$original_pr, _ref17, _ref18, _ref19, _ref20, _ref21, _ref22, _ref23, _ref24, _ref25, _ref26, _ref27, _ref28, _raw$seckillPrice, _ref29, _ref30, _firstSku$seckill_pri, _ref31, _ref32, _ref33, _ref34, _ref35, _ref36, _ref37, _ref38, _ref39, _ref40, _ref41, _ref42, _raw$stock, _ref43, _ref44, _firstSku$remaining_s, _ref45, _ref46, _ref47, _ref48, _ref49, _ref50, _ref51, _raw$soldCount, _ref52, _ref53, _raw$soldPercent, _ref54, _ref55, _ref56, _ref57, _ref58, _raw$id, _ref59, _ref60, _ref61, _ref62, _ref63, _ref64, _raw$productId, _ref65, _ref66, _ref67, _ref68, _ref69, _ref70, _raw$productName, _ref71, _ref72, _ref73, _ref74, _ref75, _raw$limitCount, _ref76, _ref77, _ref78, _raw$skuId, _ref79, _ref80, _ref81, _firstSku$sku_id, _ref82, _ref83, _raw$activityId;
+  var _ref, _ref2, _ref3, _ref4, _ref5, _ref6, _raw$image, _ref7, _ref8, _ref9, _ref0, _ref1, _ref10, _ref11, _ref12, _ref13, _ref14, _raw$originalPrice, _ref15, _ref16, _firstSku$original_pr, _ref17, _ref18, _ref19, _ref20, _ref21, _ref22, _ref23, _ref24, _ref25, _ref26, _ref27, _ref28, _raw$seckillPrice, _ref29, _ref30, _firstSku$seckill_pri, _ref31, _ref32, _ref33, _ref34, _ref35, _ref36, _ref37, _ref38, _ref39, _ref40, _ref41, _ref42, _raw$stock, _ref43, _ref44, _firstSku$remaining_s, _ref45, _ref46, _ref47, _ref48, _ref49, _ref50, _ref51, _raw$soldCount, _ref52, _ref53, _raw$soldPercent, _ref54, _ref55, _ref56, _ref57, _ref58, _raw$id, _ref59, _ref60, _ref61, _ref62, _ref63, _ref64, _raw$productId, _ref65, _ref66, _ref67, _ref68, _ref69, _ref70, _raw$productName, _ref71, _ref72, _ref73, _ref74, _ref75, _raw$limitCount, _ref76, _ref77, _ref78, _raw$skuId, _ref79, _ref80, _firstSku$sku_id, _ref81, _ref82, _ref83, _ref84, _raw$seckillSkuPriceI, _ref85, _ref86, _firstSku$seckill_sku, _ref87, _ref88, _ref89, _raw$activityId;
   // 处理图片：兼容单个 image 字段和 images 数组
   var image = (_ref = (_ref2 = (_ref3 = (_ref4 = (_ref5 = (_ref6 = (_raw$image = raw.image) !== null && _raw$image !== void 0 ? _raw$image : raw.Image) !== null && _ref6 !== void 0 ? _ref6 : raw.imageUrl) !== null && _ref5 !== void 0 ? _ref5 : raw.image_url) !== null && _ref4 !== void 0 ? _ref4 : raw.ImageUrl) !== null && _ref3 !== void 0 ? _ref3 : raw.pic) !== null && _ref2 !== void 0 ? _ref2 : raw.Pic) !== null && _ref !== void 0 ? _ref : '';
   if (!image && Array.isArray(raw.images) && raw.images.length > 0) {
@@ -2468,8 +2578,9 @@ function normalizeSeckillProduct(raw) {
     soldCount: soldCount,
     soldPercent: soldPercent,
     limitCount: Number((_ref71 = (_ref72 = (_ref73 = (_ref74 = (_ref75 = (_raw$limitCount = raw.limitCount) !== null && _raw$limitCount !== void 0 ? _raw$limitCount : raw.limit_count) !== null && _ref75 !== void 0 ? _ref75 : raw.LimitCount) !== null && _ref74 !== void 0 ? _ref74 : raw.buyLimit) !== null && _ref73 !== void 0 ? _ref73 : raw.buy_limit) !== null && _ref72 !== void 0 ? _ref72 : raw.BuyLimit) !== null && _ref71 !== void 0 ? _ref71 : 1),
-    skuId: (_ref76 = (_ref77 = (_ref78 = (_raw$skuId = raw.skuId) !== null && _raw$skuId !== void 0 ? _raw$skuId : raw.sku_id) !== null && _ref78 !== void 0 ? _ref78 : raw.SkuId) !== null && _ref77 !== void 0 ? _ref77 : raw.skuID) !== null && _ref76 !== void 0 ? _ref76 : firstSku ? (_ref79 = (_ref80 = (_ref81 = (_firstSku$sku_id = firstSku.sku_id) !== null && _firstSku$sku_id !== void 0 ? _firstSku$sku_id : firstSku.skuId) !== null && _ref81 !== void 0 ? _ref81 : firstSku.seckill_sku_price_id) !== null && _ref80 !== void 0 ? _ref80 : firstSku.id) !== null && _ref79 !== void 0 ? _ref79 : '' : '',
-    activityId: (_ref82 = (_ref83 = (_raw$activityId = raw.activityId) !== null && _raw$activityId !== void 0 ? _raw$activityId : raw.activity_id) !== null && _ref83 !== void 0 ? _ref83 : raw.ActivityId) !== null && _ref82 !== void 0 ? _ref82 : '',
+    skuId: (_ref76 = (_ref77 = (_ref78 = (_raw$skuId = raw.skuId) !== null && _raw$skuId !== void 0 ? _raw$skuId : raw.sku_id) !== null && _ref78 !== void 0 ? _ref78 : raw.SkuId) !== null && _ref77 !== void 0 ? _ref77 : raw.skuID) !== null && _ref76 !== void 0 ? _ref76 : firstSku ? (_ref79 = (_ref80 = (_firstSku$sku_id = firstSku.sku_id) !== null && _firstSku$sku_id !== void 0 ? _firstSku$sku_id : firstSku.skuId) !== null && _ref80 !== void 0 ? _ref80 : firstSku.id) !== null && _ref79 !== void 0 ? _ref79 : '' : '',
+    seckillSkuPriceId: (_ref81 = (_ref82 = (_ref83 = (_ref84 = (_raw$seckillSkuPriceI = raw.seckillSkuPriceId) !== null && _raw$seckillSkuPriceI !== void 0 ? _raw$seckillSkuPriceI : raw.seckill_sku_price_id) !== null && _ref84 !== void 0 ? _ref84 : raw.SeckillSKUPriceID) !== null && _ref83 !== void 0 ? _ref83 : raw.SeckillSkuPriceId) !== null && _ref82 !== void 0 ? _ref82 : raw.seckillSkuPriceID) !== null && _ref81 !== void 0 ? _ref81 : firstSku ? (_ref85 = (_ref86 = (_firstSku$seckill_sku = firstSku.seckill_sku_price_id) !== null && _firstSku$seckill_sku !== void 0 ? _firstSku$seckill_sku : firstSku.seckillSkuPriceId) !== null && _ref86 !== void 0 ? _ref86 : firstSku.SeckillSKUPriceID) !== null && _ref85 !== void 0 ? _ref85 : '' : '',
+    activityId: (_ref87 = (_ref88 = (_ref89 = (_raw$activityId = raw.activityId) !== null && _raw$activityId !== void 0 ? _raw$activityId : raw.activity_id) !== null && _ref89 !== void 0 ? _ref89 : raw.ActivityId) !== null && _ref88 !== void 0 ? _ref88 : raw.ActivityID) !== null && _ref87 !== void 0 ? _ref87 : '',
     // 附加原始数据，供页面需要时使用
     raw: raw
   };
@@ -2479,14 +2590,14 @@ function normalizeSeckillProduct(raw) {
  * 秒杀活动数据规范化：兼容 snake_case / PascalCase / camelCase 字段名
  */
 function normalizeSeckillActivity(raw) {
-  var _ref84, _ref85, _ref86, _ref87, _ref88, _raw$id2, _ref89, _ref90, _ref91, _ref92, _ref93, _ref94, _raw$name, _ref95, _ref96, _ref97, _raw$status, _ref98, _ref99, _ref100, _ref101, _raw$startTime, _ref102, _ref103, _ref104, _ref105, _raw$endTime;
+  var _ref90, _ref91, _ref92, _ref93, _ref94, _ref95, _raw$id2, _ref96, _ref97, _ref98, _ref99, _ref100, _ref101, _raw$name, _ref102, _ref103, _ref104, _raw$status, _ref105, _ref106, _ref107, _ref108, _raw$startTime, _ref109, _ref110, _ref111, _ref112, _raw$endTime;
   var products = Array.isArray(raw.products) ? raw.products : Array.isArray(raw.Products) ? raw.Products : Array.isArray(raw.items) ? raw.items : Array.isArray(raw.productList) ? raw.productList : [];
   return {
-    id: (_ref84 = (_ref85 = (_ref86 = (_ref87 = (_ref88 = (_raw$id2 = raw.id) !== null && _raw$id2 !== void 0 ? _raw$id2 : raw.Id) !== null && _ref88 !== void 0 ? _ref88 : raw.ID) !== null && _ref87 !== void 0 ? _ref87 : raw.activityId) !== null && _ref86 !== void 0 ? _ref86 : raw.activity_id) !== null && _ref85 !== void 0 ? _ref85 : raw.ActivityId) !== null && _ref84 !== void 0 ? _ref84 : '',
-    name: (_ref89 = (_ref90 = (_ref91 = (_ref92 = (_ref93 = (_ref94 = (_raw$name = raw.name) !== null && _raw$name !== void 0 ? _raw$name : raw.Name) !== null && _ref94 !== void 0 ? _ref94 : raw.title) !== null && _ref93 !== void 0 ? _ref93 : raw.Title) !== null && _ref92 !== void 0 ? _ref92 : raw.activityName) !== null && _ref91 !== void 0 ? _ref91 : raw.activity_name) !== null && _ref90 !== void 0 ? _ref90 : raw.ActivityName) !== null && _ref89 !== void 0 ? _ref89 : '限时秒杀',
-    status: (_ref95 = (_ref96 = (_ref97 = (_raw$status = raw.status) !== null && _raw$status !== void 0 ? _raw$status : raw.Status) !== null && _ref97 !== void 0 ? _ref97 : raw.activityStatus) !== null && _ref96 !== void 0 ? _ref96 : raw.activity_status) !== null && _ref95 !== void 0 ? _ref95 : 'active',
-    startTime: (_ref98 = (_ref99 = (_ref100 = (_ref101 = (_raw$startTime = raw.startTime) !== null && _raw$startTime !== void 0 ? _raw$startTime : raw.start_time) !== null && _ref101 !== void 0 ? _ref101 : raw.StartTime) !== null && _ref100 !== void 0 ? _ref100 : raw.beginTime) !== null && _ref99 !== void 0 ? _ref99 : raw.begin_time) !== null && _ref98 !== void 0 ? _ref98 : '',
-    endTime: (_ref102 = (_ref103 = (_ref104 = (_ref105 = (_raw$endTime = raw.endTime) !== null && _raw$endTime !== void 0 ? _raw$endTime : raw.end_time) !== null && _ref105 !== void 0 ? _ref105 : raw.EndTime) !== null && _ref104 !== void 0 ? _ref104 : raw.finishTime) !== null && _ref103 !== void 0 ? _ref103 : raw.finish_time) !== null && _ref102 !== void 0 ? _ref102 : '',
+    id: (_ref90 = (_ref91 = (_ref92 = (_ref93 = (_ref94 = (_ref95 = (_raw$id2 = raw.id) !== null && _raw$id2 !== void 0 ? _raw$id2 : raw.Id) !== null && _ref95 !== void 0 ? _ref95 : raw.ID) !== null && _ref94 !== void 0 ? _ref94 : raw.activityId) !== null && _ref93 !== void 0 ? _ref93 : raw.activity_id) !== null && _ref92 !== void 0 ? _ref92 : raw.ActivityId) !== null && _ref91 !== void 0 ? _ref91 : raw.ActivityID) !== null && _ref90 !== void 0 ? _ref90 : '',
+    name: (_ref96 = (_ref97 = (_ref98 = (_ref99 = (_ref100 = (_ref101 = (_raw$name = raw.name) !== null && _raw$name !== void 0 ? _raw$name : raw.Name) !== null && _ref101 !== void 0 ? _ref101 : raw.title) !== null && _ref100 !== void 0 ? _ref100 : raw.Title) !== null && _ref99 !== void 0 ? _ref99 : raw.activityName) !== null && _ref98 !== void 0 ? _ref98 : raw.activity_name) !== null && _ref97 !== void 0 ? _ref97 : raw.ActivityName) !== null && _ref96 !== void 0 ? _ref96 : '限时秒杀',
+    status: (_ref102 = (_ref103 = (_ref104 = (_raw$status = raw.status) !== null && _raw$status !== void 0 ? _raw$status : raw.Status) !== null && _ref104 !== void 0 ? _ref104 : raw.activityStatus) !== null && _ref103 !== void 0 ? _ref103 : raw.activity_status) !== null && _ref102 !== void 0 ? _ref102 : 'active',
+    startTime: (_ref105 = (_ref106 = (_ref107 = (_ref108 = (_raw$startTime = raw.startTime) !== null && _raw$startTime !== void 0 ? _raw$startTime : raw.start_time) !== null && _ref108 !== void 0 ? _ref108 : raw.StartTime) !== null && _ref107 !== void 0 ? _ref107 : raw.beginTime) !== null && _ref106 !== void 0 ? _ref106 : raw.begin_time) !== null && _ref105 !== void 0 ? _ref105 : '',
+    endTime: (_ref109 = (_ref110 = (_ref111 = (_ref112 = (_raw$endTime = raw.endTime) !== null && _raw$endTime !== void 0 ? _raw$endTime : raw.end_time) !== null && _ref112 !== void 0 ? _ref112 : raw.EndTime) !== null && _ref111 !== void 0 ? _ref111 : raw.finishTime) !== null && _ref110 !== void 0 ? _ref110 : raw.finish_time) !== null && _ref109 !== void 0 ? _ref109 : '',
     products: products.map(normalizeSeckillProduct)
   };
 }
@@ -2495,8 +2606,8 @@ function normalizeSeckillActivity(raw) {
  * 秒杀购买结果数据规范化：兼容 snake_case / PascalCase / camelCase 字段名
  */
 function normalizeSeckillPurchase(raw) {
-  var _ref106, _ref107, _ref108, _ref109, _raw$status2, _ref110, _ref111, _ref112, _ref113, _ref114, _ref115, _ref116, _raw$id3, _ref117, _ref118, _ref119, _ref120, _raw$purchaseId, _ref121, _ref122, _ref123, _ref124, _ref125, _ref126, _raw$orderId, _ref127, _ref128, _raw$activityId2, _ref129, _ref130, _ref131, _raw$productId2, _ref132, _ref133, _raw$skuId2, _ref134, _ref135, _ref136, _ref137, _raw$quantity, _ref138, _ref139, _ref140, _ref141, _raw$seckillPrice2, _ref142, _ref143, _ref144, _ref145, _ref146, _ref147, _raw$totalAmount, _ref148, _ref149, _ref150, _ref151, _raw$statusText, _ref152, _ref153, _ref154, _ref155, _ref156, _raw$message, _ref157, _ref158, _ref159, _ref160, _ref161, _raw$createdAt, _ref162, _ref163, _ref164, _ref165, _ref166, _raw$paidAt;
-  var rawStatus = (_ref106 = (_ref107 = (_ref108 = (_ref109 = (_raw$status2 = raw.status) !== null && _raw$status2 !== void 0 ? _raw$status2 : raw.Status) !== null && _ref109 !== void 0 ? _ref109 : raw.purchaseStatus) !== null && _ref108 !== void 0 ? _ref108 : raw.purchase_status) !== null && _ref107 !== void 0 ? _ref107 : raw.result) !== null && _ref106 !== void 0 ? _ref106 : raw.Result;
+  var _ref113, _ref114, _ref115, _ref116, _raw$status2, _ref117, _ref118, _ref119, _ref120, _ref121, _ref122, _ref123, _raw$id3, _ref124, _ref125, _ref126, _ref127, _raw$purchaseId, _ref128, _ref129, _ref130, _ref131, _ref132, _ref133, _raw$orderId, _ref134, _ref135, _ref136, _raw$activityId2, _ref137, _ref138, _ref139, _raw$productId2, _ref140, _ref141, _raw$skuId2, _ref142, _ref143, _ref144, _ref145, _raw$quantity, _ref146, _ref147, _ref148, _ref149, _raw$seckillPrice2, _ref150, _ref151, _ref152, _ref153, _ref154, _ref155, _raw$totalAmount, _ref156, _ref157, _ref158, _ref159, _raw$statusText, _ref160, _ref161, _ref162, _ref163, _ref164, _raw$message, _ref165, _ref166, _ref167, _ref168, _ref169, _raw$createdAt, _ref170, _ref171, _ref172, _ref173, _ref174, _raw$paidAt;
+  var rawStatus = (_ref113 = (_ref114 = (_ref115 = (_ref116 = (_raw$status2 = raw.status) !== null && _raw$status2 !== void 0 ? _raw$status2 : raw.Status) !== null && _ref116 !== void 0 ? _ref116 : raw.purchaseStatus) !== null && _ref115 !== void 0 ? _ref115 : raw.purchase_status) !== null && _ref114 !== void 0 ? _ref114 : raw.result) !== null && _ref113 !== void 0 ? _ref113 : raw.Result;
   var status = rawStatus;
   var statusCode = null;
   if (typeof rawStatus === 'number') {
@@ -2525,21 +2636,21 @@ function normalizeSeckillPurchase(raw) {
     'sold_out': '售罄'
   };
   return {
-    id: (_ref110 = (_ref111 = (_ref112 = (_ref113 = (_ref114 = (_ref115 = (_ref116 = (_raw$id3 = raw.id) !== null && _raw$id3 !== void 0 ? _raw$id3 : raw.Id) !== null && _ref116 !== void 0 ? _ref116 : raw.ID) !== null && _ref115 !== void 0 ? _ref115 : raw.purchaseId) !== null && _ref114 !== void 0 ? _ref114 : raw.purchase_id) !== null && _ref113 !== void 0 ? _ref113 : raw.PurchaseId) !== null && _ref112 !== void 0 ? _ref112 : raw.orderId) !== null && _ref111 !== void 0 ? _ref111 : raw.order_id) !== null && _ref110 !== void 0 ? _ref110 : '',
-    purchaseId: (_ref117 = (_ref118 = (_ref119 = (_ref120 = (_raw$purchaseId = raw.purchaseId) !== null && _raw$purchaseId !== void 0 ? _raw$purchaseId : raw.purchase_id) !== null && _ref120 !== void 0 ? _ref120 : raw.PurchaseId) !== null && _ref119 !== void 0 ? _ref119 : raw.id) !== null && _ref118 !== void 0 ? _ref118 : raw.Id) !== null && _ref117 !== void 0 ? _ref117 : '',
-    orderId: (_ref121 = (_ref122 = (_ref123 = (_ref124 = (_ref125 = (_ref126 = (_raw$orderId = raw.orderId) !== null && _raw$orderId !== void 0 ? _raw$orderId : raw.order_id) !== null && _ref126 !== void 0 ? _ref126 : raw.OrderId) !== null && _ref125 !== void 0 ? _ref125 : raw.OrderID) !== null && _ref124 !== void 0 ? _ref124 : raw.orderNo) !== null && _ref123 !== void 0 ? _ref123 : raw.order_no) !== null && _ref122 !== void 0 ? _ref122 : raw.OrderNo) !== null && _ref121 !== void 0 ? _ref121 : '',
-    activityId: (_ref127 = (_ref128 = (_raw$activityId2 = raw.activityId) !== null && _raw$activityId2 !== void 0 ? _raw$activityId2 : raw.activity_id) !== null && _ref128 !== void 0 ? _ref128 : raw.ActivityId) !== null && _ref127 !== void 0 ? _ref127 : '',
-    productId: (_ref129 = (_ref130 = (_ref131 = (_raw$productId2 = raw.productId) !== null && _raw$productId2 !== void 0 ? _raw$productId2 : raw.product_id) !== null && _ref131 !== void 0 ? _ref131 : raw.ProductId) !== null && _ref130 !== void 0 ? _ref130 : raw.ProductID) !== null && _ref129 !== void 0 ? _ref129 : '',
-    skuId: (_ref132 = (_ref133 = (_raw$skuId2 = raw.skuId) !== null && _raw$skuId2 !== void 0 ? _raw$skuId2 : raw.sku_id) !== null && _ref133 !== void 0 ? _ref133 : raw.SkuId) !== null && _ref132 !== void 0 ? _ref132 : '',
-    quantity: Number((_ref134 = (_ref135 = (_ref136 = (_ref137 = (_raw$quantity = raw.quantity) !== null && _raw$quantity !== void 0 ? _raw$quantity : raw.Quantity) !== null && _ref137 !== void 0 ? _ref137 : raw.count) !== null && _ref136 !== void 0 ? _ref136 : raw.Count) !== null && _ref135 !== void 0 ? _ref135 : raw.num) !== null && _ref134 !== void 0 ? _ref134 : 1),
-    seckillPrice: Number((_ref138 = (_ref139 = (_ref140 = (_ref141 = (_raw$seckillPrice2 = raw.seckillPrice) !== null && _raw$seckillPrice2 !== void 0 ? _raw$seckillPrice2 : raw.seckill_price) !== null && _ref141 !== void 0 ? _ref141 : raw.SeckillPrice) !== null && _ref140 !== void 0 ? _ref140 : raw.price) !== null && _ref139 !== void 0 ? _ref139 : raw.Price) !== null && _ref138 !== void 0 ? _ref138 : 0),
-    totalAmount: Number((_ref142 = (_ref143 = (_ref144 = (_ref145 = (_ref146 = (_ref147 = (_raw$totalAmount = raw.totalAmount) !== null && _raw$totalAmount !== void 0 ? _raw$totalAmount : raw.total_amount) !== null && _ref147 !== void 0 ? _ref147 : raw.TotalAmount) !== null && _ref146 !== void 0 ? _ref146 : raw.amount) !== null && _ref145 !== void 0 ? _ref145 : raw.Amount) !== null && _ref144 !== void 0 ? _ref144 : raw.payAmount) !== null && _ref143 !== void 0 ? _ref143 : raw.pay_amount) !== null && _ref142 !== void 0 ? _ref142 : 0),
+    id: (_ref117 = (_ref118 = (_ref119 = (_ref120 = (_ref121 = (_ref122 = (_ref123 = (_raw$id3 = raw.id) !== null && _raw$id3 !== void 0 ? _raw$id3 : raw.Id) !== null && _ref123 !== void 0 ? _ref123 : raw.ID) !== null && _ref122 !== void 0 ? _ref122 : raw.purchaseId) !== null && _ref121 !== void 0 ? _ref121 : raw.purchase_id) !== null && _ref120 !== void 0 ? _ref120 : raw.PurchaseId) !== null && _ref119 !== void 0 ? _ref119 : raw.orderId) !== null && _ref118 !== void 0 ? _ref118 : raw.order_id) !== null && _ref117 !== void 0 ? _ref117 : '',
+    purchaseId: (_ref124 = (_ref125 = (_ref126 = (_ref127 = (_raw$purchaseId = raw.purchaseId) !== null && _raw$purchaseId !== void 0 ? _raw$purchaseId : raw.purchase_id) !== null && _ref127 !== void 0 ? _ref127 : raw.PurchaseId) !== null && _ref126 !== void 0 ? _ref126 : raw.id) !== null && _ref125 !== void 0 ? _ref125 : raw.Id) !== null && _ref124 !== void 0 ? _ref124 : '',
+    orderId: (_ref128 = (_ref129 = (_ref130 = (_ref131 = (_ref132 = (_ref133 = (_raw$orderId = raw.orderId) !== null && _raw$orderId !== void 0 ? _raw$orderId : raw.order_id) !== null && _ref133 !== void 0 ? _ref133 : raw.OrderId) !== null && _ref132 !== void 0 ? _ref132 : raw.OrderID) !== null && _ref131 !== void 0 ? _ref131 : raw.orderNo) !== null && _ref130 !== void 0 ? _ref130 : raw.order_no) !== null && _ref129 !== void 0 ? _ref129 : raw.OrderNo) !== null && _ref128 !== void 0 ? _ref128 : '',
+    activityId: (_ref134 = (_ref135 = (_ref136 = (_raw$activityId2 = raw.activityId) !== null && _raw$activityId2 !== void 0 ? _raw$activityId2 : raw.activity_id) !== null && _ref136 !== void 0 ? _ref136 : raw.ActivityId) !== null && _ref135 !== void 0 ? _ref135 : raw.ActivityID) !== null && _ref134 !== void 0 ? _ref134 : '',
+    productId: (_ref137 = (_ref138 = (_ref139 = (_raw$productId2 = raw.productId) !== null && _raw$productId2 !== void 0 ? _raw$productId2 : raw.product_id) !== null && _ref139 !== void 0 ? _ref139 : raw.ProductId) !== null && _ref138 !== void 0 ? _ref138 : raw.ProductID) !== null && _ref137 !== void 0 ? _ref137 : '',
+    skuId: (_ref140 = (_ref141 = (_raw$skuId2 = raw.skuId) !== null && _raw$skuId2 !== void 0 ? _raw$skuId2 : raw.sku_id) !== null && _ref141 !== void 0 ? _ref141 : raw.SkuId) !== null && _ref140 !== void 0 ? _ref140 : '',
+    quantity: Number((_ref142 = (_ref143 = (_ref144 = (_ref145 = (_raw$quantity = raw.quantity) !== null && _raw$quantity !== void 0 ? _raw$quantity : raw.Quantity) !== null && _ref145 !== void 0 ? _ref145 : raw.count) !== null && _ref144 !== void 0 ? _ref144 : raw.Count) !== null && _ref143 !== void 0 ? _ref143 : raw.num) !== null && _ref142 !== void 0 ? _ref142 : 1),
+    seckillPrice: Number((_ref146 = (_ref147 = (_ref148 = (_ref149 = (_raw$seckillPrice2 = raw.seckillPrice) !== null && _raw$seckillPrice2 !== void 0 ? _raw$seckillPrice2 : raw.seckill_price) !== null && _ref149 !== void 0 ? _ref149 : raw.SeckillPrice) !== null && _ref148 !== void 0 ? _ref148 : raw.price) !== null && _ref147 !== void 0 ? _ref147 : raw.Price) !== null && _ref146 !== void 0 ? _ref146 : 0),
+    totalAmount: Number((_ref150 = (_ref151 = (_ref152 = (_ref153 = (_ref154 = (_ref155 = (_raw$totalAmount = raw.totalAmount) !== null && _raw$totalAmount !== void 0 ? _raw$totalAmount : raw.total_amount) !== null && _ref155 !== void 0 ? _ref155 : raw.TotalAmount) !== null && _ref154 !== void 0 ? _ref154 : raw.amount) !== null && _ref153 !== void 0 ? _ref153 : raw.Amount) !== null && _ref152 !== void 0 ? _ref152 : raw.payAmount) !== null && _ref151 !== void 0 ? _ref151 : raw.pay_amount) !== null && _ref150 !== void 0 ? _ref150 : 0),
     status: status,
     statusCode: statusCode,
-    statusText: (_ref148 = (_ref149 = (_ref150 = (_ref151 = (_raw$statusText = raw.statusText) !== null && _raw$statusText !== void 0 ? _raw$statusText : raw.status_text) !== null && _ref151 !== void 0 ? _ref151 : raw.StatusText) !== null && _ref150 !== void 0 ? _ref150 : statusTextMap[status]) !== null && _ref149 !== void 0 ? _ref149 : status) !== null && _ref148 !== void 0 ? _ref148 : '',
-    message: (_ref152 = (_ref153 = (_ref154 = (_ref155 = (_ref156 = (_raw$message = raw.message) !== null && _raw$message !== void 0 ? _raw$message : raw.Message) !== null && _ref156 !== void 0 ? _ref156 : raw.msg) !== null && _ref155 !== void 0 ? _ref155 : raw.Msg) !== null && _ref154 !== void 0 ? _ref154 : raw.remark) !== null && _ref153 !== void 0 ? _ref153 : raw.Remark) !== null && _ref152 !== void 0 ? _ref152 : '',
-    createdAt: (_ref157 = (_ref158 = (_ref159 = (_ref160 = (_ref161 = (_raw$createdAt = raw.createdAt) !== null && _raw$createdAt !== void 0 ? _raw$createdAt : raw.created_at) !== null && _ref161 !== void 0 ? _ref161 : raw.CreatedAt) !== null && _ref160 !== void 0 ? _ref160 : raw.createTime) !== null && _ref159 !== void 0 ? _ref159 : raw.create_time) !== null && _ref158 !== void 0 ? _ref158 : raw.CreateTime) !== null && _ref157 !== void 0 ? _ref157 : '',
-    paidAt: (_ref162 = (_ref163 = (_ref164 = (_ref165 = (_ref166 = (_raw$paidAt = raw.paidAt) !== null && _raw$paidAt !== void 0 ? _raw$paidAt : raw.paid_at) !== null && _ref166 !== void 0 ? _ref166 : raw.PaidAt) !== null && _ref165 !== void 0 ? _ref165 : raw.payTime) !== null && _ref164 !== void 0 ? _ref164 : raw.pay_time) !== null && _ref163 !== void 0 ? _ref163 : raw.PayTime) !== null && _ref162 !== void 0 ? _ref162 : ''
+    statusText: (_ref156 = (_ref157 = (_ref158 = (_ref159 = (_raw$statusText = raw.statusText) !== null && _raw$statusText !== void 0 ? _raw$statusText : raw.status_text) !== null && _ref159 !== void 0 ? _ref159 : raw.StatusText) !== null && _ref158 !== void 0 ? _ref158 : statusTextMap[status]) !== null && _ref157 !== void 0 ? _ref157 : status) !== null && _ref156 !== void 0 ? _ref156 : '',
+    message: (_ref160 = (_ref161 = (_ref162 = (_ref163 = (_ref164 = (_raw$message = raw.message) !== null && _raw$message !== void 0 ? _raw$message : raw.Message) !== null && _ref164 !== void 0 ? _ref164 : raw.msg) !== null && _ref163 !== void 0 ? _ref163 : raw.Msg) !== null && _ref162 !== void 0 ? _ref162 : raw.remark) !== null && _ref161 !== void 0 ? _ref161 : raw.Remark) !== null && _ref160 !== void 0 ? _ref160 : '',
+    createdAt: (_ref165 = (_ref166 = (_ref167 = (_ref168 = (_ref169 = (_raw$createdAt = raw.createdAt) !== null && _raw$createdAt !== void 0 ? _raw$createdAt : raw.created_at) !== null && _ref169 !== void 0 ? _ref169 : raw.CreatedAt) !== null && _ref168 !== void 0 ? _ref168 : raw.createTime) !== null && _ref167 !== void 0 ? _ref167 : raw.create_time) !== null && _ref166 !== void 0 ? _ref166 : raw.CreateTime) !== null && _ref165 !== void 0 ? _ref165 : '',
+    paidAt: (_ref170 = (_ref171 = (_ref172 = (_ref173 = (_ref174 = (_raw$paidAt = raw.paidAt) !== null && _raw$paidAt !== void 0 ? _raw$paidAt : raw.paid_at) !== null && _ref174 !== void 0 ? _ref174 : raw.PaidAt) !== null && _ref173 !== void 0 ? _ref173 : raw.payTime) !== null && _ref172 !== void 0 ? _ref172 : raw.pay_time) !== null && _ref171 !== void 0 ? _ref171 : raw.PayTime) !== null && _ref170 !== void 0 ? _ref170 : ''
   };
 }
 
@@ -2567,9 +2678,9 @@ function _fetchSeckillActivities() {
       query,
       res,
       list,
-      _ref167,
-      _ref168,
-      _ref169,
+      _ref175,
+      _ref176,
+      _ref177,
       _res$data$list,
       _args = arguments;
     return (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_2__["default"])().w(function (_context) {
@@ -2594,7 +2705,7 @@ function _fetchSeckillActivities() {
             if (res.data.products || res.data.Products || res.data.items) {
               list = [res.data];
             } else {
-              list = (_ref167 = (_ref168 = (_ref169 = (_res$data$list = res.data.list) !== null && _res$data$list !== void 0 ? _res$data$list : res.data.items) !== null && _ref169 !== void 0 ? _ref169 : res.data.records) !== null && _ref168 !== void 0 ? _ref168 : res.data.activities) !== null && _ref167 !== void 0 ? _ref167 : [];
+              list = (_ref175 = (_ref176 = (_ref177 = (_res$data$list = res.data.list) !== null && _res$data$list !== void 0 ? _res$data$list : res.data.items) !== null && _ref177 !== void 0 ? _ref177 : res.data.records) !== null && _ref176 !== void 0 ? _ref176 : res.data.activities) !== null && _ref175 !== void 0 ? _ref175 : [];
               if (!Array.isArray(list)) list = [];
             }
           }
@@ -2613,7 +2724,10 @@ function fetchProductSeckillActivity(_x) {
 /**
  * 购买秒杀商品
  * POST /api/v1/seckill/purchases
- * @param payload activityId 活动ID / productId 商品ID / quantity 数量 / skuId 规格ID(可选) / addressId 地址ID(可选)
+ * 后端 Go 结构体 JSON tag 为 camelCase（错误消息用 PascalCase 字段名）：
+ *   activityId(required) / productId(required) / seckillSkuPriceId(required) / storeId(required)
+ *   skuId / quantity / addressId / paymentMethod
+ * 所有数字字段为 uint64，binding:"required" 拒绝零值 0，需用 JSON 提交保留数字类型
  */
 function _fetchProductSeckillActivity() {
   _fetchProductSeckillActivity = (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_1__["default"])(/*#__PURE__*/(0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_2__["default"])().m(function _callee2(params) {
@@ -2684,14 +2798,14 @@ function _createSeckillPurchase() {
           body = {
             activityId: (0,_api_common__WEBPACK_IMPORTED_MODULE_0__.toNumericId)(payload.activityId),
             productId: (0,_api_common__WEBPACK_IMPORTED_MODULE_0__.toNumericId)(payload.productId),
+            seckillSkuPriceId: (0,_api_common__WEBPACK_IMPORTED_MODULE_0__.toNumericId)(payload.seckillSkuPriceId),
+            storeId: (0,_api_common__WEBPACK_IMPORTED_MODULE_0__.toNumericId)(payload.storeId),
+            skuId: (0,_api_common__WEBPACK_IMPORTED_MODULE_0__.toNumericId)(payload.skuId),
             quantity: payload.quantity
           };
-          if (payload.skuId !== undefined) body.skuId = (0,_api_common__WEBPACK_IMPORTED_MODULE_0__.toNumericId)(payload.skuId);
           if (payload.addressId !== undefined) body.addressId = (0,_api_common__WEBPACK_IMPORTED_MODULE_0__.toNumericId)(payload.addressId);
           if (payload.paymentMethod !== undefined) body.paymentMethod = payload.paymentMethod;
-
-          // 后端用 ShouldBindJSON 绑定，含多个 uint64 数字字段（activityId/productId/skuId/addressId），
-          // 必须用 JSON 提交以保留数字类型；form-urlencoded 会将数字转为字符串导致"输入参数有误"
+          console.log('[秒杀购买] 请求体:', JSON.stringify(body));
           _context3.n = 1;
           return (0,_api_common__WEBPACK_IMPORTED_MODULE_0__.apiPost)(seckillApi.purchases, body, {}, {}, false);
         case 1:
@@ -2778,7 +2892,7 @@ function _pollSeckillPurchaseResult() {
           startTime = Date.now();
           return _context6.a(2, new Promise(function (resolve, reject) {
             var _poll = /*#__PURE__*/function () {
-              var _ref170 = (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_1__["default"])(/*#__PURE__*/(0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_2__["default"])().m(function _callee5() {
+              var _ref178 = (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_1__["default"])(/*#__PURE__*/(0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_2__["default"])().m(function _callee5() {
                 var _res$data, _result$status, res, result, status, isTerminal, _t;
                 return (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_2__["default"])().w(function (_context5) {
                   while (1) switch (_context5.p = _context5.n) {
@@ -2817,7 +2931,7 @@ function _pollSeckillPurchaseResult() {
                 }, _callee5, null, [[1, 3]]);
               }));
               return function poll() {
-                return _ref170.apply(this, arguments);
+                return _ref178.apply(this, arguments);
               };
             }();
             _poll();
@@ -5446,11 +5560,12 @@ var chatWS = ChatWebSocketManager.getInstance();
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   getBrandIcon: function() { return /* binding */ getBrandIcon; },
 /* harmony export */   getImageUrl: function() { return /* binding */ getImageUrl; },
+/* harmony export */   isValidImageUrl: function() { return /* binding */ isValidImageUrl; },
 /* harmony export */   lazyImgProps: function() { return /* binding */ lazyImgProps; },
 /* harmony export */   normalizeProductImages: function() { return /* binding */ normalizeProductImages; },
 /* harmony export */   normalizeProductListImages: function() { return /* binding */ normalizeProductListImages; }
 /* harmony export */ });
-/* unused harmony exports isValidImageUrl, getImageUrls, isValidBrandLogo */
+/* unused harmony exports getImageUrls, isValidBrandLogo */
 /* harmony import */ var D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_slicedToArray_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./node_modules/@babel/runtime/helpers/esm/slicedToArray.js */ "./node_modules/@babel/runtime/helpers/esm/slicedToArray.js");
 /* harmony import */ var D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_typeof_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./node_modules/@babel/runtime/helpers/esm/typeof.js */ "./node_modules/@babel/runtime/helpers/esm/typeof.js");
 /* harmony import */ var D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./node_modules/@babel/runtime/helpers/esm/objectSpread2.js */ "./node_modules/@babel/runtime/helpers/esm/objectSpread2.js");
@@ -6145,6 +6260,17 @@ function _executeWechatPayment() {
   }));
   return _executeWechatPayment.apply(this, arguments);
 }
+
+/***/ }),
+
+/***/ "./src/styles/cart/order-list.module.scss":
+/*!************************************************!*\
+  !*** ./src/styles/cart/order-list.module.scss ***!
+  \************************************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__) {
+
+// extracted by mini-css-extract-plugin
+/* harmony default export */ __webpack_exports__["default"] = ({"orderListPage":"order-list-module__orderListPage___NtfNi","tabBar":"order-list-module__tabBar___fgXNt","tabList":"order-list-module__tabList___M5ifq","tabItem":"order-list-module__tabItem___khtpq","tabText":"order-list-module__tabText___C2GiO","active":"order-list-module__active___XdTkM","tabIndicator":"order-list-module__tabIndicator___JQF3Q","orderList":"order-list-module__orderList___nmADa","orderCard":"order-list-module__orderCard___iToai","orderHeader":"order-list-module__orderHeader___sTeSn","orderId":"order-list-module__orderId___G1AlW","orderStatus":"order-list-module__orderStatus___hgp5E","storeInfo":"order-list-module__storeInfo___wWJ09","storeName":"order-list-module__storeName___lPQd_","storeAddress":"order-list-module__storeAddress___yfeEj","orderProducts":"order-list-module__orderProducts___sqxMT","orderProduct":"order-list-module__orderProduct___yZC9v","productImage":"order-list-module__productImage___bmf15","productInfo":"order-list-module__productInfo___n9Qjf","productName":"order-list-module__productName___T88Yy","productSpecs":"order-list-module__productSpecs___yaimj","productBottom":"order-list-module__productBottom___tzq6n","productPrice":"order-list-module__productPrice___yyiRX","productQuantity":"order-list-module__productQuantity___etwRG","orderFooter":"order-list-module__orderFooter___jDeh4","orderTotal":"order-list-module__orderTotal___ceNEl","totalLabel":"order-list-module__totalLabel___FTLHR","totalValue":"order-list-module__totalValue___BIc9O","orderActions":"order-list-module__orderActions___ieeGq","actionBtn":"order-list-module__actionBtn___WcUov","primary":"order-list-module__primary___SIXAn","secondary":"order-list-module__secondary___EkHH4","danger":"order-list-module__danger___AymX_","emptyOrder":"order-list-module__emptyOrder___dYhUd","emptyIcon":"order-list-module__emptyIcon___mar7D","emptyText":"order-list-module__emptyText___vPbX6","goShoppingBtn":"order-list-module__goShoppingBtn___Vuxgu","loading":"order-list-module__loading___NhZ5x","refundHeader":"order-list-module__refundHeader___aFemB","refundTitle":"order-list-module__refundTitle____pLln","refundStatusActions":"order-list-module__refundStatusActions___E96du","refundStatusBtn":"order-list-module__refundStatusBtn___fu_mj"});
 
 /***/ }),
 

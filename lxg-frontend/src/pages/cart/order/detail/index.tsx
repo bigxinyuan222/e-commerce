@@ -244,7 +244,7 @@ const OrderDetailPage: React.FC = () => {
           </>
         )}
         {isPendingDelivery && (
-          <View className={styles.actionBtn} onClick={handleCancel}>取消订单</View>
+          <View className={styles.actionBtn} onClick={handleRefund}>申请退款</View>
         )}
         {isPendingPickup && (
           <>

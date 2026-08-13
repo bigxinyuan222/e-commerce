@@ -179,7 +179,7 @@ var RefundApplyPage = function RefundApplyPage() {
   }();
   var handleSubmit = /*#__PURE__*/function () {
     var _ref0 = (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_9__["default"])(/*#__PURE__*/(0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_10__["default"])().m(function _callee2() {
-      var amount, _reasons$find, uploadedImages, i, url, reasonText, _t2;
+      var amount, _reasons$find, uploadedImages, i, url, reasonText, errMsg, _t2;
       return (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_10__["default"])().w(function (_context2) {
         while (1) switch (_context2.p = _context2.n) {
           case 0:
@@ -267,7 +267,9 @@ var RefundApplyPage = function RefundApplyPage() {
               icon: 'success'
             });
             setTimeout(function () {
-              _tarojs_taro__WEBPACK_IMPORTED_MODULE_1___default().navigateBack();
+              _tarojs_taro__WEBPACK_IMPORTED_MODULE_1___default().redirectTo({
+                url: '/pages/cart/order/list/index?status=refunding'
+              });
             }, 1500);
             _context2.n = 12;
             break;
@@ -276,10 +278,23 @@ var RefundApplyPage = function RefundApplyPage() {
             _t2 = _context2.v;
             _tarojs_taro__WEBPACK_IMPORTED_MODULE_1___default().hideLoading();
             console.error('提交退款申请失败:', _t2);
-            _tarojs_taro__WEBPACK_IMPORTED_MODULE_1___default().showToast({
-              title: (_t2 === null || _t2 === void 0 ? void 0 : _t2.message) || '提交失败',
-              icon: 'none'
-            });
+            errMsg = (_t2 === null || _t2 === void 0 ? void 0 : _t2.message) || '';
+            if (errMsg.includes('已存在退款申请')) {
+              _tarojs_taro__WEBPACK_IMPORTED_MODULE_1___default().showToast({
+                title: '该订单已申请退款，跳到退款/售后',
+                icon: 'none'
+              });
+              setTimeout(function () {
+                _tarojs_taro__WEBPACK_IMPORTED_MODULE_1___default().redirectTo({
+                  url: '/pages/cart/order/list/index?status=refunding'
+                });
+              }, 1500);
+            } else {
+              _tarojs_taro__WEBPACK_IMPORTED_MODULE_1___default().showToast({
+                title: errMsg || '提交失败',
+                icon: 'none'
+              });
+            }
           case 12:
             _context2.p = 12;
             setIsSubmitting(false);

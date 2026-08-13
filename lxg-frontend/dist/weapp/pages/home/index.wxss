@@ -6,6 +6,12 @@
   min-height: 100vh;
   background-color: #f7f8fa;
   padding-bottom: 120rpx;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-direction: column;
+      -ms-flex-direction: column;
+          flex-direction: column;
 }
 .home-module__header___hFd8x {
   position: -webkit-sticky;
@@ -42,7 +48,11 @@
   color: rgba(255, 255, 255, 0.95);
 }
 .home-module__content___qfPqY {
+  -webkit-flex: 1;
+      -ms-flex: 1;
+          flex: 1;
   margin-top: -10rpx;
+  min-height: 200rpx;
 }
 .home-module__banner___W3u6h {
   margin: 0 32rpx;
@@ -297,112 +307,11 @@
   content: " >";
   font-size: 28rpx;
 }
-.home-module__seckillProducts___jUo6K {
-  display: -webkit-flex;
-  display: -ms-flexbox;
-  display: flex;
-  white-space: nowrap;
-  padding: 0 0 16rpx;
-}
-.home-module__seckillProducts___jUo6K .home-module__seckillProduct___NuSZ9 {
-  -webkit-flex: 0 0 auto;
-      -ms-flex: 0 0 auto;
-          flex: 0 0 auto;
-  width: 220rpx;
-  margin-right: 16rpx;
-  background-color: #ffffff;
-  border-radius: 24rpx;
-  padding: 16rpx;
-  color: #1a1a1a;
-  display: -webkit-inline-flex;
-  display: -ms-inline-flexbox;
-  display: inline-flex;
-  -webkit-flex-direction: column;
-      -ms-flex-direction: column;
-          flex-direction: column;
-  -webkit-box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.06);
-          box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.06);
-}
-.home-module__seckillProducts___jUo6K .home-module__seckillProduct___NuSZ9:last-child {
-  margin-right: 0;
-}
-.home-module__seckillProducts___jUo6K .home-module__seckillProduct___NuSZ9 .home-module__productImage___Fy4mD {
-  width: 100%;
-  padding-top: 100%;
-  border-radius: 16rpx;
-  margin-bottom: 16rpx;
-  background-color: #f7f8fa;
-  background-size: cover;
-  background-position: center;
-}
-.home-module__seckillProducts___jUo6K .home-module__seckillProduct___NuSZ9 .home-module__seckillPriceArea___mAeSm {
-  -webkit-flex: 1;
-      -ms-flex: 1;
-          flex: 1;
-  display: -webkit-flex;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-flex-direction: column;
-      -ms-flex-direction: column;
-          flex-direction: column;
-  -webkit-justify-content: center;
-      -ms-flex-pack: center;
-          justify-content: center;
-}
-.home-module__seckillProducts___jUo6K .home-module__seckillProduct___NuSZ9 .home-module__seckillPriceArea___mAeSm .home-module__seckillPrice___bykOz {
-  font-size: 38rpx;
-  font-weight: 700;
-  color: #d91e18;
-  margin-bottom: 4rpx;
-}
-.home-module__seckillProducts___jUo6K .home-module__seckillProduct___NuSZ9 .home-module__seckillPriceArea___mAeSm .home-module__originalPrice___liqTH {
-  font-size: 30rpx;
-  color: #8a8a8a;
-  text-decoration: line-through;
-}
-.home-module__seckillProducts___jUo6K .home-module__seckillProduct___NuSZ9 .home-module__seckillBtn___VFtGp {
-  width: 100%;
-  height: 64rpx;
-  background: -webkit-linear-gradient(315deg, #ff4d4d 0%, #ff6b6b 100%);
-  background: linear-gradient(135deg, #ff4d4d 0%, #ff6b6b 100%);
-  color: #fff;
-  font-size: 34rpx;
-  font-weight: 700;
-  display: -webkit-flex;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-align-items: center;
-      -ms-flex-align: center;
-          align-items: center;
-  -webkit-justify-content: center;
-      -ms-flex-pack: center;
-          justify-content: center;
-  border-radius: 48rpx;
-  margin-top: 16rpx;
-  -webkit-box-shadow: 0 4rpx 12rpx rgba(226, 35, 26, 0.3);
-          box-shadow: 0 4rpx 12rpx rgba(226, 35, 26, 0.3);
-}
-.home-module__seckillEmpty___hlaZz {
-  padding: 32rpx 0;
-  display: -webkit-flex;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-justify-content: center;
-      -ms-flex-pack: center;
-          justify-content: center;
-  -webkit-align-items: center;
-      -ms-flex-align: center;
-          align-items: center;
-}
-.home-module__seckillEmpty___hlaZz .home-module__seckillEmptyText___FBixm {
-  font-size: 30rpx;
-  color: #8a8a8a;
-}
 .home-module__seckillArea___ju4h7 {
   background: -webkit-linear-gradient(315deg, #ff4d4d 0%, #ff7d00 100%);
   background: linear-gradient(135deg, #ff4d4d 0%, #ff7d00 100%);
   border-radius: 32rpx;
-  padding: 24rpx 32rpx;
+  padding: 24rpx 32rpx 32rpx;
   color: #ffffff;
 }
 .home-module__seckillArea___ju4h7 .home-module__seckillHeader___dmfWl {
@@ -415,6 +324,7 @@
   -webkit-align-items: center;
       -ms-flex-align: center;
           align-items: center;
+  margin-bottom: 24rpx;
 }
 .home-module__seckillArea___ju4h7 .home-module__seckillHeader___dmfWl .home-module__seckillTitle___wpEbE {
   font-size: 44rpx;
@@ -444,6 +354,12 @@
       -ms-flex-align: center;
           align-items: center;
   gap: 16rpx;
+}
+.home-module__seckillArea___ju4h7 .home-module__seckillHeader___dmfWl .home-module__seckillTag___a6XGm {
+  font-size: 30rpx;
+  background-color: rgba(255, 255, 255, 0.2);
+  padding: 4rpx 16rpx;
+  border-radius: 48rpx;
 }
 .home-module__seckillArea___ju4h7 .home-module__seckillHeader___dmfWl .home-module__countdown___PAWFw {
   display: -webkit-flex;
@@ -483,6 +399,120 @@
   font-size: 36rpx;
   color: #fff;
   font-weight: bold;
+}
+.home-module__seckillArea___ju4h7 .home-module__seckillProducts___jUo6K {
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  white-space: nowrap;
+  margin: 0 -16rpx;
+  padding: 0 16rpx;
+}
+.home-module__seckillArea___ju4h7 .home-module__seckillProducts___jUo6K .home-module__seckillProduct___NuSZ9 {
+  -webkit-flex: 0 0 auto;
+      -ms-flex: 0 0 auto;
+          flex: 0 0 auto;
+  width: 210rpx;
+  margin-right: 16rpx;
+  background-color: #ffffff;
+  border-radius: 24rpx;
+  padding: 16rpx;
+  color: #1a1a1a;
+  display: -webkit-inline-flex;
+  display: -ms-inline-flexbox;
+  display: inline-flex;
+  -webkit-flex-direction: column;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-shadow: 0 6rpx 20rpx rgba(0, 0, 0, 0.1);
+          box-shadow: 0 6rpx 20rpx rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+.home-module__seckillArea___ju4h7 .home-module__seckillProducts___jUo6K .home-module__seckillProduct___NuSZ9:last-child {
+  margin-right: 0;
+}
+.home-module__seckillArea___ju4h7 .home-module__seckillProducts___jUo6K .home-module__seckillProduct___NuSZ9 .home-module__productImage___Fy4mD {
+  width: 100%;
+  height: 160rpx;
+  border-radius: 16rpx;
+  margin-bottom: 16rpx;
+  background-color: #f7f8fa;
+}
+.home-module__seckillArea___ju4h7 .home-module__seckillProducts___jUo6K .home-module__seckillProduct___NuSZ9 .home-module__seckillName___wDMyq {
+  font-size: 30rpx;
+  color: #1a1a1a;
+  line-height: 1.3;
+  height: 2.6em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  margin-bottom: 8rpx;
+}
+.home-module__seckillArea___ju4h7 .home-module__seckillProducts___jUo6K .home-module__seckillProduct___NuSZ9 .home-module__seckillPriceArea___mAeSm {
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-direction: column;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  margin-bottom: 8rpx;
+}
+.home-module__seckillArea___ju4h7 .home-module__seckillProducts___jUo6K .home-module__seckillProduct___NuSZ9 .home-module__seckillPriceArea___mAeSm .home-module__seckillPrice___bykOz {
+  font-size: 38rpx;
+  font-weight: 700;
+  color: #d91e18;
+  line-height: 1.2;
+}
+.home-module__seckillArea___ju4h7 .home-module__seckillProducts___jUo6K .home-module__seckillProduct___NuSZ9 .home-module__seckillPriceArea___mAeSm .home-module__originalPrice___liqTH {
+  font-size: 28rpx;
+  color: #8a8a8a;
+  text-decoration: line-through;
+  margin-top: 2rpx;
+}
+.home-module__seckillArea___ju4h7 .home-module__seckillProducts___jUo6K .home-module__seckillProduct___NuSZ9 .home-module__seckillProgress___YUKeD {
+  width: 100%;
+  height: 16rpx;
+  background-color: rgba(0, 0, 0, 0.06);
+  border-radius: 48rpx;
+  overflow: hidden;
+  margin-bottom: 8rpx;
+}
+.home-module__seckillArea___ju4h7 .home-module__seckillProducts___jUo6K .home-module__seckillProduct___NuSZ9 .home-module__seckillProgress___YUKeD .home-module__seckillProgressBar___Dl5b0 {
+  height: 100%;
+  background: -webkit-gradient(linear, left top, right top, from(#ff4d4d), to(#ff6b6b));
+  background: -webkit-linear-gradient(left, #ff4d4d 0%, #ff6b6b 100%);
+  background: linear-gradient(90deg, #ff4d4d 0%, #ff6b6b 100%);
+  border-radius: 48rpx;
+  -webkit-transition: width 0.3s ease;
+  transition: width 0.3s ease;
+}
+.home-module__seckillArea___ju4h7 .home-module__seckillProducts___jUo6K .home-module__seckillProduct___NuSZ9 .home-module__seckillProgressText___zAk1_ {
+  font-size: 28rpx;
+  color: #8a8a8a;
+  margin-bottom: 8rpx;
+}
+.home-module__seckillArea___ju4h7 .home-module__seckillProducts___jUo6K .home-module__seckillProduct___NuSZ9 .home-module__seckillBtn___VFtGp {
+  width: 100%;
+  height: 52rpx;
+  background: -webkit-linear-gradient(315deg, #ff4d4d 0%, #ff6b6b 100%);
+  background: linear-gradient(135deg, #ff4d4d 0%, #ff6b6b 100%);
+  color: #fff;
+  font-size: 30rpx;
+  font-weight: 700;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-align-items: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-justify-content: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  border-radius: 48rpx;
+  -webkit-box-shadow: 0 4rpx 12rpx rgba(226, 35, 26, 0.3);
+          box-shadow: 0 4rpx 12rpx rgba(226, 35, 26, 0.3);
 }
 .home-module__recommendSection___iVE2E .home-module__recommendHeader___Lqvnh {
   display: -webkit-flex;

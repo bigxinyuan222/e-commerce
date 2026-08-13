@@ -191,6 +191,15 @@ var MinePage = function MinePage() {
       url: "/pages/cart/order/list/index?status=".concat(status || 'all')
     });
   }, [isLoggedIn, goToLogin]);
+  var goToRefundList = (0,react__WEBPACK_IMPORTED_MODULE_0__.useCallback)(function () {
+    if (!isLoggedIn) {
+      goToLogin();
+      return;
+    }
+    _tarojs_taro__WEBPACK_IMPORTED_MODULE_1___default().navigateTo({
+      url: '/pages/cart/order/refund-list/index'
+    });
+  }, [isLoggedIn, goToLogin]);
   var goToMyCoupons = (0,react__WEBPACK_IMPORTED_MODULE_0__.useCallback)(function () {
     if (!isLoggedIn) {
       goToLogin();
@@ -298,7 +307,7 @@ var MinePage = function MinePage() {
             icon: "\uD83D\uDCB3",
             label: "\u9000\u6B3E/\u552E\u540E",
             onClick: function onClick() {
-              return goToOrderList('refunding');
+              return goToRefundList();
             }
           })]
         })]

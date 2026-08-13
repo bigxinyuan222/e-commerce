@@ -191,7 +191,10 @@ async function apiRequest(url: string, options: {
             // 读取后端返回的 message 字段，方便定位错误
             const backendMsg = (response.data as any)?.message || (response.data as any)?.msg;
             // 控制台输出完整调试信息（含 URL、状态码、响应内容）
-            console.error('[API Error]', { url, statusCode: response.statusCode, data: response.data });
+            // silent=true 时（如订单评价兜底查询、商品 AI 评价摘要等可选数据）不打印，避免未实现接口刷屏
+            if (!options.silent) {
+                console.error('[API Error]', { url, statusCode: response.statusCode, data: response.data });
+            }
             // 抛给用户的错误信息：优先用后端 message，否则用友好提示（不暴露 URL 等技术细节）
             const errMsg = backendMsg || friendlyHttpError(response.statusCode);
             const err = new Error(errMsg);
