@@ -20,6 +20,7 @@ export default defineAppConfig({
     'pages/cart/order/list/index',
     'pages/cart/order/detail/index',
     'pages/cart/order/refund/index',
+    'pages/cart/order/refund-list/index',
     'pages/cart/order/review/index',
     // 用户模块
     'pages/user/login/index',

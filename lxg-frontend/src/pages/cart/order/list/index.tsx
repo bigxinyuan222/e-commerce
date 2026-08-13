@@ -26,29 +26,17 @@ const statusCodeReverseMap: { [key: string]: number } = {
 const statusMap: { [key: string]: string } = {
   'pending_payment': '待支付',
   'pending_delivery': '待发货',
-  'paid': '已支付',
   'pending_pickup': '待自提',
   'completed': '已完成',
-  'pending_review': '待评价',
-  'reviewed': '已评价',
   'cancelled': '已取消',
-  'refunding': '退款中',
-  'refund_rejected': '商家已拒绝',
-  'refunded': '已退款',
 };
 
 const statusColorMap: { [key: string]: string } = {
   'pending_payment': '#e2231a',
   'pending_delivery': '#1890ff',
-  'paid': '#1890ff',
   'pending_pickup': '#ff6600',
   'completed': '#52c41a',
-  'pending_review': '#ff6b35',
-  'reviewed': '#52c41a',
   'cancelled': '#999',
-  'refunding': '#faad14',
-  'refund_rejected': '#ff4d4f',
-  'refunded': '#52c41a',
 };
 
 
@@ -92,22 +80,12 @@ function transformOrderItem(item: any): any {
   };
 }
 
-// 退款记录专用的状态文本映射（覆盖退款自身状态 + 兼容后端可能返回的订单状态）
+// 退款记录专用的状态文本映射（0=待审核 1=已通过 2=已拒绝 3=已完成）
 const refundStatusTextMap: { [key: string]: string } = {
-  'pending': '待处理',
-  'processing': '处理中',
-  'approved': '已同意',
+  'pending': '待审核',
+  'approved': '已通过',
   'rejected': '已拒绝',
-  'refunding': '退款中',
-  'refund_rejected': '商家已拒绝',
-  'refunded': '已退款',
-  'cancelled': '已取消',
   'completed': '已完成',
-  // 后端可能复用订单状态码，统一映射为退款语义
-  'pending_payment': '待处理',
-  'pending_delivery': '处理中',
-  'pending_pickup': '处理中',
-  'paid': '处理中',
 };
 
 function transformRefund(refund: any): any {
@@ -224,36 +202,24 @@ const OrderCard = React.memo(({
 }) => {
   const isRefundOrder = !!order.isRefundRecord;
   // 退款记录不显示订单操作按钮（取消、支付、确认发货/自提、评价等）
-  const canCancel = !isRefundOrder && (order.status === 'pending_payment' || order.status === 'pending_delivery' || order.status === 'pending_pickup');
+  const canCancel = !isRefundOrder && order.status === 'pending_payment';
   const canPay = !isRefundOrder && order.status === 'pending_payment';
   const canConfirmPickup = !isRefundOrder && order.status === 'pending_pickup';
-  const canRefund = !isRefundOrder && (order.status === 'completed' || order.status === 'pending_review');
-  const canReview = !isRefundOrder && (order.status === 'completed' || order.status === 'pending_review');
+  const canRefund = !isRefundOrder && (order.status === 'pending_delivery' || order.status === 'completed');
+  const canReview = !isRefundOrder && order.status === 'completed';
 
   const refundStatusMap = {
-    'pending': '待处理',
-    'processing': '处理中',
-    'approved': '已同意',
+    'pending': '待审核',
+    'approved': '已通过',
     'rejected': '已拒绝',
-    'refunding': '退款中',
-    'refund_rejected': '商家已拒绝',
-    'refunded': '已退款',
-    'cancelled': '已取消',
     'completed': '已完成',
-    'pending_payment': '待处理',
   };
 
   const refundStatusColorMap = {
     'pending': '#faad14',
-    'processing': '#1890ff',
     'approved': '#52c41a',
     'rejected': '#ff4d4f',
-    'refunding': '#faad14',
-    'refund_rejected': '#ff4d4f',
-    'refunded': '#52c41a',
-    'cancelled': '#999',
     'completed': '#52c41a',
-    'pending_payment': '#faad14',
   };
 
   return (
@@ -350,7 +316,8 @@ const OrderListPage: React.FC = () => {
       const searchParams = new URLSearchParams(window.location.search);
       status = searchParams.get('status') || undefined;
     }
-    return status || 'all';
+    const validStatuses = ['all', 'pending_payment', 'pending_delivery', 'pending_pickup', 'completed', 'cancelled'];
+    return status && validStatuses.includes(status) ? status : 'all';
   });
   const [orders, setOrders] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -363,7 +330,6 @@ const OrderListPage: React.FC = () => {
     { key: 'pending_delivery', label: '待发货' },
     { key: 'pending_pickup', label: '待自提' },
     { key: 'completed', label: '已完成' },
-    { key: 'pending_review', label: '评价' },
     { key: 'cancelled', label: '已取消' },
   ];
 
@@ -378,22 +344,19 @@ const OrderListPage: React.FC = () => {
       const searchParams = new URLSearchParams(window.location.search);
       status = searchParams.get('status') || undefined;
     }
-    if (status && status !== activeTab) {
+    const validStatuses = ['all', 'pending_payment', 'pending_delivery', 'pending_pickup', 'completed', 'cancelled'];
+    if (status && validStatuses.includes(status) && status !== activeTab) {
       setActiveTab(status);
     }
   }, []);
 
-  // 退款有效状态白名单：只有这些状态的记录才允许出现在退款/售后列表
-  const validRefundStatuses = [
-    'pending', 'processing', 'approved', 'rejected',
-    'refunding', 'refund_rejected', 'refunded',
-    'cancelled', 'completed',
-  ];
-  // 退款相关状态：这些状态的订单不应出现在普通订单列表中
-  const refundRelatedStatuses = [
-    'refunding', 'refund_rejected', 'refunded',
-    'pending', 'processing', 'approved', 'rejected',
-  ];
+  // 退款有效状态白名单：0=待审核 1=已通过 2=已拒绝 3=已完成
+  const validRefundStatuses = ['pending', 'approved', 'rejected', 'completed'];
+  // 订单退款相关状态：这些状态的订单不应出现在普通订单列表中
+  // 注意：这里必须是“订单”的退款态，不能用退款记录的状态键
+  // （退款记录的 'completed' 表示退款已完成，与订单的 'completed' 同名不同义，
+  //  若误纳入会把所有已完成订单全部过滤掉）
+  const refundRelatedStatuses: string[] = [];
 
   const loadOrders = useCallback(async (status?: string) => {
     setLoading(true);
@@ -412,7 +375,7 @@ const OrderListPage: React.FC = () => {
       }
 
       const params: Record<string, any> = { page: 1, size: 50 };
-      if (status && status !== 'all' && status !== 'pending_review' && status !== 'reviewed') {
+      if (status && status !== 'all') {
         const statusCode = statusCodeReverseMap[status];
         if (statusCode !== undefined) {
           params.status = statusCode;
@@ -427,9 +390,34 @@ const OrderListPage: React.FC = () => {
         .map(transformOrder)
         .filter((o: any) => !refundRelatedStatuses.includes(o.status));
 
-      // 后端未返回 isReviewed 时，兜底查询已完成/待评价订单的评价记录
+      // 加载退款记录：全部 tab 需要把退款记录同步展示；其他 tab 则过滤掉已存在退款记录的订单
+      let refundRecords: any[] = [];
+      try {
+        const refundRes = await fetchRefundList({ page: 1, size: 100 });
+        if (status !== latestStatusRef.current) return;
+        const refundList = Array.isArray(refundRes?.data) ? refundRes.data : [];
+        if (status === 'all') {
+          refundRecords = refundList
+            .map(transformRefund)
+            .filter((r: any) => validRefundStatuses.includes(r.status));
+        }
+        const refundOrderIds = new Set<string>();
+        refundList.forEach((r: any) => {
+          if (r.orderId) refundOrderIds.add(String(r.orderId));
+          if (r.orderNo) refundOrderIds.add(String(r.orderNo));
+        });
+        if (status !== 'all') {
+          transformed = transformed.filter((o: any) =>
+            !refundOrderIds.has(String(o.id)) && !refundOrderIds.has(String(o.orderNo))
+          );
+        }
+      } catch (err) {
+        console.error('加载退款记录失败:', err);
+      }
+
+      // 后端未返回 isReviewed 时，兜底查询已完成订单的评价记录
       const ordersNeedCheckReview = transformed.filter((o: any) =>
-        (o.status === 'completed' || o.status === 'pending_review') && !o.isReviewed
+        o.status === 'completed' && !o.isReviewed
       );
       if (ordersNeedCheckReview.length > 0) {
         const reviewResults = await Promise.allSettled(
@@ -446,13 +434,19 @@ const OrderListPage: React.FC = () => {
         });
       }
 
-      if (status === 'pending_review') {
-        setOrders(transformed.filter((o: any) => o.status === 'completed' || o.status === 'pending_review'));
-      } else if (status === 'cancelled') {
+      if (status === 'cancelled') {
         setOrders(transformed.filter((o: any) => o.status === 'cancelled'));
       } else if (status && status !== 'all') {
         // 前端二次过滤，确保只显示对应状态的订单
         setOrders(transformed.filter((o: any) => o.status === status));
+      } else if (status === 'all') {
+        // 全部 tab 把退款记录同步合并进来，按申请/创建时间倒序排列
+        const merged = [...transformed, ...refundRecords].sort((a: any, b: any) => {
+          const timeA = new Date(a.createTime || a.applyTime || 0).getTime();
+          const timeB = new Date(b.createTime || b.applyTime || 0).getTime();
+          return timeB - timeA;
+        });
+        setOrders(merged);
       } else {
         setOrders(transformed);
       }
