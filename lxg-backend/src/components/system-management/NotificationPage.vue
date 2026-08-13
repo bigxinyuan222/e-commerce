@@ -314,39 +314,253 @@ onMounted(async () => {
   </div>
 
   <div v-if="tab === 'send'" class="notification-compose">
-    <div class="card"><div class="card-header"><span class="card-title"><i class="fas fa-edit"></i> 编辑通知</span></div><div class="card-body">
-      <div class="form-section"><div class="field-label">通知类型</div><div class="radio-row"><label><input v-model="form.type" :value="1" type="radio">订单通知</label><label><input v-model="form.type" :value="2" type="radio">活动通知</label><label><input v-model="form.type" :value="3" type="radio">系统维护</label></div></div>
-      <div class="form-section"><div class="field-label">通知标题</div><input v-model="form.title" class="form-control" placeholder="请输入通知标题"></div>
-      <div class="form-section"><div class="field-label">通知内容</div><textarea v-model="form.content" class="form-control" rows="6" placeholder="请输入通知内容"></textarea></div>
-      <div class="form-section"><div class="field-label">接收范围</div><div class="radio-row"><label><input v-model="form.targetScope" :value="1" type="radio">全部用户</label><label><input v-model="form.targetScope" :value="2" type="radio">指定用户</label></div>
-        <div v-if="form.targetScope === 2" class="specified-users"><div class="search-row"><input v-model="userKeyword" class="form-control" placeholder="搜索用户（用户名/手机号）" @keydown.enter.prevent="searchUsers(false)"><button class="btn btn-sm btn-primary" :disabled="searchingUsers" @click="searchUsers(false)"><i class="fas fa-search"></i> 搜索</button></div>
-          <div v-if="searchResults.length" class="user-results"><button v-for="item in searchResults" :key="item.id" class="system-user-search-result" @click="toggleUser(item)"><span><strong>{{ item.username }}</strong><small>{{ maskPhone(item.phone) }}</small></span><i class="fas" :class="selectedUsers.some(user => String(user.id) === String(item.id)) ? 'fa-check-circle selected' : 'fa-circle'"></i></button></div>
-          <div v-if="userDirectoryError" class="inline-error"><i class="fas fa-exclamation-circle"></i>{{ userDirectoryError }}。当前账号无法读取用户列表，因此不能将手机号转换为用户ID。</div><div class="selected-users"><span v-if="!selectedUsers.length" class="system-tag muted">输入完整手机号可自动选择，或从搜索结果中选择</span><button v-for="item in selectedUsers" :key="item.id" class="system-tag primary" @click="toggleUser(item)">{{ item.username }} ({{ maskPhone(item.phone) }}) <i class="fas fa-times"></i></button></div>
+    <div class="card">
+      <div class="card-header">
+        <span class="card-title"><i class="fas fa-edit"></i> 编辑通知</span>
+      </div>
+      <div class="card-body">
+        <div class="form-section">
+          <div class="field-label">通知类型</div>
+          <div class="radio-row">
+            <label><input v-model="form.type" :value="1" type="radio">订单通知</label>
+            <label><input v-model="form.type" :value="2" type="radio">活动通知</label>
+            <label><input v-model="form.type" :value="3" type="radio">系统维护</label>
+          </div>
+        </div>
+        <div class="form-section">
+          <div class="field-label">通知标题</div>
+          <input v-model="form.title" class="form-control" placeholder="请输入通知标题">
+        </div>
+        <div class="form-section">
+          <div class="field-label">通知内容</div>
+          <textarea v-model="form.content" class="form-control" rows="6" placeholder="请输入通知内容"></textarea>
+        </div>
+        <div class="form-section">
+          <div class="field-label">接收范围</div>
+          <div class="radio-row">
+            <label><input v-model="form.targetScope" :value="1" type="radio">全部用户</label>
+            <label><input v-model="form.targetScope" :value="2" type="radio">指定用户</label>
+          </div>
+          <div v-if="form.targetScope === 2" class="specified-users">
+            <div class="search-row">
+              <input v-model="userKeyword" class="form-control" placeholder="搜索用户（用户名/手机号）" @keydown.enter.prevent="searchUsers(false)">
+              <button class="btn btn-sm btn-primary" :disabled="searchingUsers" @click="searchUsers(false)"><i class="fas fa-search"></i> 搜索</button>
+            </div>
+            <div v-if="searchResults.length" class="user-results">
+              <button v-for="item in searchResults" :key="item.id" class="system-user-search-result" @click="toggleUser(item)">
+                <span><strong>{{ item.username }}</strong><small>{{ maskPhone(item.phone) }}</small></span>
+                <i class="fas" :class="selectedUsers.some(user => String(user.id) === String(item.id)) ? 'fa-check-circle selected' : 'fa-circle'"></i>
+              </button>
+            </div>
+            <div v-if="userDirectoryError" class="inline-error">
+              <i class="fas fa-exclamation-circle"></i>{{ userDirectoryError }}。当前账号无法读取用户列表，因此不能将手机号转换为用户ID。
+            </div>
+            <div class="selected-users">
+              <span v-if="!selectedUsers.length" class="system-tag muted">输入完整手机号可自动选择，或从搜索结果中选择</span>
+              <button v-for="item in selectedUsers" :key="item.id" class="system-tag primary" @click="toggleUser(item)">{{ item.username }} ({{ maskPhone(item.phone) }}) <i class="fas fa-times"></i></button>
+            </div>
+          </div>
+        </div>
+        <div class="form-section">
+          <div class="field-label">发送方式</div>
+          <div class="radio-row">
+            <label><input v-model="form.sendType" :value="1" type="radio">立即发送</label>
+            <label><input v-model="form.sendType" :value="2" type="radio" @change="setScheduledDefault">定时发送</label>
+          </div>
+          <input v-if="form.sendType === 2" v-model="form.sendTime" class="form-control schedule-input" type="datetime-local">
+        </div>
+        <div class="action-row">
+          <button class="btn btn-primary" :disabled="submitting" @click="sendNotification"><i :class="submitting ? 'fas fa-spinner fa-spin' : 'fas fa-paper-plane'"></i> 发送通知</button>
+          <button class="btn btn-outline" @click="saveDraft"><i class="fas fa-save"></i> 保存草稿</button>
+          <button class="btn btn-outline" @click="modal = { kind: 'preview' }"><i class="fas fa-eye"></i> 预览</button>
         </div>
       </div>
-      <div class="form-section"><div class="field-label">发送方式</div><div class="radio-row"><label><input v-model="form.sendType" :value="1" type="radio">立即发送</label><label><input v-model="form.sendType" :value="2" type="radio" @change="setScheduledDefault">定时发送</label></div><input v-if="form.sendType === 2" v-model="form.sendTime" class="form-control schedule-input" type="datetime-local"></div>
-      <div class="action-row"><button class="btn btn-primary" :disabled="submitting" @click="sendNotification"><i :class="submitting ? 'fas fa-spinner fa-spin' : 'fas fa-paper-plane'"></i> 发送通知</button><button class="btn btn-outline" @click="saveDraft"><i class="fas fa-save"></i> 保存草稿</button><button class="btn btn-outline" @click="modal = { kind: 'preview' }"><i class="fas fa-eye"></i> 预览</button></div>
-    </div></div>
+    </div>
   </div>
 
   <div v-else-if="tab === 'record'" class="record-page">
     <div class="record-stats">
-      <div class="record-stat-card"><span class="record-stat-icon blue"><i class="fas fa-bell"></i></span><div><small>当前页通知</small><strong>{{ recordStats.count.toLocaleString() }}</strong></div></div>
-      <div class="record-stat-card"><span class="record-stat-icon primary"><i class="fas fa-users"></i></span><div><small>接收人数</small><strong>{{ recordStats.recipients.toLocaleString() }}</strong></div></div>
-      <div class="record-stat-card"><span class="record-stat-icon green"><i class="fas fa-check-circle"></i></span><div><small>送达人数</small><strong>{{ recordStats.delivered.toLocaleString() }}</strong></div></div>
-      <div class="record-stat-card"><span class="record-stat-icon yellow"><i class="fas fa-chart-line"></i></span><div><small>送达率</small><strong>{{ recordStats.deliveryRate }}%</strong></div></div>
+      <div class="record-stat-card">
+        <span class="record-stat-icon blue"><i class="fas fa-bell"></i></span>
+        <div><small>当前页通知</small><strong>{{ recordStats.count.toLocaleString() }}</strong></div>
+      </div>
+      <div class="record-stat-card">
+        <span class="record-stat-icon primary"><i class="fas fa-users"></i></span>
+        <div><small>接收人数</small><strong>{{ recordStats.recipients.toLocaleString() }}</strong></div>
+      </div>
+      <div class="record-stat-card">
+        <span class="record-stat-icon green"><i class="fas fa-check-circle"></i></span>
+        <div><small>送达人数</small><strong>{{ recordStats.delivered.toLocaleString() }}</strong></div>
+      </div>
+      <div class="record-stat-card">
+        <span class="record-stat-icon yellow"><i class="fas fa-chart-line"></i></span>
+        <div><small>送达率</small><strong>{{ recordStats.deliveryRate }}%</strong></div>
+      </div>
     </div>
-    <div class="card"><div class="card-header"><span class="card-title"><i class="fas fa-list"></i> 通知记录</span><div class="search-bar"><input v-model="recordKeyword" placeholder="搜索标题"><select v-model="typeFilter" @change="page=1;loadNotifications()"><option value="all">全部类型</option><option value="order">订单通知</option><option value="activity">活动通知</option><option value="system">系统维护</option></select><select v-model="statusFilter"><option value="all">全部状态</option><option value="sent">已送达</option><option value="sending">发送中</option><option value="cancelled">已撤销</option></select><button class="btn btn-primary" @click="loadNotifications"><i class="fas fa-search"></i> 搜索</button></div></div>
-      <div class="card-body no-pad"><div class="table-wrap"><table><thead><tr><th>通知ID</th><th>标题</th><th>类型</th><th>接收范围</th><th>接收人数</th><th>送达人数</th><th>送达状态</th><th>发送时间</th><th>操作</th></tr></thead><tbody><tr v-if="loadingRecords"><td colspan="9" class="table-state"><i class="fas fa-spinner fa-spin"></i></td></tr><tr v-else-if="!pageRecords.length"><td colspan="9" class="table-state">暂无通知记录</td></tr><tr v-for="item in pageRecords" v-else :key="item.id"><td>{{ item.id }}</td><td>{{ item.title }}</td><td><span class="system-tag" :class="item.type === 'order' ? 'blue' : item.type === 'activity' ? 'primary' : 'yellow'">{{ typeText(item.type) }}</span></td><td>{{ item.scope }}</td><td>{{ item.totalCount.toLocaleString() }}</td><td>{{ item.deliveredCount.toLocaleString() }}</td><td><span class="status-badge" :class="item.status === 'sent' ? 'green' : item.status === 'sending' ? 'blue' : 'gray'"><span class="dot"></span>{{ statusText(item.status) }}</span></td><td>{{ item.time }}</td><td><button class="btn btn-sm btn-outline" @click="modal={kind:'detail',item}">详情</button><button class="icon-btn danger" title="删除通知" @click="deleteNotification(item)"><i class="fas fa-trash-alt"></i></button></td></tr></tbody></table></div></div>
-      <div v-if="totalPages > 1" class="card-footer pagination"><button class="icon-btn" :disabled="page <= 1" @click="changePage(page-1)"><i class="fas fa-angle-left"></i></button><span>共 {{ total }} 条记录，第 {{ page }}/{{ totalPages }} 页</span><button class="icon-btn" :disabled="page >= totalPages" @click="changePage(page+1)"><i class="fas fa-angle-right"></i></button></div>
+    <div class="card">
+      <div class="card-header">
+        <span class="card-title"><i class="fas fa-list"></i> 通知记录</span>
+        <div class="search-bar">
+          <input v-model="recordKeyword" placeholder="搜索标题">
+          <select v-model="typeFilter" @change="page=1;loadNotifications()">
+            <option value="all">全部类型</option>
+            <option value="order">订单通知</option>
+            <option value="activity">活动通知</option>
+            <option value="system">系统维护</option>
+          </select>
+          <select v-model="statusFilter">
+            <option value="all">全部状态</option>
+            <option value="sent">已送达</option>
+            <option value="sending">发送中</option>
+            <option value="cancelled">已撤销</option>
+          </select>
+          <button class="btn btn-primary" @click="loadNotifications"><i class="fas fa-search"></i> 搜索</button>
+        </div>
+      </div>
+      <div class="card-body no-pad">
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>通知ID</th>
+                <th>标题</th>
+                <th>类型</th>
+                <th>接收范围</th>
+                <th>接收人数</th>
+                <th>送达人数</th>
+                <th>送达状态</th>
+                <th>发送时间</th>
+                <th>操作</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-if="loadingRecords">
+                <td colspan="9" class="table-state"><i class="fas fa-spinner fa-spin"></i></td>
+              </tr>
+              <tr v-else-if="!pageRecords.length">
+                <td colspan="9" class="table-state">暂无通知记录</td>
+              </tr>
+              <tr v-for="item in pageRecords" v-else :key="item.id">
+                <td>{{ item.id }}</td>
+                <td>{{ item.title }}</td>
+                <td><span class="system-tag" :class="item.type === 'order' ? 'blue' : item.type === 'activity' ? 'primary' : 'yellow'">{{ typeText(item.type) }}</span></td>
+                <td>{{ item.scope }}</td>
+                <td>{{ item.totalCount.toLocaleString() }}</td>
+                <td>{{ item.deliveredCount.toLocaleString() }}</td>
+                <td><span class="status-badge" :class="item.status === 'sent' ? 'green' : item.status === 'sending' ? 'blue' : 'gray'"><span class="dot"></span>{{ statusText(item.status) }}</span></td>
+                <td>{{ item.time }}</td>
+                <td>
+                  <button class="btn btn-sm btn-outline" @click="modal={kind:'detail',item}">详情</button>
+                  <button class="icon-btn danger" title="删除通知" @click="deleteNotification(item)"><i class="fas fa-trash-alt"></i></button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div v-if="totalPages > 1" class="card-footer pagination">
+        <button class="icon-btn" :disabled="page <= 1" @click="changePage(page-1)"><i class="fas fa-angle-left"></i></button>
+        <span>共 {{ total }} 条记录，第 {{ page }}/{{ totalPages }} 页</span>
+        <button class="icon-btn" :disabled="page >= totalPages" @click="changePage(page+1)"><i class="fas fa-angle-right"></i></button>
+      </div>
     </div>
   </div>
 
-  <div v-else class="template-layout"><div class="card template-list"><div class="card-header"><span class="card-title"><i class="fas fa-file-alt"></i> 模板列表 <small>共 {{ templateTotal }} 条</small></span><div class="template-tools"><select v-model="templateTypeFilter" class="form-control" @change="templatePage=1;loadTemplates()"><option :value="0">全部类型</option><option :value="1">订单通知</option><option :value="2">活动通知</option><option :value="3">系统维护</option></select><button class="btn btn-sm btn-primary" @click="selectTemplate(null)"><i class="fas fa-plus"></i> 新建</button></div></div><div class="card-body no-pad"><div v-if="loadingTemplates" class="table-state"><i class="fas fa-spinner fa-spin"></i></div><div v-else-if="!templates.length" class="table-state">暂无通知模板</div><button v-for="item in templates" v-else :key="item.id" class="template-item" :class="{active:String(selectedTemplateId)===String(item.id)}" @click="selectTemplate(item)"><span><strong>{{ item.name }}</strong><small>{{ item.category }} · {{ typeText(item.type) }}</small></span><i class="fas fa-chevron-right"></i></button></div></div>
-    <div class="card"><div class="card-header"><span class="card-title"><i class="fas fa-edit"></i> {{ templateForm.id ? '编辑模板' : '新建模板' }}</span><div class="action-row"><button v-if="templateForm.id" type="button" class="btn btn-sm btn-outline" @click="useTemplate"><i class="fas fa-paper-plane"></i> 使用</button><button v-if="templateForm.id" type="button" class="btn btn-sm btn-outline" @click="copyTemplate"><i class="fas fa-copy"></i> 复制</button></div></div><div class="card-body"><div class="form-section"><div class="field-label">模板名称</div><input v-model="templateForm.name" class="form-control"></div><div class="form-section"><div class="field-label">通知类型</div><select v-model="templateForm.type" class="form-control"><option :value="1">订单通知</option><option :value="2">活动通知</option><option :value="3">系统维护</option></select></div><div class="form-section"><div class="field-label">标题模板</div><input v-model="templateForm.title" class="form-control"></div><div class="form-section"><div class="field-label">内容模板</div><textarea v-model="templateForm.content" class="form-control" rows="7"></textarea></div><div class="action-row"><button type="button" class="btn btn-primary" @click="saveTemplate"><i class="fas fa-save"></i> 保存模板</button><button type="button" class="btn btn-outline" @click="resetTemplateForm"><i class="fas fa-undo"></i> 重置</button><button v-if="templateForm.id" type="button" class="btn btn-danger" @click="deleteTemplate"><i class="fas fa-trash-alt"></i> 删除</button></div></div></div>
+  <div v-else class="template-layout">
+    <div class="card template-list">
+      <div class="card-header">
+        <span class="card-title"><i class="fas fa-file-alt"></i> 模板列表 <small>共 {{ templateTotal }} 条</small></span>
+        <div class="template-tools">
+          <select v-model="templateTypeFilter" class="form-control" @change="templatePage=1;loadTemplates()">
+            <option :value="0">全部类型</option>
+            <option :value="1">订单通知</option>
+            <option :value="2">活动通知</option>
+            <option :value="3">系统维护</option>
+          </select>
+          <button class="btn btn-sm btn-primary" @click="selectTemplate(null)"><i class="fas fa-plus"></i> 新建</button>
+        </div>
+      </div>
+      <div class="card-body no-pad">
+        <div v-if="loadingTemplates" class="table-state"><i class="fas fa-spinner fa-spin"></i></div>
+        <div v-else-if="!templates.length" class="table-state">暂无通知模板</div>
+        <button v-for="item in templates" v-else :key="item.id" class="template-item" :class="{active:String(selectedTemplateId)===String(item.id)}" @click="selectTemplate(item)">
+          <span><strong>{{ item.name }}</strong><small>{{ item.category }} · {{ typeText(item.type) }}</small></span>
+          <i class="fas fa-chevron-right"></i>
+        </button>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-header">
+        <span class="card-title"><i class="fas fa-edit"></i> {{ templateForm.id ? '编辑模板' : '新建模板' }}</span>
+        <div class="action-row">
+          <button v-if="templateForm.id" type="button" class="btn btn-sm btn-outline" @click="useTemplate"><i class="fas fa-paper-plane"></i> 使用</button>
+          <button v-if="templateForm.id" type="button" class="btn btn-sm btn-outline" @click="copyTemplate"><i class="fas fa-copy"></i> 复制</button>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="form-section">
+          <div class="field-label">模板名称</div>
+          <input v-model="templateForm.name" class="form-control">
+        </div>
+        <div class="form-section">
+          <div class="field-label">通知类型</div>
+          <select v-model="templateForm.type" class="form-control">
+            <option :value="1">订单通知</option>
+            <option :value="2">活动通知</option>
+            <option :value="3">系统维护</option>
+          </select>
+        </div>
+        <div class="form-section">
+          <div class="field-label">标题模板</div>
+          <input v-model="templateForm.title" class="form-control">
+        </div>
+        <div class="form-section">
+          <div class="field-label">内容模板</div>
+          <textarea v-model="templateForm.content" class="form-control" rows="7"></textarea>
+        </div>
+        <div class="action-row">
+          <button type="button" class="btn btn-primary" @click="saveTemplate"><i class="fas fa-save"></i> 保存模板</button>
+          <button type="button" class="btn btn-outline" @click="resetTemplateForm"><i class="fas fa-undo"></i> 重置</button>
+          <button v-if="templateForm.id" type="button" class="btn btn-danger" @click="deleteTemplate"><i class="fas fa-trash-alt"></i> 删除</button>
+        </div>
+      </div>
+    </div>
   </div>
 
-  <template v-if="modal"><div class="modal-overlay" @click="modal=null"></div><div class="modal-content notification-modal"><div class="modal-header"><h3><i :class="modal.kind === 'preview' ? 'fas fa-eye' : modal.kind === 'data' ? 'fas fa-chart-bar' : 'fas fa-file-alt'"></i> {{ modal.kind === 'preview' ? '预览通知' : modal.kind === 'data' ? '通知数据' : '通知详情' }}</h3><button class="modal-close" @click="modal=null"><i class="fas fa-times"></i></button></div><div class="modal-body"><template v-if="modal.kind === 'preview'"><h4>{{ form.title || '暂无标题' }}</h4><p>{{ form.content || '暂无内容' }}</p></template><template v-else><div class="detail-grid"><div><small>通知ID</small><strong>{{ modal.item.id }}</strong></div><div><small>发送时间</small><strong>{{ modal.item.time }}</strong></div><div><small>类型</small><strong>{{ typeText(modal.item.type) }}</strong></div><div><small>状态</small><strong>{{ statusText(modal.item.status) }}</strong></div><div><small>接收人数</small><strong>{{ modal.item.totalCount.toLocaleString() }}</strong></div><div><small>送达人数</small><strong>{{ modal.item.deliveredCount.toLocaleString() }}</strong></div><div><small>发送人数</small><strong>{{ modal.item.sendCount.toLocaleString() }}</strong></div><div><small>已读人数</small><strong>{{ modal.item.readCount.toLocaleString() }}</strong></div><div><small>已读率</small><strong>{{ modal.item.readRate }}%</strong></div></div><h4>{{ modal.item.title }}</h4><p v-if="modal.kind === 'detail'">{{ modal.item.content || '暂无内容' }}</p></template></div><div class="modal-footer"><button v-if="modal.kind === 'preview'" class="btn btn-primary" :disabled="submitting" @click="sendNotification"><i class="fas fa-paper-plane"></i> 发送</button><button class="btn btn-outline" @click="modal=null">关闭</button></div></div></template>
+  <template v-if="modal">
+    <div class="modal-overlay" @click="modal=null"></div>
+    <div class="modal-content notification-modal">
+      <div class="modal-header">
+        <h3><i :class="modal.kind === 'preview' ? 'fas fa-eye' : modal.kind === 'data' ? 'fas fa-chart-bar' : 'fas fa-file-alt'"></i> {{ modal.kind === 'preview' ? '预览通知' : modal.kind === 'data' ? '通知数据' : '通知详情' }}</h3>
+        <button class="modal-close" @click="modal=null"><i class="fas fa-times"></i></button>
+      </div>
+      <div class="modal-body">
+        <template v-if="modal.kind === 'preview'">
+          <h4>{{ form.title || '暂无标题' }}</h4>
+          <p>{{ form.content || '暂无内容' }}</p>
+        </template>
+        <template v-else>
+          <div class="detail-grid">
+            <div><small>通知ID</small><strong>{{ modal.item.id }}</strong></div>
+            <div><small>发送时间</small><strong>{{ modal.item.time }}</strong></div>
+            <div><small>类型</small><strong>{{ typeText(modal.item.type) }}</strong></div>
+            <div><small>状态</small><strong>{{ statusText(modal.item.status) }}</strong></div>
+            <div><small>接收人数</small><strong>{{ modal.item.totalCount.toLocaleString() }}</strong></div>
+            <div><small>送达人数</small><strong>{{ modal.item.deliveredCount.toLocaleString() }}</strong></div>
+            <div><small>发送人数</small><strong>{{ modal.item.sendCount.toLocaleString() }}</strong></div>
+            <div><small>已读人数</small><strong>{{ modal.item.readCount.toLocaleString() }}</strong></div>
+            <div><small>已读率</small><strong>{{ modal.item.readRate }}%</strong></div>
+          </div>
+          <h4>{{ modal.item.title }}</h4>
+          <p v-if="modal.kind === 'detail'">{{ modal.item.content || '暂无内容' }}</p>
+        </template>
+      </div>
+      <div class="modal-footer">
+        <button v-if="modal.kind === 'preview'" class="btn btn-primary" :disabled="submitting" @click="sendNotification"><i class="fas fa-paper-plane"></i> 发送</button>
+        <button class="btn btn-outline" @click="modal=null">关闭</button>
+      </div>
+    </div>
+  </template>
 </template>
 
 <style scoped>

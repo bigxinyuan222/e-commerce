@@ -60,14 +60,249 @@ onMounted(loadPage)
 
 <template>
   <div class="homepage-page">
-    <div v-if="error" class="homepage-error"><i class="fas fa-exclamation-circle"></i> {{ error }} <button class="btn btn-sm btn-outline" @click="loadPage">重试</button></div>
-    <div class="homepage-stats"><div class="stat-card"><div class="label"><i class="fas fa-images"></i> 轮播图总数</div><div class="value">{{ banners.length }}</div></div><div class="stat-card"><div class="label"><i class="fas fa-check-circle"></i> 已发布</div><div class="value green">{{ activeBanners }}</div></div><div class="stat-card"><div class="label"><i class="fas fa-star"></i> 启用推荐位</div><div class="value blue">{{ activeRecommendations }}</div></div></div>
-    <div class="card"><div class="card-header"><span class="card-title"><i class="fas fa-images"></i> 轮播图 / Banner</span><button class="btn btn-primary btn-sm" @click="openBanner()"><i class="fas fa-plus"></i> 新增轮播图</button></div><div class="card-body no-pad"><div class="table-wrap"><table><thead><tr><th>排序</th><th>图片</th><th>链接类型</th><th>链接地址</th><th>状态</th><th>操作</th></tr></thead><tbody><tr v-if="loading"><td colspan="6" class="empty">正在加载...</td></tr><tr v-else-if="!banners.length"><td colspan="6" class="empty">暂无轮播图</td></tr><tr v-for="(item,index) in banners" v-else :key="item.id"><td>{{ item.sort }}</td><td><img :src="item.image" class="banner-thumb" alt="轮播图"></td><td><span class="tag">{{ linkText(item.linkType) }}</span></td><td class="link-cell">{{ item.link || '-' }}</td><td><span class="status-badge" :class="item.status==='active'?'green':'gray'"><span class="dot"></span>{{ item.status==='active'?'已发布':'草稿' }}</span></td><td><div class="row-actions"><button class="btn btn-sm btn-outline" title="上移" :disabled="index===0" @click="moveBanner(index,-1)"><i class="fas fa-arrow-up"></i></button><button class="btn btn-sm btn-outline" title="下移" :disabled="index===banners.length-1" @click="moveBanner(index,1)"><i class="fas fa-arrow-down"></i></button><button class="btn btn-sm btn-outline" title="编辑" :data-banner-edit-id="item.id" @click="openBanner(item)"><i class="fas fa-edit"></i></button><button class="btn btn-sm" :class="item.status==='active'?'btn-danger':'btn-success'" :data-banner-toggle-id="item.id" @click="toggleBanner(item)">{{ item.status==='active'?'下架':'发布' }}</button><button class="btn btn-sm btn-danger" title="删除" :data-banner-delete-id="item.id" @click="deleteBanner(item)"><i class="fas fa-trash"></i></button></div></td></tr></tbody></table></div></div></div>
-    <div class="homepage-recommend-layout"><div class="card"><div class="card-header"><span class="card-title"><i class="fas fa-thumbtack"></i> 推荐位管理</span><button class="btn btn-primary btn-sm" @click="openRecommendation"><i class="fas fa-plus"></i> 新增推荐</button></div><div class="card-body no-pad"><div class="table-wrap"><table><thead><tr><th>推荐位</th><th>商品数量</th><th>状态</th><th>创建时间</th><th>操作</th></tr></thead><tbody><tr v-if="!recommendations.length"><td colspan="5" class="empty">暂无推荐位</td></tr><tr v-for="item in recommendations" v-else :key="item.id"><td>{{ item.name }}</td><td>{{ item.goods.length }} 件</td><td><span class="status-badge" :class="item.status==='active'?'green':'gray'"><span class="dot"></span>{{ item.status==='active'?'启用':'禁用' }}</span></td><td>{{ item.createTime }}</td><td><div class="row-actions"><button class="btn btn-sm btn-outline" @click="editProducts(item)"><i class="fas fa-edit"></i> 编辑商品</button><button class="btn btn-sm" :class="item.status==='active'?'btn-danger':'btn-success'" @click="toggleRecommendation(item)">{{ item.status==='active'?'禁用':'启用' }}</button><button class="btn btn-sm btn-danger" @click="deleteRecommendation(item)"><i class="fas fa-trash"></i> 删除</button></div></td></tr></tbody></table></div></div></div><div class="card"><div class="card-header"><span class="card-title"><i class="fas fa-list"></i> 推荐位列表</span></div><div class="card-body recommend-summary"><div v-if="!recommendations.length" class="empty">暂无推荐位</div><div v-for="item in recommendations" v-else :key="item.id"><span>{{ item.name }}</span><span class="status-badge" :class="item.status==='active'?'green':'gray'"><span class="dot"></span>{{ item.status==='active'?'启用':'禁用' }}</span></div></div></div></div>
+    <div v-if="error" class="homepage-error">
+      <i class="fas fa-exclamation-circle"></i> {{ error }}
+      <button class="btn btn-sm btn-outline" @click="loadPage">重试</button>
+    </div>
+    <div class="homepage-stats">
+      <div class="stat-card">
+        <div class="label"><i class="fas fa-images"></i> 轮播图总数</div>
+        <div class="value">{{ banners.length }}</div>
+      </div>
+      <div class="stat-card">
+        <div class="label"><i class="fas fa-check-circle"></i> 已发布</div>
+        <div class="value green">{{ activeBanners }}</div>
+      </div>
+      <div class="stat-card">
+        <div class="label"><i class="fas fa-star"></i> 启用推荐位</div>
+        <div class="value blue">{{ activeRecommendations }}</div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-header">
+        <span class="card-title"><i class="fas fa-images"></i> 轮播图 / Banner</span>
+        <button class="btn btn-primary btn-sm" @click="openBanner()"><i class="fas fa-plus"></i> 新增轮播图</button>
+      </div>
+      <div class="card-body no-pad">
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>排序</th>
+                <th>图片</th>
+                <th>链接类型</th>
+                <th>链接地址</th>
+                <th>状态</th>
+                <th>操作</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-if="loading"><td colspan="6" class="empty">正在加载...</td></tr>
+              <tr v-else-if="!banners.length"><td colspan="6" class="empty">暂无轮播图</td></tr>
+              <tr v-for="(item,index) in banners" v-else :key="item.id">
+                <td>{{ item.sort }}</td>
+                <td><img :src="item.image" class="banner-thumb" alt="轮播图"></td>
+                <td><span class="tag">{{ linkText(item.linkType) }}</span></td>
+                <td class="link-cell">{{ item.link || '-' }}</td>
+                <td><span class="status-badge" :class="item.status==='active'?'green':'gray'"><span class="dot"></span>{{ item.status==='active'?'已发布':'草稿' }}</span></td>
+                <td>
+                  <div class="row-actions">
+                    <button class="btn btn-sm btn-outline" title="上移" :disabled="index===0" @click="moveBanner(index,-1)"><i class="fas fa-arrow-up"></i></button>
+                    <button class="btn btn-sm btn-outline" title="下移" :disabled="index===banners.length-1" @click="moveBanner(index,1)"><i class="fas fa-arrow-down"></i></button>
+                    <button class="btn btn-sm btn-outline" title="编辑" :data-banner-edit-id="item.id" @click="openBanner(item)"><i class="fas fa-edit"></i></button>
+                    <button class="btn btn-sm" :class="item.status==='active'?'btn-danger':'btn-success'" :data-banner-toggle-id="item.id" @click="toggleBanner(item)">{{ item.status==='active'?'下架':'发布' }}</button>
+                    <button class="btn btn-sm btn-danger" title="删除" :data-banner-delete-id="item.id" @click="deleteBanner(item)"><i class="fas fa-trash"></i></button>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    <div class="homepage-recommend-layout">
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title"><i class="fas fa-thumbtack"></i> 推荐位管理</span>
+          <button class="btn btn-primary btn-sm" @click="openRecommendation"><i class="fas fa-plus"></i> 新增推荐</button>
+        </div>
+        <div class="card-body no-pad">
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>推荐位</th>
+                  <th>商品数量</th>
+                  <th>状态</th>
+                  <th>创建时间</th>
+                  <th>操作</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-if="!recommendations.length"><td colspan="5" class="empty">暂无推荐位</td></tr>
+                <tr v-for="item in recommendations" v-else :key="item.id">
+                  <td>{{ item.name }}</td>
+                  <td>{{ item.goods.length }} 件</td>
+                  <td><span class="status-badge" :class="item.status==='active'?'green':'gray'"><span class="dot"></span>{{ item.status==='active'?'启用':'禁用' }}</span></td>
+                  <td>{{ item.createTime }}</td>
+                  <td>
+                    <div class="row-actions">
+                      <button class="btn btn-sm btn-outline" @click="editProducts(item)"><i class="fas fa-edit"></i> 编辑商品</button>
+                      <button class="btn btn-sm" :class="item.status==='active'?'btn-danger':'btn-success'" @click="toggleRecommendation(item)">{{ item.status==='active'?'禁用':'启用' }}</button>
+                      <button class="btn btn-sm btn-danger" @click="deleteRecommendation(item)"><i class="fas fa-trash"></i> 删除</button>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title"><i class="fas fa-list"></i> 推荐位列表</span>
+        </div>
+        <div class="card-body recommend-summary">
+          <div v-if="!recommendations.length" class="empty">暂无推荐位</div>
+          <div v-for="item in recommendations" v-else :key="item.id">
+            <span>{{ item.name }}</span>
+            <span class="status-badge" :class="item.status==='active'?'green':'gray'"><span class="dot"></span>{{ item.status==='active'?'启用':'禁用' }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
-  <template v-if="bannerOpen"><div class="modal-overlay" @click="bannerOpen=false"></div><div class="modal-content homepage-modal"><div class="modal-header"><h3>{{ bannerForm.id!==''?'编辑':'新增' }}轮播图</h3><button class="modal-close" @click="bannerOpen=false"><i class="fas fa-times"></i></button></div><div class="modal-body form-stack"><label>标题<input id="bannerTitle" v-model="bannerForm.title" class="form-control"></label><label>轮播图片<input id="bannerImageFile" type="file" accept="image/*" class="form-control" @change="uploadBanner"><input id="bannerImage" :value="bannerForm.image" type="hidden"></label><div v-if="uploading" class="muted"><i class="fas fa-spinner fa-spin"></i> 上传中...</div><img v-if="bannerForm.image" id="bannerImagePreview" :src="bannerForm.image" class="banner-preview" alt="预览"><div class="form-grid"><label>链接类型<select id="bannerLinkType" v-model="bannerForm.linkType" class="form-control"><option value="none">无跳转</option><option value="goods">商品详情</option><option value="activity">活动页</option><option value="category">分类页</option><option value="external">外部链接</option></select></label><label>链接地址<input id="bannerLink" v-model="bannerForm.link" class="form-control"></label><label>排序权重<input id="bannerSort" v-model.number="bannerForm.sort" type="number" class="form-control"></label><label>状态<select id="bannerStatus" v-model="bannerForm.status" class="form-control"><option value="draft">草稿</option><option value="active">已发布</option></select></label></div></div><div class="modal-footer"><button class="btn btn-outline" @click="bannerOpen=false">取消</button><button class="btn btn-primary" :disabled="bannerSubmitting||uploading" @click="saveBanner"><i class="fas fa-save"></i> 保存</button></div></div></template>
-  <template v-if="recommendOpen"><div class="modal-overlay" @click="recommendOpen=false"></div><div class="modal-content recommend-modal"><div class="modal-header"><h3>新增推荐位</h3><button class="modal-close" @click="recommendOpen=false"><i class="fas fa-times"></i></button></div><div class="modal-body form-stack"><label>推荐位名称<input id="recommendName" v-model="recommendForm.name" class="form-control"></label><label>初始状态<select id="recommendStatus" v-model="recommendForm.status" class="form-control"><option value="active">启用</option><option value="inactive">禁用</option></select></label></div><div class="modal-footer"><button class="btn btn-outline" @click="recommendOpen=false">取消</button><button class="btn btn-primary" :disabled="recommendSubmitting" @click="saveRecommendation">保存</button></div></div></template>
-  <template v-if="editingRecommendation"><div class="modal-overlay" @click="editingRecommendation=null"></div><div class="modal-content products-modal"><div class="modal-header"><h3>添加商品到推荐位 - {{ editingRecommendation.name }}</h3><button class="modal-close" @click="editingRecommendation=null"><i class="fas fa-times"></i></button></div><div class="modal-body"><form class="product-search-bar" @submit.prevent="loadProducts"><input id="recommendProductSearch" v-model="productSearch" class="form-control" placeholder="输入商品名称搜索"><button class="btn btn-primary" type="submit" :disabled="productsLoading"><i :class="productsLoading?'fas fa-spinner fa-spin':'fas fa-search'"></i> 搜索</button></form><div class="product-search-tip">搜索并选择商品，无需填写商品 ID</div><div class="recommend-product-table table-wrap"><table><thead><tr><th>商品</th><th>分类</th><th>价格</th><th>状态</th><th>操作</th></tr></thead><tbody><tr v-if="productsLoading"><td colspan="5" class="empty"><i class="fas fa-spinner fa-spin"></i> 正在加载商品...</td></tr><tr v-for="item in products" v-else :key="item.id"><td><div class="recommend-product-name"><img v-if="item.image" :src="item.image" alt=""><span>{{ item.name }}</span></div></td><td>{{ item.category }}</td><td class="product-price">¥{{ item.price.toFixed(2) }}</td><td><span class="status-badge" :class="item.status===1?'green':'gray'"><span class="dot"></span>{{ item.status===1?'上架':'下架' }}</span></td><td><button v-if="editingRecommendation.goods.some(id=>String(id)===String(item.id))" class="btn btn-sm btn-danger" :disabled="productActionId!==null" @click="removeProduct(item)"><i :class="productActionId===item.id?'fas fa-spinner fa-spin':'fas fa-times'"></i> 移除</button><button v-else class="btn btn-sm btn-primary" :data-add-product-id="item.id" :disabled="productActionId!==null" @click="addProduct(item)"><i :class="productActionId===item.id?'fas fa-spinner fa-spin':'fas fa-plus'"></i> 选择</button></td></tr><tr v-if="!productsLoading&&!products.length"><td colspan="5" class="empty">未找到匹配商品</td></tr></tbody></table></div></div><div class="modal-footer"><span class="selected-count">已添加 {{ editingRecommendation.goods.length }} 件商品</span><button class="btn btn-primary" @click="editingRecommendation=null">完成</button></div></div></template>
+  <template v-if="bannerOpen">
+    <div class="modal-overlay" @click="bannerOpen=false"></div>
+    <div class="modal-content homepage-modal">
+      <div class="modal-header">
+        <h3>{{ bannerForm.id!==''?'编辑':'新增' }}轮播图</h3>
+        <button class="modal-close" @click="bannerOpen=false"><i class="fas fa-times"></i></button>
+      </div>
+      <div class="modal-body form-stack">
+        <label>
+          标题
+          <input id="bannerTitle" v-model="bannerForm.title" class="form-control">
+        </label>
+        <label>
+          轮播图片
+          <input id="bannerImageFile" type="file" accept="image/*" class="form-control" @change="uploadBanner">
+          <input id="bannerImage" :value="bannerForm.image" type="hidden">
+        </label>
+        <div v-if="uploading" class="muted"><i class="fas fa-spinner fa-spin"></i> 上传中...</div>
+        <img v-if="bannerForm.image" id="bannerImagePreview" :src="bannerForm.image" class="banner-preview" alt="预览">
+        <div class="form-grid">
+          <label>
+            链接类型
+            <select id="bannerLinkType" v-model="bannerForm.linkType" class="form-control">
+              <option value="none">无跳转</option>
+              <option value="goods">商品详情</option>
+              <option value="activity">活动页</option>
+              <option value="category">分类页</option>
+              <option value="external">外部链接</option>
+            </select>
+          </label>
+          <label>
+            链接地址
+            <input id="bannerLink" v-model="bannerForm.link" class="form-control">
+          </label>
+          <label>
+            排序权重
+            <input id="bannerSort" v-model.number="bannerForm.sort" type="number" class="form-control">
+          </label>
+          <label>
+            状态
+            <select id="bannerStatus" v-model="bannerForm.status" class="form-control">
+              <option value="draft">草稿</option>
+              <option value="active">已发布</option>
+            </select>
+          </label>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-outline" @click="bannerOpen=false">取消</button>
+        <button class="btn btn-primary" :disabled="bannerSubmitting||uploading" @click="saveBanner"><i class="fas fa-save"></i> 保存</button>
+      </div>
+    </div>
+  </template>
+  <template v-if="recommendOpen">
+    <div class="modal-overlay" @click="recommendOpen=false"></div>
+    <div class="modal-content recommend-modal">
+      <div class="modal-header">
+        <h3>新增推荐位</h3>
+        <button class="modal-close" @click="recommendOpen=false"><i class="fas fa-times"></i></button>
+      </div>
+      <div class="modal-body form-stack">
+        <label>
+          推荐位名称
+          <input id="recommendName" v-model="recommendForm.name" class="form-control">
+        </label>
+        <label>
+          初始状态
+          <select id="recommendStatus" v-model="recommendForm.status" class="form-control">
+            <option value="active">启用</option>
+            <option value="inactive">禁用</option>
+          </select>
+        </label>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-outline" @click="recommendOpen=false">取消</button>
+        <button class="btn btn-primary" :disabled="recommendSubmitting" @click="saveRecommendation">保存</button>
+      </div>
+    </div>
+  </template>
+  <template v-if="editingRecommendation">
+    <div class="modal-overlay" @click="editingRecommendation=null"></div>
+    <div class="modal-content products-modal">
+      <div class="modal-header">
+        <h3>添加商品到推荐位 - {{ editingRecommendation.name }}</h3>
+        <button class="modal-close" @click="editingRecommendation=null"><i class="fas fa-times"></i></button>
+      </div>
+      <div class="modal-body">
+        <form class="product-search-bar" @submit.prevent="loadProducts">
+          <input id="recommendProductSearch" v-model="productSearch" class="form-control" placeholder="输入商品名称搜索">
+          <button class="btn btn-primary" type="submit" :disabled="productsLoading"><i :class="productsLoading?'fas fa-spinner fa-spin':'fas fa-search'"></i> 搜索</button>
+        </form>
+        <div class="product-search-tip">搜索并选择商品，无需填写商品 ID</div>
+        <div class="recommend-product-table table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>商品</th>
+                <th>分类</th>
+                <th>价格</th>
+                <th>状态</th>
+                <th>操作</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-if="productsLoading"><td colspan="5" class="empty"><i class="fas fa-spinner fa-spin"></i> 正在加载商品...</td></tr>
+              <tr v-for="item in products" v-else :key="item.id">
+                <td>
+                  <div class="recommend-product-name">
+                    <img v-if="item.image" :src="item.image" alt="">
+                    <span>{{ item.name }}</span>
+                  </div>
+                </td>
+                <td>{{ item.category }}</td>
+                <td class="product-price">¥{{ item.price.toFixed(2) }}</td>
+                <td><span class="status-badge" :class="item.status===1?'green':'gray'"><span class="dot"></span>{{ item.status===1?'上架':'下架' }}</span></td>
+                <td>
+                  <button v-if="editingRecommendation.goods.some(id=>String(id)===String(item.id))" class="btn btn-sm btn-danger" :disabled="productActionId!==null" @click="removeProduct(item)"><i :class="productActionId===item.id?'fas fa-spinner fa-spin':'fas fa-times'"></i> 移除</button>
+                  <button v-else class="btn btn-sm btn-primary" :data-add-product-id="item.id" :disabled="productActionId!==null" @click="addProduct(item)"><i :class="productActionId===item.id?'fas fa-spinner fa-spin':'fas fa-plus'"></i> 选择</button>
+                </td>
+              </tr>
+              <tr v-if="!productsLoading&&!products.length"><td colspan="5" class="empty">未找到匹配商品</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <span class="selected-count">已添加 {{ editingRecommendation.goods.length }} 件商品</span>
+        <button class="btn btn-primary" @click="editingRecommendation=null">完成</button>
+      </div>
+    </div>
+  </template>
 </template>
 
 <style scoped>

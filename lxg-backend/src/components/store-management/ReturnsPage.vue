@@ -289,57 +289,226 @@ onMounted(() => { void Promise.all([loadRefunds(), loadReasons(), loadPeriodStat
 <template>
   <div class="returns-page">
     <div class="return-toolbar">
-      <div class="search-bar"><input id="returnSearchInput" v-model="keyword" placeholder="退款单号 / 订单号 / 用户" @keyup.enter="search" /><select v-model="status" @change="changeStatus"><option v-for="option in statusOptions" :key="String(option.value)" :value="option.value">{{ option.label }}</option></select><button class="btn btn-primary" @click="search"><i class="fas fa-search"></i> 查询</button></div>
+      <div class="search-bar">
+        <input id="returnSearchInput" v-model="keyword" placeholder="退款单号 / 订单号 / 用户" @keyup.enter="search" />
+        <select v-model="status" @change="changeStatus">
+          <option v-for="option in statusOptions" :key="String(option.value)" :value="option.value">{{ option.label }}
+        </option>
+      </select>
+        <button class="btn btn-primary" @click="search"><i class="fas fa-search"></i> 查询</button>
+      </div>
       <button class="btn btn-outline" @click="openReasonList"><i class="fas fa-sliders-h"></i> 退款原因配置</button>
     </div>
     <div v-if="error" class="return-alert">{{ error }}</div>
     <section class="return-stats" aria-label="退款统计">
-      <div class="return-stat pending"><div class="return-stat-label"><i class="fas fa-clock"></i><span>待审核</span></div><strong>{{ refundStats.pending }}</strong></div>
-      <div class="return-stat approved"><div class="return-stat-label"><i class="fas fa-check-circle"></i><span>已通过</span></div><strong>{{ refundStats.approved }}</strong></div>
-      <div class="return-stat rejected"><div class="return-stat-label"><i class="fas fa-times-circle"></i><span>已拒绝</span></div><strong>{{ refundStats.rejected }}</strong></div>
-      <div class="return-stat amount-stat"><div class="return-stat-label"><i class="fas fa-yen-sign"></i><span>退款金额</span></div><strong>{{ formatCurrency(refundStats.amount) }}</strong></div>
+      <div class="return-stat pending">
+        <div class="return-stat-label"><i class="fas fa-clock"></i><span>待审核</span></div>
+        <strong>{{ refundStats.pending }}</strong>
+      </div>
+      <div class="return-stat approved">
+        <div class="return-stat-label"><i class="fas fa-check-circle"></i><span>已通过</span></div>
+        <strong>{{ refundStats.approved }}</strong>
+      </div>
+      <div class="return-stat rejected">
+        <div class="return-stat-label"><i class="fas fa-times-circle"></i><span>已拒绝</span></div>
+        <strong>{{ refundStats.rejected }}</strong>
+      </div>
+      <div class="return-stat amount-stat">
+        <div class="return-stat-label"><i class="fas fa-yen-sign"></i><span>退款金额</span></div>
+        <strong>{{ formatCurrency(refundStats.amount) }}</strong>
+      </div>
     </section>
     <div class="returns-grid">
-      <section class="card return-list-card"><div class="card-header"><span class="card-title"><i class="fas fa-undo"></i> 退款申请列表</span><span class="text-muted">共 {{ total }} 笔</span></div><div class="card-body no-pad"><div class="table-wrap"><table><thead><tr><th>退款单号</th><th>关联订单</th><th>商品</th><th>用户</th><th>退款金额</th><th>原因</th><th>门店</th><th>状态</th><th>申请时间</th><th>操作</th></tr></thead><tbody><tr v-if="loading"><td colspan="10" class="return-state"><i class="fas fa-spinner fa-spin"></i> 正在加载...</td></tr><tr v-else-if="!refunds.length"><td colspan="10" class="return-state">暂无退款申请</td></tr><tr v-for="item in refunds" v-else :key="item.id"><td>{{ item.refundNo }}</td><td>{{ item.orderNo }}</td><td>{{ item.productName }}</td><td>{{ item.userName }}<small>{{ item.phone }}</small></td><td class="amount">¥{{ item.amount.toFixed(2) }}</td><td><span class="reason-pill">{{ item.reason }}</span></td><td>{{ item.storeName }}</td><td><span class="status-pill" :class="statusClass(item.status)">{{ statusLabel(item.status) }}</span></td><td>{{ item.createdAt }}</td><td class="actions"><button class="btn btn-sm btn-outline" @click="openDetail(item)"><i class="fas fa-eye"></i> 详情</button><button v-if="item.status === 0" class="btn btn-sm btn-success" @click="audit(item, true)">通过</button><button v-if="item.status === 0" class="btn btn-sm btn-danger" @click="audit(item, false)">拒绝</button></td></tr></tbody></table></div></div><div v-if="totalPages > 1" class="card-footer return-pagination"><button class="icon-btn" :disabled="page === 1" @click="changePage(page - 1)"><i class="fas fa-angle-left"></i></button><span>{{ page }} / {{ totalPages }}</span><button class="icon-btn" :disabled="page === totalPages" @click="changePage(page + 1)"><i class="fas fa-angle-right"></i></button></div></section>
+      <section class="card return-list-card">
+        <div class="card-header">
+          <span class="card-title"><i class="fas fa-undo"></i> 退款申请列表</span>
+          <span class="text-muted">共 {{ total }} 笔</span>
+        </div>
+        <div class="card-body no-pad">
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>退款单号</th>
+                  <th>关联订单</th>
+                  <th>商品</th>
+                  <th>用户</th>
+                  <th>退款金额</th>
+                  <th>原因</th>
+                  <th>门店</th>
+                  <th>状态</th>
+                  <th>申请时间</th>
+                  <th>操作</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-if="loading">
+                  <td colspan="10" class="return-state"><i class="fas fa-spinner fa-spin"></i> 正在加载...</td>
+                </tr>
+                <tr v-else-if="!refunds.length">
+                  <td colspan="10" class="return-state">暂无退款申请</td>
+                </tr>
+                <tr v-for="item in refunds" v-else :key="item.id">
+                  <td>{{ item.refundNo }}</td>
+                  <td>{{ item.orderNo }}</td>
+                  <td>{{ item.productName }}</td>
+                  <td>{{ item.userName }}<small>{{ item.phone }}</small></td>
+                  <td class="amount">¥{{ item.amount.toFixed(2) }}</td>
+                  <td><span class="reason-pill">{{ item.reason }}</span></td>
+                  <td>{{ item.storeName }}</td>
+                  <td><span class="status-pill" :class="statusClass(item.status)">{{ statusLabel(item.status) }}</span></td>
+                  <td>{{ item.createdAt }}</td>
+                  <td class="actions">
+                    <button class="btn btn-sm btn-outline" @click="openDetail(item)"><i class="fas fa-eye"></i> 详情</button>
+                    <button v-if="item.status === 0" class="btn btn-sm btn-success" @click="audit(item, true)">通过</button>
+                    <button v-if="item.status === 0" class="btn btn-sm btn-danger" @click="audit(item, false)">拒绝</button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div v-if="totalPages > 1" class="card-footer return-pagination">
+          <button class="icon-btn" :disabled="page === 1" @click="changePage(page - 1)"><i class="fas fa-angle-left"></i></button>
+          <span>{{ page }} / {{ totalPages }}</span>
+          <button class="icon-btn" :disabled="page === totalPages" @click="changePage(page + 1)"><i class="fas fa-angle-right"></i></button>
+        </div>
+      </section>
       <aside class="returns-sidebar">
-        <section class="card sidebar-card refund-period-card"><div class="card-header"><span class="card-title"><i class="fas fa-chart-line"></i> 退款统计</span><button class="icon-btn" title="刷新统计" :disabled="statsLoading" @click="loadPeriodStats"><i class="fas fa-sync-alt" :class="{ 'fa-spin': statsLoading }"></i></button></div><div class="card-body"><div v-if="statsError" class="return-alert">{{ statsError }}</div><div class="period-stat-list"><div v-for="item in statPeriods" :key="item.key" class="period-stat"><h4>{{ item.label }}</h4><div><span>退款笔数</span><strong>{{ periodStats[item.key].refundCount }} 笔</strong></div><div><span>退款率</span><strong class="rate">{{ formatRate(periodStats[item.key].refundRate) }}</strong></div><div><span>审核通过率</span><strong class="approval">{{ formatRate(periodStats[item.key].approvalRate) }}</strong></div></div></div></div></section>
-        <section class="card reason-summary"><div class="card-header"><span class="card-title">退款原因配置</span></div><div class="card-body"><div class="reason-count"><strong>{{ activeReasons.length }} 个</strong><span>当前可用原因</span></div><div v-if="reasonError" class="return-alert">{{ reasonError }}</div><div class="reason-chips"><span v-for="item in activeReasons" :key="item.id" :style="{ color: item.color, borderColor: item.color }">{{ item.content }}</span></div><button class="btn btn-outline full" @click="openReasonList">管理原因</button></div></section>
+        <section class="card sidebar-card refund-period-card">
+          <div class="card-header">
+            <span class="card-title"><i class="fas fa-chart-line"></i> 退款统计</span>
+            <button class="icon-btn" title="刷新统计" :disabled="statsLoading" @click="loadPeriodStats"><i class="fas fa-sync-alt" :class="{ 'fa-spin': statsLoading }"></i></button>
+          </div>
+          <div class="card-body">
+            <div v-if="statsError" class="return-alert">{{ statsError }}</div>
+            <div class="period-stat-list">
+              <div v-for="item in statPeriods" :key="item.key" class="period-stat">
+                <h4>{{ item.label }}</h4>
+                <div><span>退款笔数</span><strong>{{ periodStats[item.key].refundCount }} 笔</strong></div>
+                <div><span>退款率</span><strong class="rate">{{ formatRate(periodStats[item.key].refundRate) }}</strong></div>
+                <div><span>审核通过率</span><strong class="approval">{{ formatRate(periodStats[item.key].approvalRate) }}</strong></div>
+              </div>
+            </div>
+          </div>
+        </section>
+        <section class="card reason-summary">
+          <div class="card-header">
+            <span class="card-title">退款原因配置</span>
+          </div>
+          <div class="card-body">
+            <div class="reason-count"><strong>{{ activeReasons.length }} 个</strong><span>当前可用原因</span></div>
+            <div v-if="reasonError" class="return-alert">{{ reasonError }}</div>
+            <div class="reason-chips"><span v-for="item in activeReasons" :key="item.id" :style="{ color: item.color, borderColor: item.color }">{{ item.content }}</span></div>
+            <button class="btn btn-outline full" @click="openReasonList">管理原因</button>
+          </div>
+        </section>
       </aside>
     </div>
 
-    <div v-if="detailLoading" class="modal-overlay"><div class="modal-content medium return-state"><i class="fas fa-spinner fa-spin"></i> 正在加载详情...</div></div>
+    <div v-if="detailLoading" class="modal-overlay">
+      <div class="modal-content medium return-state"><i class="fas fa-spinner fa-spin"></i> 正在加载详情...</div>
+    </div>
     <div v-if="detail" class="modal-overlay" @click.self="detail = null">
       <div class="modal-content large refund-detail-modal">
-        <div class="modal-header"><h3>退款详情</h3><button class="modal-close" @click="detail = null"><i class="fas fa-times"></i></button></div>
-        <div class="modal-body"><div class="detail-grid">
-          <div><span>退款申请ID</span><strong>{{ detail.id }}</strong></div>
-          <div><span>退款单号</span><strong>{{ detail.refundNo }}</strong></div>
-          <div><span>订单ID</span><strong>{{ detail.orderId || '-' }}</strong></div>
-          <div><span>订单号</span><strong>{{ detail.orderNo }}</strong></div>
-          <div class="detail-wide"><span>订单商品</span><strong>{{ detail.productName }}</strong></div>
-          <div><span>用户ID</span><strong>{{ detail.userId || '-' }}</strong></div>
-          <div><span>用户昵称</span><strong>{{ detail.userName }}</strong></div>
-          <div><span>处理门店ID</span><strong>{{ detail.storeId || '-' }}</strong></div>
-          <div><span>处理门店</span><strong>{{ detail.storeName }}</strong></div>
-          <div><span>退货原因ID</span><strong>{{ detail.reasonId || '-' }}</strong></div>
-          <div><span>退款原因</span><strong>{{ detail.reason }}</strong></div>
-          <div><span>退款金额</span><strong class="amount">{{ formatCurrency(detail.amount) }}</strong></div>
-          <div><span>当前状态</span><strong><span class="status-pill" :class="statusClass(detail.status)">{{ statusLabel(detail.status) }}</span></strong></div>
-          <div class="detail-wide"><span>退货说明</span><strong class="detail-description">{{ detail.description || '无退货说明' }}</strong></div>
-          <div><span>审核管理员ID</span><strong>{{ detail.adminId || '未审核' }}</strong></div>
-          <div><span>审核时间</span><strong>{{ detail.auditedAt || '未审核' }}</strong></div>
-          <div class="detail-wide"><span>审核备注</span><strong>{{ detail.auditRemark || '无审核备注' }}</strong></div>
-          <div><span>退款支付ID</span><strong>{{ detail.refundPaymentId ?? '未产生' }}</strong></div>
-          <div><span>退款到账时间</span><strong>{{ detail.refundedAt || '未到账' }}</strong></div>
-          <div><span>申请时间</span><strong>{{ detail.createdAt }}</strong></div>
-          <div><span>更新时间</span><strong>{{ detail.updatedAt }}</strong></div>
-          <div class="detail-wide"><span>凭证图片</span><div v-if="detail.images.length" class="refund-images"><a v-for="(image,index) in detail.images" :key="image" :href="image" target="_blank" rel="noopener noreferrer"><img :src="image" :alt="`退款凭证 ${index + 1}`"></a></div><strong v-else>无凭证图片</strong></div>
-        </div></div>
-        <div class="modal-footer"><button v-if="detail.status === 0" class="btn btn-success" @click="audit(detail, true)">审核通过</button><button v-if="detail.status === 0" class="btn btn-danger" @click="audit(detail, false)">拒绝申请</button><button class="btn btn-outline" @click="detail = null">关闭</button></div>
+        <div class="modal-header">
+          <h3>退款详情</h3>
+          <button class="modal-close" @click="detail = null"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="modal-body">
+          <div class="detail-grid">
+            <div><span>退款申请ID</span><strong>{{ detail.id }}</strong></div>
+            <div><span>退款单号</span><strong>{{ detail.refundNo }}</strong></div>
+            <div><span>订单ID</span><strong>{{ detail.orderId || '-' }}</strong></div>
+            <div><span>订单号</span><strong>{{ detail.orderNo }}</strong></div>
+            <div class="detail-wide"><span>订单商品</span><strong>{{ detail.productName }}</strong></div>
+            <div><span>用户ID</span><strong>{{ detail.userId || '-' }}</strong></div>
+            <div><span>用户昵称</span><strong>{{ detail.userName }}</strong></div>
+            <div><span>处理门店ID</span><strong>{{ detail.storeId || '-' }}</strong></div>
+            <div><span>处理门店</span><strong>{{ detail.storeName }}</strong></div>
+            <div><span>退货原因ID</span><strong>{{ detail.reasonId || '-' }}</strong></div>
+            <div><span>退款原因</span><strong>{{ detail.reason }}</strong></div>
+            <div><span>退款金额</span><strong class="amount">{{ formatCurrency(detail.amount) }}</strong></div>
+            <div><span>当前状态</span><strong><span class="status-pill" :class="statusClass(detail.status)">{{ statusLabel(detail.status) }}</span></strong></div>
+            <div class="detail-wide"><span>退货说明</span><strong class="detail-description">{{ detail.description || '无退货说明' }}</strong></div>
+            <div><span>审核管理员ID</span><strong>{{ detail.adminId || '未审核' }}</strong></div>
+            <div><span>审核时间</span><strong>{{ detail.auditedAt || '未审核' }}</strong></div>
+            <div class="detail-wide"><span>审核备注</span><strong>{{ detail.auditRemark || '无审核备注' }}</strong></div>
+            <div><span>退款支付ID</span><strong>{{ detail.refundPaymentId ?? '未产生' }}</strong></div>
+            <div><span>退款到账时间</span><strong>{{ detail.refundedAt || '未到账' }}</strong></div>
+            <div><span>申请时间</span><strong>{{ detail.createdAt }}</strong></div>
+            <div><span>更新时间</span><strong>{{ detail.updatedAt }}</strong></div>
+            <div class="detail-wide">
+              <span>凭证图片</span>
+              <div v-if="detail.images.length" class="refund-images"><a v-for="(image,index) in detail.images" :key="image" :href="image" target="_blank" rel="noopener noreferrer"><img :src="image" :alt="`退款凭证 ${index + 1}`"></a></div>
+              <strong v-else>无凭证图片</strong>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button v-if="detail.status === 0" class="btn btn-success" @click="audit(detail, true)">审核通过</button>
+          <button v-if="detail.status === 0" class="btn btn-danger" @click="audit(detail, false)">拒绝申请</button>
+          <button class="btn btn-outline" @click="detail = null">关闭</button>
+        </div>
       </div>
     </div>
 
-    <div v-if="reasonModal" class="modal-overlay" @click.self="reasonModal = null"><div class="modal-content" :class="reasonModal === 'list' ? 'large' : 'medium'"><div class="modal-header"><h3>{{ reasonModal === 'list' ? '退款原因配置' : reasonModal === 'add' ? '新增退款原因' : '编辑退款原因' }}</h3><button class="modal-close" @click="reasonModal = null"><i class="fas fa-times"></i></button></div><template v-if="reasonModal === 'list'"><div class="modal-body"><div class="reason-modal-toolbar"><span>当前可用 {{ activeReasons.length }} 个退款原因</span><button class="btn btn-primary btn-sm" @click="openAddReason"><i class="fas fa-plus"></i> 新增原因</button></div><div class="table-wrap"><table><thead><tr><th>排序</th><th>原因名称</th><th>显示颜色</th><th>状态</th><th>操作</th></tr></thead><tbody><tr v-if="reasonLoading"><td colspan="5" class="return-state">正在加载...</td></tr><tr v-for="item in reasons" v-else :key="item.id"><td>{{ item.sort }}</td><td>{{ item.content }}</td><td><span class="color-cell"><i :style="{ background: item.color }"></i>{{ item.color.toUpperCase() }}</span></td><td>{{ item.status === 1 ? '启用' : '禁用' }}</td><td class="actions"><button class="btn btn-sm btn-outline" @click="openEditReason(item)">编辑</button><button class="btn btn-sm btn-danger" @click="deleteReason(item)">删除</button></td></tr></tbody></table></div></div></template><form v-else @submit.prevent="saveReason"><div class="modal-body reason-form"><label>原因名称<input v-model.trim="reasonForm.content" required maxlength="100" /></label><label>排序<input v-model.number="reasonForm.sort" type="number" min="1" required /></label><label>显示颜色<div class="color-picker"><input v-model="reasonForm.color" type="color" /><i :style="{ background: reasonForm.color }"></i><span>{{ reasonForm.color.toUpperCase() }}</span></div></label><label v-if="reasonModal === 'edit'">状态<select v-model.number="reasonForm.status"><option :value="1">启用</option><option :value="0">禁用</option></select></label></div><div class="modal-footer"><button type="button" class="btn btn-outline" @click="reasonModal = 'list'">取消</button><button class="btn btn-primary" :disabled="reasonSaving">{{ reasonSaving ? '保存中...' : '保存' }}</button></div></form></div></div>
+    <div v-if="reasonModal" class="modal-overlay" @click.self="reasonModal = null">
+      <div class="modal-content" :class="reasonModal === 'list' ? 'large' : 'medium'">
+        <div class="modal-header">
+          <h3>{{ reasonModal === 'list' ? '退款原因配置' : reasonModal === 'add' ? '新增退款原因' : '编辑退款原因' }}</h3>
+          <button class="modal-close" @click="reasonModal = null"><i class="fas fa-times"></i></button>
+        </div>
+        <template v-if="reasonModal === 'list'">
+          <div class="modal-body">
+            <div class="reason-modal-toolbar">
+              <span>当前可用 {{ activeReasons.length }} 个退款原因</span>
+              <button class="btn btn-primary btn-sm" @click="openAddReason"><i class="fas fa-plus"></i> 新增原因</button>
+            </div>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>排序</th>
+                    <th>原因名称</th>
+                    <th>显示颜色</th>
+                    <th>状态</th>
+                    <th>操作</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-if="reasonLoading">
+                    <td colspan="5" class="return-state">正在加载...</td>
+                  </tr>
+                  <tr v-for="item in reasons" v-else :key="item.id">
+                    <td>{{ item.sort }}</td>
+                    <td>{{ item.content }}</td>
+                    <td><span class="color-cell"><i :style="{ background: item.color }"></i>{{ item.color.toUpperCase() }}</span></td>
+                    <td>{{ item.status === 1 ? '启用' : '禁用' }}</td>
+                    <td class="actions">
+                      <button class="btn btn-sm btn-outline" @click="openEditReason(item)">编辑</button>
+                      <button class="btn btn-sm btn-danger" @click="deleteReason(item)">删除</button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </template>
+        <form v-else @submit.prevent="saveReason">
+          <div class="modal-body reason-form">
+            <label>原因名称<input v-model.trim="reasonForm.content" required maxlength="100" /></label>
+            <label>排序<input v-model.number="reasonForm.sort" type="number" min="1" required /></label>
+            <label>显示颜色<div class="color-picker"><input v-model="reasonForm.color" type="color" /><i :style="{ background: reasonForm.color }"></i><span>{{ reasonForm.color.toUpperCase() }}</span></div></label>
+            <label v-if="reasonModal === 'edit'">状态<select v-model.number="reasonForm.status"><option :value="1">启用</option><option :value="0">禁用</option></select></label>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-outline" @click="reasonModal = 'list'">取消</button>
+            <button class="btn btn-primary" :disabled="reasonSaving">{{ reasonSaving ? '保存中...' : '保存' }}</button>
+          </div>
+        </form>
+      </div>
+    </div>
   </div>
 </template>
 

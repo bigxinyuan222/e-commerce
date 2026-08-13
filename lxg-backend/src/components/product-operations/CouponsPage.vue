@@ -200,17 +200,211 @@ onUnmounted(() => {
 
 <template>
   <div class="coupon-page">
-    <div class="coupon-toolbar"><div class="coupon-filters"><input v-model="keyword" placeholder="优惠券名称" @keyup.enter="search" /><select v-model="status" @change="search"><option value="">全部状态</option><option value="0">禁用</option><option value="1">启用</option></select><select v-model="couponType" @change="search"><option value="">全部类型</option><option value="1">满减券</option><option value="2">抵扣券</option></select><button class="btn btn-primary" @click="search"><i class="fas fa-search"></i> 搜索</button></div><button type="button" class="btn btn-primary coupon-create-button" @click="openCreate"><i class="fas fa-plus"></i> 新建优惠券</button></div>
-    <div v-if="error" class="coupon-error">{{ error }} <button class="btn btn-sm btn-outline" @click="loadCoupons">重试</button></div>
-    <div class="coupon-stat-grid"><div class="coupon-stat-card"><span><i class="fas fa-ticket-alt"></i> 总优惠券</span><strong>{{ total }}</strong></div><div class="coupon-stat-card is-active"><span><i class="fas fa-check-circle"></i> 发放中</span><strong>{{ activeCount }}</strong></div><div class="coupon-stat-card is-expired"><span><i class="fas fa-clock"></i> 已过期</span><strong>{{ expiredCount }}</strong></div><div class="coupon-stat-card is-rate"><span><i class="fas fa-percent"></i> 使用率</span><strong>{{ usageRate }}%</strong></div></div>
-    <div class="coupon-dashboard">
-      <div class="card coupon-card"><div class="coupon-section-title"><span><i class="fas fa-ticket-alt"></i> 优惠券列表</span></div><div class="card-body no-pad"><div v-if="loading" class="coupon-loading">正在加载优惠券...</div><div v-else class="coupon-table-wrap"><table><thead><tr><th>名称</th><th>类型</th><th>优惠</th><th>门槛</th><th>有效期</th><th>适用范围</th><th>领取数量</th><th>每人限领</th><th>状态</th><th>操作</th></tr></thead><tbody><tr v-for="coupon in pageCoupons" :key="coupon.id" @click="loadDetail(coupon.id)"><td class="coupon-name-cell">{{ coupon.name || '-' }}</td><td><span class="coupon-type-tag" :class="Number(coupon.couponType) === 2 ? 'is-voucher' : 'is-discount'">{{ typeLabel(coupon.couponType) }}</span></td><td class="coupon-benefit">{{ discountText(coupon) }}</td><td>{{ Number(coupon.threshold || 0) ? `¥${coupon.threshold}` : '无门槛' }}</td><td>{{ periodText(coupon) }}</td><td><span class="coupon-scope-tag">{{ rangeText(coupon) }}</span></td><td>{{ coupon.receivedQuantity ?? 0 }}/{{ coupon.totalQuantity ?? 0 }}</td><td>{{ coupon.perPersonLimit ?? 0 }} 张</td><td><span v-if="isExpired(coupon)" class="status-badge gray"><span class="dot"></span>已过期</span><span v-else class="status-badge" :class="Number(coupon.status) === 1 ? 'green' : 'gray'"><span class="dot"></span>{{ statusLabel(coupon.status) }}</span></td><td><div class="coupon-row-actions"><button v-if="Number(coupon.status) === 0 && !isExpired(coupon)" class="btn btn-xs btn-outline" @click.stop="editCouponItem(coupon)"><i class="fas fa-edit"></i> 编辑</button><button class="btn btn-xs" :class="Number(coupon.status) === 1 ? 'btn-danger' : 'btn-primary'" @click.stop="toggleCouponItem(coupon)"><i :class="Number(coupon.status) === 1 ? 'fas fa-times' : 'fas fa-play'"></i> {{ Number(coupon.status) === 1 ? '停用' : '启用' }}</button></div></td></tr><tr v-if="!pageCoupons.length"><td colspan="10" class="coupon-empty">暂无优惠券数据</td></tr></tbody></table></div></div><div class="coupon-pagination"><span>共 {{ total }} 条，每页 10 条</span><button class="btn btn-sm btn-outline" :disabled="page <= 1" @click="page--">上一页</button><span>第 {{ page }} 页</span><button class="btn btn-sm btn-outline" :disabled="page * pageSize >= total" @click="page++">下一页</button></div></div>
-      <aside class="coupon-insights"><div class="card coupon-insight-card"><div class="coupon-section-title"><span><i class="fas fa-chart-bar"></i> 优惠券类型分布</span></div><div class="coupon-insight-body"><div class="coupon-progress-label"><span><i class="fas fa-percent"></i> 满减券</span><strong>{{ discountRate }}%</strong></div><div class="coupon-progress"><span :style="{ width: `${discountRate}%` }"></span></div><div class="coupon-progress-label voucher"><span><i class="fas fa-ticket-alt"></i> 抵扣券</span><strong>{{ voucherRate }}%</strong></div><div class="coupon-progress voucher"><span :style="{ width: `${voucherRate}%` }"></span></div></div></div></aside>
+    <div class="coupon-toolbar">
+      <div class="coupon-filters">
+        <input v-model="keyword" placeholder="优惠券名称" @keyup.enter="search" />
+        <select v-model="status" @change="search">
+          <option value="">全部状态</option>
+          <option value="0">禁用</option>
+          <option value="1">启用</option>
+        </select>
+        <select v-model="couponType" @change="search">
+          <option value="">全部类型</option>
+          <option value="1">满减券</option>
+          <option value="2">抵扣券</option>
+        </select>
+        <button class="btn btn-primary" @click="search"><i class="fas fa-search"></i> 搜索</button>
+      </div>
+      <button type="button" class="btn btn-primary coupon-create-button" @click="openCreate"><i class="fas fa-plus"></i> 新建优惠券</button>
     </div>
-    <div v-if="detail || detailLoading || detailError" class="modal-overlay" @click.self="detail = null"><div class="modal-content coupon-detail-modal"><div class="modal-header"><h3>优惠券详情</h3><button class="icon-btn" @click="detail = null"><i class="fas fa-times"></i></button></div><div v-if="detailLoading" class="coupon-loading">正在加载优惠券详情...</div><div v-else-if="detailError" class="coupon-error">{{ detailError }}</div><div v-else-if="detail" class="coupon-detail-grid"><div><span>ID</span><strong>{{ detail.id }}</strong></div><div><span>名称</span><strong>{{ detail.name }}</strong></div><div><span>类型</span><strong>{{ typeLabel(detail.couponType) }}</strong></div><div><span>适用范围</span><strong>{{ rangeText(detail) }}</strong></div><div><span>面值</span><strong>¥{{ detail.value ?? 0 }}</strong></div><div><span>门槛</span><strong>{{ Number(detail.threshold || 0) ? `¥${detail.threshold}` : '无门槛' }}</strong></div><div><span>领取数量</span><strong>{{ detail.receivedQuantity ?? 0 }}/{{ detail.totalQuantity ?? 0 }}</strong></div><div><span>每人限领</span><strong>{{ detail.perPersonLimit ?? 0 }} 张</strong></div><div><span>有效期</span><strong>{{ periodText(detail) }}</strong></div><div><span>状态</span><strong>{{ statusLabel(detail.status) }}</strong></div></div></div></div>
+    <div v-if="error" class="coupon-error">
+      {{ error }}
+      <button class="btn btn-sm btn-outline" @click="loadCoupons">重试</button>
+    </div>
+    <div class="coupon-stat-grid">
+      <div class="coupon-stat-card">
+        <span><i class="fas fa-ticket-alt"></i> 总优惠券</span>
+        <strong>{{ total }}</strong>
+      </div>
+      <div class="coupon-stat-card is-active">
+        <span><i class="fas fa-check-circle"></i> 发放中</span>
+        <strong>{{ activeCount }}</strong>
+      </div>
+      <div class="coupon-stat-card is-expired">
+        <span><i class="fas fa-clock"></i> 已过期</span>
+        <strong>{{ expiredCount }}</strong>
+      </div>
+      <div class="coupon-stat-card is-rate">
+        <span><i class="fas fa-percent"></i> 使用率</span>
+        <strong>{{ usageRate }}%</strong>
+      </div>
+    </div>
+    <div class="coupon-dashboard">
+      <div class="card coupon-card">
+        <div class="coupon-section-title"><span><i class="fas fa-ticket-alt"></i> 优惠券列表</span></div>
+        <div class="card-body no-pad">
+          <div v-if="loading" class="coupon-loading">正在加载优惠券...</div>
+          <div v-else class="coupon-table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>名称</th>
+                  <th>类型</th>
+                  <th>优惠</th>
+                  <th>门槛</th>
+                  <th>有效期</th>
+                  <th>适用范围</th>
+                  <th>领取数量</th>
+                  <th>每人限领</th>
+                  <th>状态</th>
+                  <th>操作</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="coupon in pageCoupons" :key="coupon.id" @click="loadDetail(coupon.id)">
+                  <td class="coupon-name-cell">{{ coupon.name || '-' }}</td>
+                  <td><span class="coupon-type-tag" :class="Number(coupon.couponType) === 2 ? 'is-voucher' : 'is-discount'">{{ typeLabel(coupon.couponType) }}</span></td>
+                  <td class="coupon-benefit">{{ discountText(coupon) }}</td>
+                  <td>{{ Number(coupon.threshold || 0) ? `¥${coupon.threshold}` : '无门槛' }}</td>
+                  <td>{{ periodText(coupon) }}</td>
+                  <td><span class="coupon-scope-tag">{{ rangeText(coupon) }}</span></td>
+                  <td>{{ coupon.receivedQuantity ?? 0 }}/{{ coupon.totalQuantity ?? 0 }}</td>
+                  <td>{{ coupon.perPersonLimit ?? 0 }} 张</td>
+                  <td>
+                    <span v-if="isExpired(coupon)" class="status-badge gray"><span class="dot"></span>已过期</span>
+                    <span v-else class="status-badge" :class="Number(coupon.status) === 1 ? 'green' : 'gray'"><span class="dot"></span>{{ statusLabel(coupon.status) }}</span>
+                  </td>
+                  <td>
+                    <div class="coupon-row-actions">
+                      <button v-if="Number(coupon.status) === 0 && !isExpired(coupon)" class="btn btn-xs btn-outline" @click.stop="editCouponItem(coupon)"><i class="fas fa-edit"></i> 编辑</button>
+                      <button class="btn btn-xs" :class="Number(coupon.status) === 1 ? 'btn-danger' : 'btn-primary'" @click.stop="toggleCouponItem(coupon)"><i :class="Number(coupon.status) === 1 ? 'fas fa-times' : 'fas fa-play'"></i> {{ Number(coupon.status) === 1 ? '停用' : '启用' }}</button>
+                    </div>
+                  </td>
+                </tr>
+                <tr v-if="!pageCoupons.length"><td colspan="10" class="coupon-empty">暂无优惠券数据</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="coupon-pagination">
+          <span>共 {{ total }} 条，每页 10 条</span>
+          <button class="btn btn-sm btn-outline" :disabled="page <= 1" @click="page--">上一页</button>
+          <span>第 {{ page }} 页</span>
+          <button class="btn btn-sm btn-outline" :disabled="page * pageSize >= total" @click="page++">下一页</button>
+        </div>
+      </div>
+      <aside class="coupon-insights">
+        <div class="card coupon-insight-card">
+          <div class="coupon-section-title"><span><i class="fas fa-chart-bar"></i> 优惠券类型分布</span></div>
+          <div class="coupon-insight-body">
+            <div class="coupon-progress-label">
+              <span><i class="fas fa-percent"></i> 满减券</span>
+              <strong>{{ discountRate }}%</strong>
+            </div>
+            <div class="coupon-progress"><span :style="{ width: `${discountRate}%` }"></span></div>
+            <div class="coupon-progress-label voucher">
+              <span><i class="fas fa-ticket-alt"></i> 抵扣券</span>
+              <strong>{{ voucherRate }}%</strong>
+            </div>
+            <div class="coupon-progress voucher"><span :style="{ width: `${voucherRate}%` }"></span></div>
+          </div>
+        </div>
+      </aside>
+    </div>
+    <div v-if="detail || detailLoading || detailError" class="modal-overlay" @click.self="detail = null">
+      <div class="modal-content coupon-detail-modal">
+        <div class="modal-header">
+          <h3>优惠券详情</h3>
+          <button class="icon-btn" @click="detail = null"><i class="fas fa-times"></i></button>
+        </div>
+        <div v-if="detailLoading" class="coupon-loading">正在加载优惠券详情...</div>
+        <div v-else-if="detailError" class="coupon-error">{{ detailError }}</div>
+        <div v-else-if="detail" class="coupon-detail-grid">
+          <div><span>ID</span><strong>{{ detail.id }}</strong></div>
+          <div><span>名称</span><strong>{{ detail.name }}</strong></div>
+          <div><span>类型</span><strong>{{ typeLabel(detail.couponType) }}</strong></div>
+          <div><span>适用范围</span><strong>{{ rangeText(detail) }}</strong></div>
+          <div><span>面值</span><strong>¥{{ detail.value ?? 0 }}</strong></div>
+          <div><span>门槛</span><strong>{{ Number(detail.threshold || 0) ? `¥${detail.threshold}` : '无门槛' }}</strong></div>
+          <div><span>领取数量</span><strong>{{ detail.receivedQuantity ?? 0 }}/{{ detail.totalQuantity ?? 0 }}</strong></div>
+          <div><span>每人限领</span><strong>{{ detail.perPersonLimit ?? 0 }} 张</strong></div>
+          <div><span>有效期</span><strong>{{ periodText(detail) }}</strong></div>
+          <div><span>状态</span><strong>{{ statusLabel(detail.status) }}</strong></div>
+        </div>
+      </div>
+    </div>
   </div>
-    <div v-if="createOpen" class="modal-overlay" @click.self="closeCreate"><div class="modal-content coupon-create-modal"><div class="modal-header"><h3>新增优惠券</h3><button class="icon-btn" @click="closeCreate"><i class="fas fa-times"></i></button></div><form class="coupon-create-form" @submit.prevent="createCoupon"><label>名称<input v-model="form.name" required maxlength="100" /></label><label>优惠券类型<select v-model.number="form.couponType"><option :value="1">满减券</option><option :value="2">抵扣券</option></select></label><label>适用类型<select v-model.number="form.type"><option :value="1">指定商品</option><option :value="2">指定分类</option></select></label><label>面值<input v-model.number="form.faceValue" type="number" min="0" step="0.01" required /></label><label>使用门槛<input v-model.number="form.thresholdAmount" type="number" min="0" step="0.01" required /></label><label>开始时间<input v-model="form.startTime" type="datetime-local" required /></label><label>结束时间<input v-model="form.endTime" type="datetime-local" required /></label><label>发放总量<input v-model.number="form.totalCount" type="number" min="1" required /></label><label>每人限领<input v-model.number="form.perPersonLimit" type="number" min="1" required /></label><div v-if="createError" class="coupon-error">{{ createError }}</div><div class="modal-actions"><button type="button" class="btn btn-outline" @click="closeCreate">取消</button><button type="submit" class="btn btn-primary" :disabled="createLoading">{{ createLoading ? '提交中...' : '创建优惠券' }}</button></div></form></div></div>
+    <div v-if="createOpen" class="modal-overlay" @click.self="closeCreate">
+      <div class="modal-content coupon-create-modal">
+        <div class="modal-header">
+          <h3>新增优惠券</h3>
+          <button class="icon-btn" @click="closeCreate"><i class="fas fa-times"></i></button>
+        </div>
+        <form class="coupon-create-form" @submit.prevent="createCoupon">
+          <label>名称<input v-model="form.name" required maxlength="100" /></label>
+          <label>优惠券类型
+            <select v-model.number="form.couponType">
+              <option :value="1">满减券</option>
+              <option :value="2">抵扣券</option>
+            </select>
+          </label>
+          <label>适用类型
+            <select v-model.number="form.type">
+              <option :value="1">指定商品</option>
+              <option :value="2">指定分类</option>
+            </select>
+          </label>
+          <label>面值<input v-model.number="form.faceValue" type="number" min="0" step="0.01" required /></label>
+          <label>使用门槛<input v-model.number="form.thresholdAmount" type="number" min="0" step="0.01" required /></label>
+          <label>开始时间<input v-model="form.startTime" type="datetime-local" required /></label>
+          <label>结束时间<input v-model="form.endTime" type="datetime-local" required /></label>
+          <label>发放总量<input v-model.number="form.totalCount" type="number" min="1" required /></label>
+          <label>每人限领<input v-model.number="form.perPersonLimit" type="number" min="1" required /></label>
+          <div v-if="createError" class="coupon-error">{{ createError }}</div>
+          <div class="modal-actions">
+            <button type="button" class="btn btn-outline" @click="closeCreate">取消</button>
+            <button type="submit" class="btn btn-primary" :disabled="createLoading">{{ createLoading ? '提交中...' : '创建优惠券' }}</button>
+          </div>
+        </form>
+      </div>
+    </div>
     <div v-if="detail" class="coupon-scope-text">适用范围：{{ scopeText(detail.scope) }}</div>
-    <div v-if="detail" class="coupon-detail-actions"><button type="button" class="btn btn-outline" @click="openEdit"><i class="fas fa-edit"></i> 编辑</button><button type="button" class="btn" :class="Number(detail.status) === 1 ? 'btn-danger' : 'btn-primary'" @click="toggleCoupon"><i class="fas fa-power-off"></i> {{ Number(detail.status) === 1 ? '禁用' : '启用' }}</button></div>
-    <div v-if="editOpen" class="modal-overlay" @click.self="editOpen = false"><div class="modal-content coupon-create-modal"><div class="modal-header"><h3>更新优惠券</h3><button class="icon-btn" @click="editOpen = false"><i class="fas fa-times"></i></button></div><form class="coupon-create-form" @submit.prevent="updateCoupon"><label>名称<input v-model="editForm.name" required /></label><label>优惠券类型<select v-model.number="editForm.couponType"><option :value="1">满减券</option><option :value="2">抵扣券</option></select></label><label>适用类型<select v-model.number="editForm.type"><option :value="1">指定商品</option><option :value="2">指定分类</option></select></label><label>面值<input v-model.number="editForm.faceValue" type="number" min="0" step="0.01" required /></label><label>使用门槛<input v-model.number="editForm.thresholdAmount" type="number" min="0" step="0.01" required /></label><label>开始时间<input v-model="editForm.startTime" type="datetime-local" required /></label><label>结束时间<input v-model="editForm.endTime" type="datetime-local" required /></label><label>发放总量<input v-model.number="editForm.totalCount" type="number" min="1" required /></label><label>每人限领<input v-model.number="editForm.perPersonLimit" type="number" min="1" required /></label><div v-if="editError" class="coupon-error">{{ editError }}</div><div class="modal-actions"><button type="button" class="btn btn-outline" @click="editOpen = false">取消</button><button type="submit" class="btn btn-primary" :disabled="editLoading">{{ editLoading ? '保存中...' : '保存修改' }}</button></div></form></div></div>
+    <div v-if="detail" class="coupon-detail-actions">
+      <button type="button" class="btn btn-outline" @click="openEdit"><i class="fas fa-edit"></i> 编辑</button>
+      <button type="button" class="btn" :class="Number(detail.status) === 1 ? 'btn-danger' : 'btn-primary'" @click="toggleCoupon"><i class="fas fa-power-off"></i> {{ Number(detail.status) === 1 ? '禁用' : '启用' }}</button>
+    </div>
+    <div v-if="editOpen" class="modal-overlay" @click.self="editOpen = false">
+      <div class="modal-content coupon-create-modal">
+        <div class="modal-header">
+          <h3>更新优惠券</h3>
+          <button class="icon-btn" @click="editOpen = false"><i class="fas fa-times"></i></button>
+        </div>
+        <form class="coupon-create-form" @submit.prevent="updateCoupon">
+          <label>名称<input v-model="editForm.name" required /></label>
+          <label>优惠券类型
+            <select v-model.number="editForm.couponType">
+              <option :value="1">满减券</option>
+              <option :value="2">抵扣券</option>
+            </select>
+          </label>
+          <label>适用类型
+            <select v-model.number="editForm.type">
+              <option :value="1">指定商品</option>
+              <option :value="2">指定分类</option>
+            </select>
+          </label>
+          <label>面值<input v-model.number="editForm.faceValue" type="number" min="0" step="0.01" required /></label>
+          <label>使用门槛<input v-model.number="editForm.thresholdAmount" type="number" min="0" step="0.01" required /></label>
+          <label>开始时间<input v-model="editForm.startTime" type="datetime-local" required /></label>
+          <label>结束时间<input v-model="editForm.endTime" type="datetime-local" required /></label>
+          <label>发放总量<input v-model.number="editForm.totalCount" type="number" min="1" required /></label>
+          <label>每人限领<input v-model.number="editForm.perPersonLimit" type="number" min="1" required /></label>
+          <div v-if="editError" class="coupon-error">{{ editError }}</div>
+          <div class="modal-actions">
+            <button type="button" class="btn btn-outline" @click="editOpen = false">取消</button>
+            <button type="submit" class="btn btn-primary" :disabled="editLoading">{{ editLoading ? '保存中...' : '保存修改' }}</button>
+          </div>
+        </form>
+      </div>
+    </div>
 </template>

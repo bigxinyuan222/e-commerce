@@ -12,7 +12,7 @@ interface ReviewItem {
   images: string[]; likes: number; status: ReviewStatus; createTime: string
   reply: AdminReply | null; replies: ReplyItem[]
 }
-interface SummaryItem { id: Id; productId: Id | ''; goodsName: string; content: string; reviewCount: number; status: SummaryStatus; createTime: string }
+interface SummaryItem { id: Id; productId: Id | ''; goodsName: string; content: string; review_count: number; status: SummaryStatus; createTime: string }
 
 const props = defineProps<{ token?: string }>()
 const reviews = ref<ReviewItem[]>([])
@@ -73,7 +73,7 @@ function reviewView(item: any): ReviewItem {
 }
 function summaryView(item: any): SummaryItem {
   const state = Number(item.status_id ?? item.state ?? item.status)
-  return { id: item.ID ?? item.id, productId: item.product_id ?? item.productId ?? item.goods_id ?? item.goodsId ?? item.product?.ID ?? item.product?.id ?? '', goodsName: String(item.productName ?? item.product_name ?? item.goodsName ?? item.product?.name ?? ''), content: String(item.summary ?? item.summary_content ?? item.content ?? ''), reviewCount: Number(item.reviewCount ?? item.review_count) || 0, status: state === 1 ? 'approved' : 'pending', createTime: String(item.generated_at ?? item.created_at ?? '') }
+  return { id: item.ID ?? item.id, productId: item.product_id ?? item.productId ?? item.goods_id ?? item.goodsId ?? item.product?.ID ?? item.product?.id ?? '', goodsName: String(item.productName ?? item.product_name ?? item.goodsName ?? item.product?.name ?? ''), content: String(item.summary ?? item.summary_content ?? item.content ?? ''), review_count: Number(item.review_count ?? item.reviewCount) || 0, status: state === 1 ? 'approved' : 'pending', createTime: String(item.generated_at ?? item.created_at ?? '') }
 }
 function summaryIsNewer(candidate: SummaryItem, current: SummaryItem) {
   const candidateTime = Date.parse(candidate.createTime)
@@ -228,21 +228,229 @@ onMounted(() => Promise.all([loadReviews(), loadSummaries()]))
 <template>
   <div class="reviews-page">
     <div class="review-stats">
-      <div class="stat-card"><div class="label"><i class="fas fa-thumbs-up"></i> 好评</div><div class="value green">{{ stats.good }}</div></div>
-      <div class="stat-card"><div class="label"><i class="fas fa-thumbs-down"></i> 差评</div><div class="value red">{{ stats.bad }}</div></div>
-      <div class="stat-card"><div class="label"><i class="fas fa-clock"></i> 待审核</div><div class="value yellow">{{ stats.pending }}</div></div>
-      <div class="stat-card"><div class="label"><i class="fas fa-ban"></i> 已拒绝</div><div class="value red">{{ stats.rejected }}</div></div>
-      <div class="stat-card"><div class="label"><i class="fas fa-trash"></i> 已隐藏</div><div class="value gray">{{ stats.hidden }}</div></div>
+      <div class="stat-card">
+        <div class="label"><i class="fas fa-thumbs-up"></i> 好评</div>
+        <div class="value green">{{ stats.good }}</div>
+      </div>
+      <div class="stat-card">
+        <div class="label"><i class="fas fa-thumbs-down"></i> 差评</div>
+        <div class="value red">{{ stats.bad }}</div>
+      </div>
+      <div class="stat-card">
+        <div class="label"><i class="fas fa-clock"></i> 待审核</div>
+        <div class="value yellow">{{ stats.pending }}</div>
+      </div>
+      <div class="stat-card">
+        <div class="label"><i class="fas fa-ban"></i> 已拒绝</div>
+        <div class="value red">{{ stats.rejected }}</div>
+      </div>
+      <div class="stat-card">
+        <div class="label"><i class="fas fa-trash"></i> 已隐藏</div>
+        <div class="value gray">{{ stats.hidden }}</div>
+      </div>
     </div>
-    <div class="search-bar review-search"><input v-model="keyword" placeholder="商品名称 / 用户" @keydown.enter="loadReviews"><select v-model="statusFilter" @change="loadReviews"><option value="all">全部状态</option><option value="pending">待审核</option><option value="approved">显示</option><option value="rejected">已拒绝</option><option value="hidden">隐藏</option></select><select v-model="ratingFilter" @change="loadReviews"><option value="all">全部评价</option><option value="good">好评</option><option value="bad">差评</option></select><button class="btn btn-primary" @click="loadReviews"><i class="fas fa-search"></i> 搜索</button></div>
+    <div class="search-bar review-search">
+      <input v-model="keyword" placeholder="商品名称 / 用户" @keydown.enter="loadReviews">
+      <select v-model="statusFilter" @change="loadReviews">
+        <option value="all">全部状态</option>
+        <option value="pending">待审核</option>
+        <option value="approved">显示</option>
+        <option value="rejected">已拒绝</option>
+        <option value="hidden">隐藏</option>
+      </select>
+      <select v-model="ratingFilter" @change="loadReviews">
+        <option value="all">全部评价</option>
+        <option value="good">好评</option>
+        <option value="bad">差评</option>
+      </select>
+      <button class="btn btn-primary" @click="loadReviews"><i class="fas fa-search"></i> 搜索</button>
+    </div>
 
-    <div class="card"><div class="card-header"><span class="card-title"><i class="fas fa-star"></i> 评价列表</span><span class="text-muted">共 {{ filteredReviews.length }} 条评价</span></div><div class="card-body no-pad"><div class="table-wrap"><table><thead><tr><th>商品</th><th>用户</th><th>评价</th><th>评价内容</th><th>时间</th><th>状态</th><th>操作</th></tr></thead><tbody><tr v-if="loadingReviews"><td colspan="7" class="empty"><i class="fas fa-spinner fa-spin"></i></td></tr><tr v-else-if="!filteredReviews.length"><td colspan="7" class="empty">暂无评价</td></tr><tr v-for="item in filteredReviews" v-else :key="item.id"><td><div class="goods-cell"><span class="goods-thumb"></span>{{ item.goodsName }}</div></td><td>{{ item.userName }}<small>{{ item.phone }}</small></td><td><span class="status-badge" :class="item.rating >= 4 ? 'green' : item.rating >= 3 ? 'yellow' : 'red'"><span class="dot"></span>{{ ratingText(item.rating) }}</span></td><td class="ellipsis">{{ item.content }}</td><td>{{ item.createTime }}</td><td><span class="status-badge" :class="item.status === 'approved' ? 'green' : item.status === 'pending' ? 'yellow' : item.status === 'rejected' ? 'red' : 'gray'"><span class="dot"></span>{{ statusText(item.status) }}</span></td><td><div class="row-actions"><button class="btn btn-sm btn-outline" @click="openDetail(item)"><i class="fas fa-eye"></i> 详情</button><template v-if="item.status === 'pending'"><button class="btn btn-sm btn-success" @click="reviewAction(item,'approve')"><i class="fas fa-check"></i> 通过</button><button class="btn btn-sm btn-danger" @click="reviewAction(item,'reject')"><i class="fas fa-times"></i> 拒绝</button></template><button v-else class="btn btn-sm btn-outline" @click="reviewAction(item,'toggle')">{{ item.status === 'approved' ? '隐藏' : '显示' }}</button></div></td></tr></tbody></table></div></div></div>
+    <div class="card">
+      <div class="card-header">
+        <span class="card-title"><i class="fas fa-star"></i> 评价列表</span>
+        <span class="text-muted">共 {{ filteredReviews.length }} 条评价</span>
+      </div>
+      <div class="card-body no-pad">
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>商品</th>
+                <th>用户</th>
+                <th>评价</th>
+                <th>评价内容</th>
+                <th>时间</th>
+                <th>状态</th>
+                <th>操作</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-if="loadingReviews"><td colspan="7" class="empty"><i class="fas fa-spinner fa-spin"></i></td></tr>
+              <tr v-else-if="!filteredReviews.length"><td colspan="7" class="empty">暂无评价</td></tr>
+              <tr v-for="item in filteredReviews" v-else :key="item.id">
+                <td>
+                  <div class="goods-cell">
+                    <span class="goods-thumb"></span>
+                    {{ item.goodsName }}
+                  </div>
+                </td>
+                <td>
+                  {{ item.userName }}
+                  <small>{{ item.phone }}</small>
+                </td>
+                <td><span class="status-badge" :class="item.rating >= 4 ? 'green' : item.rating >= 3 ? 'yellow' : 'red'"><span class="dot"></span>{{ ratingText(item.rating) }}</span></td>
+                <td class="ellipsis">{{ item.content }}</td>
+                <td>{{ item.createTime }}</td>
+                <td><span class="status-badge" :class="item.status === 'approved' ? 'green' : item.status === 'pending' ? 'yellow' : item.status === 'rejected' ? 'red' : 'gray'"><span class="dot"></span>{{ statusText(item.status) }}</span></td>
+                <td>
+                  <div class="row-actions">
+                    <button class="btn btn-sm btn-outline" @click="openDetail(item)"><i class="fas fa-eye"></i> 详情</button>
+                    <template v-if="item.status === 'pending'">
+                      <button class="btn btn-sm btn-success" @click="reviewAction(item,'approve')"><i class="fas fa-check"></i> 通过</button>
+                      <button class="btn btn-sm btn-danger" @click="reviewAction(item,'reject')"><i class="fas fa-times"></i> 拒绝</button>
+                    </template>
+                    <button v-else class="btn btn-sm btn-outline" @click="reviewAction(item,'toggle')">{{ item.status === 'approved' ? '隐藏' : '显示' }}</button>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
 
-    <div class="card"><div class="card-header"><span class="card-title"><i class="fas fa-robot"></i> AI 评价摘要审核</span><span class="text-muted">系统自动生成评价摘要，需审核后发布</span></div><div class="card-body no-pad"><div class="table-wrap"><table><thead><tr><th>商品</th><th>摘要内容</th><th>基于评价数</th><th>状态</th><th>生成时间</th><th>操作</th></tr></thead><tbody><tr v-if="loadingSummaries"><td colspan="6" class="empty"><i class="fas fa-spinner fa-spin"></i></td></tr><tr v-else-if="!summaries.length"><td colspan="6" class="empty">暂无 AI 评价摘要</td></tr><tr v-for="item in summaries" v-else :key="item.id"><td>{{ item.goodsName }}</td><td class="ellipsis summary-cell">{{ item.content }}</td><td>{{ item.reviewCount }}条</td><td><span class="status-badge" :class="item.status === 'approved' ? 'green' : 'yellow'"><span class="dot"></span>{{ item.status === 'approved' ? '已发布' : '待审核' }}</span></td><td>{{ item.createTime }}</td><td><div class="row-actions"><template v-if="item.status === 'pending'"><button class="btn btn-sm btn-success" @click="summaryAction(item,'approve')"><i class="fas fa-check"></i> 通过</button><button class="btn btn-sm btn-danger" @click="summaryAction(item,'reject')"><i class="fas fa-trash"></i> 删除</button></template><button class="btn btn-sm btn-outline" @click="openSummaryEditor(item)"><i class="fas fa-edit"></i> 编辑</button><button class="btn btn-sm btn-outline" :disabled="isGeneratingSummary(item.productId) || !item.productId" @click="generateSummary(item.productId)"><i class="fas" :class="isGeneratingSummary(item.productId) ? 'fa-spinner fa-spin' : 'fa-wand-magic-sparkles'"></i> {{ isGeneratingSummary(item.productId) ? '生成中...' : '重新生成' }}</button></div></td></tr></tbody></table></div></div></div>
+    <div class="card">
+      <div class="card-header">
+        <span class="card-title"><i class="fas fa-robot"></i> AI 评价摘要审核</span>
+        <span class="text-muted">系统自动生成评价摘要，需审核后发布</span>
+      </div>
+      <div class="card-body no-pad">
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>商品</th>
+                <th>摘要内容</th>
+                <th>基于评价数</th>
+                <th>状态</th>
+                <th>生成时间</th>
+                <th>操作</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-if="loadingSummaries"><td colspan="6" class="empty"><i class="fas fa-spinner fa-spin"></i></td></tr>
+              <tr v-else-if="!summaries.length"><td colspan="6" class="empty">暂无 AI 评价摘要</td></tr>
+              <tr v-for="item in summaries" v-else :key="item.id">
+                <td>{{ item.goodsName }}</td>
+                <td class="ellipsis summary-cell">{{ item.content }}</td>
+                <td>{{ item.review_count }}条</td>
+                <td><span class="status-badge" :class="item.status === 'approved' ? 'green' : 'yellow'"><span class="dot"></span>{{ item.status === 'approved' ? '已发布' : '待审核' }}</span></td>
+                <td>{{ item.createTime }}</td>
+                <td>
+                  <div class="row-actions">
+                    <template v-if="item.status === 'pending'">
+                      <button class="btn btn-sm btn-success" @click="summaryAction(item,'approve')"><i class="fas fa-check"></i> 通过</button>
+                      <button class="btn btn-sm btn-danger" @click="summaryAction(item,'reject')"><i class="fas fa-trash"></i> 删除</button>
+                    </template>
+                    <button class="btn btn-sm btn-outline" @click="openSummaryEditor(item)"><i class="fas fa-edit"></i> 编辑</button>
+                    <button class="btn btn-sm btn-outline" :disabled="isGeneratingSummary(item.productId) || !item.productId" @click="generateSummary(item.productId)"><i class="fas" :class="isGeneratingSummary(item.productId) ? 'fa-spinner fa-spin' : 'fa-wand-magic-sparkles'"></i> {{ isGeneratingSummary(item.productId) ? '生成中...' : '重新生成' }}</button>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
   </div>
 
-  <template v-if="selectedReview"><div class="modal-overlay" @click="selectedReview=null"></div><div class="modal-content review-modal"><div class="modal-header"><h3><i class="fas fa-star"></i> 评价详情</h3><button class="modal-close" @click="selectedReview=null"><i class="fas fa-times"></i></button></div><div class="modal-body"><div v-if="detailLoading" class="empty"><i class="fas fa-spinner fa-spin"></i></div><div v-else class="detail-grid"><section><h4>评价原文</h4><div class="detail-card"><div class="review-user"><span>{{ selectedReview.userName.charAt(0) }}</span><div><strong>{{ selectedReview.userName }}</strong><small>{{ selectedReview.phone }}</small></div></div><div class="stars"><i v-for="index in 5" :key="index" :class="index <= selectedReview.rating ? 'fas fa-star' : 'far fa-star'"></i></div><p>{{ selectedReview.content }}</p><small><i class="fas fa-thumbs-up"></i> {{ selectedReview.likes }} · {{ selectedReview.createTime }}</small></div></section><section><h4>管理员回复</h4><div class="detail-card"><template v-if="replyEditing"><textarea v-model="replyContent" class="form-control" rows="4"></textarea><div class="row-actions"><button class="btn btn-sm btn-primary" @click="saveReply">保存</button><button class="btn btn-sm btn-outline" @click="replyEditing=false">取消</button></div></template><template v-else-if="selectedReview.reply"><p>{{ selectedReview.reply.content }}</p><small>{{ selectedReview.reply.time }}</small><button class="btn btn-sm btn-outline" @click="startReply"><i class="fas fa-edit"></i> 编辑</button></template><div v-else class="empty"><p>暂无管理员回复</p><button class="btn btn-sm btn-primary" @click="startReply"><i class="fas fa-plus"></i> 添加回复</button></div></div></section><section class="user-replies"><h4>用户回复</h4><div class="detail-card"><div v-if="!selectedReview.replies.length" class="empty">暂无用户回复</div><div v-for="reply in selectedReview.replies" v-else :key="reply.id" class="user-reply"><div><strong>{{ reply.userName }}</strong><small>{{ reply.time }}</small><p>{{ reply.content }}</p></div><button class="icon-btn danger" @click="deleteUserReply(reply)"><i class="fas fa-trash"></i></button></div></div></section></div></div><div class="modal-footer"><template v-if="selectedReview.status === 'pending'"><button class="btn btn-success" @click="reviewAction(selectedReview,'approve')">通过</button><button class="btn btn-danger" @click="reviewAction(selectedReview,'reject')">拒绝</button></template><button v-else class="btn btn-outline" @click="reviewAction(selectedReview,'toggle')">{{ selectedReview.status === 'approved' ? '隐藏' : '显示' }}</button><button class="btn btn-outline" @click="selectedReview=null">关闭</button></div></div></template>
-  <template v-if="editingSummary"><div class="modal-overlay" @click="editingSummary=null"></div><div class="modal-content summary-modal"><div class="modal-header"><h3>编辑 AI 评价摘要</h3><button class="modal-close" @click="editingSummary=null"><i class="fas fa-times"></i></button></div><div class="modal-body"><textarea v-model="summaryContent" class="form-control" rows="7"></textarea></div><div class="modal-footer"><button class="btn btn-primary" @click="saveSummary">保存</button><button class="btn btn-outline" @click="editingSummary=null">取消</button></div></div></template>
+  <template v-if="selectedReview">
+    <div class="modal-overlay" @click="selectedReview=null"></div>
+    <div class="modal-content review-modal">
+      <div class="modal-header">
+        <h3><i class="fas fa-star"></i> 评价详情</h3>
+        <button class="modal-close" @click="selectedReview=null"><i class="fas fa-times"></i></button>
+      </div>
+      <div class="modal-body">
+        <div v-if="detailLoading" class="empty"><i class="fas fa-spinner fa-spin"></i></div>
+        <div v-else class="detail-grid">
+          <section>
+            <h4>评价原文</h4>
+            <div class="detail-card">
+              <div class="review-user">
+                <span>{{ selectedReview.userName.charAt(0) }}</span>
+                <div>
+                  <strong>{{ selectedReview.userName }}</strong>
+                  <small>{{ selectedReview.phone }}</small>
+                </div>
+              </div>
+              <div class="stars"><i v-for="index in 5" :key="index" :class="index <= selectedReview.rating ? 'fas fa-star' : 'far fa-star'"></i></div>
+              <p>{{ selectedReview.content }}</p>
+              <small><i class="fas fa-thumbs-up"></i> {{ selectedReview.likes }} · {{ selectedReview.createTime }}</small>
+            </div>
+          </section>
+          <section>
+            <h4>管理员回复</h4>
+            <div class="detail-card">
+              <template v-if="replyEditing">
+                <textarea v-model="replyContent" class="form-control" rows="4"></textarea>
+                <div class="row-actions">
+                  <button class="btn btn-sm btn-primary" @click="saveReply">保存</button>
+                  <button class="btn btn-sm btn-outline" @click="replyEditing=false">取消</button>
+                </div>
+              </template>
+              <template v-else-if="selectedReview.reply">
+                <p>{{ selectedReview.reply.content }}</p>
+                <small>{{ selectedReview.reply.time }}</small>
+                <button class="btn btn-sm btn-outline" @click="startReply"><i class="fas fa-edit"></i> 编辑</button>
+              </template>
+              <div v-else class="empty">
+                <p>暂无管理员回复</p>
+                <button class="btn btn-sm btn-primary" @click="startReply"><i class="fas fa-plus"></i> 添加回复</button>
+              </div>
+            </div>
+          </section>
+          <section class="user-replies">
+            <h4>用户回复</h4>
+            <div class="detail-card">
+              <div v-if="!selectedReview.replies.length" class="empty">暂无用户回复</div>
+              <div v-for="reply in selectedReview.replies" v-else :key="reply.id" class="user-reply">
+                <div>
+                  <strong>{{ reply.userName }}</strong>
+                  <small>{{ reply.time }}</small>
+                  <p>{{ reply.content }}</p>
+                </div>
+                <button class="icon-btn danger" @click="deleteUserReply(reply)"><i class="fas fa-trash"></i></button>
+              </div>
+            </div>
+          </section>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <template v-if="selectedReview.status === 'pending'">
+          <button class="btn btn-success" @click="reviewAction(selectedReview,'approve')">通过</button>
+          <button class="btn btn-danger" @click="reviewAction(selectedReview,'reject')">拒绝</button>
+        </template>
+        <button v-else class="btn btn-outline" @click="reviewAction(selectedReview,'toggle')">{{ selectedReview.status === 'approved' ? '隐藏' : '显示' }}</button>
+        <button class="btn btn-outline" @click="selectedReview=null">关闭</button>
+      </div>
+    </div>
+  </template>
+  <template v-if="editingSummary">
+    <div class="modal-overlay" @click="editingSummary=null"></div>
+    <div class="modal-content summary-modal">
+      <div class="modal-header">
+        <h3>编辑 AI 评价摘要</h3>
+        <button class="modal-close" @click="editingSummary=null"><i class="fas fa-times"></i></button>
+      </div>
+      <div class="modal-body"><textarea v-model="summaryContent" class="form-control" rows="7"></textarea></div>
+      <div class="modal-footer">
+        <button class="btn btn-primary" @click="saveSummary">保存</button>
+        <button class="btn btn-outline" @click="editingSummary=null">取消</button>
+      </div>
+    </div>
+  </template>
 </template>
 
 <style scoped>

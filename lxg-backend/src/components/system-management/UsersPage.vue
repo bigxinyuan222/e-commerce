@@ -189,56 +189,179 @@ onMounted(() => {
     <div class="search-bar">
       <input v-model="keywordInput" id="userSearchInput" placeholder="昵称 / 手机号" @keyup.enter="searchUsers" />
       <select v-model="status">
-        <option value="all">全部状态</option><option value="active">正常</option><option value="frozen">已冻结</option>
+        <option value="all">全部状态</option>
+        <option value="active">正常</option>
+        <option value="frozen">已冻结</option>
       </select>
       <button class="btn btn-primary" type="button" @click="searchUsers"><i class="fas fa-search"></i> 搜索</button>
     </div>
   </div>
 
   <div class="system-stats-row">
-    <div class="stat-card"><div class="label"><i class="fas fa-users"></i> 总用户数</div><div class="value">{{ total }}</div></div>
-    <div class="stat-card"><div class="label"><i class="fas fa-check-circle"></i> 正常用户</div><div class="value green">{{ activeCount }}</div></div>
-    <div class="stat-card"><div class="label"><i class="fas fa-lock"></i> 已冻结</div><div class="value yellow">{{ frozenCount }}</div></div>
-    <div class="stat-card"><div class="label"><i class="fas fa-calendar-day"></i> 本日新增</div><div class="value blue">{{ stats.newDay }}</div></div>
-    <div class="stat-card"><div class="label"><i class="fas fa-calendar-alt"></i> 本月新增</div><div class="value purple">{{ stats.newMonth }}</div></div>
+    <div class="stat-card">
+      <div class="label"><i class="fas fa-users"></i> 总用户数</div>
+      <div class="value">{{ total }}</div>
+    </div>
+    <div class="stat-card">
+      <div class="label"><i class="fas fa-check-circle"></i> 正常用户</div>
+      <div class="value green">{{ activeCount }}</div>
+    </div>
+    <div class="stat-card">
+      <div class="label"><i class="fas fa-lock"></i> 已冻结</div>
+      <div class="value yellow">{{ frozenCount }}</div>
+    </div>
+    <div class="stat-card">
+      <div class="label"><i class="fas fa-calendar-day"></i> 本日新增</div>
+      <div class="value blue">{{ stats.newDay }}</div>
+    </div>
+    <div class="stat-card">
+      <div class="label"><i class="fas fa-calendar-alt"></i> 本月新增</div>
+      <div class="value purple">{{ stats.newMonth }}</div>
+    </div>
   </div>
 
   <div class="system-layout-main users-layout">
     <div class="card users-table-card">
-      <div class="card-header"><span class="card-title"><i class="fas fa-users"></i> 用户列表</span><span class="system-text-muted">共 {{ total }} 位用户 · 累计订单 {{ totalOrders }} 笔 · 累计消费 ¥{{ totalAmount.toFixed(2) }}</span></div>
+      <div class="card-header">
+        <span class="card-title"><i class="fas fa-users"></i> 用户列表</span>
+        <span class="system-text-muted">共 {{ total }} 位用户 · 累计订单 {{ totalOrders }} 笔 · 累计消费 ¥{{ totalAmount.toFixed(2) }}</span>
+      </div>
       <div class="card-body no-pad">
         <div v-if="error" class="stock-list-error"><i class="fas fa-exclamation-circle"></i> {{ error }}</div>
-        <div class="table-wrap users-table-wrap"><table class="users-table">
-          <thead><tr><th>用户</th><th>手机号</th><th>性别</th><th>注册时间</th><th>最近登录</th><th>订单数</th><th>消费金额</th><th>状态</th><th>操作</th></tr></thead>
-          <tbody>
-            <tr v-if="loading"><td colspan="9"><div class="stock-table-state"><i class="fas fa-spinner fa-spin"></i> 正在加载用户...</div></td></tr>
-            <tr v-else-if="filteredUsers.length === 0"><td colspan="9"><div class="stock-table-state"><i class="fas fa-inbox"></i> 暂无用户数据</div></td></tr>
-            <tr v-for="user in filteredUsers" v-else :key="user.id">
-              <td><div class="flex-center"><span class="system-user-avatar-sm">{{ user.name.charAt(0) || '用' }}</span> {{ user.name }}</div></td>
-              <td>{{ user.phone }}</td><td>{{ genderText(user.gender) }}</td><td>{{ user.registerTime }}</td><td>{{ user.lastLogin }}</td><td>{{ user.totalOrders }}</td>
-              <td><span class="system-amount">¥{{ user.totalAmount.toFixed(2) }}</span></td>
-              <td><span class="status-badge" :class="user.status === 'active' ? 'green' : user.status === 'frozen' ? 'yellow' : 'gray'"><span class="dot"></span> {{ statusText(user.status) }}</span></td>
-              <td><button class="btn btn-sm btn-outline" type="button" @click="detail = user"><i class="fas fa-eye"></i> 详情</button> <button class="btn btn-sm" :class="user.status === 'active' ? 'btn-danger' : 'btn-success'" type="button" @click="pendingToggle = user"><i class="fas" :class="user.status === 'active' ? 'fa-lock' : 'fa-unlock'"></i> {{ user.status === 'active' ? '冻结' : '解冻' }}</button></td>
-            </tr>
-          </tbody>
-        </table></div>
-        <div class="stock-pagination"><span>第 {{ page }} / {{ totalPages }} 页，共 {{ total }} 位用户</span><div class="stock-pagination-actions"><button class="btn btn-sm btn-outline" type="button" :disabled="page <= 1 || loading" @click="changePage(page - 1)"><i class="fas fa-chevron-left"></i> 上一页</button><button class="btn btn-sm btn-outline" type="button" :disabled="page >= totalPages || loading" @click="changePage(page + 1)">下一页 <i class="fas fa-chevron-right"></i></button></div></div>
+        <div class="table-wrap users-table-wrap">
+          <table class="users-table">
+            <thead>
+              <tr>
+                <th>用户</th>
+                <th>手机号</th>
+                <th>性别</th>
+                <th>注册时间</th>
+                <th>最近登录</th>
+                <th>订单数</th>
+                <th>消费金额</th>
+                <th>状态</th>
+                <th>操作</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-if="loading">
+                <td colspan="9"><div class="stock-table-state"><i class="fas fa-spinner fa-spin"></i> 正在加载用户...</div></td>
+              </tr>
+              <tr v-else-if="filteredUsers.length === 0">
+                <td colspan="9"><div class="stock-table-state"><i class="fas fa-inbox"></i> 暂无用户数据</div></td>
+              </tr>
+              <tr v-for="user in filteredUsers" v-else :key="user.id">
+                <td>
+                  <div class="flex-center">
+                    <span class="system-user-avatar-sm">{{ user.name.charAt(0) || '用' }}</span>
+                    {{ user.name }}
+                  </div>
+                </td>
+                <td>{{ user.phone }}</td>
+                <td>{{ genderText(user.gender) }}</td>
+                <td>{{ user.registerTime }}</td>
+                <td>{{ user.lastLogin }}</td>
+                <td>{{ user.totalOrders }}</td>
+                <td><span class="system-amount">¥{{ user.totalAmount.toFixed(2) }}</span></td>
+                <td><span class="status-badge" :class="user.status === 'active' ? 'green' : user.status === 'frozen' ? 'yellow' : 'gray'"><span class="dot"></span> {{ statusText(user.status) }}</span></td>
+                <td>
+                  <button class="btn btn-sm btn-outline" type="button" @click="detail = user"><i class="fas fa-eye"></i> 详情</button>
+                  <button class="btn btn-sm" :class="user.status === 'active' ? 'btn-danger' : 'btn-success'" type="button" @click="pendingToggle = user"><i class="fas" :class="user.status === 'active' ? 'fa-lock' : 'fa-unlock'"></i> {{ user.status === 'active' ? '冻结' : '解冻' }}</button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="stock-pagination">
+          <span>第 {{ page }} / {{ totalPages }} 页，共 {{ total }} 位用户</span>
+          <div class="stock-pagination-actions">
+            <button class="btn btn-sm btn-outline" type="button" :disabled="page <= 1 || loading" @click="changePage(page - 1)"><i class="fas fa-chevron-left"></i> 上一页</button>
+            <button class="btn btn-sm btn-outline" type="button" :disabled="page >= totalPages || loading" @click="changePage(page + 1)">下一页 <i class="fas fa-chevron-right"></i></button>
+          </div>
+        </div>
       </div>
     </div>
 
     <div class="system-card-stack">
-      <div class="card"><div class="card-header"><span class="card-title"><i class="fas fa-chart-line"></i> 用户统计</span></div><div class="card-body"><div class="system-stats-info">
-        <div class="system-stats-info-row"><span><i class="fas fa-calendar-day"></i> 本日新增用户</span><span class="value blue">{{ stats.newDay }}</span></div>
-        <div class="system-stats-info-row"><span><i class="fas fa-calendar-alt"></i> 本月新增用户</span><span class="value purple">{{ stats.newMonth }}</span></div>
-      </div></div></div>
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title"><i class="fas fa-chart-line"></i> 用户统计</span>
+        </div>
+        <div class="card-body">
+          <div class="system-stats-info">
+            <div class="system-stats-info-row">
+              <span><i class="fas fa-calendar-day"></i> 本日新增用户</span>
+              <span class="value blue">{{ stats.newDay }}</span>
+            </div>
+            <div class="system-stats-info-row">
+              <span><i class="fas fa-calendar-alt"></i> 本月新增用户</span>
+              <span class="value purple">{{ stats.newMonth }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 
   <template v-if="detail">
-    <div class="modal-overlay" @click="detail = null"></div><div class="modal-content wide"><div class="modal-header"><h3><i class="fas fa-user"></i> 用户详情 · {{ detail.name }}</h3><button class="modal-close" @click="detail = null"><i class="fas fa-times"></i></button></div><div class="modal-body scrollable"><div class="system-user-detail-header"><div class="system-user-detail-avatar">{{ detail.name.charAt(0) || '用' }}</div><div class="system-user-detail-info"><div class="name">{{ detail.name }}</div><div class="phone">{{ detail.phone }}</div><div class="meta"><span class="gender">{{ genderText(detail.gender) }}</span> <span class="status-badge" :class="detail.status === 'active' ? 'green' : 'yellow'"><span class="dot"></span> {{ statusText(detail.status) }}</span></div></div></div><div class="system-user-detail-grid"><div class="system-user-detail-card"><div class="label">用户ID</div><div class="value">{{ detail.id }}</div></div><div class="system-user-detail-card"><div class="label">注册时间</div><div class="value">{{ detail.registerTime }}</div></div><div class="system-user-detail-card"><div class="label">最后登录</div><div class="value">{{ detail.lastLogin }}</div></div><div class="system-user-detail-card"><div class="label">账户状态</div><div class="value">{{ statusText(detail.status) }}</div></div></div></div><div class="modal-footer"><button class="btn" :class="detail.status === 'active' ? 'btn-danger' : 'btn-success'" @click="pendingToggle = detail"><i class="fas" :class="detail.status === 'active' ? 'fa-lock' : 'fa-unlock'"></i> {{ detail.status === 'active' ? '冻结账号' : '解冻账号' }}</button><button class="btn btn-outline" @click="detail = null">关闭</button></div></div>
+    <div class="modal-overlay" @click="detail = null"></div>
+    <div class="modal-content wide">
+      <div class="modal-header">
+        <h3><i class="fas fa-user"></i> 用户详情 · {{ detail.name }}</h3>
+        <button class="modal-close" @click="detail = null"><i class="fas fa-times"></i></button>
+      </div>
+      <div class="modal-body scrollable">
+        <div class="system-user-detail-header">
+          <div class="system-user-detail-avatar">{{ detail.name.charAt(0) || '用' }}</div>
+          <div class="system-user-detail-info">
+            <div class="name">{{ detail.name }}</div>
+            <div class="phone">{{ detail.phone }}</div>
+            <div class="meta">
+              <span class="gender">{{ genderText(detail.gender) }}</span>
+              <span class="status-badge" :class="detail.status === 'active' ? 'green' : 'yellow'"><span class="dot"></span> {{ statusText(detail.status) }}</span>
+            </div>
+          </div>
+        </div>
+        <div class="system-user-detail-grid">
+          <div class="system-user-detail-card">
+            <div class="label">用户ID</div>
+            <div class="value">{{ detail.id }}</div>
+          </div>
+          <div class="system-user-detail-card">
+            <div class="label">注册时间</div>
+            <div class="value">{{ detail.registerTime }}</div>
+          </div>
+          <div class="system-user-detail-card">
+            <div class="label">最后登录</div>
+            <div class="value">{{ detail.lastLogin }}</div>
+          </div>
+          <div class="system-user-detail-card">
+            <div class="label">账户状态</div>
+            <div class="value">{{ statusText(detail.status) }}</div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn" :class="detail.status === 'active' ? 'btn-danger' : 'btn-success'" @click="pendingToggle = detail"><i class="fas" :class="detail.status === 'active' ? 'fa-lock' : 'fa-unlock'"></i> {{ detail.status === 'active' ? '冻结账号' : '解冻账号' }}</button>
+        <button class="btn btn-outline" @click="detail = null">关闭</button>
+      </div>
+    </div>
   </template>
   <template v-if="pendingToggle">
-    <div class="modal-overlay" @click="pendingToggle = null"></div><div class="modal-content"><div class="modal-header"><h3><i class="fas fa-exclamation-circle"></i> 确认操作</h3><button class="modal-close" @click="pendingToggle = null"><i class="fas fa-times"></i></button></div><div class="modal-body"><p>确定要{{ pendingToggle.status === 'active' ? '禁用' : '启用' }}用户 {{ pendingToggle.name }} 吗？</p></div><div class="modal-footer"><button class="btn btn-outline" @click="pendingToggle = null">取消</button><button class="btn btn-primary" :disabled="toggling" @click="toggleUser"><i class="fas" :class="toggling ? 'fa-spinner fa-spin' : 'fa-check'"></i> 确认</button></div></div>
+    <div class="modal-overlay" @click="pendingToggle = null"></div>
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3><i class="fas fa-exclamation-circle"></i> 确认操作</h3>
+        <button class="modal-close" @click="pendingToggle = null"><i class="fas fa-times"></i></button>
+      </div>
+      <div class="modal-body">
+        <p>确定要{{ pendingToggle.status === 'active' ? '禁用' : '启用' }}用户 {{ pendingToggle.name }} 吗？</p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-outline" @click="pendingToggle = null">取消</button>
+        <button class="btn btn-primary" :disabled="toggling" @click="toggleUser"><i class="fas" :class="toggling ? 'fa-spinner fa-spin' : 'fa-check'"></i> 确认</button>
+      </div>
+    </div>
   </template>
 </template>
 

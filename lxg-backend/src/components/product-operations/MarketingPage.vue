@@ -301,62 +301,168 @@ onMounted(() => Promise.all([loadActivities(), loadActivityStats()]))
   </div>
 
   <div class="trade-stat-grid">
-    <div class="stat-card"><div class="label"><i class="fas fa-bolt"></i> 正在进行秒杀</div><div class="value blue">{{ activeCount }}</div></div>
-    <div class="stat-card"><div class="label"><i class="fas fa-clock"></i> 未开始</div><div class="value yellow">{{ pendingCount }}</div></div>
-    <div class="stat-card"><div class="label"><i class="fas fa-chart-bar"></i> 活动销售额</div><div class="value purple"><i v-if="statsLoading" class="fas fa-spinner fa-spin"></i><template v-else>{{ salesLabel }}</template></div></div>
-    <div class="stat-card"><div class="label"><i class="fas fa-shopping-cart"></i> 活动订单数</div><div class="value green"><i v-if="statsLoading" class="fas fa-spinner fa-spin"></i><template v-else>{{ orderLabel }}</template></div></div>
+    <div class="stat-card">
+      <div class="label"><i class="fas fa-bolt"></i> 正在进行秒杀</div>
+      <div class="value blue">{{ activeCount }}</div>
+    </div>
+    <div class="stat-card">
+      <div class="label"><i class="fas fa-clock"></i> 未开始</div>
+      <div class="value yellow">{{ pendingCount }}</div>
+    </div>
+    <div class="stat-card">
+      <div class="label"><i class="fas fa-chart-bar"></i> 活动销售额</div>
+      <div class="value purple">
+        <i v-if="statsLoading" class="fas fa-spinner fa-spin"></i>
+        <template v-else>{{ salesLabel }}</template>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="label"><i class="fas fa-shopping-cart"></i> 活动订单数</div>
+      <div class="value green">
+        <i v-if="statsLoading" class="fas fa-spinner fa-spin"></i>
+        <template v-else>{{ orderLabel }}</template>
+      </div>
+    </div>
   </div>
-  <div v-if="statsError" class="stock-list-error marketing-stats-error"><i class="fas fa-exclamation-circle"></i> {{ statsError }} <button class="btn btn-sm btn-outline" @click="loadActivityStats">重试</button></div>
+  <div v-if="statsError" class="stock-list-error marketing-stats-error">
+    <i class="fas fa-exclamation-circle"></i>
+    {{ statsError }}
+    <button class="btn btn-sm btn-outline" @click="loadActivityStats">重试</button>
+  </div>
 
   <div class="card">
-    <div class="card-header"><span class="card-title"><i class="fas fa-bolt"></i> 秒杀活动管理</span><span class="text-muted" style="font-size:13px">共 {{ activities.length }} 个活动</span></div>
-    <div v-if="loadError" class="stock-list-error"><i class="fas fa-exclamation-circle"></i> {{ loadError }} <button class="btn btn-sm btn-outline" @click="loadActivities">重试</button></div>
-    <div class="card-body no-pad"><div class="table-wrap"><table>
-      <thead><tr><th>活动名称</th><th>活动时间</th><th>发布时间</th><th>状态</th><th>操作</th></tr></thead>
-      <tbody>
-        <tr v-if="loading"><td colspan="5" class="product-state">活动加载中...</td></tr>
-        <tr v-else-if="!activities.length"><td colspan="5" class="product-state">暂无秒杀活动</td></tr>
-        <tr v-for="activity in activities" v-else :key="activity.id">
-          <td>{{ activity.name }}</td><td>{{ activity.startTime }}<br />{{ activity.endTime }}</td>
-          <td>{{ activity.publishedAt || '未发布' }}</td>
-          <td><span class="status-badge" :class="statusClass(activity.status)"><span class="dot"></span> {{ statusText(activity.status) }}</span></td>
+    <div class="card-header">
+      <span class="card-title"><i class="fas fa-bolt"></i> 秒杀活动管理</span>
+      <span class="text-muted" style="font-size:13px">共 {{ activities.length }} 个活动</span>
+    </div>
+    <div v-if="loadError" class="stock-list-error">
+      <i class="fas fa-exclamation-circle"></i>
+      {{ loadError }}
+      <button class="btn btn-sm btn-outline" @click="loadActivities">重试</button>
+    </div>
+    <div class="card-body no-pad">
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>活动名称</th>
+              <th>活动时间</th>
+              <th>发布时间</th>
+              <th>状态</th>
+              <th>操作</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-if="loading"><td colspan="5" class="product-state">活动加载中...</td></tr>
+            <tr v-else-if="!activities.length"><td colspan="5" class="product-state">暂无秒杀活动</td></tr>
+            <tr v-for="activity in activities" v-else :key="activity.id">
+              <td>{{ activity.name }}</td>
+              <td>{{ activity.startTime }}<br />{{ activity.endTime }}</td>
+              <td>{{ activity.publishedAt || '未发布' }}</td>
+              <td><span class="status-badge" :class="statusClass(activity.status)"><span class="dot"></span> {{ statusText(activity.status) }}</span></td>
           <td>
             <button v-if="activity.status === 'pending'" class="btn btn-sm btn-outline" type="button" @click="openAddProduct(activity)"><i class="fas fa-plus"></i> 添加商品</button>
             <button v-if="activity.status === 'pending'" class="btn btn-sm btn-primary" type="button" :data-publish-activity-id="activity.id" :disabled="publishingIds.has(activity.id)" @click="publishActivity(activity)"><i class="fas" :class="publishingIds.has(activity.id) ? 'fa-spinner fa-spin' : 'fa-paper-plane'"></i> {{ publishingIds.has(activity.id) ? '发布中' : '发布' }}</button>
             <button v-if="activity.status === 'active' || activity.status === 'pending'" class="btn btn-sm btn-danger" type="button" :data-close-activity-id="activity.id" @click="closingActivity = activity"><i class="fas fa-times"></i> {{ activity.status === 'active' ? '结束' : '取消' }}</button>
           </td>
-        </tr>
-      </tbody>
-    </table></div></div>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
   </div>
 
   <template v-if="createOpen">
-    <div class="modal-overlay" @click="createOpen = false"></div><div class="modal-content" style="width:640px">
-      <div class="modal-header"><h3><i class="fas fa-bolt"></i> 新建秒杀活动</h3><button class="modal-close" @click="createOpen = false"><i class="fas fa-times"></i></button></div>
-      <div class="modal-body"><div class="trade-form-grid">
-        <div><label class="trade-form-label">活动名称 <span class="required">*</span></label><input id="seckillName" v-model="createForm.name" class="trade-form-input" /></div>
-        <div><label class="trade-form-label">开始时间 <span class="required">*</span></label><input id="seckillStartTime" v-model="createForm.startTime" type="datetime-local" class="trade-form-input" /></div>
-        <div class="trade-form-full"><label class="trade-form-label">结束时间 <span class="required">*</span></label><input id="seckillEndTime" v-model="createForm.endTime" type="datetime-local" class="trade-form-input" /></div>
-      </div></div>
-      <div class="modal-footer"><button class="btn btn-outline" @click="createOpen = false">取消</button><button class="btn btn-primary" :disabled="createSubmitting" @click="createActivity"><i class="fas" :class="createSubmitting ? 'fa-spinner fa-spin' : 'fa-save'"></i> {{ createSubmitting ? '保存中' : '保存' }}</button></div>
+    <div class="modal-overlay" @click="createOpen = false"></div>
+    <div class="modal-content" style="width:640px">
+      <div class="modal-header">
+        <h3><i class="fas fa-bolt"></i> 新建秒杀活动</h3>
+        <button class="modal-close" @click="createOpen = false"><i class="fas fa-times"></i></button>
+      </div>
+      <div class="modal-body">
+        <div class="trade-form-grid">
+          <div>
+            <label class="trade-form-label">活动名称 <span class="required">*</span></label>
+            <input id="seckillName" v-model="createForm.name" class="trade-form-input" />
+          </div>
+          <div>
+            <label class="trade-form-label">开始时间 <span class="required">*</span></label>
+            <input id="seckillStartTime" v-model="createForm.startTime" type="datetime-local" class="trade-form-input" />
+          </div>
+          <div class="trade-form-full">
+            <label class="trade-form-label">结束时间 <span class="required">*</span></label>
+            <input id="seckillEndTime" v-model="createForm.endTime" type="datetime-local" class="trade-form-input" />
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-outline" @click="createOpen = false">取消</button>
+        <button class="btn btn-primary" :disabled="createSubmitting" @click="createActivity"><i class="fas" :class="createSubmitting ? 'fa-spinner fa-spin' : 'fa-save'"></i> {{ createSubmitting ? '保存中' : '保存' }}</button>
+      </div>
     </div>
   </template>
 
   <template v-if="productActivity">
-    <div class="modal-overlay" @click="productActivity = null"></div><div class="modal-content" style="width:680px">
-      <div class="modal-header"><h3><i class="fas fa-box-open"></i> 添加秒杀商品</h3><button class="modal-close" @click="productActivity = null"><i class="fas fa-times"></i></button></div>
+    <div class="modal-overlay" @click="productActivity = null"></div>
+    <div class="modal-content" style="width:680px">
+      <div class="modal-header">
+        <h3><i class="fas fa-box-open"></i> 添加秒杀商品</h3>
+        <button class="modal-close" @click="productActivity = null"><i class="fas fa-times"></i></button>
+      </div>
       <div class="modal-body" style="max-height:65vh;overflow-y:auto">
-        <input id="seckillProductActivityId" type="hidden" :value="productActivity.id" /><label class="trade-form-label">活动商品 <span class="required">*</span></label>
-        <select id="seckillProductSelect" v-model="selectedProductId" class="trade-form-input" @change="loadProductSkus"><option value="">请选择商品</option><option v-for="product in products" :key="product.id" :value="String(product.id)">{{ product.name }}</option></select>
-        <div id="seckillSkuEditor" style="margin-top:16px"><div v-if="productLoading" class="product-state"><i class="fas fa-spinner fa-spin"></i> SKU 加载中...</div><div v-else-if="!productSkus.length" class="product-state">选择商品后配置 SKU 秒杀价格</div>
-          <div v-else class="table-wrap"><table><thead><tr><th>SKU</th><th>规格</th><th>原价</th><th>秒杀价</th><th>库存限制</th></tr></thead><tbody><tr v-for="sku in productSkus" :key="sku.id" class="seckill-sku-row" :data-sku-id="sku.id"><td>{{ sku.code }}</td><td>{{ sku.specs }}</td><td>¥{{ sku.originalPrice }}</td><td><input v-model="sku.seckillPrice" class="trade-form-input seckill-sku-price" type="number" min="0" step="0.01" :max="sku.originalPrice || undefined" /></td><td><input v-model.number="sku.stockLimit" class="trade-form-input seckill-sku-stock" type="number" min="0" step="1" :max="sku.stock" /></td></tr></tbody></table></div>
+        <input id="seckillProductActivityId" type="hidden" :value="productActivity.id" />
+        <label class="trade-form-label">活动商品 <span class="required">*</span></label>
+        <select id="seckillProductSelect" v-model="selectedProductId" class="trade-form-input" @change="loadProductSkus">
+          <option value="">请选择商品</option>
+          <option v-for="product in products" :key="product.id" :value="String(product.id)">{{ product.name }}</option>
+        </select>
+        <div id="seckillSkuEditor" style="margin-top:16px">
+          <div v-if="productLoading" class="product-state"><i class="fas fa-spinner fa-spin"></i> SKU 加载中...</div>
+          <div v-else-if="!productSkus.length" class="product-state">选择商品后配置 SKU 秒杀价格</div>
+          <div v-else class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>SKU</th>
+                  <th>规格</th>
+                  <th>原价</th>
+                  <th>秒杀价</th>
+                  <th>库存限制</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="sku in productSkus" :key="sku.id" class="seckill-sku-row" :data-sku-id="sku.id">
+                  <td>{{ sku.code }}</td>
+                  <td>{{ sku.specs }}</td>
+                  <td>¥{{ sku.originalPrice }}</td>
+                  <td><input v-model="sku.seckillPrice" class="trade-form-input seckill-sku-price" type="number" min="0" step="0.01" :max="sku.originalPrice || undefined" /></td>
+                  <td><input v-model.number="sku.stockLimit" class="trade-form-input seckill-sku-stock" type="number" min="0" step="1" :max="sku.stock" /></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
-      </div><div class="modal-footer"><button class="btn btn-outline" @click="productActivity = null">取消</button><button id="seckillProductSubmit" class="btn btn-primary" :disabled="!productSkus.length || productSubmitting" @click="addProduct"><i class="fas" :class="productSubmitting ? 'fa-spinner fa-spin' : 'fa-save'"></i> {{ productSubmitting ? '添加中' : '确认添加' }}</button></div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-outline" @click="productActivity = null">取消</button>
+        <button id="seckillProductSubmit" class="btn btn-primary" :disabled="!productSkus.length || productSubmitting" @click="addProduct"><i class="fas" :class="productSubmitting ? 'fa-spinner fa-spin' : 'fa-save'"></i> {{ productSubmitting ? '添加中' : '确认添加' }}</button>
+      </div>
     </div>
   </template>
 
   <template v-if="closingActivity">
-    <div class="modal-overlay" @click="!closing && (closingActivity = null)"></div><div class="modal-content" style="width:420px"><div class="modal-header"><h3>确认操作</h3><button class="modal-close" :disabled="closing" @click="closingActivity = null"><i class="fas fa-times"></i></button></div><div class="modal-body">确定提前结束此秒杀活动吗？</div><div class="modal-footer"><button class="btn btn-outline" :disabled="closing" @click="closingActivity = null">取消</button><button class="btn btn-primary" :disabled="closing" @click="closeActivity"><i class="fas" :class="closing ? 'fa-spinner fa-spin' : 'fa-check'"></i> {{ closing ? '处理中' : '确认' }}</button></div></div>
+    <div class="modal-overlay" @click="!closing && (closingActivity = null)"></div>
+    <div class="modal-content" style="width:420px">
+      <div class="modal-header">
+        <h3>确认操作</h3>
+        <button class="modal-close" :disabled="closing" @click="closingActivity = null"><i class="fas fa-times"></i></button>
+      </div>
+      <div class="modal-body">确定提前结束此秒杀活动吗？</div>
+      <div class="modal-footer">
+        <button class="btn btn-outline" :disabled="closing" @click="closingActivity = null">取消</button>
+        <button class="btn btn-primary" :disabled="closing" @click="closeActivity"><i class="fas" :class="closing ? 'fa-spinner fa-spin' : 'fa-check'"></i> {{ closing ? '处理中' : '确认' }}</button>
+      </div>
+    </div>
   </template>
 </template>
 

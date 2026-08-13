@@ -113,11 +113,105 @@ onBeforeUnmount(() => { if (timer) window.clearInterval(timer) })
 
 <template>
   <div class="statistics-page">
-    <header class="statistics-heading"><div><h1>数据统计</h1><p>{{ new Date().toLocaleDateString('zh-CN', { year:'numeric', month:'long', day:'numeric', weekday:'long' }) }} · 欢迎回来，{{ userName || '管理员' }}</p></div><div class="refresh-box"><span v-if="lastUpdated">更新于 {{ lastUpdated }}</span><button class="btn btn-sm btn-outline" :disabled="loading" @click="loadData"><i class="fas" :class="loading ? 'fa-spinner fa-spin' : 'fa-sync-alt'"></i> {{ loading ? '刷新中' : '立即刷新' }}</button></div></header>
-    <div v-if="sourceErrors.length" class="source-warning"><i class="fas fa-exclamation-circle"></i><span>部分数据源暂不可用：{{ sourceErrors.join('；') }}</span></div>
-    <div class="statistics-cards stats-grid"><div v-for="card in cards" :key="card.label" class="stat-card"><div class="label"><i class="fas" :class="card.icon" :style="{ color: card.color }"></i> {{ card.label }}</div><div class="value">{{ card.value }}</div><div class="sub">{{ card.sub }}</div></div></div>
-    <div class="card"><div class="card-header"><span class="card-title"><i class="fas fa-chart-bar"></i> 交易概览 · 近{{ range }}日趋势</span><div class="range-actions"><button class="btn btn-sm" :class="range===7?'btn-primary':'btn-outline'" @click="range=7">近7天</button><button class="btn btn-sm" :class="range===30?'btn-primary':'btn-outline'" @click="range=30">近30天</button></div></div><div class="card-body"><div class="sales-chart"><div v-for="item in chart" :key="item.key" class="bar-group" :title="`${item.key} ${money(item.amount)}`"><div class="bar-value">{{ item.amount ? money(item.amount) : '-' }}</div><div class="bar" :style="{height:`${item.height}px`}"></div><div class="bar-label">{{ item.label }}</div></div></div></div></div>
-    <div class="statistics-layout"><div class="card goods-ranking"><div class="card-header"><span class="card-title"><i class="fas fa-crown"></i> 商品排行 · 销量 TOP10</span></div><div class="card-body no-pad"><div class="table-wrap"><table><thead><tr><th>#</th><th>商品</th><th>销量</th><th>销售额</th></tr></thead><tbody><tr v-if="!goodsRanking.length"><td colspan="4" class="empty">暂无商品销售数据</td></tr><tr v-for="(item,index) in goodsRanking" v-else :key="item.name"><td>{{ index+1 }}</td><td>{{ item.name }}</td><td>{{ item.count.toLocaleString() }}</td><td>{{ money(item.amount) }}</td></tr></tbody></table></div></div></div><div class="statistics-side"><div class="card"><div class="card-header"><span class="card-title"><i class="fas fa-store"></i> 门店销售排行</span></div><div class="card-body ranking-list"><div v-if="!storeRanking.length" class="empty">暂无门店销售数据</div><div v-for="(item,index) in storeRanking" v-else :key="item.name" class="ranking-item"><span class="rank-index">{{ index+1 }}</span><div><strong>{{ item.name }}</strong><small>{{ item.count }} 单</small></div><b>{{ money(item.amount) }}</b></div></div></div><div class="card"><div class="card-header"><span class="card-title"><i class="fas fa-chart-pie"></i> 订单状态分布</span></div><div class="card-body status-list"><div v-for="item in statusRows" :key="item.status"><div><span>{{ item.label }}</span><b>{{ item.count }}</b></div><div class="status-track"><span :style="{width:`${item.percent}%`,background:item.color}"></span></div></div><footer><span>总订单量</span><b>{{ scopedOrders.length }}</b></footer></div></div></div></div>
+    <header class="statistics-heading">
+      <div>
+        <h1>数据统计</h1>
+        <p>{{ new Date().toLocaleDateString('zh-CN', { year:'numeric', month:'long', day:'numeric', weekday:'long' }) }} · 欢迎回来，{{ userName || '管理员' }}</p>
+      </div>
+      <div class="refresh-box">
+        <span v-if="lastUpdated">更新于 {{ lastUpdated }}</span>
+        <button class="btn btn-sm btn-outline" :disabled="loading" @click="loadData"><i class="fas" :class="loading ? 'fa-spinner fa-spin' : 'fa-sync-alt'"></i> {{ loading ? '刷新中' : '立即刷新' }}</button>
+      </div>
+    </header>
+    <div v-if="sourceErrors.length" class="source-warning">
+      <i class="fas fa-exclamation-circle"></i>
+      <span>部分数据源暂不可用：{{ sourceErrors.join('；') }}</span>
+    </div>
+    <div class="statistics-cards stats-grid">
+      <div v-for="card in cards" :key="card.label" class="stat-card">
+        <div class="label"><i class="fas" :class="card.icon" :style="{ color: card.color }"></i> {{ card.label }}</div>
+        <div class="value">{{ card.value }}</div>
+        <div class="sub">{{ card.sub }}</div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-header">
+        <span class="card-title"><i class="fas fa-chart-bar"></i> 交易概览 · 近{{ range }}日趋势</span>
+        <div class="range-actions">
+          <button class="btn btn-sm" :class="range===7?'btn-primary':'btn-outline'" @click="range=7">近7天</button>
+          <button class="btn btn-sm" :class="range===30?'btn-primary':'btn-outline'" @click="range=30">近30天</button>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="sales-chart">
+          <div v-for="item in chart" :key="item.key" class="bar-group" :title="`${item.key} ${money(item.amount)}`">
+            <div class="bar-value">{{ item.amount ? money(item.amount) : '-' }}</div>
+            <div class="bar" :style="{height:`${item.height}px`}"></div>
+            <div class="bar-label">{{ item.label }}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="statistics-layout">
+      <div class="card goods-ranking">
+        <div class="card-header"><span class="card-title"><i class="fas fa-crown"></i> 商品排行 · 销量 TOP10</span></div>
+        <div class="card-body no-pad">
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>商品</th>
+                  <th>销量</th>
+                  <th>销售额</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-if="!goodsRanking.length"><td colspan="4" class="empty">暂无商品销售数据</td></tr>
+                <tr v-for="(item,index) in goodsRanking" v-else :key="item.name">
+                  <td>{{ index+1 }}</td>
+                  <td>{{ item.name }}</td>
+                  <td>{{ item.count.toLocaleString() }}</td>
+                  <td>{{ money(item.amount) }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      <div class="statistics-side">
+        <div class="card">
+          <div class="card-header"><span class="card-title"><i class="fas fa-store"></i> 门店销售排行</span></div>
+          <div class="card-body ranking-list">
+            <div v-if="!storeRanking.length" class="empty">暂无门店销售数据</div>
+            <div v-for="(item,index) in storeRanking" v-else :key="item.name" class="ranking-item">
+              <span class="rank-index">{{ index+1 }}</span>
+              <div>
+                <strong>{{ item.name }}</strong>
+                <small>{{ item.count }} 单</small>
+              </div>
+              <b>{{ money(item.amount) }}</b>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header"><span class="card-title"><i class="fas fa-chart-pie"></i> 订单状态分布</span></div>
+          <div class="card-body status-list">
+            <div v-for="item in statusRows" :key="item.status">
+              <div>
+                <span>{{ item.label }}</span>
+                <b>{{ item.count }}</b>
+              </div>
+              <div class="status-track"><span :style="{width:`${item.percent}%`,background:item.color}"></span></div>
+            </div>
+            <footer>
+              <span>总订单量</span>
+              <b>{{ scopedOrders.length }}</b>
+            </footer>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 

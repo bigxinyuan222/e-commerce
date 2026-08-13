@@ -217,7 +217,8 @@ onMounted(() => {
           v-model="keyword"
           placeholder="按 configKey 模糊搜索"
           @keyup.enter="loadConfigs"
-        /><button class="btn btn-sm btn-primary" @click="loadConfigs">
+        />
+        <button class="btn btn-sm btn-primary" @click="loadConfigs">
           搜索
         </button>
       </div>
@@ -262,7 +263,8 @@ onMounted(() => {
     <div class="card-header">
       <span class="card-title"><i class="fas fa-file-alt"></i> 操作日志</span>
       <div class="settings-search">
-        <input v-model="logKeyword" placeholder="操作人" /><button
+        <input v-model="logKeyword" placeholder="操作人" />
+        <button
           class="btn btn-sm btn-primary"
           @click="loadLogs"
         >
@@ -313,25 +315,30 @@ onMounted(() => {
       <button class="modal-close" @click="modal = false">×</button>
     </div>
     <div class="modal-body">
-      <label
-        >配置键<input
+      <label>
+        配置键
+        <input
           v-model="form.configKey"
           class="system-form-input"
-          :disabled="!!editing?.id" /></label
-      ><label
-        >配置值<input
+          :disabled="!!editing?.id" />
+      </label>
+      <label>
+        配置值
+        <input
           v-model="form.configValue"
-          class="system-form-input" /></label
-      ><label
-        >说明<textarea
+          class="system-form-input" />
+      </label>
+      <label>
+        说明
+        <textarea
           v-model="form.description"
           class="system-form-textarea"
         ></textarea>
       </label>
     </div>
     <div class="modal-footer">
-      <button class="btn btn-outline" @click="modal = false">取消</button
-      ><button class="btn btn-primary" @click="save">保存</button>
+      <button class="btn btn-outline" @click="modal = false">取消</button>
+      <button class="btn btn-primary" @click="save">保存</button>
     </div>
   </div>
 </template>

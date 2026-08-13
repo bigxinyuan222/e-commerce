@@ -475,7 +475,10 @@ onMounted(load)
     <template v-if="editing">
       <div class="modal-overlay" @click="editing = false"></div>
       <div class="modal-content">
-        <div class="modal-header"><h3><i class="fas fa-edit"></i> 编辑门店信息</h3><button class="modal-close" @click="editing = false"><i class="fas fa-times"></i></button></div>
+        <div class="modal-header">
+          <h3><i class="fas fa-edit"></i> 编辑门店信息</h3>
+          <button class="modal-close" @click="editing = false"><i class="fas fa-times"></i></button>
+        </div>
         <div class="modal-body">
           <div class="system-form-grid">
             <label>门店名称<input v-model="form.name" class="system-form-input"></label>
