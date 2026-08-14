@@ -1,7 +1,16 @@
+<!--
+  文件名称：ReturnsPage.vue
+  所属模块：门店管理模块（store-management）
+  功能说明：退货退款页面，展示退款申请列表，支持关键词搜索/状态筛选、退款统计卡片、退款原因分布、
+           查看退款详情（含凭证图片）、审核通过/拒绝、退款原因配置管理（增删改查+自定义颜色）、
+           以及今日/本周/本月的退款统计（退款率、审核通过率）。
+  接口说明：API 基础路径 /api/v1/admin/refunds（退款列表/详情/审核）和 /api/v1/admin/refund-reasons（原因配置）
+-->
 <script setup lang="ts">
 import { computed, onMounted, reactive, ref } from 'vue'
 
 type Id = number | string
+// 退款申请数据结构
 interface Refund {
   id: Id
   refundNo: string
@@ -30,40 +39,48 @@ interface Refund {
   spec: unknown
   price: number
 }
+// 退款原因配置结构
 interface RefundReason { id: Id; content: string; sort: number; status: number; color: string }
+// 退款周期统计结构（退款笔数/退款率/审核通过率）
 interface RefundPeriodStats { refundCount: number; refundRate: number; approvalRate: number }
 
 const props = defineProps<{ token?: string; storeId?: Id | null }>()
-const refunds = ref<Refund[]>([])
-const reasons = ref<RefundReason[]>([])
-const loading = ref(false)
-const reasonLoading = ref(false)
-const error = ref('')
-const reasonError = ref('')
-const keyword = ref('')
-const status = ref<number | ''>('')
-const page = ref(1)
-const pageSize = 20
-const total = ref(0)
+const refunds = ref<Refund[]>([])              // 退款申请列表
+const reasons = ref<RefundReason[]>([])        // 退款原因配置列表
+const loading = ref(false)                     // 列表加载状态
+const reasonLoading = ref(false)               // 原因列表加载状态
+const error = ref('')                          // 列表加载错误信息
+const reasonError = ref('')                    // 原因列表加载错误信息
+const keyword = ref('')                        // 搜索关键词（退款单号/订单号/用户）
+const status = ref<number | ''>('')            // 选中的状态筛选值
+const page = ref(1)                            // 当前页码
+const pageSize = 20                            // 每页条数
+const total = ref(0)                           // 退款总条数
+// 退款统计（待审核/已通过/已拒绝/退款金额）
 const refundStats = reactive({ pending: 0, approved: 0, rejected: 0, amount: 0 })
+// 运营统计（平均处理时长/今日处理数/周月退款金额/退款率/通过率）
 const operationStats = reactive({ averageHours: null as number | null, processedToday: 0, weeklyAmount: 0, monthlyAmount: 0, refundRate: null as number | null, approvalRate: null as number | null })
+// 周期统计（今日/本周/本月的退款笔数、退款率、审核通过率）
 const periodStats = reactive<Record<'today' | 'week' | 'month', RefundPeriodStats>>({
   today: { refundCount: 0, refundRate: 0, approvalRate: 0 },
   week: { refundCount: 0, refundRate: 0, approvalRate: 0 },
   month: { refundCount: 0, refundRate: 0, approvalRate: 0 },
 })
-const statsLoading = ref(false)
-const statsError = ref('')
-const detail = ref<Refund | null>(null)
-const detailLoading = ref(false)
-const reasonModal = ref<'list' | 'add' | 'edit' | null>(null)
-const editingReasonId = ref<Id | null>(null)
-const reasonSaving = ref(false)
-const reasonForm = reactive({ content: '', sort: 1, status: 1, color: '#64748b' })
-const colorStorageKey = 'lexiangou_refund_reason_colors'
+const statsLoading = ref(false)                // 统计加载状态
+const statsError = ref('')                     // 统计加载错误信息
+const detail = ref<Refund | null>(null)        // 详情弹窗中的退款数据
+const detailLoading = ref(false)               // 详情加载状态
+const reasonModal = ref<'list' | 'add' | 'edit' | null>(null) // 原因配置弹窗模式（列表/新增/编辑）
+const editingReasonId = ref<Id | null>(null)   // 当前编辑的原因ID
+const reasonSaving = ref(false)                // 原因保存中状态
+const reasonForm = reactive({ content: '', sort: 1, status: 1, color: '#64748b' }) // 原因编辑表单
+const colorStorageKey = 'lexiangou_refund_reason_colors' // localStorage 存储原因颜色的键名
 
+// 计算总页数
 const totalPages = computed(() => Math.max(1, Math.ceil(total.value / pageSize)))
+// 启用状态的退款原因列表
 const activeReasons = computed(() => reasons.value.filter(item => item.status === 1))
+// 退款原因分布统计（按原因名称计数，取前5，用于侧边栏展示）
 const reasonDistribution = computed(() => {
   const counts = new Map<string, number>()
   refunds.value.forEach(item => counts.set(item.reason || '其他原因', (counts.get(item.reason || '其他原因') || 0) + 1))
@@ -74,14 +91,17 @@ const reasonDistribution = computed(() => {
     return { name, value, percentage: Math.round(value / count * 100), color: configured?.color || palette[index % palette.length] }
   }).sort((a, b) => b.value - a.value).slice(0, 5)
 })
+// 状态筛选下拉选项（0=待审核 1=已通过 2=已拒绝 3=已完成）
 const statusOptions = [
   { value: '', label: '全部状态' }, { value: 0, label: '待审核' },
   { value: 1, label: '已通过' }, { value: 2, label: '已拒绝' }, { value: 3, label: '已完成' },
 ]
+// 周期统计标签
 const statPeriods: Array<{ key: 'today' | 'week' | 'month'; label: string }> = [
   { key: 'today', label: '今日' }, { key: 'week', label: '本周' }, { key: 'month', label: '本月' },
 ]
 
+/** 构建请求头，携带 JWT Token，可选设置 JSON Content-Type */
 function authHeaders(json = false) {
   const headers = new Headers()
   if (json) headers.set('Content-Type', 'application/json')
@@ -89,6 +109,7 @@ function authHeaders(json = false) {
   return headers
 }
 
+/** 统一请求封装，自动解析 code/data 结构并抛出业务错误 */
 async function requestJson(url: string, options: RequestInit = {}) {
   const response = await fetch(url, { credentials: 'include', ...options })
   const payload = await response.json().catch(() => null)
@@ -98,11 +119,13 @@ async function requestJson(url: string, options: RequestInit = {}) {
   return payload?.data ?? payload
 }
 
+/** 轻量级提示（通过全局 showToast 方法） */
 function notify(message: string, type: 'success' | 'error' = 'success') {
   const toast = (window as unknown as { showToast?: (text: string, kind: string) => void }).showToast
   toast?.(message, type)
 }
 
+/** 将后端退款行数据归一化为前端 Refund 结构（兼容蛇形/驼峰命名） */
 function normalizeRefund(row: any): Refund {
   return {
     id: row.refund_id ?? row.refundId ?? row.ID ?? row.id,
@@ -126,6 +149,7 @@ function normalizeRefund(row: any): Refund {
   }
 }
 
+/** 从接口返回数据和列表中更新退款统计（待审核/已通过/已拒绝/退款金额/运营指标） */
 function updateRefundStats(data: any, list: Refund[]) {
   const stats = data?.stats ?? data?.statistics ?? data?.summary
   refundStats.pending = Number(stats?.pending ?? stats?.pending_count ?? stats?.pendingCount ?? list.filter(item => item.status === 0).length)
@@ -141,30 +165,36 @@ function updateRefundStats(data: any, list: Refund[]) {
   operationStats.approvalRate = stats?.approval_rate ?? stats?.approvalRate ?? (decided ? Math.round(refundStats.approved / decided * 100) : null)
 }
 
+/** 金额格式化为人民币（保留2位小数） */
 function formatCurrency(value: number) {
   return new Intl.NumberFormat('zh-CN', { style: 'currency', currency: 'CNY', minimumFractionDigits: 2 }).format(value)
 }
 
+/** 格式化比率（支持小数和百分比，统一输出 x%） */
 function formatRate(value: number | null) {
   if (value === null || !Number.isFinite(Number(value))) return '--'
   const normalized = Number(value) <= 1 ? Number(value) * 100 : Number(value)
   return `${normalized.toFixed(normalized % 1 ? 1 : 0)}%`
 }
 
+/** 从 localStorage 读取退款原因颜色配置 */
 function readColors(): Record<string, string> {
   try { return JSON.parse(localStorage.getItem(colorStorageKey) || '{}') } catch { return {} }
 }
+/** 保存退款原因颜色到 localStorage（同时存 ID 和名称键） */
 function saveColor(id: Id | null | undefined, name: string, color: string) {
   const colors = readColors()
   if (id !== null && id !== undefined && id !== '') colors[`id:${id}`] = color
   if (name) colors[`name:${name}`] = color
   localStorage.setItem(colorStorageKey, JSON.stringify(colors))
 }
+/** 从 localStorage 删除指定退款原因的颜色配置 */
 function removeColor(id: Id, name: string) {
   const colors = readColors(); delete colors[`id:${id}`]; delete colors[`name:${name}`]
   localStorage.setItem(colorStorageKey, JSON.stringify(colors))
 }
 
+/** 加载退款申请列表（API: GET /api/v1/admin/refunds），同步更新统计 */
 async function loadRefunds() {
   loading.value = true; error.value = ''
   const params = new URLSearchParams({ page: String(page.value), pageSize: String(pageSize), keyword: keyword.value.trim(), status: status.value === '' ? '' : String(status.value), store_id: props.storeId ? String(props.storeId) : '' })
@@ -179,6 +209,7 @@ async function loadRefunds() {
   finally { loading.value = false }
 }
 
+/** 加载退款周期统计（API: GET /api/v1/admin/refunds/stats），含今日/本周/本月数据 */
 async function loadPeriodStats() {
   statsLoading.value = true; statsError.value = ''
   try {
@@ -195,6 +226,7 @@ async function loadPeriodStats() {
   finally { statsLoading.value = false }
 }
 
+/** 加载退款原因配置列表（API: GET /api/v1/admin/refund-reasons），读取本地颜色配置 */
 async function loadReasons() {
   reasonLoading.value = true; reasonError.value = ''
   try {
@@ -209,10 +241,14 @@ async function loadReasons() {
   finally { reasonLoading.value = false }
 }
 
+/** 点击搜索：重置页码后加载列表 */
 async function search() { page.value = 1; await loadRefunds() }
+/** 状态筛选变更：重置页码后加载列表 */
 async function changeStatus() { page.value = 1; await loadRefunds() }
+/** 翻页：校验边界后加载列表 */
 async function changePage(next: number) { if (next < 1 || next > totalPages.value || next === page.value) return; page.value = next; await loadRefunds() }
 
+/** 打开退款详情弹窗（API: GET /api/v1/admin/refunds/:id），合并列表与详情数据 */
 async function openDetail(item: Refund) {
   detailLoading.value = true
   try {
@@ -242,6 +278,7 @@ async function openDetail(item: Refund) {
   finally { detailLoading.value = false }
 }
 
+/** 审核退款申请（API: PUT /api/v1/admin/refunds/:id/audit），通过需备注"同意退款"，拒绝需输入原因 */
 async function audit(item: Refund, approved: boolean) {
   const remark = approved ? '同意退款' : window.prompt('请输入拒绝原因：')
   if (!remark) return
@@ -251,10 +288,14 @@ async function audit(item: Refund, approved: boolean) {
   } catch (cause) { notify(cause instanceof Error ? cause.message : '审核失败', 'error') }
 }
 
+/** 打开退款原因列表弹窗 */
 function openReasonList() { reasonModal.value = 'list' }
+/** 打开新增退款原因弹窗：重置表单为默认值 */
 function openAddReason() { editingReasonId.value = null; Object.assign(reasonForm, { content: '', sort: reasons.value.length + 1, status: 1, color: '#64748b' }); reasonModal.value = 'add' }
+/** 打开编辑退款原因弹窗：填充当前原因数据到表单 */
 function openEditReason(item: RefundReason) { editingReasonId.value = item.id; Object.assign(reasonForm, item); reasonModal.value = 'edit' }
 
+/** 保存退款原因（新增 API: POST /api/v1/admin/refund-reasons，编辑 API: PUT /api/v1/admin/refund-reasons/:id） */
 async function saveReason() {
   if (!reasonForm.content.trim()) return notify('请输入原因名称', 'error')
   reasonSaving.value = true
@@ -273,21 +314,27 @@ async function saveReason() {
   finally { reasonSaving.value = false }
 }
 
+/** 删除退款原因（API: DELETE /api/v1/admin/refund-reasons/:id），同时清理本地颜色配置 */
 async function deleteReason(item: RefundReason) {
   if (!window.confirm(`确定删除退款原因“${item.content}”吗？`)) return
   try { await requestJson(`/api/v1/admin/refund-reasons/${item.id}`, { method: 'DELETE', headers: authHeaders() }); removeColor(item.id, item.content); await loadReasons(); notify('删除成功') }
   catch (cause) { notify(cause instanceof Error ? cause.message : '删除失败', 'error') }
 }
 
+/** 退款状态码 → 中文标签映射 */
 function statusLabel(value: number) { return ['待审核', '已通过', '已拒绝', '已完成'][value] || '未知' }
+/** 退款状态码 → CSS类名映射 */
 function statusClass(value: number) { return ['pending', 'approved', 'rejected', 'done'][value] || '' }
+/** 格式化商品规格：对象拆解为 "key: value / ..." 字符串 */
 function formatSpec(value: unknown) { return typeof value === 'object' && value ? Object.entries(value as object).map(([key, val]) => `${key}: ${val}`).join(' / ') : String(value || '-') }
 
+// 组件挂载时并行加载退款列表、原因配置和周期统计
 onMounted(() => { void Promise.all([loadRefunds(), loadReasons(), loadPeriodStats()]) })
 </script>
 
 <template>
   <div class="returns-page">
+    <!-- 搜索工具栏：关键词搜索 + 状态筛选 + 退款原因配置入口 -->
     <div class="return-toolbar">
       <div class="search-bar">
         <input id="returnSearchInput" v-model="keyword" placeholder="退款单号 / 订单号 / 用户" @keyup.enter="search" />
@@ -299,7 +346,9 @@ onMounted(() => { void Promise.all([loadRefunds(), loadReasons(), loadPeriodStat
       </div>
       <button class="btn btn-outline" @click="openReasonList"><i class="fas fa-sliders-h"></i> 退款原因配置</button>
     </div>
+    <!-- 错误提示 -->
     <div v-if="error" class="return-alert">{{ error }}</div>
+    <!-- 退款统计卡片区 -->
     <section class="return-stats" aria-label="退款统计">
       <div class="return-stat pending">
         <div class="return-stat-label"><i class="fas fa-clock"></i><span>待审核</span></div>
@@ -318,7 +367,9 @@ onMounted(() => { void Promise.all([loadRefunds(), loadReasons(), loadPeriodStat
         <strong>{{ formatCurrency(refundStats.amount) }}</strong>
       </div>
     </section>
+    <!-- 主体区域：左侧退款列表 + 右侧侧边栏（统计+原因） -->
     <div class="returns-grid">
+      <!-- 退款申请列表卡片 -->
       <section class="card return-list-card">
         <div class="card-header">
           <span class="card-title"><i class="fas fa-undo"></i> 退款申请列表</span>
@@ -342,13 +393,16 @@ onMounted(() => { void Promise.all([loadRefunds(), loadReasons(), loadPeriodStat
                 </tr>
               </thead>
               <tbody>
-                <tr v-if="loading">
-                  <td colspan="10" class="return-state"><i class="fas fa-spinner fa-spin"></i> 正在加载...</td>
-                </tr>
-                <tr v-else-if="!refunds.length">
-                  <td colspan="10" class="return-state">暂无退款申请</td>
-                </tr>
-                <tr v-for="item in refunds" v-else :key="item.id">
+              <!-- 加载中 -->
+              <tr v-if="loading">
+                <td colspan="10" class="return-state"><i class="fas fa-spinner fa-spin"></i> 正在加载...</td>
+              </tr>
+              <!-- 空数据 -->
+              <tr v-else-if="!refunds.length">
+                <td colspan="10" class="return-state">暂无退款申请</td>
+              </tr>
+              <!-- 退款数据行 -->
+              <tr v-for="item in refunds" v-else :key="item.id">
                   <td>{{ item.refundNo }}</td>
                   <td>{{ item.orderNo }}</td>
                   <td>{{ item.productName }}</td>
@@ -359,7 +413,9 @@ onMounted(() => { void Promise.all([loadRefunds(), loadReasons(), loadPeriodStat
                   <td><span class="status-pill" :class="statusClass(item.status)">{{ statusLabel(item.status) }}</span></td>
                   <td>{{ item.createdAt }}</td>
                   <td class="actions">
+                    <!-- 详情按钮 -->
                     <button class="btn btn-sm btn-outline" @click="openDetail(item)"><i class="fas fa-eye"></i> 详情</button>
+                    <!-- 待审核状态显示通过/拒绝按钮 -->
                     <button v-if="item.status === 0" class="btn btn-sm btn-success" @click="audit(item, true)">通过</button>
                     <button v-if="item.status === 0" class="btn btn-sm btn-danger" @click="audit(item, false)">拒绝</button>
                   </td>
@@ -512,13 +568,150 @@ onMounted(() => { void Promise.all([loadRefunds(), loadReasons(), loadPeriodStat
   </div>
 </template>
 
+<!--
+  样式区块说明：
+  1. 基础布局：页面纵向排列、工具栏左右分布、搜索栏弹性换行
+  2. 统计卡片区：4列网格，各状态用不同主题色区分（黄/蓝/红/紫）
+  3. 主体网格：左侧退款列表 + 右侧260px侧边栏
+  4. 表格与状态标签：退款金额红色、状态标签胶囊配色（待审核黄/已通过蓝/已拒绝红/已完成绿）
+  5. 分页栏：居中排列上一页/下一页按钮
+  6. 侧边栏组件：原因数量统计、原因芯片列表、管理按钮
+  7. 退款详情弹窗：2列网格布局、凭证图片缩略图样式
+  8. 退款原因表单：网格布局、颜色选择器样式
+  9. 响应式：中屏统计卡片2列+隐藏侧边栏，小屏工具栏纵向排列
+-->
 <style scoped>
-.returns-page{display:flex;flex-direction:column;gap:14px}.return-toolbar,.reason-modal-toolbar{display:flex;justify-content:space-between;align-items:center;gap:12px}.search-bar{display:flex;gap:8px;flex-wrap:wrap}.search-bar input{width:260px}.return-stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}.return-stat{min-height:90px;padding:16px 18px;border:1px solid #e2e8f0;border-radius:7px;background:#fff;box-shadow:0 1px 2px rgba(15,23,42,.04);display:flex;flex-direction:column;justify-content:space-between}.return-stat-label{display:flex;align-items:center;gap:7px;color:#64748b;font-size:13px}.return-stat strong{font-size:22px;line-height:1;color:#334155}.return-stat.pending .return-stat-label i,.return-stat.pending strong{color:#d97706}.return-stat.approved .return-stat-label i,.return-stat.approved strong{color:#2563eb}.return-stat.rejected .return-stat-label i,.return-stat.rejected strong{color:#dc2626}.return-stat.amount-stat .return-stat-label i,.return-stat.amount-stat strong{color:#7c3aed}.returns-grid{display:grid;grid-template-columns:minmax(0,1fr) 260px;gap:12px}.return-list-card{min-width:0}.text-muted{font-size:13px;color:#64748b}.return-alert{padding:10px 12px;border:1px solid #fecaca;border-radius:6px;background:#fef2f2;color:#b91c1c;font-size:13px}.return-state{text-align:center!important;padding:40px 12px!important;color:#64748b}.amount{font-weight:700;color:#dc2626}.status-pill,.reason-pill{display:inline-block;padding:3px 8px;border-radius:4px;font-size:12px;white-space:nowrap}.reason-pill{background:#f1f5f9;color:#475569}.status-pill.pending{background:#fef3c7;color:#92400e}.status-pill.approved{background:#dbeafe;color:#1d4ed8}.status-pill.rejected{background:#fee2e2;color:#b91c1c}.status-pill.done{background:#dcfce7;color:#15803d}.actions{display:flex;gap:5px;white-space:nowrap}td small{display:block;color:#94a3b8;margin-top:2px}.return-pagination{display:flex;justify-content:center;align-items:center;gap:10px}.reason-count{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}.reason-count span{font-size:12px;color:#64748b}.reason-chips{display:flex;flex-wrap:wrap;gap:6px;min-height:80px}.reason-chips span{height:fit-content;padding:4px 8px;border:1px solid;border-radius:4px;font-size:12px}.full{width:100%;margin-top:12px}.detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.detail-grid>div{padding:12px;background:#f8fafc;border-radius:6px}.detail-grid span{display:block;color:#64748b;font-size:12px;margin-bottom:4px}.color-cell,.color-picker{display:flex;align-items:center;gap:8px}.color-cell i,.color-picker i{display:block;width:24px;height:24px;border-radius:4px}.reason-form{display:grid;gap:14px}.reason-form label{display:grid;gap:6px;font-size:13px;color:#475569}.color-picker input{width:56px;height:40px;padding:3px}.color-picker span{font-family:monospace}@media(max-width:1100px){.return-stats{grid-template-columns:repeat(2,minmax(0,1fr))}.returns-grid{grid-template-columns:1fr}.reason-summary{display:none}}@media(max-width:700px){.return-toolbar{align-items:stretch;flex-direction:column}.search-bar>*{width:100%!important}.return-stats{grid-template-columns:1fr 1fr}.return-stat{min-height:82px;padding:14px}.return-stat strong{font-size:19px}.detail-grid{grid-template-columns:1fr}}
+/* 页面整体布局：纵向排列各区块 */
+.returns-page{display:flex;flex-direction:column;gap:14px}
+/* 工具栏与原因弹窗工具栏：左右分布 */
+.return-toolbar,.reason-modal-toolbar{display:flex;justify-content:space-between;align-items:center;gap:12px}
+/* 搜索栏：弹性换行 */
+.search-bar{display:flex;gap:8px;flex-wrap:wrap}
+/* 搜索输入框宽度 */
+.search-bar input{width:260px}
+/* 统计卡片区：4列网格布局 */
+.return-stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+/* 单个统计卡片样式 */
+.return-stat{min-height:90px;padding:16px 18px;border:1px solid #e2e8f0;border-radius:7px;background:#fff;box-shadow:0 1px 2px rgba(15,23,42,.04);display:flex;flex-direction:column;justify-content:space-between}
+/* 卡片标签样式 */
+.return-stat-label{display:flex;align-items:center;gap:7px;color:#64748b;font-size:13px}
+/* 卡片数值字号 */
+.return-stat strong{font-size:22px;line-height:1;color:#334155}
+/* 各状态主题色：待审核黄、已通过蓝、已拒绝红、退款金额紫 */
+.return-stat.pending .return-stat-label i,.return-stat.pending strong{color:#d97706}
+.return-stat.approved .return-stat-label i,.return-stat.approved strong{color:#2563eb}
+.return-stat.rejected .return-stat-label i,.return-stat.rejected strong{color:#dc2626}
+.return-stat.amount-stat .return-stat-label i,.return-stat.amount-stat strong{color:#7c3aed}
+/* 主体区域网格：左侧列表 + 右侧侧边栏 */
+.returns-grid{display:grid;grid-template-columns:minmax(0,1fr) 260px;gap:12px}
+/* 列表卡片最小宽度 */
+.return-list-card{min-width:0}
+/* 次要文本 */
+.text-muted{font-size:13px;color:#64748b}
+/* 错误提示框 */
+.return-alert{padding:10px 12px;border:1px solid #fecaca;border-radius:6px;background:#fef2f2;color:#b91c1c;font-size:13px}
+/* 表格空状态/加载态居中 */
+.return-state{text-align:center!important;padding:40px 12px!important;color:#64748b}
+/* 金额列样式 */
+.amount{font-weight:700;color:#dc2626}
+/* 状态标签与原因标签胶囊 */
+.status-pill,.reason-pill{display:inline-block;padding:3px 8px;border-radius:4px;font-size:12px;white-space:nowrap}
+/* 原因标签配色 */
+.reason-pill{background:#f1f5f9;color:#475569}
+/* 各状态标签配色：待审核黄、已通过蓝、已拒绝红、已完成绿 */
+.status-pill.pending{background:#fef3c7;color:#92400e}
+.status-pill.approved{background:#dbeafe;color:#1d4ed8}
+.status-pill.rejected{background:#fee2e2;color:#b91c1c}
+.status-pill.done{background:#dcfce7;color:#15803d}
+/* 操作列按钮排列 */
+.actions{display:flex;gap:5px;white-space:nowrap}
+/* 表格次要文字（手机号等） */
+td small{display:block;color:#94a3b8;margin-top:2px}
+/* 分页栏 */
+.return-pagination{display:flex;justify-content:center;align-items:center;gap:10px}
+/* 原因数量统计区 */
+.reason-count{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.reason-count span{font-size:12px;color:#64748b}
+/* 原因芯片列表 */
+.reason-chips{display:flex;flex-wrap:wrap;gap:6px;min-height:80px}
+.reason-chips span{height:fit-content;padding:4px 8px;border:1px solid;border-radius:4px;font-size:12px}
+/* 全宽按钮 */
+.full{width:100%;margin-top:12px}
+/* 退款详情弹窗：2列网格 */
+.detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+/* 信息项背景 */
+.detail-grid>div{padding:12px;background:#f8fafc;border-radius:6px}
+/* 信息项标签 */
+.detail-grid span{display:block;color:#64748b;font-size:12px;margin-bottom:4px}
+/* 颜色选择器与颜色展示单元格 */
+.color-cell,.color-picker{display:flex;align-items:center;gap:8px}
+.color-cell i,.color-picker i{display:block;width:24px;height:24px;border-radius:4px}
+/* 原因编辑表单 */
+.reason-form{display:grid;gap:14px}
+.reason-form label{display:grid;gap:6px;font-size:13px;color:#475569}
+/* 颜色输入框 */
+.color-picker input{width:56px;height:40px;padding:3px}
+.color-picker span{font-family:monospace}
+/* 响应式：中屏统计卡片2列+隐藏侧边栏 */
+@media(max-width:1100px){.return-stats{grid-template-columns:repeat(2,minmax(0,1fr))}.returns-grid{grid-template-columns:1fr}.reason-summary{display:none}}
+/* 响应式：小屏工具栏纵向排列 */
+@media(max-width:700px){.return-toolbar{align-items:stretch;flex-direction:column}.search-bar>*{width:100%!important}.return-stats{grid-template-columns:1fr 1fr}.return-stat{min-height:82px;padding:14px}.return-stat strong{font-size:19px}.detail-grid{grid-template-columns:1fr}}
 </style>
 <style scoped>
-.returns-grid{grid-template-columns:minmax(0,1fr) 300px;align-items:start}.returns-sidebar{display:flex;flex-direction:column;gap:12px}.sidebar-card{overflow:hidden}.sidebar-card .card-header{min-height:48px}.distribution-list{display:flex;flex-direction:column;gap:13px}.distribution-item{display:flex;flex-direction:column;gap:6px}.distribution-meta{display:flex;align-items:center;justify-content:space-between;font-size:13px;color:#334155}.distribution-meta strong{font-size:12px}.distribution-track{height:6px;border-radius:3px;background:#e2e8f0;overflow:hidden}.distribution-track i{display:block;height:100%;min-width:3px;border-radius:3px}.sidebar-empty{padding:18px 0;text-align:center;color:#94a3b8;font-size:13px}.metric-label{display:block;color:#64748b;font-size:12px;margin-bottom:8px}.time-value{display:block;color:#4f6ef7;font-size:27px;margin-bottom:16px}.process-note{padding:10px 12px;border-radius:6px;font-size:12px}.process-note+.process-note{margin-top:9px}.process-note.success{color:#15803d;background:#ecfdf3}.process-note.warning{color:#c2410c;background:#fff7e6}.financial-list{display:flex;flex-direction:column;gap:11px}.financial-list>div{display:flex;align-items:center;justify-content:space-between;font-size:13px;color:#334155}.financial-list strong{color:#ef4444}.financial-list strong.rate{color:#f59e0b}.financial-list strong.approval{color:#16a34a}
+/* 侧边栏网格调整：列宽300px，顶部对齐 */
+.returns-grid{grid-template-columns:minmax(0,1fr) 300px;align-items:start}
+/* 侧边栏：纵向排列卡片 */
+.returns-sidebar{display:flex;flex-direction:column;gap:12px}
+/* 侧边栏卡片溢出处理 */
+.sidebar-card{overflow:hidden}
+.sidebar-card .card-header{min-height:48px}
+/* 原因分布列表（已弃用，保留兼容） */
+.distribution-list{display:flex;flex-direction:column;gap:13px}
+.distribution-item{display:flex;flex-direction:column;gap:6px}
+.distribution-meta{display:flex;align-items:center;justify-content:space-between;font-size:13px;color:#334155}
+.distribution-meta strong{font-size:12px}
+.distribution-track{height:6px;border-radius:3px;background:#e2e8f0;overflow:hidden}
+.distribution-track i{display:block;height:100%;min-width:3px;border-radius:3px}
+.sidebar-empty{padding:18px 0;text-align:center;color:#94a3b8;font-size:13px}
+/* 运营统计指标（平均处理时长等） */
+.metric-label{display:block;color:#64748b;font-size:12px;margin-bottom:8px}
+.time-value{display:block;color:#4f6ef7;font-size:27px;margin-bottom:16px}
+.process-note{padding:10px 12px;border-radius:6px;font-size:12px}
+.process-note+.process-note{margin-top:9px}
+.process-note.success{color:#15803d;background:#ecfdf3}
+.process-note.warning{color:#c2410c;background:#fff7e6}
+/* 财务统计列表（周/月退款金额、退款率、通过率） */
+.financial-list{display:flex;flex-direction:column;gap:11px}
+.financial-list>div{display:flex;align-items:center;justify-content:space-between;font-size:13px;color:#334155}
+.financial-list strong{color:#ef4444}
+.financial-list strong.rate{color:#f59e0b}
+.financial-list strong.approval{color:#16a34a}
+/* 响应式：中屏侧边栏3列布局 */
 @media(max-width:1100px){.returns-sidebar{display:grid;grid-template-columns:repeat(3,minmax(0,1fr))}.reason-summary{display:block;grid-column:1/-1}.sidebar-card{min-width:0}}
+/* 响应式：小屏侧边栏单列 */
 @media(max-width:760px){.returns-sidebar{grid-template-columns:1fr}.reason-summary{grid-column:auto}}
-.period-stat-list{display:flex;flex-direction:column;gap:12px}.period-stat{padding:12px;border:1px solid #e2e8f0;border-radius:7px;background:#f8fafc}.period-stat h4{margin:0 0 9px;color:#334155;font-size:14px}.period-stat>div{display:flex;justify-content:space-between;align-items:center;padding:4px 0;color:#64748b;font-size:12px}.period-stat strong{color:#334155}.period-stat strong.rate{color:#f59e0b}.period-stat strong.approval{color:#16a34a}[data-theme='dark'] .period-stat{background:#111827;border-color:#334155}[data-theme='dark'] .period-stat h4,[data-theme='dark'] .period-stat strong{color:#e5e7eb}
-.refund-detail-modal{width:min(860px,calc(100vw - 32px))}.detail-wide{grid-column:1/-1}.detail-description{white-space:pre-wrap;line-height:1.6}.refund-images{display:flex;flex-wrap:wrap;gap:10px;margin-top:8px}.refund-images a{border-radius:6px;overflow:hidden}.refund-images img{display:block;width:96px;height:96px;object-fit:cover;border:1px solid #e2e8f0;border-radius:6px;transition:transform .2s}.refund-images img:hover{transform:scale(1.04)}.product-names{max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+/* 周期统计卡片列表（今日/本周/本月） */
+.period-stat-list{display:flex;flex-direction:column;gap:12px}
+.period-stat{padding:12px;border:1px solid #e2e8f0;border-radius:7px;background:#f8fafc}
+.period-stat h4{margin:0 0 9px;color:#334155;font-size:14px}
+.period-stat>div{display:flex;justify-content:space-between;align-items:center;padding:4px 0;color:#64748b;font-size:12px}
+.period-stat strong{color:#334155}
+.period-stat strong.rate{color:#f59e0b}
+.period-stat strong.approval{color:#16a34a}
+/* 暗色主题：周期统计卡片 */
+[data-theme='dark'] .period-stat{background:#111827;border-color:#334155}
+[data-theme='dark'] .period-stat h4,[data-theme='dark'] .period-stat strong{color:#e5e7eb}
+/* 退款详情弹窗宽度 */
+.refund-detail-modal{width:min(860px,calc(100vw - 32px))}
+/* 详情跨列项 */
+.detail-wide{grid-column:1/-1}
+/* 退货说明文本换行 */
+.detail-description{white-space:pre-wrap;line-height:1.6}
+/* 凭证图片网格 */
+.refund-images{display:flex;flex-wrap:wrap;gap:10px;margin-top:8px}
+.refund-images a{border-radius:6px;overflow:hidden}
+.refund-images img{display:block;width:96px;height:96px;object-fit:cover;border:1px solid #e2e8f0;border-radius:6px;transition:transform .2s}
+.refund-images img:hover{transform:scale(1.04)}
+/* 商品名称列溢出省略 */
+.product-names{max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 </style>

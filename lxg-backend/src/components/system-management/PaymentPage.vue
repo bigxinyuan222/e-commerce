@@ -1,12 +1,70 @@
+<!--
+  @file PaymentPage.vue
+  @description 支付管理页面组件
+  @module 系统管理模块
+  @key-features 支付记录查看与筛选（状态/日期）、退款记录查看与筛选、分页展示
+-->
 <script setup lang="ts">
 import { computed, onMounted, reactive, ref } from 'vue'
-interface Payment {id:string;orderId:string;amount:number;method:string;transactionId:string;status:string;time:string} interface Refund{id:string;txnId:string;orderId:string;amount:number;reason:string;status:string;time:string}
-const props=defineProps<{token?:string}>();const payments=ref<Payment[]>([]),refunds=ref<Refund[]>([]),paymentTotal=ref(0),refundTotal=ref(0),loading=ref(false),error=ref('');const pf=reactive({page:1,status:'',start:'',end:''}),rf=reactive({page:1,status:'',start:'',end:''});const size=10;const pp=computed(()=>Math.max(1,Math.ceil(paymentTotal.value/size))),rp=computed(()=>Math.max(1,Math.ceil(refundTotal.value/size)))
-function headers(){const h=new Headers();if(props.token)h.set('Authorization',`Bearer ${props.token}`);return h}async function request(url:string){const r=await fetch(url,{headers:headers(),credentials:'include'});const p=await r.json().catch(()=>null);if(!r.ok||(p?.code!==undefined&&![0,200].includes(p.code)))throw new Error(p?.message||`请求失败 (${r.status})`);return p?.data??p}function list(d:any,k:string){return Array.isArray(d)?d:d?.list??d?.items??d?.records??d?.[k]??[]}function ps(x:any){const v=x.status;return [1,'1','paid','success'].includes(v)?'success':[2,'2','refunded'].includes(v)?'refunded':v==='failed'?'failed':'pending'}function rs(x:any){const v=x.status;return [1,'1','refunded','success'].includes(v)?'refunded':[2,'2','failed'].includes(v)?'failed':'pending'}
-async function loadPayments(){const q=new URLSearchParams({page:String(pf.page),pageSize:String(size),status:pf.status,start_date:pf.start,end_date:pf.end});const d=await request(`/api/v1/admin/payments?${q}`);payments.value=list(d,'payments').map((x:any)=>({id:String(x.payment_no??x.paymentNo??x.ID??x.id??''),orderId:String(x.order_no??x.orderNo??x.order_id??''),amount:Number(x.amount??x.pay_amount??0),method:'微信支付',transactionId:String(x.transactionId??x.transaction_id??x.TransactionID??''),status:ps(x),time:fmt(x.UpdatedAt??x.paid_at??x.created_at??x.createdAt)}));paymentTotal.value=Number(d?.total??d?.count)||payments.value.length}async function loadRefunds(){const q=new URLSearchParams({page:String(rf.page),pageSize:String(size),status:rf.status,start_date:rf.start,end_date:rf.end});const d=await request(`/api/v1/admin/refund-payments?${q}`);refunds.value=list(d,'refunds').map((x:any)=>({id:String(x.refund_no??x.refundNo??x.ID??x.id??''),txnId:String(x.payment_no??x.paymentNo??''),orderId:String(x.order_no??x.orderNo??''),amount:Number(x.refundAmount??x.refund_amount??x.amount??0),reason:x.refund_reason??x.reason??'-',status:rs(x),time:fmt(x.UpdatedAt??x.refunded_at??x.created_at??x.createdAt)}));refundTotal.value=Number(d?.total??d?.count)||refunds.value.length}async function load(){loading.value=true;error.value='';try{await Promise.all([loadPayments(),loadRefunds()])}catch(e){error.value=e instanceof Error?e.message:'支付数据加载失败'}finally{loading.value=false}}function valid(x:{start:string,end:string}){if(x.start&&x.end&&x.start>x.end){(window as any).showToast?.('开始日期不能晚于结束日期','error');return false}return true}async function search(type:'p'|'r'){const f=type==='p'?pf:rf;if(!valid(f))return;f.page=1;type==='p'?await loadPayments():await loadRefunds()}async function page(type:'p'|'r',n:number){const f=type==='p'?pf:rf;f.page=n;type==='p'?await loadPayments():await loadRefunds()}function text(s:string){return({pending:'待处理',success:'已支付',refunded:'已退款',failed:'失败'} as any)[s]??s}function fmt(v:any){if(!v)return'-';const d=new Date(String(v));if(Number.isNaN(d.getTime()))return String(v);const p=(n:number)=>String(n).padStart(2,'0');return`${d.getFullYear()}-${p(d.getMonth()+1)}-${p(d.getDate())} ${p(d.getHours())}:${p(d.getMinutes())}:${p(d.getSeconds())}`}onMounted(load)
+/** 支付记录数据结构 */
+interface Payment {id:string;orderId:string;amount:number;method:string;transactionId:string;status:string;time:string}
+/** 退款记录数据结构 */
+interface Refund{id:string;txnId:string;orderId:string;amount:number;reason:string;status:string;time:string}
+const props=defineProps<{token?:string}>();
+// ===== 响应式状态 =====
+const payments=ref<Payment[]>([]),     // 支付记录列表
+refunds=ref<Refund[]>([]),               // 退款记录列表
+paymentTotal=ref(0),                     // 支付记录总数
+refundTotal=ref(0),                      // 退款记录总数
+loading=ref(false),                     // 加载状态
+error=ref('');                           // 错误信息
+// 支付筛选条件：页码、状态、开始日期、结束日期
+const pf=reactive({page:1,status:'',start:'',end:''});
+// 退款筛选条件：页码、状态、开始日期、结束日期
+const rf=reactive({page:1,status:'',start:'',end:''});
+const size=10;                          // 每页条数
+// 支付记录总页数、退款记录总页数
+const pp=computed(()=>Math.max(1,Math.ceil(paymentTotal.value/size))),rp=computed(()=>Math.max(1,Math.ceil(refundTotal.value/size)))
+/** 构建带认证信息的请求头 */
+function headers(){const h=new Headers();if(props.token)h.set('Authorization',`Bearer ${props.token}`);return h}
+/** 统一请求封装，处理响应码和错误 */
+async function request(url:string){const r=await fetch(url,{headers:headers(),credentials:'include'});const p=await r.json().catch(()=>null);if(!r.ok||(p?.code!==undefined&&![0,200].includes(p.code)))throw new Error(p?.message||`请求失败 (${r.status})`);return p?.data??p}
+/** 从接口返回数据中提取列表，兼容多种字段名 */
+function list(d:any,k:string){return Array.isArray(d)?d:d?.list??d?.items??d?.records??d?.[k]??[]}
+/** 将支付状态归一化为标准状态（success/refunded/failed/pending） */
+function ps(x:any){const v=x.status;return [1,'1','paid','success'].includes(v)?'success':[2,'2','refunded'].includes(v)?'refunded':v==='failed'?'failed':'pending'}
+/** 将退款状态归一化为标准状态（refunded/failed/pending） */
+function rs(x:any){const v=x.status;return [1,'1','refunded','success'].includes(v)?'refunded':[2,'2','failed'].includes(v)?'failed':'pending'}
+/** 日期格式化为 YYYY-MM-DD HH:mm:ss */
+function fmt(v:any){if(!v)return'-';const d=new Date(String(v));if(Number.isNaN(d.getTime()))return String(v);const p=(n:number)=>String(n).padStart(2,'0');return`${d.getFullYear()}-${p(d.getMonth()+1)}-${p(d.getDate())} ${p(d.getHours())}:${p(d.getMinutes())}:${p(d.getSeconds())}`}
+/**
+ * 加载支付记录
+ * @api GET /api/v1/admin/payments - 分页获取支付记录，支持状态和日期筛选
+ */
+async function loadPayments(){const q=new URLSearchParams({page:String(pf.page),pageSize:String(size),status:pf.status,start_date:pf.start,end_date:pf.end});const d=await request(`/api/v1/admin/payments?${q}`);payments.value=list(d,'payments').map((x:any)=>({id:String(x.payment_no??x.paymentNo??x.ID??x.id??''),orderId:String(x.order_no??x.orderNo??x.order_id??''),amount:Number(x.amount??x.pay_amount??0),method:'微信支付',transactionId:String(x.transactionId??x.transaction_id??x.TransactionID??''),status:ps(x),time:fmt(x.UpdatedAt??x.paid_at??x.created_at??x.createdAt)}));paymentTotal.value=Number(d?.total??d?.count)||payments.value.length}
+/**
+ * 加载退款记录
+ * @api GET /api/v1/admin/refund-payments - 分页获取退款记录，支持状态和日期筛选
+ */
+async function loadRefunds(){const q=new URLSearchParams({page:String(rf.page),pageSize:String(size),status:rf.status,start_date:rf.start,end_date:rf.end});const d=await request(`/api/v1/admin/refund-payments?${q}`);refunds.value=list(d,'refunds').map((x:any)=>({id:String(x.refund_no??x.refundNo??x.ID??x.id??''),txnId:String(x.payment_no??x.paymentNo??''),orderId:String(x.order_no??x.orderNo??''),amount:Number(x.refundAmount??x.refund_amount??x.amount??0),reason:x.refund_reason??x.reason??'-',status:rs(x),time:fmt(x.UpdatedAt??x.refunded_at??x.created_at??x.createdAt)}));refundTotal.value=Number(d?.total??d?.count)||refunds.value.length}
+/** 加载页面数据（并行加载支付记录和退款记录） */
+async function load(){loading.value=true;error.value='';try{await Promise.all([loadPayments(),loadRefunds()])}catch(e){error.value=e instanceof Error?e.message:'支付数据加载失败'}finally{loading.value=false}}
+/** 校验日期范围（开始日期不晚于结束日期） */
+function valid(x:{start:string,end:string}){if(x.start&&x.end&&x.start>x.end){(window as any).showToast?.('开始日期不能晚于结束日期','error');return false}return true}
+/** 搜索操作（支付或退款），重置页码后重新加载 */
+async function search(type:'p'|'r'){const f=type==='p'?pf:rf;if(!valid(f))return;f.page=1;type==='p'?await loadPayments():await loadRefunds()}
+/** 翻页操作（支付或退款） */
+async function page(type:'p'|'r',n:number){const f=type==='p'?pf:rf;f.page=n;type==='p'?await loadPayments():await loadRefunds()}
+/** 状态值转中文显示文本 */
+function text(s:string){return({pending:'待处理',success:'已支付',refunded:'已退款',failed:'失败'} as any)[s]??s}
+// ===== 生命周期：组件挂载时加载支付和退款数据 =====
+onMounted(load)
 </script>
 <template>
+  <!-- 错误提示 -->
   <div v-if="error" class="page-error">{{ error }}</div>
+
+  <!-- 支付记录卡片 -->
   <div class="card">
     <div class="card-header">
       <span class="card-title"><i class="fas fa-list"></i> 支付记录</span>
@@ -62,6 +120,7 @@ async function loadPayments(){const q=new URLSearchParams({page:String(pf.page),
       </div>
     </div>
   </div>
+  <!-- 退款记录卡片 -->
   <div class="card mt-4">
     <div class="card-header">
       <span class="card-title"><i class="fas fa-undo"></i> 退款记录</span>

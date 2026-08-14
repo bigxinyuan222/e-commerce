@@ -1,44 +1,66 @@
+<!--
+  文件：StockPage.vue
+  所属模块：商品运营模块 - 库存管理
+  功能说明：库存管理页面，提供库存概览、低库存预警、SKU库存查询和出入库记录管理。
+  关键功能：
+    1. 库存概览（总库存、今日入库/出库、预警数量）
+    2. 低库存预警列表（分页展示低于阈值的SKU）
+    3. 按SKU查询库存（支持关键词搜索）
+    4. 出入库记录查询（支持按SKU和日期筛选）
+    5. 手动调整库存（支持采购入库、销售出库、损耗、盘盈、盘亏等类型）
+  API基础路径：/api/admin/v1
+-->
 <script setup lang="ts">
 import { computed, onMounted, reactive, ref } from 'vue'
 
+/** 库存SKU数据结构 */
 interface StockSku { skuId: number | null; skuCode: string; name: string; spec: string; stock: number; threshold: number; status: 'warning' | 'normal' }
+/** 出入库日志数据结构 */
 interface StockLog { id: string | number; skuCode: string; name: string; spec: string; type: number; quantity: number; beforeStock: number; afterStock: number; orderId: string; operator: string; reason: string; createdAt: string }
 
+/** 组件Props，接收认证token */
 const props = defineProps<{ token?: string }>()
+/** 库存概览统计数据 */
 const summary = reactive({ totalStock: 0, todayInbound: 0, todayOutbound: 0, warningCount: 0 })
-const warnings = ref<StockSku[]>([])
-const warningPage = ref(1)
-const warningPageSize = 5
-const inventory = ref<StockSku[]>([])
-const logs = ref<StockLog[]>([])
-const inventoryLoading = ref(false)
-const logLoading = ref(false)
-const dashboardError = ref('')
-const inventoryError = ref('')
-const logError = ref('')
-const inventoryKeywordInput = ref('')
-const inventoryKeyword = ref('')
-const inventoryPage = ref(1)
-const inventorySize = 10
-const warningFetchPageSize = 20
-const inventoryTotal = ref(0)
-const logKeywordInput = ref('')
-const logKeyword = ref('')
-const logDate = ref('')
-const logPage = ref(1)
-const logSize = 6
-const logTotal = ref(0)
-const selectedSku = ref<StockSku | null>(null)
-const adjustType = ref(2)
-const adjustQuantity = ref(10)
-const adjustReason = ref('')
-const submitting = ref(false)
+const warnings = ref<StockSku[]>([])           // 低库存预警SKU列表
+const warningPage = ref(1)                     // 预警列表当前页码
+const warningPageSize = 5                       // 预警列表每页条数
+const inventory = ref<StockSku[]>([])          // 库存查询列表
+const logs = ref<StockLog[]>([])               // 出入库记录列表
+const inventoryLoading = ref(false)            // 库存列表加载状态
+const logLoading = ref(false)                  // 日志列表加载状态
+const dashboardError = ref('')                 // 概览错误信息
+const inventoryError = ref('')                 // 库存列表错误信息
+const logError = ref('')                       // 日志列表错误信息
+const inventoryKeywordInput = ref('')          // 库存搜索输入框值
+const inventoryKeyword = ref('')               // 库存搜索实际查询值
+const inventoryPage = ref(1)                   // 库存列表当前页码
+const inventorySize = 10                        // 库存列表每页条数
+const warningFetchPageSize = 20                 // 拉取全部预警时的每页条数
+const inventoryTotal = ref(0)                  // 库存列表总数
+const logKeywordInput = ref('')                // 日志搜索输入框值
+const logKeyword = ref('')                     // 日志搜索实际查询值
+const logDate = ref('')                        // 日志日期筛选
+const logPage = ref(1)                         // 日志列表当前页码
+const logSize = 6                               // 日志列表每页条数
+const logTotal = ref(0)                        // 日志列表总数
+const selectedSku = ref<StockSku | null>(null) // 当前选中调整库存的SKU
+const adjustType = ref(2)                      // 库存调整类型（默认采购入库）
+const adjustQuantity = ref(10)                 // 调整数量
+const adjustReason = ref('')                   // 调整原因
+const submitting = ref(false)                  // 调整提交中状态
 
+/** 计算属性：库存列表总页数 */
 const inventoryPages = computed(() => Math.max(1, Math.ceil(inventoryTotal.value / inventorySize)))
+/** 计算属性：预警列表总页数 */
 const warningPages = computed(() => Math.max(1, Math.ceil(warnings.value.length / warningPageSize)))
+/** 计算属性：当前页显示的预警SKU列表 */
 const visibleWarnings = computed(() => warnings.value.slice((warningPage.value - 1) * warningPageSize, warningPage.value * warningPageSize))
+/** 计算属性：日志列表总页数 */
 const logPages = computed(() => Math.max(1, Math.ceil(logTotal.value / logSize)))
+/** 计算属性：按日期筛选后的日志列表 */
 const filteredLogs = computed(() => !logDate.value ? logs.value : logs.value.filter(log => log.createdAt.includes(logDate.value)))
+/** 库存调整类型选项配置 */
 const adjustmentTypes = [
   { value: 2, name: '采购入库', desc: '类型 2 · 增加', positive: true },
   { value: 1, name: '销售出库', desc: '类型 1 · 减少', positive: false },
@@ -47,6 +69,7 @@ const adjustmentTypes = [
   { value: 5, name: '盘亏', desc: '类型 5 · 减少', positive: false },
 ]
 
+/** 构建请求头，支持JSON内容和Bearer Token认证 */
 function headers(json = false) {
   const value = new Headers()
   if (json) value.set('Content-Type', 'application/json')
@@ -54,6 +77,12 @@ function headers(json = false) {
   return value
 }
 
+/**
+ * 发送HTTP请求并解析JSON响应
+ * @param url - 请求URL
+ * @param options - fetch配置选项
+ * @returns 解析后的响应数据
+ */
 async function requestJson(url: string, options: RequestInit = {}) {
   const response = await fetch(url, { credentials: 'include', ...options })
   const payload = await response.json().catch(() => null)
@@ -61,12 +90,14 @@ async function requestJson(url: string, options: RequestInit = {}) {
   return payload?.data ?? payload
 }
 
+/** 将规格对象格式化为可读字符串 */
 function formatSpec(value: unknown) {
   if (!value || typeof value !== 'object') return '-'
   const entries = Object.entries(value as Record<string, unknown>).filter(([, item]) => item !== null && item !== undefined && item !== '')
   return entries.length ? entries.map(([key, item]) => `${key}: ${item}`).join(' / ') : '-'
 }
 
+/** 将API返回的SKU数据标准化为前端统一格式 */
 function normalizeSku(row: any): StockSku {
   const stock = Number(row.stock ?? row.current_stock) || 0
   const threshold = Number(row.warning_value ?? row.warningValue ?? row.threshold) || 0
@@ -79,6 +110,7 @@ function normalizeSku(row: any): StockSku {
   }
 }
 
+/** 将API返回的出入库日志数据标准化为前端统一格式 */
 function normalizeLog(row: any): StockLog {
   return {
     id: row.ID ?? row.id, skuCode: String(row.sku_code ?? row.skuCode ?? row.sku_id ?? ''),
@@ -90,11 +122,17 @@ function normalizeLog(row: any): StockLog {
   }
 }
 
+/** 从API响应中提取列表数据，兼容多种返回格式 */
 function listFrom(data: any, extra = ''): any[] {
   if (Array.isArray(data)) return data
   return data?.list ?? data?.items ?? data?.records ?? (extra ? data?.[extra] : null) ?? []
 }
 
+/**
+ * 加载库存概览数据
+ * API: GET /api/v1/admin/home
+ * 获取总库存、今日入库/出库、预警SKU列表等概览信息
+ */
 async function loadDashboard() {
   dashboardError.value = ''
   try {
@@ -115,6 +153,12 @@ async function loadDashboard() {
   } catch (cause) { dashboardError.value = cause instanceof Error ? cause.message : '库存概览加载失败' }
 }
 
+/**
+ * 加载全部低库存预警SKU
+ * API: GET /api/v1/admin/search/inventory
+ * 通过分页循环获取全部库存数据后筛选出预警SKU
+ * @returns 去重后的预警SKU列表
+ */
 async function loadAllWarnings(): Promise<StockSku[]> {
   const firstParams = new URLSearchParams({ page: '1', size: String(warningFetchPageSize), keyword: '' })
   const first = await requestJson(`/api/v1/admin/search/inventory?${firstParams}`, { headers: headers() })
@@ -133,6 +177,11 @@ async function loadAllWarnings(): Promise<StockSku[]> {
   return [...unique.values()]
 }
 
+/**
+ * 加载库存列表
+ * API: GET /api/v1/admin/search/inventory
+ * 支持分页和关键词搜索
+ */
 async function loadInventory() {
   inventoryLoading.value = true; inventoryError.value = ''
   try {
@@ -145,6 +194,11 @@ async function loadInventory() {
   finally { inventoryLoading.value = false }
 }
 
+/**
+ * 加载出入库记录
+ * API: GET /api/v1/admin/log/inventory
+ * 支持分页和关键词搜索
+ */
 async function loadLogs() {
   logLoading.value = true; logError.value = ''
   try {
@@ -157,12 +211,22 @@ async function loadLogs() {
   finally { logLoading.value = false }
 }
 
+/** 搜索库存：同步关键词并重置页码 */
 async function searchInventory() { inventoryKeyword.value = inventoryKeywordInput.value.trim(); inventoryPage.value = 1; await loadInventory() }
+/** 搜索日志：同步关键词并重置页码 */
 async function searchLogs() { logKeyword.value = logKeywordInput.value.trim(); logPage.value = 1; await loadLogs() }
+/** 切换库存列表页码 */
 async function changeInventoryPage(next: number) { if (next < 1 || next > inventoryPages.value || next === inventoryPage.value) return; inventoryPage.value = next; await loadInventory() }
+/** 切换预警列表页码（纯前端分页） */
 function changeWarningPage(next: number) { if (next < 1 || next > warningPages.value || next === warningPage.value) return; warningPage.value = next }
+/** 切换日志列表页码 */
 async function changeLogPage(next: number) { if (next < 1 || next > logPages.value || next === logPage.value) return; logPage.value = next; await loadLogs() }
 
+/**
+ * 打开库存调整弹窗
+ * 确保选中的SKU有有效的skuId，如果没有则通过API重新查询
+ * @param sku - 要调整库存的SKU对象
+ */
 async function openAdjust(sku: StockSku) {
   let resolved = inventory.value.find(item => item.skuCode.toLowerCase() === sku.skuCode.toLowerCase() && item.skuId) ?? null
   if (!resolved) {
@@ -176,6 +240,11 @@ async function openAdjust(sku: StockSku) {
   selectedSku.value = resolved; adjustType.value = 2; adjustQuantity.value = 10; adjustReason.value = ''
 }
 
+/**
+ * 提交库存调整
+ * API: POST /api/v1/admin/update/inventory
+ * 根据调整类型自动计算增减方向（出库类为负数，入库类为正数）
+ */
 async function submitAdjust() {
   if (!selectedSku.value?.skuId || submitting.value) return
   const quantity = Math.abs(Number(adjustQuantity.value) || 0)
@@ -191,16 +260,21 @@ async function submitAdjust() {
   finally { submitting.value = false }
 }
 
+/** 显示Toast通知消息 */
 function notify(message: string, type: 'success' | 'error' = 'success') {
   ;(window as unknown as { showToast?: (text: string, kind: string) => void }).showToast?.(message, type)
 }
+/** 根据出入库类型返回中文描述 */
 function typeText(type: number) { return ({ 1: '销售出库', 2: '采购入库', 3: '损耗', 4: '盘盈', 5: '盘亏' } as Record<number, string>)[type] || '调整' }
+/** 根据出入库类型返回对应的颜色类名 */
 function typeClass(type: number) { return ({ 1: 'yellow', 2: 'green', 3: 'red', 4: 'green', 5: 'red' } as Record<number, string>)[type] || 'blue' }
 
+/** 组件挂载：并行加载概览、库存列表和出入库记录 */
 onMounted(() => Promise.all([loadDashboard(), loadInventory(), loadLogs()]))
 </script>
 
 <template>
+  <!-- 库存概览统计卡片 -->
   <div class="flex-between mb-4"><div class="stock-page-header"><span class="stock-warehouse-label">总仓</span></div></div>
   <div class="stats-grid stats-row-4">
     <div class="stat-card">
@@ -222,6 +296,7 @@ onMounted(() => Promise.all([loadDashboard(), loadInventory(), loadLogs()]))
   </div>
   <div v-if="dashboardError" class="stock-dashboard-error"><i class="fas fa-exclamation-circle"></i> {{ dashboardError }}</div>
 
+  <!-- 低库存预警卡片 -->
   <div class="card warning-card">
     <div class="card-header">
       <span class="card-title"><i class="fas fa-exclamation-triangle"></i> 低库存预警</span>
@@ -253,6 +328,7 @@ onMounted(() => Promise.all([loadDashboard(), loadInventory(), loadLogs()]))
     </div>
   </div>
 
+  <!-- 库存查询列表卡片 -->
   <div class="card">
     <div class="card-header">
       <span class="card-title"><i class="fas fa-list"></i> 库存查询 · 按 SKU</span>
@@ -302,6 +378,7 @@ onMounted(() => Promise.all([loadDashboard(), loadInventory(), loadLogs()]))
     </div>
   </div>
 
+  <!-- 出入库记录卡片 -->
   <div class="card">
     <div class="card-header">
       <span class="card-title"><i class="fas fa-history"></i> 出入库记录</span>
@@ -359,6 +436,7 @@ onMounted(() => Promise.all([loadDashboard(), loadInventory(), loadLogs()]))
     </div>
   </div>
 
+  <!-- 手动调整库存弹窗 -->
   <template v-if="selectedSku">
     <div class="modal-overlay" @click="selectedSku=null"></div>
     <div class="modal-content modal-width-sm">
