@@ -1,6 +1,14 @@
+<!--
+  文件名称：StoreManagePage.vue
+  所属模块：门店管理模块（store-management）
+  功能说明：门店管理页面，展示当前登录账号绑定门店的详细信息、运营统计数据（今日/累计订单与销售额）、
+           订单状态分布饼图（可点击查看对应状态订单列表）、以及编辑门店信息功能。
+  接口说明：API 基础路径 /api/v1/admin/stores/my-store（含 orders 子路径）
+-->
 <script setup lang="ts">
 import { computed, onMounted, reactive, ref } from 'vue'
 
+// 门店基本信息结构
 interface StoreInfo {
   id: string | number
   name: string
@@ -10,27 +18,29 @@ interface StoreInfo {
   status: number
 }
 
+// 门店运营统计结构
 interface StoreStats {
-  todayOrders: number
-  todaySales: number
-  pendingShip: number
-  pendingPickup: number
-  pendingRefund: number
-  totalOrders: number
-  totalSales: number
-  distribution: Record<string, number>
+  todayOrders: number       // 今日订单数
+  todaySales: number        // 今日销售额
+  pendingShip: number      // 待发货数
+  pendingPickup: number     // 待自提数
+  pendingRefund: number     // 待退款数
+  totalOrders: number       // 总订单数
+  totalSales: number        // 总销售额
+  distribution: Record<string, number> // 订单状态分布
 }
 
 const props = defineProps<{ token?: string }>()
 
-const store = ref<StoreInfo | null>(null)
-const stats = ref<StoreStats | null>(null)
-const loading = ref(true)
-const error = ref('')
-const editing = ref(false)
-const saving = ref(false)
-const form = reactive({ name: '', address: '', phone: '', businessHours: '' })
+const store = ref<StoreInfo | null>(null)   // 门店基本信息
+const stats = ref<StoreStats | null>(null)   // 门店运营统计
+const loading = ref(true)                     // 页面加载状态
+const error = ref('')                        // 加载错误信息
+const editing = ref(false)                    // 编辑弹窗是否打开
+const saving = ref(false)                     // 保存中状态
+const form = reactive({ name: '', address: '', phone: '', businessHours: '' }) // 门店编辑表单
 
+/** 构建请求头，携带 JWT Token，可选设置 JSON Content-Type */
 function headers(json = false) {
   const h = new Headers()
   if (props.token) h.set('Authorization', `Bearer ${props.token}`)
@@ -38,6 +48,7 @@ function headers(json = false) {
   return h
 }
 
+/** 统一请求封装，自动解析 code/data 结构并抛出业务错误 */
 async function request(url: string, options: RequestInit = {}) {
   const r = await fetch(url, { credentials: 'include', ...options })
   const p = await r.json().catch(() => null)
@@ -45,6 +56,7 @@ async function request(url: string, options: RequestInit = {}) {
   return p?.data ?? p
 }
 
+/** 将后端门店行数据归一化为前端 StoreInfo 结构（兼容蛇形/驼峰命名） */
 function normalizeStore(x: any): StoreInfo {
   return {
     id: x.ID ?? x.id,
@@ -56,6 +68,7 @@ function normalizeStore(x: any): StoreInfo {
   }
 }
 
+/** 将后端统计数据归一化为前端 StoreStats 结构（兼容蛇形/驼峰命名，处理分布数据） */
 function normalizeStats(data: any): StoreStats {
   const d = data ?? {}
   const rawDist = d.order_status_distribution ?? d.orderStatusDistribution ?? {}
@@ -76,6 +89,7 @@ function normalizeStats(data: any): StoreStats {
   }
 }
 
+// 状态键 → 中文标签映射（用于饼图图例与订单详情弹窗标题）
 const STATUS_LABEL_MAP: Record<string, string> = {
   pending_payment: '待支付',
   grouping: '待配货',
@@ -113,12 +127,15 @@ const CODE_STATUS_MAP: Record<number, string> = {
 
 const STATUS_ORDER = ['pending_payment', 'grouping', 'pending_delivery', 'pending_ship', 'pending_pickup', 'pending_refund', 'completed', 'cancelled', 'refunding', 'rejected', 'pending', 'processing', 'shipped']
 
+/** 状态键 → 中文标签 */
 function statusLabel(key: string) {
   return STATUS_LABEL_MAP[key] ?? key
 }
 
+// 饼图各扇区颜色调色板
 const PIE_COLORS = ['#4f6ef7', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#06b6d4', '#ec4899', '#84cc16', '#f97316', '#6366f1', '#14b8a6']
 
+// 饼图总订单数：优先使用接口权威总数，避免分布求和与总数不一致
 const pieTotal = computed(() => {
   if (!stats.value) return 0
   // 优先用接口的权威总数 total_orders，避免 distribution 求和与总数不一致
@@ -126,6 +143,7 @@ const pieTotal = computed(() => {
   return Object.values(stats.value.distribution).reduce((a, b) => a + b, 0)
 })
 
+// 饼图扇区数据：计算每个状态的弧度路径，单状态绘制整圆
 const pieSlices = computed(() => {
   if (!stats.value || pieTotal.value === 0) return []
   const entries = statusEntries.value.filter(([, v]) => v > 0)
@@ -188,11 +206,13 @@ const statusEntries = computed<[string, number][]>(() => {
 })
 
 // 按 statusEntries 的顺序固定分配颜色，保证扇区与图例颜色一致
+/** 按状态键查找对应的饼图颜色 */
 function colorOf(key: string): string {
   const idx = statusEntries.value.findIndex(([k]) => k === key)
   return idx >= 0 ? PIE_COLORS[idx % PIE_COLORS.length] : '#94a3b8'
 }
 
+// 饼图图例数据（含颜色、数值、百分比）
 const pieLegendEntries = computed(() => {
   if (!stats.value) return []
   return statusEntries.value.map(([key, value]) => ({
@@ -204,11 +224,13 @@ const pieLegendEntries = computed(() => {
   }))
 })
 
+/** 轻量级提示（通过全局 showToast 方法） */
 function toast(text: string, type = 'success') {
   ;(window as unknown as { showToast?: (text: string, kind: string) => void }).showToast?.(text, type)
 }
 
 // ---- 订单详情弹窗 ----
+// 订单行结构（用于弹窗中展示）
 interface OrderRow {
   id: string | number
   orderNo: string
@@ -220,7 +242,8 @@ interface OrderRow {
   items: string
 }
 
-const ORDERS_PAGE_SIZE = 10
+const ORDERS_PAGE_SIZE = 10                     // 订单弹窗每页条数
+// 订单详情弹窗响应式状态
 const ordersModal = reactive({
   open: false,
   statusKey: '',
@@ -231,14 +254,17 @@ const ordersModal = reactive({
   page: 1,
 })
 
+// 订单弹窗总页数
 const ordersTotalPages = computed(() => Math.max(1, Math.ceil(ordersModal.total / ORDERS_PAGE_SIZE)))
 
+/** 格式化日期时间，非法值返回 "-" */
 function formatDate(value: unknown) {
   if (!value) return '-'
   const d = new Date(String(value))
   return Number.isNaN(d.getTime()) ? String(value) : d.toLocaleString('zh-CN', { hour12: false })
 }
 
+/** 将后端订单行数据归一化为弹窗展示结构 */
 function normalizeOrder(row: any): OrderRow {
   const code = Number(row.status)
   const items = (row.items ?? row.order_items ?? row.orderItems ?? []) as any[]
@@ -254,10 +280,12 @@ function normalizeOrder(row: any): OrderRow {
   }
 }
 
+/** 金额格式化为人民币 */
 function money(value: number) {
   return new Intl.NumberFormat('zh-CN', { style: 'currency', currency: 'CNY' }).format(value)
 }
 
+/** 加载指定状态的门店订单列表（API: GET /api/v1/admin/stores/my-store/orders?status=:code） */
 async function loadOrders() {
   const code = STATUS_CODE_MAP[ordersModal.statusKey]
   if (code === undefined) return
@@ -278,6 +306,7 @@ async function loadOrders() {
   }
 }
 
+/** 打开订单详情弹窗：设置状态键、重置页码、加载数据 */
 function openOrdersModal(statusKey: string) {
   if (STATUS_CODE_MAP[statusKey] === undefined) return
   ordersModal.statusKey = statusKey
@@ -286,16 +315,19 @@ function openOrdersModal(statusKey: string) {
   void loadOrders()
 }
 
+/** 关闭订单详情弹窗 */
 function closeOrdersModal() {
   ordersModal.open = false
 }
 
+/** 订单弹窗翻页：校验边界后加载列表 */
 async function changeOrdersPage(next: number) {
   if (next < 1 || next > ordersTotalPages.value || next === ordersModal.page) return
   ordersModal.page = next
   await loadOrders()
 }
 
+/** 加载门店信息和运营统计（API: GET /api/v1/admin/stores/my-store） */
 async function load() {
   loading.value = true
   error.value = ''
@@ -314,6 +346,7 @@ async function load() {
   }
 }
 
+/** 打开编辑弹窗：将门店当前信息填充到表单 */
 function openEdit() {
   if (!store.value) return
   Object.assign(form, {
@@ -325,6 +358,7 @@ function openEdit() {
   editing.value = true
 }
 
+/** 保存门店信息（API: PUT /api/v1/admin/stores/:id），保存后重新加载 */
 async function save() {
   if (!store.value || saving.value) return
   if (!form.name.trim() || !form.address.trim()) return toast('请填写门店名称和地址', 'error')
@@ -345,21 +379,26 @@ async function save() {
   }
 }
 
+// 组件挂载时加载门店信息
 onMounted(load)
 </script>
 
 <template>
+  <!-- 加载中状态 -->
   <div v-if="loading" class="card">
     <div class="card-body">
       <div class="store-manage-state"><i class="fas fa-spinner fa-spin"></i><span>正在加载门店信息...</span></div>
     </div>
   </div>
+  <!-- 加载错误状态 -->
   <div v-else-if="error" class="card">
     <div class="card-body">
       <div class="store-manage-state"><i class="fas fa-exclamation-circle"></i><span>{{ error }}</span></div>
     </div>
   </div>
+  <!-- 门店信息正常展示 -->
   <template v-else-if="store">
+    <!-- 门店头部：名称、ID、状态、刷新按钮 -->
     <div class="store-manage-header">
       <div class="store-manage-title">
         <i class="fas fa-store"></i>
@@ -374,6 +413,7 @@ onMounted(load)
       </div>
     </div>
 
+    <!-- 今日运营统计卡片 -->
     <template v-if="stats">
       <div class="system-stats-row">
         <div class="stat-card stat-card-primary">
@@ -398,6 +438,7 @@ onMounted(load)
         </div>
       </div>
 
+      <!-- 累计运营统计卡片 -->
       <div class="system-stats-row">
         <div class="stat-card">
           <div class="label"><i class="fas fa-list-alt"></i> 总订单数</div>
@@ -409,15 +450,18 @@ onMounted(load)
         </div>
       </div>
 
+      <!-- 订单状态分布饼图卡片 -->
       <div class="card">
         <div class="card-header">
           <span class="card-title"><i class="fas fa-chart-pie"></i> 订单状态分布</span>
           <span class="pie-hint">点击状态查看订单详情</span>
         </div>
         <div class="card-body">
+          <!-- 饼图无数据提示 -->
           <div v-if="pieTotal === 0" class="store-manage-state">
             <span>暂无订单数据</span>
           </div>
+          <!-- 饼图与图例 -->
           <div v-else class="pie-chart-container">
             <div class="pie-chart-wrapper">
               <svg viewBox="0 0 200 200" class="pie-svg">
@@ -457,6 +501,7 @@ onMounted(load)
       </div>
     </template>
 
+    <!-- 门店详细信息卡片 -->
     <div class="card">
       <div class="card-header">
         <span class="card-title"><i class="fas fa-info-circle"></i> 门店详细信息</span>
@@ -472,6 +517,7 @@ onMounted(load)
       </div>
     </div>
 
+    <!-- 编辑门店信息弹窗 -->
     <template v-if="editing">
       <div class="modal-overlay" @click="editing = false"></div>
       <div class="modal-content">
@@ -550,69 +596,67 @@ onMounted(load)
 </template>
 
 <style scoped>
-.store-manage-header{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:16px;padding:18px 20px;border:1px solid #e2e8f0;border-radius:8px;background:#fff}
-.store-manage-title{display:flex;align-items:center;gap:14px;min-width:0}
-.store-manage-title>i{font-size:26px;color:#4f6ef7}
-.store-manage-title h2{margin:0;font-size:18px;color:#0f172a;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.store-manage-title span{font-size:12px;color:#94a3b8}
-.store-manage-actions{display:flex;align-items:center;gap:10px;flex-shrink:0}
-.store-manage-state{display:flex;flex-direction:column;align-items:center;gap:8px;padding:34px;text-align:center;color:#94a3b8}
-.store-manage-state i{font-size:28px}
-.store-manage-text-value{font-size:16px}
-.store-info-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
-.store-info-item{display:flex;flex-direction:column;gap:6px}
-.info-label{font-size:12px;color:#94a3b8}
+/* 门店头部区域 */
+.store-manage-header{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:16px;padding:18px 20px;border:1px solid #e2e8f0;border-radius:8px;background:#fff} /* 门店标题（图标+名称+ID） */
+.store-manage-title{display:flex;align-items:center;gap:14px;min-width:0} /* 标题图标 */
+.store-manage-title>i{font-size:26px;color:#4f6ef7} /* 门店名称 */
+.store-manage-title h2{margin:0;font-size:18px;color:#0f172a;overflow:hidden;text-overflow:ellipsis;white-space:nowrap} /* 门店ID */
+.store-manage-title span{font-size:12px;color:#94a3b8} /* 右侧操作区 */
+.store-manage-actions{display:flex;align-items:center;gap:10px;flex-shrink:0} /* 状态占位/加载中提示 */
+.store-manage-state{display:flex;flex-direction:column;align-items:center;gap:8px;padding:34px;text-align:center;color:#94a3b8} /* 状态图标 */
+.store-manage-state i{font-size:28px} /* 文本数值字号 */
+.store-manage-text-value{font-size:16px} /* 门店信息网格：2列布局 */
+.store-info-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px} /* 信息项 */
+.store-info-item{display:flex;flex-direction:column;gap:6px} /* 信息标签 */
+.info-label{font-size:12px;color:#94a3b8} /* 信息值 */
 .info-value{font-size:15px;color:#0f172a;font-weight:500}
 
+/* 统计卡片渐变主题色 */
 .stat-card-primary{border-left:4px solid #4f6ef7;background:linear-gradient(135deg,#eff6ff 0%,#dbeafe 100%)}
 .stat-card-success{border-left:4px solid #10b981;background:linear-gradient(135deg,#ecfdf5 0%,#d1fae5 100%)}
 .stat-card-warning{border-left:4px solid #f59e0b;background:linear-gradient(135deg,#fffbeb 0%,#fef3c7 100%)}
 .stat-card-info{border-left:4px solid #06b6d4;background:linear-gradient(135deg,#ecfeff 0%,#cffafe 100%)}
 .stat-card-danger{border-left:4px solid #ef4444;background:linear-gradient(135deg,#fef2f2 0%,#fee2e2 100%)}
 
-.pie-chart-container{display:flex;gap:32px;align-items:center;flex-wrap:wrap}
-.pie-chart-wrapper{flex:0 0 auto;width:200px}
-.pie-svg{width:100%;height:auto}
-.pie-slice{transition:opacity 0.2s ease}
-.pie-slice:hover{opacity:0.8}
-.pie-center-value{font-size:22px;font-weight:700;fill:#0f172a}
-.pie-center-label{font-size:11px;fill:#64748b}
-.pie-legend{flex:1;min-width:200px;display:flex;flex-direction:column;gap:8px}
-.pie-legend-item{display:flex;align-items:center;gap:8px;font-size:13px}
-.pie-legend-color{width:12px;height:12px;border-radius:3px;flex-shrink:0}
-.pie-legend-label{color:#475569;flex:1}
-.pie-legend-value{color:#0f172a;font-weight:600}
-.pie-legend-percent{color:#94a3b8;font-size:12px;margin-left:4px}
-.pie-legend-item.is-zero{opacity:0.55}
-.pie-legend-item.is-zero .pie-legend-color{opacity:0.5}
-.pie-hint{font-size:12px;color:#94a3b8}
-.pie-clickable{cursor:pointer}
-.pie-slice.pie-clickable:hover{opacity:0.8}
-.pie-legend-item.pie-clickable:hover{background:#f8fafc;border-radius:4px}
-[data-theme="dark"] .pie-legend-item.pie-clickable:hover{background:#1e293b}
+/* 饼图区域 */
+.pie-chart-container{display:flex;gap:32px;align-items:center;flex-wrap:wrap} /* 饼图SVG容器 */
+.pie-chart-wrapper{flex:0 0 auto;width:200px} /* 饼图SVG */
+.pie-svg{width:100%;height:auto} /* 扇区悬停过渡 */
+.pie-slice{transition:opacity 0.2s ease}.pie-slice:hover{opacity:0.8} /* 中心数值 */
+.pie-center-value{font-size:22px;font-weight:700;fill:#0f172a} /* 中心标签 */
+.pie-center-label{font-size:11px;fill:#64748b} /* 图例区 */
+.pie-legend{flex:1;min-width:200px;display:flex;flex-direction:column;gap:8px} /* 图例项 */
+.pie-legend-item{display:flex;align-items:center;gap:8px;font-size:13px} /* 图例色块 */
+.pie-legend-color{width:12px;height:12px;border-radius:3px;flex-shrink:0} /* 图例标签 */
+.pie-legend-label{color:#475569;flex:1} /* 图例数值 */
+.pie-legend-value{color:#0f172a;font-weight:600} /* 图例百分比 */
+.pie-legend-percent{color:#94a3b8;font-size:12px;margin-left:4px} /* 零值图例半透明 */
+.pie-legend-item.is-zero{opacity:0.55}.pie-legend-item.is-zero .pie-legend-color{opacity:0.5} /* 提示文字 */
+.pie-hint{font-size:12px;color:#94a3b8} /* 可点击样式 */
+.pie-clickable{cursor:pointer}.pie-slice.pie-clickable:hover{opacity:0.8}.pie-legend-item.pie-clickable:hover{background:#f8fafc;border-radius:4px}[data-theme="dark"] .pie-legend-item.pie-clickable:hover{background:#1e293b}
 
-.modal-content-large{max-width:760px;width:92vw}
-.orders-table-wrap{overflow:auto;max-height:55vh}
-.orders-table{width:100%;border-collapse:collapse;font-size:13px}
-.orders-table th{position:sticky;top:0;background:#f1f5f9;color:#475569;font-weight:600;text-align:left;padding:10px 12px;white-space:nowrap}
-.orders-table td{padding:10px 12px;border-bottom:1px solid #f1f5f9;color:#0f172a;vertical-align:top}
-.orders-table tbody tr:hover{background:#f8fafc}
-.orders-col-no{font-family:monospace;white-space:nowrap}
-.orders-col-items{max-width:220px;color:#475569}
-.orders-col-user small{display:block;color:#94a3b8;margin-top:2px}
-.orders-col-amount{font-weight:700;color:#dc2626;white-space:nowrap}
-.orders-col-time{white-space:nowrap;color:#64748b}
-.orders-total-text{font-size:13px;color:#64748b;margin-right:auto}
-.orders-page-text{font-size:13px;color:#64748b}
-[data-theme="dark"] .orders-table th{background:#1e293b;color:#cbd5e1}
-[data-theme="dark"] .orders-table td{border-color:#334155;color:#f1f5f9}
-[data-theme="dark"] .orders-table tbody tr:hover{background:#1e293b}
-[data-theme="dark"] .orders-col-items{color:#cbd5e1}
+/* 订单详情弹窗 */
+.modal-content-large{max-width:760px;width:92vw} /* 弹窗表格滚动 */
+.orders-table-wrap{overflow:auto;max-height:55vh} /* 订单表格 */
+.orders-table{width:100%;border-collapse:collapse;font-size:13px} /* 表头粘性定位 */
+.orders-table th{position:sticky;top:0;background:#f1f5f9;color:#475569;font-weight:600;text-align:left;padding:10px 12px;white-space:nowrap} /* 表格单元格 */
+.orders-table td{padding:10px 12px;border-bottom:1px solid #f1f5f9;color:#0f172a;vertical-align:top} /* 行悬停高亮 */
+.orders-table tbody tr:hover{background:#f8fafc} /* 订单号列 */
+.orders-col-no{font-family:monospace;white-space:nowrap} /* 商品列 */
+.orders-col-items{max-width:220px;color:#475569} /* 用户列 */
+.orders-col-user small{display:block;color:#94a3b8;margin-top:2px} /* 金额列 */
+.orders-col-amount{font-weight:700;color:#dc2626;white-space:nowrap} /* 时间列 */
+.orders-col-time{white-space:nowrap;color:#64748b} /* 总数文本 */
+.orders-total-text{font-size:13px;color:#64748b;margin-right:auto} /* 页码文本 */
+.orders-page-text{font-size:13px;color:#64748b} /* 暗色主题：表格表头 */
+[data-theme="dark"] .orders-table th{background:#1e293b;color:#cbd5e1} /* 暗色主题：表格单元格 */
+[data-theme="dark"] .orders-table td{border-color:#334155;color:#f1f5f9} /* 暗色主题：行悬停 */
+[data-theme="dark"] .orders-table tbody tr:hover{background:#1e293b} /* 暗色主题：商品列 */
+[data-theme="dark"] .orders-col-items{color:#cbd5e1} /* 暗色主题：时间列 */
 [data-theme="dark"] .orders-col-time{color:#94a3b8}
 
-[data-theme="dark"] .store-manage-header{background:#0f172a;border-color:#334155}
-[data-theme="dark"] .store-manage-title h2{color:#f8fafc}
-[data-theme="dark"] .info-value{color:#f8fafc}
+/* 暗色主题适配 */
+[data-theme="dark"] .store-manage-header{background:#0f172a;border-color:#334155}[data-theme="dark"] .store-manage-title h2{color:#f8fafc}[data-theme="dark"] .info-value{color:#f8fafc}
 [data-theme="dark"] .stat-card-primary{background:linear-gradient(135deg,#1e3a8a 0%,#1e40af 100%)}
 [data-theme="dark"] .stat-card-success{background:linear-gradient(135deg,#065f46 0%,#047857 100%)}
 [data-theme="dark"] .stat-card-warning{background:linear-gradient(135deg,#78350f 0%,#92400e 100%)}
@@ -624,5 +668,6 @@ onMounted(load)
 [data-theme="dark"] .pie-legend-value{color:#f1f5f9}
 [data-theme="dark"] .pie-slice:hover{opacity:0.9}
 
+/* 响应式：小屏幕布局调整 */
 @media(max-width:760px){.store-manage-header{flex-direction:column;align-items:flex-start}.store-info-grid{grid-template-columns:1fr}.pie-chart-container{flex-direction:column;align-items:center}.pie-chart-wrapper{width:180px}}
 </style>

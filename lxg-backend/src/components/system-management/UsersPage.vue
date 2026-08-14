@@ -1,7 +1,16 @@
+<!--
+  @file UsersPage.vue
+  @description 用户管理页面组件
+  @module 系统管理模块
+  @key-features 用户列表展示、搜索筛选、状态统计、用户详情查看、启用/冻结操作
+-->
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue'
 
+/** 用户ID类型，可能为数字或字符串 */
 type Id = number | string
+
+/** 用户数据行结构定义 */
 interface UserRow {
   id: Id
   name: string
@@ -16,43 +25,69 @@ interface UserRow {
   couponCount: number
 }
 
+/** 用户统计数据结构（本日/本月新增） */
 interface UserStats {
   newDay: number
   newMonth: number
 }
 
 const props = defineProps<{ token?: string }>()
-const users = ref<UserRow[]>([])
-const loading = ref(false)
-const error = ref('')
-const keywordInput = ref('')
-const keyword = ref('')
-const status = ref<'all' | UserRow['status']>('all')
-const page = ref(1)
-const pageSize = 10
-const total = ref(0)
-const detail = ref<UserRow | null>(null)
-const pendingToggle = ref<UserRow | null>(null)
-const toggling = ref(false)
-const stats = ref<UserStats>({ newDay: 0, newMonth: 0 })
 
+// ===== 响应式状态 =====
+const users = ref<UserRow[]>([])                    // 用户列表数据
+const loading = ref(false)                          // 加载状态
+const error = ref('')                               // 错误信息
+const keywordInput = ref('')                        // 搜索输入框绑定值
+const keyword = ref('')                             // 实际生效的搜索关键词
+const status = ref<'all' | UserRow['status']>('all')// 状态筛选值
+const page = ref(1)                                 // 当前页码
+const pageSize = 10                                  // 每页条数
+const total = ref(0)                                // 用户总数
+const detail = ref<UserRow | null>(null)             // 当前查看详情的用户
+const pendingToggle = ref<UserRow | null>(null)      // 待确认启用/冻结的用户
+const toggling = ref(false)                         // 启用/冻结操作进行中
+const stats = ref<UserStats>({ newDay: 0, newMonth: 0 }) // 用户新增统计
+
+// ===== 计算属性 =====
+/** 总页数，至少为1 */
 const totalPages = computed(() => Math.max(1, Math.ceil(total.value / pageSize)))
+
+/** 根据状态和关键词过滤后的用户列表 */
 const filteredUsers = computed(() => users.value.filter((user) => {
   const matchesStatus = status.value === 'all' || user.status === status.value
   const search = keyword.value.toLowerCase()
   return matchesStatus && (!search || user.name.toLowerCase().includes(search) || user.phone.toLowerCase().includes(search))
 }))
+
+/** 正常（启用）状态用户数量 */
 const activeCount = computed(() => users.value.filter(user => user.status === 'active').length)
+
+/** 冻结状态用户数量 */
 const frozenCount = computed(() => users.value.filter(user => user.status === 'frozen').length)
+
+/** 所有用户累计订单总数 */
 const totalOrders = computed(() => users.value.reduce((sum, user) => sum + user.totalOrders, 0))
+
+/** 所有用户累计消费总金额 */
 const totalAmount = computed(() => users.value.reduce((sum, user) => sum + user.totalAmount, 0))
 
+/**
+ * 构建带认证信息的请求头
+ * @returns Headers对象，包含Authorization Bearer令牌（如果存在）
+ */
 function authHeaders() {
   const headers = new Headers()
   if (props.token) headers.set('Authorization', `Bearer ${props.token}`)
   return headers
 }
 
+/**
+ * 统一请求封装，自动处理响应码和错误
+ * @param url - 请求地址
+ * @param options - fetch请求选项
+ * @returns 接口返回的data字段或完整payload
+ * @throws 请求失败时抛出Error
+ */
 async function requestJson(url: string, options: RequestInit = {}) {
   const response = await fetch(url, { credentials: 'include', ...options })
   const payload = await response.json().catch(() => null)
@@ -62,6 +97,11 @@ async function requestJson(url: string, options: RequestInit = {}) {
   return payload?.data ?? payload
 }
 
+/**
+ * 将后端返回的各种状态字段统一归一化为三种标准状态
+ * @param row - 后端原始用户数据
+ * @returns 标准化的状态值：active（正常）/ frozen（冻结）/ deleted（注销）
+ */
 function normalizeStatus(row: any): UserRow['status'] {
   const raw = row.status ?? row.enabled ?? row.is_enabled ?? row.is_enable ?? row.user_status ?? row.account_status ?? row.state
   const text = String(raw ?? '').toLowerCase()
@@ -71,6 +111,11 @@ function normalizeStatus(row: any): UserRow['status'] {
   return raw === undefined || raw === null || raw === '' ? 'active' : 'frozen'
 }
 
+/**
+ * 格式化日期时间
+ * @param value - 原始日期值
+ * @returns 格式化后的中文日期字符串（如：2024/01/01 12:00），无效时返回原值或'-'
+ */
 function formatDate(value: unknown): string {
   if (!value) return '-'
   const date = new Date(String(value))
@@ -78,6 +123,11 @@ function formatDate(value: unknown): string {
   return date.toLocaleString('zh-CN', { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', hour12: false })
 }
 
+/**
+ * 将后端返回的原始用户数据映射为标准UserRow结构
+ * @param row - 后端原始用户数据
+ * @returns 标准化的用户数据对象
+ */
 function normalizeUser(row: any): UserRow {
   const name = String(row.userName ?? row.username ?? row.name ?? row.nickname ?? '')
   return {
@@ -95,11 +145,21 @@ function normalizeUser(row: any): UserRow {
   }
 }
 
+/**
+ * 显示Toast通知消息
+ * @param message - 提示文本
+ * @param type - 提示类型：success（成功）/ error（错误）
+ */
 function notify(message: string, type: 'success' | 'error' = 'success') {
   const toast = (window as unknown as { showToast?: (text: string, kind: string) => void }).showToast
   toast?.(message, type)
 }
 
+/**
+ * 将后端返回的新增用户统计数据映射为标准UserStats结构
+ * @param data - 后端原始统计数据
+ * @returns 标准化的统计数据对象（本日新增/本月新增）
+ */
 function normalizeStats(data: any): UserStats {
   const row = data && typeof data === 'object' ? data : {}
   const num = (value: unknown) => Number(value) || 0
@@ -109,6 +169,10 @@ function normalizeStats(data: any): UserStats {
   }
 }
 
+/**
+ * 加载用户新增统计数据
+ * @api GET /api/v1/new/user/quantity - 获取本日/本月新增用户数量
+ */
 async function loadUserStats() {
   try {
     const data = await requestJson('/api/v1/new/user/quantity', { headers: authHeaders() })
@@ -118,6 +182,11 @@ async function loadUserStats() {
   }
 }
 
+/**
+ * 加载用户列表
+ * @api GET /api/v1/get/users - 分页获取用户列表
+ * @description 根据当前页码和每页条数请求用户数据，处理列表映射和总数
+ */
 async function loadUsers() {
   loading.value = true
   error.value = ''
@@ -137,16 +206,29 @@ async function loadUsers() {
   }
 }
 
+/**
+ * 执行用户搜索，将输入框值赋给生效关键词
+ */
 function searchUsers() {
   keyword.value = keywordInput.value.trim()
 }
 
+/**
+ * 翻页操作
+ * @param next - 目标页码
+ * @description 越界或重复页码时忽略，否则更新页码并重新加载列表
+ */
 async function changePage(next: number) {
   if (next < 1 || next > totalPages.value || next === page.value || loading.value) return
   page.value = next
   await loadUsers()
 }
 
+/**
+ * 启用/冻结用户
+ * @api POST /api/v1/enable/user - 切换用户启用状态
+ * @description 根据用户当前状态执行启用或冻结操作，成功后刷新列表和统计
+ */
 async function toggleUser() {
   if (!pendingToggle.value || toggling.value) return
   toggling.value = true
@@ -166,6 +248,11 @@ async function toggleUser() {
   }
 }
 
+/**
+ * 将性别字段转换为中文显示
+ * @param value - 原始性别值（0/male/1/female/2/secret等）
+ * @returns 中文性别文本：男/女/保密
+ */
 function genderText(value: string) {
   const text = value.toLowerCase()
   if (text === '0' || text === 'male' || text === '男') return '男'
@@ -174,10 +261,16 @@ function genderText(value: string) {
   return '保密'
 }
 
+/**
+ * 将状态值转换为中文显示
+ * @param value - 标准化状态值
+ * @returns 中文状态文本：启用/禁用/已注销
+ */
 function statusText(value: UserRow['status']) {
   return value === 'active' ? '启用' : value === 'frozen' ? '禁用' : '已注销'
 }
 
+// ===== 生命周期：组件挂载时加载用户列表和统计数据 =====
 onMounted(() => {
   void loadUsers()
   void loadUserStats()
@@ -185,6 +278,7 @@ onMounted(() => {
 </script>
 
 <template>
+  <!-- 搜索栏：关键词搜索 + 状态筛选 -->
   <div class="flex-between mb-4">
     <div class="search-bar">
       <input v-model="keywordInput" id="userSearchInput" placeholder="昵称 / 手机号" @keyup.enter="searchUsers" />
@@ -197,6 +291,7 @@ onMounted(() => {
     </div>
   </div>
 
+  <!-- 统计卡片栏：总用户数、正常、冻结、本日新增、本月新增 -->
   <div class="system-stats-row">
     <div class="stat-card">
       <div class="label"><i class="fas fa-users"></i> 总用户数</div>
@@ -220,6 +315,7 @@ onMounted(() => {
     </div>
   </div>
 
+  <!-- 主布局区域：左侧用户列表 + 右侧统计面板 -->
   <div class="system-layout-main users-layout">
     <div class="card users-table-card">
       <div class="card-header">
@@ -227,7 +323,9 @@ onMounted(() => {
         <span class="system-text-muted">共 {{ total }} 位用户 · 累计订单 {{ totalOrders }} 笔 · 累计消费 ¥{{ totalAmount.toFixed(2) }}</span>
       </div>
       <div class="card-body no-pad">
+        <!-- 错误提示 -->
         <div v-if="error" class="stock-list-error"><i class="fas fa-exclamation-circle"></i> {{ error }}</div>
+        <!-- 用户数据表格 -->
         <div class="table-wrap users-table-wrap">
           <table class="users-table">
             <thead>
@@ -272,6 +370,7 @@ onMounted(() => {
             </tbody>
           </table>
         </div>
+        <!-- 分页控件 -->
         <div class="stock-pagination">
           <span>第 {{ page }} / {{ totalPages }} 页，共 {{ total }} 位用户</span>
           <div class="stock-pagination-actions">
@@ -282,6 +381,7 @@ onMounted(() => {
       </div>
     </div>
 
+    <!-- 右侧统计面板 -->
     <div class="system-card-stack">
       <div class="card">
         <div class="card-header">
@@ -303,6 +403,7 @@ onMounted(() => {
     </div>
   </div>
 
+  <!-- 用户详情弹窗 -->
   <template v-if="detail">
     <div class="modal-overlay" @click="detail = null"></div>
     <div class="modal-content wide">
@@ -347,6 +448,7 @@ onMounted(() => {
       </div>
     </div>
   </template>
+  <!-- 启用/冻结确认弹窗 -->
   <template v-if="pendingToggle">
     <div class="modal-overlay" @click="pendingToggle = null"></div>
     <div class="modal-content">
@@ -366,14 +468,18 @@ onMounted(() => {
 </template>
 
 <style scoped>
+/* 用户页面布局：左侧表格占3份，右侧统计占1份 */
 .users-layout {
   grid-template-columns: minmax(0, 3fr) minmax(300px, 1fr);
   align-items: start;
 }
 .users-table-card { min-width: 0; }
+
+/* 用户表格样式：固定最小宽度，防止列挤压 */
 .users-table { min-width: 1080px; }
 .users-table th,
 .users-table td { padding: 12px 10px; vertical-align: middle; }
+/* 各列最小宽度设置，保证内容不被截断 */
 .users-table th:first-child { min-width: 150px; }
 .users-table th:nth-child(2) { min-width: 112px; }
 .users-table th:nth-child(4),
@@ -381,17 +487,21 @@ onMounted(() => {
 .users-table th:last-child { min-width: 142px; }
 .users-table td:first-child > div { justify-content: flex-start; gap: 8px; white-space: nowrap; }
 .users-table td:first-child .system-user-avatar-sm { flex: 0 0 28px; }
+/* 日期列样式：不换行，灰色文字 */
 .users-table td:nth-child(4),
 .users-table td:nth-child(5) { white-space: nowrap; color: #475569; }
 .users-table td:nth-child(8) .status-badge { white-space: nowrap; }
+/* 操作列样式：按钮不换行，固定最小宽度 */
 .users-table td:last-child { white-space: nowrap; }
 .users-table td:last-child .btn { min-width: 64px; justify-content: center; margin-right: 4px; }
 
+/* 响应式：1280px以下改为单列布局 */
 @media (max-width: 1280px) {
   .users-layout { grid-template-columns: minmax(0, 1fr); }
   .system-card-stack { display: grid; grid-template-columns: minmax(0, 1fr); }
 }
 
+/* 响应式：760px以下统计卡片和右侧面板改为单列 */
 @media (max-width: 760px) {
   .system-stats-row,
   .system-card-stack { grid-template-columns: minmax(0, 1fr); }

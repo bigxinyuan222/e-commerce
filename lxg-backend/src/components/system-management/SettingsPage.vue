@@ -1,12 +1,22 @@
+<!--
+  @file SettingsPage.vue
+  @description 系统设置页面组件
+  @module 系统管理模块
+  @key-features 系统配置管理（增删改查、批量保存）、订单/库存独立配置卡片、操作日志查看与筛选
+-->
 <script setup lang="ts">
 import { computed, onMounted, ref } from "vue";
 import BusinessConfigPage from "./BusinessConfigPage.vue";
+
+/** 系统配置数据结构 */
 type Config = {
   id: string | number;
   configKey: string;
   configValue: string;
   description: string;
 };
+
+/** 操作日志数据结构 */
 type Log = {
   id: string | number;
   operator: string;
@@ -16,7 +26,10 @@ type Log = {
   type: string;
   time: string;
 };
+
 const props = defineProps<{ token?: string }>();
+
+/** 独立配置项的key集合（这些配置在专用卡片中维护，不在通用列表中显示） */
 const standaloneConfigKeys = new Set([
   "order_auto_cancel_minutes",
   "order_auto_complete_days",
@@ -24,16 +37,18 @@ const standaloneConfigKeys = new Set([
   "inventory_warning_value",
   "inventory_warning_enabled",
 ]);
-const configs = ref<Config[]>([]),
-  logs = ref<Log[]>([]),
-  keyword = ref(""),
-  logKeyword = ref(""),
-  loading = ref(false),
-  modal = ref(false),
-  editing = ref<Config | null>(null);
-const form = ref({ configKey: "", configValue: "", description: "" });
-const logPage = ref(1);
-const LOG_PAGE_SIZE = 10;
+
+// ===== 响应式状态 =====
+const configs = ref<Config[]>([]),         // 系统配置列表
+  logs = ref<Log[]>([]),                  // 操作日志列表
+  keyword = ref(""),                       // 配置搜索关键词
+  logKeyword = ref(""),                    // 日志搜索关键词
+  loading = ref(false),                    // 加载状态
+  modal = ref(false),                      // 编辑弹窗是否打开
+  editing = ref<Config | null>(null);      // 当前编辑的配置项
+const form = ref({ configKey: "", configValue: "", description: "" }); // 配置编辑表单
+const logPage = ref(1);                    // 日志当前页码
+const LOG_PAGE_SIZE = 10;                 // 日志每页条数
 const logTotalPages = computed(() =>
   Math.max(1, Math.ceil(logs.value.length / LOG_PAGE_SIZE))
 );
@@ -43,12 +58,16 @@ const pagedLogs = computed(() =>
     logPage.value * LOG_PAGE_SIZE
   )
 );
+
+/** 构建带认证信息的请求头，可选设置JSON Content-Type */
 function headers(json = false) {
   const h = new Headers();
   if (props.token) h.set("Authorization", "Bearer " + props.token);
   if (json) h.set("Content-Type", "application/json");
   return h;
 }
+
+/** 统一请求封装，处理响应码和错误 */
 async function request(url: string, o: RequestInit = {}) {
   const r = await fetch(url, { credentials: "include", ...o });
   const p = await r.json().catch(() => null);
@@ -56,11 +75,15 @@ async function request(url: string, o: RequestInit = {}) {
     throw new Error(p?.message || "请求失败");
   return p?.data ?? p;
 }
+
+/** 从接口返回数据中提取列表，兼容多种字段名 */
 function arr(d: any) {
   return Array.isArray(d)
     ? d
     : (d?.list ?? d?.items ?? d?.records ?? d?.configs ?? []);
 }
+
+/** 格式化日期时间为 YYYY-MM-DD HH:mm:ss */
 function formatTime(value: any) {
   if (!value) return "-";
   const date = new Date(String(value));
@@ -68,6 +91,12 @@ function formatTime(value: any) {
   const pad = (n: number) => String(n).padStart(2, "0");
   return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())} ${pad(date.getHours())}:${pad(date.getMinutes())}:${pad(date.getSeconds())}`;
 }
+
+/**
+ * 加载系统配置列表
+ * @api GET /api/v1/admin/system/configs - 获取系统配置，支持关键词搜索
+ * @description 过滤掉独立配置项（在专用卡片中维护）
+ */
 async function loadConfigs() {
   loading.value = true;
   try {
@@ -89,6 +118,10 @@ async function loadConfigs() {
     loading.value = false;
   }
 }
+/**
+ * 加载操作日志
+ * @api GET /api/v1/admin/system/operation-logs - 获取操作日志，支持按操作人筛选
+ */
 async function loadLogs() {
   loading.value = true;
   logPage.value = 1;
@@ -112,13 +145,22 @@ async function loadLogs() {
     logs.value = [];
   }
 }
+
+/** 日志翻页操作 */
 function changeLogPage(next: number) {
   if (next < 1 || next > logTotalPages.value || next === logPage.value) return;
   logPage.value = next;
 }
+
+/** 显示Toast通知消息 */
 function notify(t: string, k = "success") {
   (window as any).showToast?.(t, k);
 }
+
+/**
+ * 打开配置编辑弹窗
+ * @param c - 传入配置则编辑，不传则新增
+ */
 function open(c?: Config) {
   editing.value = c ?? {
     id: "",
@@ -133,6 +175,12 @@ function open(c?: Config) {
   };
   modal.value = true;
 }
+
+/**
+ * 保存配置（新增或更新）
+ * @api POST /api/v1/admin/system/configs - 新增配置
+ * @api PUT /api/v1/admin/system/configs - 批量更新配置
+ */
 async function save() {
   try {
     if (!form.value.configKey || !form.value.configValue)
@@ -153,6 +201,8 @@ async function save() {
     notify(e instanceof Error ? e.message : "保存失败", "error");
   }
 }
+
+/** 构建批量保存的配置payload */
 function allConfigPayload() {
   return configs.value
     .map(({ configKey, configValue, description }) => ({
@@ -162,6 +212,11 @@ function allConfigPayload() {
     }))
     .filter((x) => x.configKey);
 }
+
+/**
+ * 批量保存所有配置
+ * @api PUT /api/v1/admin/system/configs - 批量更新配置
+ */
 async function saveAll() {
   try {
     await request("/api/v1/admin/system/configs", {
@@ -175,6 +230,11 @@ async function saveAll() {
     notify(e instanceof Error ? e.message : "更新失败", "error");
   }
 }
+
+/**
+ * 删除配置（二次确认后执行）
+ * @api DELETE /api/v1/admin/system/configs/{key} - 删除指定配置
+ */
 async function remove(c: Config) {
   if (!confirm("确定删除配置“" + c.configKey + "”吗？")) return;
   try {
@@ -188,16 +248,21 @@ async function remove(c: Config) {
     notify(e instanceof Error ? e.message : "删除失败", "error");
   }
 }
+
+// ===== 生命周期：组件挂载时加载配置和日志 =====
 onMounted(() => {
   loadConfigs();
   loadLogs();
 });
 </script>
 <template>
+  <!-- 商业配置卡片区域：订单配置 + 库存配置 -->
   <div class="settings-business-configs">
     <BusinessConfigPage :token="token" kind="order" @saved="loadConfigs" />
     <BusinessConfigPage :token="token" kind="stock" @saved="loadConfigs" />
   </div>
+
+  <!-- 工具栏：批量保存 + 新增配置 -->
   <div class="settings-toolbar">
     <span></span>
     <div>
@@ -209,9 +274,11 @@ onMounted(() => {
       </button>
     </div>
   </div>
+  <!-- 系统配置列表卡片 -->
   <div class="card">
     <div class="card-header">
       <span class="card-title"><i class="fas fa-sliders-h"></i> 系统配置</span>
+      <!-- 配置搜索栏 -->
       <div class="settings-search">
         <input
           v-model="keyword"
@@ -259,6 +326,7 @@ onMounted(() => {
       </div>
     </div>
   </div>
+  <!-- 操作日志卡片 -->
   <div class="card settings-logs">
     <div class="card-header">
       <span class="card-title"><i class="fas fa-file-alt"></i> 操作日志</span>
@@ -308,6 +376,7 @@ onMounted(() => {
       </div>
     </div>
   </div>
+  <!-- 配置新增/编辑弹窗 -->
   <div v-if="modal" class="modal-overlay" @click="modal = false"></div>
   <div v-if="modal" class="modal-content settings-modal">
     <div class="modal-header">
@@ -344,6 +413,7 @@ onMounted(() => {
 </template>
 
 <style scoped>
+/* 商业配置卡片区域布局：两列网格 */
 .settings-business-configs {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -354,9 +424,12 @@ onMounted(() => {
   max-width: none;
   margin: 0;
 }
+/* 响应式：980px以下改为单列 */
 @media (max-width: 980px) {
   .settings-business-configs { grid-template-columns: 1fr; }
 }
+
+/* 操作日志分页样式 */
 .log-pagination {
   display: flex;
   align-items: center;
@@ -374,6 +447,8 @@ onMounted(() => {
   font-size: 13px;
   color: #475569;
 }
+
+/* 图标按钮样式（分页翻页按钮） */
 .icon-btn {
   display: inline-flex;
   align-items: center;
@@ -395,6 +470,7 @@ onMounted(() => {
   opacity: 0.4;
   cursor: not-allowed;
 }
+/* 暗色主题适配 */
 :global([data-theme="dark"]) .icon-btn {
   background: #1e293b;
   border-color: #334155;
