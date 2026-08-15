@@ -7,17 +7,22 @@ const browser = await chromium.launch({
 })
 const page = await browser.newPage({ viewport: { width: 1440, height: 900 } })
 let closeRequest
+let deleteRequest
 let closed = false
+let deleted = false
 
 await page.route('**/api/**', async route => {
   const request = route.request()
   const url = new URL(request.url())
   let data = {}
   if (request.method() === 'GET' && url.pathname === '/api/v1/admin/seckill/activities') {
-    data = { activities: [{ ID: 6, name: '进行中活动', startTime: '2026-08-02 10:00', endTime: '2026-08-02 12:00', status: closed ? 3 : 1, products: [] }] }
+    data = { activities: [{ ID: 6, name: '进行中活动', startTime: '2026-08-02 10:00', endTime: '2026-08-02 12:00', status: closed ? 3 : 1, products: [] }, ...(!deleted ? [{ ID: 7, name: '超时未发布活动', startTime: '2026-08-01 10:00', endTime: '2026-08-01 12:00', status: 4, products: [] }] : [])] }
   } else if (request.method() === 'POST' && url.pathname === '/api/v1/admin/seckill/activities/close') {
     closeRequest = { method: request.method(), path: url.pathname, body: request.postDataJSON() }
     closed = true
+  } else if (request.method() === 'POST' && url.pathname === '/api/v1/admin/seckill/activities/deleteOvertimeActivity') {
+    deleteRequest = { method: request.method(), path: url.pathname, search: url.search, body: request.postDataJSON() }
+    deleted = true
   }
   await route.fulfill({ json: { code: 200, message: 'success', data } })
 })
@@ -41,7 +46,13 @@ try {
   if (JSON.stringify(closeRequest.body) !== JSON.stringify(expected)) {
     throw new Error(`请求体错误: ${JSON.stringify(closeRequest.body)}`)
   }
-  console.log('秒杀活动关闭接口验证通过')
+  await page.locator('[data-delete-overtime-activity-id="7"]').click()
+  await page.locator('.modal-content').getByRole('button', { name: '确认删除' }).click()
+  await page.getByText('超时未发布活动已删除', { exact: false }).waitFor()
+  await page.getByText('超时未发布活动', { exact: true }).waitFor({ state: 'detached' })
+  if (!deleteRequest || deleteRequest.method !== 'POST' || deleteRequest.path !== '/api/v1/admin/seckill/activities/deleteOvertimeActivity' || deleteRequest.search !== '?id=7') throw new Error(`删除超时活动请求错误: ${JSON.stringify(deleteRequest)}`)
+  if (deleteRequest.body) throw new Error(`删除超时活动不应发送请求体: ${JSON.stringify(deleteRequest.body)}`)
+  console.log('秒杀活动关闭及超时未发布活动删除接口验证通过')
 } finally {
   await browser.close()
 }

@@ -10,7 +10,7 @@
   API基础路径：/api/admin/v1
 -->
 <script setup lang="ts">
-import { computed, onMounted, reactive, ref } from 'vue'
+import { computed, onMounted, reactive, ref, watch } from 'vue'
 
 /** 秒杀活动数据结构 */
 interface Activity {
@@ -20,6 +20,7 @@ interface Activity {
   endTime: string
   publishedAt: string
   status: 'active' | 'pending' | 'ended' | 'closed' | 'timeout'
+  products: any[]
 }
 
 /** 商品选项结构（用于选择秒杀商品） */
@@ -33,11 +34,16 @@ interface ProductSku {
   stock: number
   seckillPrice: string
   stockLimit: number
+  existing: boolean
 }
 
 /** 组件Props，接收认证token */
 const props = defineProps<{ token?: string }>()
 const activities = ref<Activity[]>([])           // 秒杀活动列表
+const allActivities = ref<Activity[]>([])        // 接口返回的全部活动
+const activityPage = ref(1)                      // 当前活动页码
+const activityPageSize = 10                      // 活动每页固定数量
+const activityTotal = ref(0)                     // 活动总数
 const products = ref<ProductOption[]>([])        // 可选商品列表
 const loading = ref(false)                       // 活动列表加载状态
 const loadError = ref('')                        // 活动列表错误信息
@@ -54,17 +60,25 @@ const productLoading = ref(false)                // SKU加载状态
 const productSubmitting = ref(false)             // 添加商品提交中状态
 const closingActivity = ref<Activity | null>(null) // 正在关闭的活动
 const closing = ref(false)                       // 关闭操作进行中状态
+const deletingActivity = ref<Activity | null>(null) // 正在删除的超时活动
+const deleting = ref(false)                      // 删除操作进行中状态
 const publishingIds = reactive(new Set<number>()) // 正在发布中的活动ID集合
 const createForm = reactive({ name: '', startTime: '', endTime: '' }) // 新建活动表单
 
 /** 计算属性：正在进行的活动数量 */
-const activeCount = computed(() => activities.value.filter(item => item.status === 'active').length)
+const activeCount = computed(() => allActivities.value.filter(item => item.status === 'active').length)
 /** 计算属性：未开始的活动数量 */
-const pendingCount = computed(() => activities.value.filter(item => item.status === 'pending').length)
+const pendingCount = computed(() => allActivities.value.filter(item => item.status === 'pending').length)
 /** 计算属性：活动销售额格式化显示 */
 const salesLabel = computed(() => new Intl.NumberFormat('zh-CN', { style: 'currency', currency: 'CNY', minimumFractionDigits: 2 }).format(activitySalesAmount.value))
 /** 计算属性：活动订单数格式化显示 */
 const orderLabel = computed(() => activityOrderCount.value.toLocaleString('zh-CN'))
+const activityPageCount = computed(() => Math.max(1, Math.ceil(activityTotal.value / activityPageSize)))
+
+function refreshActivityPage() {
+  const start = (activityPage.value - 1) * activityPageSize
+  activities.value = allActivities.value.slice(start, start + activityPageSize)
+}
 
 /** 构建请求头，支持JSON内容和Bearer Token认证 */
 function headers(json = false) {
@@ -103,7 +117,11 @@ function apiDateTime(value: string) {
 /** 从API响应中提取列表数据，兼容多种返回格式 */
 function listFrom(data: any): any[] {
   if (Array.isArray(data)) return data
-  return data?.list ?? data?.items ?? data?.records ?? data?.activities ?? []
+  const nested = data?.data
+  if (Array.isArray(nested)) return nested
+  return data?.list ?? data?.items ?? data?.records ?? data?.activities
+    ?? data?.products ?? data?.product_list ?? data?.in_products ?? data?.inproduct ?? nested?.list
+    ?? nested?.items ?? nested?.products ?? []
 }
 
 /** 显示Toast通知消息 */
@@ -129,6 +147,7 @@ function normalizeActivity(row: any): Activity {
     endTime: String(row.endTime ?? row.end_time ?? row.EndTime ?? ''),
     publishedAt: String(row.publishedAt ?? row.published_at ?? row.PublishedAt ?? ''),
     status: normalizeStatus(row.status),
+    products: row.products ?? row.seckill_products ?? row.activity_products ?? [],
   }
 }
 
@@ -140,10 +159,16 @@ async function loadActivities() {
   loading.value = true
   loadError.value = ''
   try {
-    const data = await request('/api/v1/admin/seckill/activities?page=1&size=10', { headers: headers() })
-    activities.value = listFrom(data).map(normalizeActivity)
+    // 后端要求 page >= 1；一次请求较大的数据集，再由前端按 10 条本地分页。
+    const data = await request('/api/v1/admin/seckill/activities?page=1&size=100', { headers: headers() })
+    allActivities.value = listFrom(data).map(normalizeActivity)
+    activityTotal.value = allActivities.value.length
+    if (activityPage.value > activityPageCount.value) activityPage.value = activityPageCount.value
+    refreshActivityPage()
   } catch (error) {
+    allActivities.value = []
     activities.value = []
+    activityTotal.value = 0
     loadError.value = error instanceof Error ? error.message : '活动列表加载失败'
   } finally {
     loading.value = false
@@ -218,12 +243,15 @@ async function createActivity() {
  * 加载可选商品列表
  * API: GET /api/v1/admin/product/list（仅上架商品）
  */
-async function loadProducts() {
-  const data = await request('/api/v1/admin/product/list?page=1&size=100&status=1', { headers: headers() })
+async function loadProducts(activity?: Activity) {
+  const url = activity?.status === 'active'
+    ? `/api/v1/admin/seckill/activities/activity/inproduct?id=${encodeURIComponent(activity.id)}`
+    : '/api/v1/admin/product/list?page=1&size=100&status=1'
+  const data = await request(url, { headers: headers() })
   products.value = listFrom(data).map((item: any) => ({
-    id: Number(item.ID ?? item.id),
-    name: String(item.name ?? ''),
-    originalPrice: Number(item.original_price ?? item.originalPrice ?? 0),
+    id: Number(item.product_id ?? item.product?.id ?? item.ID ?? item.id),
+    name: String(item.product_name ?? item.product?.name ?? item.name ?? ''),
+    originalPrice: Number(item.normal_price ?? item.original_price ?? item.originalPrice ?? 0),
   }))
 }
 
@@ -236,7 +264,7 @@ async function openAddProduct(activity: Activity) {
   selectedProductId.value = ''
   productSkus.value = []
   try {
-    await loadProducts()
+    await loadProducts(activity)
   } catch (error) {
     productActivity.value = null
     notify(error instanceof Error ? error.message : '商品列表加载失败', 'error')
@@ -261,16 +289,21 @@ async function loadProductSkus() {
   try {
     const data = await request(`/api/v1/admin/product/detail?id=${encodeURIComponent(selectedProductId.value)}`, { headers: headers() })
     const rows = data?.skus ?? data?.product?.skus ?? []
+    const activityProduct = (productActivity.value?.products || []).find((item: any) => Number(item.product_id ?? item.product?.id ?? item.id) === Number(selectedProductId.value))
+    const activitySkus = activityProduct?.skus ?? activityProduct?.items ?? activityProduct?.sku_list ?? []
     productSkus.value = (Array.isArray(rows) ? rows : []).map((sku: any) => {
       const stock = Math.max(0, Number(sku.stock ?? sku.stock_limit ?? 0))
+      const current = activitySkus.find((item: any) => Number(item.sku_id ?? item.sku?.id ?? item.id) === Number(sku.id ?? sku.ID ?? sku.sku_id ?? sku.skuId))
+      const existing = Boolean(current)
       return {
         id: Number(sku.id ?? sku.ID ?? sku.sku_id ?? sku.skuId),
         code: String(sku.sku_code ?? sku.skuCode ?? sku.id ?? ''),
         specs: formatSpecs(sku.spec_values ?? sku.specValues),
         originalPrice: Number(sku.price ?? sku.original_price ?? sku.originalPrice ?? 0),
         stock,
-        seckillPrice: '',
-        stockLimit: stock,
+        seckillPrice: current ? String(current.seckill_price ?? current.seckillPrice ?? current.price ?? '') : '',
+        stockLimit: productActivity.value?.status === 'active' && existing ? 0 : Math.max(0, Number(current?.stock_limit ?? current?.stock ?? stock)),
+        existing,
       }
     })
   } catch (error) {
@@ -287,7 +320,8 @@ async function loadProductSkus() {
  */
 async function addProduct() {
   if (!productActivity.value || !selectedProductId.value || !productSkus.value.length) return notify('请选择包含 SKU 的商品', 'error')
-  if (productSkus.value.some(sku => sku.seckillPrice === '' || !Number.isFinite(Number(sku.seckillPrice)) || Number(sku.seckillPrice) < 0 || !Number.isInteger(Number(sku.stockLimit)) || Number(sku.stockLimit) < 0)) {
+  const activity = productActivity.value
+  if (productSkus.value.some(sku => ((!(activity.status === 'active' && sku.existing) && (sku.seckillPrice === '' || !Number.isFinite(Number(sku.seckillPrice)) || Number(sku.seckillPrice) < 0)) || !Number.isInteger(Number(sku.stockLimit)) || Number(sku.stockLimit) < 0))) {
     return notify('请完整填写有效的秒杀价和库存限制', 'error')
   }
   productSubmitting.value = true
@@ -298,7 +332,7 @@ async function addProduct() {
         product_id: Number(selectedProductId.value),
         skus: productSkus.value.map(sku => ({
           sku_id: sku.id,
-          seckill_price: Number(sku.seckillPrice),
+          ...(activity.status === 'active' && sku.existing ? {} : { seckill_price: Number(sku.seckillPrice) }),
           stock_limit: Number(sku.stockLimit),
         })),
       }),
@@ -355,6 +389,27 @@ async function closeActivity() {
   }
 }
 
+async function deleteOvertimeActivity() {
+  if (!deletingActivity.value || deleting.value) return
+  if (!Number.isInteger(deletingActivity.value.id) || deletingActivity.value.id <= 0) {
+    notify('活动 ID 无效，无法删除', 'error')
+    return
+  }
+  deleting.value = true
+  try {
+    await request(`/api/v1/admin/seckill/activities/deleteOvertimeActivity?id=${encodeURIComponent(deletingActivity.value.id)}`, {
+      method: 'POST', headers: headers(),
+    })
+    deletingActivity.value = null
+    notify('超时未发布活动已删除')
+    await loadActivities()
+  } catch (error) {
+    notify(error instanceof Error ? error.message : '删除超时活动失败', 'error')
+  } finally {
+    deleting.value = false
+  }
+}
+
 /** 根据活动状态返回中文描述 */
 function statusText(status: Activity['status']) {
   return { active: '正在进行', pending: '未开始', ended: '已结束', closed: '管理员关闭', timeout: '超时' }[status]
@@ -367,6 +422,7 @@ function statusClass(status: Activity['status']) {
 
 /** 组件挂载：并行加载活动列表和统计数据 */
 onMounted(() => Promise.all([loadActivities(), loadActivityStats()]))
+watch(activityPage, refreshActivityPage)
 </script>
 
 <template>
@@ -440,13 +496,20 @@ onMounted(() => Promise.all([loadActivities(), loadActivityStats()]))
               <td>{{ activity.publishedAt || '未发布' }}</td>
               <td><span class="status-badge" :class="statusClass(activity.status)"><span class="dot"></span> {{ statusText(activity.status) }}</span></td>
           <td>
-            <button v-if="activity.status === 'pending'" class="btn btn-sm btn-outline" type="button" @click="openAddProduct(activity)"><i class="fas fa-plus"></i> 添加商品</button>
+            <button v-if="activity.status === 'pending' || activity.status === 'active'" class="btn btn-sm btn-outline" type="button" @click="openAddProduct(activity)"><i class="fas fa-plus"></i> {{ activity.status === 'active' ? '添加/编辑商品' : '添加商品' }}</button>
             <button v-if="activity.status === 'pending'" class="btn btn-sm btn-primary" type="button" :data-publish-activity-id="activity.id" :disabled="publishingIds.has(activity.id)" @click="publishActivity(activity)"><i class="fas" :class="publishingIds.has(activity.id) ? 'fa-spinner fa-spin' : 'fa-paper-plane'"></i> {{ publishingIds.has(activity.id) ? '发布中' : '发布' }}</button>
             <button v-if="activity.status === 'active' || activity.status === 'pending'" class="btn btn-sm btn-danger" type="button" :data-close-activity-id="activity.id" @click="closingActivity = activity"><i class="fas fa-times"></i> {{ activity.status === 'active' ? '结束' : '取消' }}</button>
+            <button v-if="activity.status === 'timeout' || activity.status === 'closed'" class="btn btn-sm btn-danger" type="button" :data-delete-overtime-activity-id="activity.id" @click="deletingActivity = activity"><i class="fas fa-trash"></i> 删除</button>
           </td>
             </tr>
           </tbody>
         </table>
+      </div>
+      <div class="product-pagination marketing-pagination">
+        <span>共 {{ activityTotal }} 个活动</span>
+        <button class="btn btn-sm btn-outline" :disabled="activityPage <= 1 || loading" @click="activityPage--">上一页</button>
+        <span>第 {{ activityPage }} / {{ activityPageCount }} 页</span>
+        <button class="btn btn-sm btn-outline" :disabled="activityPage >= activityPageCount || loading" @click="activityPage++">下一页</button>
       </div>
     </div>
   </div>
@@ -508,7 +571,7 @@ onMounted(() => Promise.all([loadActivities(), loadActivityStats()]))
                   <th>规格</th>
                   <th>原价</th>
                   <th>秒杀价</th>
-                  <th>库存限制</th>
+                  <th>{{ productActivity.status === 'active' ? '增加库存' : '库存限制' }}</th>
                 </tr>
               </thead>
               <tbody>
@@ -516,8 +579,8 @@ onMounted(() => Promise.all([loadActivities(), loadActivityStats()]))
                   <td>{{ sku.code }}</td>
                   <td>{{ sku.specs }}</td>
                   <td>¥{{ sku.originalPrice }}</td>
-                  <td><input v-model="sku.seckillPrice" class="trade-form-input seckill-sku-price" type="number" min="0" step="0.01" :max="sku.originalPrice || undefined" /></td>
-                  <td><input v-model.number="sku.stockLimit" class="trade-form-input seckill-sku-stock" type="number" min="0" step="1" :max="sku.stock" /></td>
+                  <td><input v-model="sku.seckillPrice" class="trade-form-input seckill-sku-price" type="number" min="0" step="0.01" :max="sku.originalPrice || undefined" :disabled="productActivity.status === 'active' && sku.existing" /></td>
+                  <td><input v-model.number="sku.stockLimit" class="trade-form-input seckill-sku-stock" type="number" min="0" step="1" :max="productActivity.status === 'active' && sku.existing ? undefined : sku.stock" /></td>
                 </tr>
               </tbody>
             </table>
@@ -543,6 +606,21 @@ onMounted(() => Promise.all([loadActivities(), loadActivityStats()]))
       <div class="modal-footer">
         <button class="btn btn-outline" :disabled="closing" @click="closingActivity = null">取消</button>
         <button class="btn btn-primary" :disabled="closing" @click="closeActivity"><i class="fas" :class="closing ? 'fa-spinner fa-spin' : 'fa-check'"></i> {{ closing ? '处理中' : '确认' }}</button>
+      </div>
+    </div>
+  </template>
+
+  <template v-if="deletingActivity">
+    <div class="modal-overlay" @click="!deleting && (deletingActivity = null)"></div>
+    <div class="modal-content" style="width:420px">
+      <div class="modal-header">
+        <h3>删除超时活动</h3>
+        <button class="modal-close" :disabled="deleting" @click="deletingActivity = null"><i class="fas fa-times"></i></button>
+      </div>
+      <div class="modal-body">确定删除{{ deletingActivity.status === 'closed' ? '管理员关闭且未发布' : '超时且未发布' }}的活动“{{ deletingActivity.name }}”吗？</div>
+      <div class="modal-footer">
+        <button class="btn btn-outline" :disabled="deleting" @click="deletingActivity = null">取消</button>
+        <button class="btn btn-danger" :disabled="deleting" @click="deleteOvertimeActivity"><i class="fas" :class="deleting ? 'fa-spinner fa-spin' : 'fa-trash'"></i> {{ deleting ? '删除中' : '确认删除' }}</button>
       </div>
     </div>
   </template>
