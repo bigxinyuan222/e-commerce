@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { View, Text, Image, ScrollView } from '@tarojs/components';
-import Taro from '@tarojs/taro';
+import Taro, { useDidHide } from '@tarojs/taro';
 import { fetchSeckillActivities, fetchProductSeckillActivity } from '@/api/seckill';
 import { getImageUrl, lazyImgProps } from '@/utils/image';
 import styles from '@/styles/home/seckill.module.scss';
@@ -90,14 +90,22 @@ const SeckillPage: React.FC = () => {
   // 当前活动
   const currentActivity = activities[activeActivityIndex] || activities[0];
 
-  // 健壮解析各种时间格式（ISO 8601、YYYY-MM-DD HH:mm:ss、YYYY/MM/DD HH:mm:ss 等）
-  const parseTime = (timeStr: string): number => {
-    if (!timeStr) return NaN;
+  // 健壮解析各种时间格式（ISO 8601、YYYY-MM-DD HH:mm:ss、时间戳等）
+  const parseTime = (timeStr: string | number | undefined): number => {
+    if (timeStr === undefined || timeStr === null || timeStr === '') return NaN;
+    if (typeof timeStr === 'number') return timeStr;
     let t = new Date(timeStr).getTime();
     if (!isNaN(t)) return t;
-    t = new Date(timeStr.replace(/-/g, '/')).getTime();
+    const str = String(timeStr);
+    t = new Date(str.replace(/-/g, '/')).getTime();
     if (!isNaN(t)) return t;
-    t = new Date(timeStr.replace(/\//g, '-')).getTime();
+    t = new Date(str.replace(/\//g, '-')).getTime();
+    if (!isNaN(t)) return t;
+    // 尝试解析纯数字时间戳（秒级转毫秒级）
+    const numeric = Number(str);
+    if (!isNaN(numeric) && str.trim() !== '') {
+      return numeric < 1e12 ? numeric * 1000 : numeric;
+    }
     return t;
   };
 
@@ -140,11 +148,37 @@ const SeckillPage: React.FC = () => {
     };
   }, [updateCountdown, currentActivity]);
 
+  // 页面隐藏时立即清除定时器，避免微信框架内部页面帧已销毁导致 __subPageFrameEndTime__ 报错
+  useDidHide(() => {
+    if (timerRef.current) {
+      clearInterval(timerRef.current);
+      timerRef.current = null;
+    }
+  });
+
   const goToProductDetail = (product: any) => {
     const productId = product.productId || product.id;
     const activityId = currentActivity?.id || '';
+    // 把列表页已确认的秒杀价、原价、结束时间传给详情页，避免详情页再请求时价格不一致
+    const queryParts = [
+      `id=${encodeURIComponent(String(productId))}`,
+      'seckill=1',
+      `activityId=${encodeURIComponent(String(activityId))}`,
+    ];
+    if (product.seckillPrice !== undefined && product.seckillPrice !== null) {
+      queryParts.push(`seckillPrice=${encodeURIComponent(String(product.seckillPrice))}`);
+    }
+    if (product.originalPrice !== undefined && product.originalPrice !== null) {
+      queryParts.push(`originalPrice=${encodeURIComponent(String(product.originalPrice))}`);
+    }
+    if (product.seckillSkuPriceId !== undefined && product.seckillSkuPriceId !== null && product.seckillSkuPriceId !== '') {
+      queryParts.push(`seckillSkuPriceId=${encodeURIComponent(String(product.seckillSkuPriceId))}`);
+    }
+    if (currentActivity?.endTime) {
+      queryParts.push(`activityEndTime=${encodeURIComponent(String(currentActivity.endTime))}`);
+    }
     Taro.navigateTo({
-      url: `/pages/home/detail/index?id=${productId}&seckill=1&activityId=${activityId}`
+      url: `/pages/home/detail/index?${queryParts.join('&')}`
     });
   };
 

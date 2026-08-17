@@ -115,12 +115,20 @@ const RefundApplyPage: React.FC = () => {
       });
       Taro.showToast({ title: '退款申请已提交', icon: 'success' });
       setTimeout(() => {
-        Taro.navigateBack();
+        Taro.redirectTo({ url: '/pages/cart/order/list/index?status=refunding' });
       }, 1500);
     } catch (error: any) {
       Taro.hideLoading();
       console.error('提交退款申请失败:', error);
-      Taro.showToast({ title: error?.message || '提交失败', icon: 'none' });
+      const errMsg = error?.message || '';
+      if (errMsg.includes('已存在退款申请')) {
+        Taro.showToast({ title: '该订单已申请退款，跳到退款/售后', icon: 'none' });
+        setTimeout(() => {
+          Taro.redirectTo({ url: '/pages/cart/order/list/index?status=refunding' });
+        }, 1500);
+      } else {
+        Taro.showToast({ title: errMsg || '提交失败', icon: 'none' });
+      }
     } finally {
       setIsSubmitting(false);
     }

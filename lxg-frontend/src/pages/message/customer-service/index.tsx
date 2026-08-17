@@ -7,8 +7,8 @@ import { getImageUrl } from '@/utils/image';
 import { formatTime } from '@/utils/time';
 import styles from '@/styles/message/customer-service.module.scss';
 
-const DEFAULT_AVATAR = 'https://picsum.photos/id/2/100/100';
-const USER_DEFAULT_AVATAR = 'https://picsum.photos/id/64/100/100';
+const DEFAULT_AVATAR = '';
+const USER_DEFAULT_AVATAR = '';
 
 const CustomerServicePage: React.FC = () => {
   const router = useRouter();
@@ -16,7 +16,6 @@ const CustomerServicePage: React.FC = () => {
 
   const [inputValue, setInputValue] = useState('');
   const [initReady, setInitReady] = useState(false);
-  const scrollRef = useRef<any>(null);
   const autoScrollRef = useRef(true);
 
   const {
@@ -37,6 +36,7 @@ const CustomerServicePage: React.FC = () => {
     leaveConversation,
     createConversation,
     markConversationRead,
+    transferToHuman,
   } = useChatStore();
 
   const conversationId = currentConversationId ?? queryId;
@@ -105,10 +105,6 @@ const CustomerServicePage: React.FC = () => {
     if (messages.length > 0) setTimeout(scrollToBottom, 50);
   }, [messages.length, scrollToBottom]);
 
-  const onScroll = (e: any) => {
-    // TODO: 根据实际 scrollTop/clientHeight/scrollHeight 计算
-  };
-
   const handleSend = useCallback(async () => {
     if (!conversationId) {
       Taro.showToast({ title: '会话未就绪，请稍候', icon: 'none' });
@@ -133,6 +129,23 @@ const CustomerServicePage: React.FC = () => {
   const handleInputChange = useCallback((e: any) => {
     setInputValue(e.detail.value ?? e.target?.value ?? '');
   }, []);
+
+  const handleHumanService = useCallback(async () => {
+    if (!conversationId) {
+      Taro.showToast({ title: '会话未就绪，请稍候', icon: 'none' });
+      return;
+    }
+    if (!wsConnected) {
+      connectWS();
+    }
+    Taro.showLoading({ title: '正在转接...', mask: true });
+    const ok = await transferToHuman(conversationId);
+    Taro.hideLoading();
+    if (ok) {
+      Taro.showToast({ title: '已为您转接人工客服', icon: 'none' });
+      scrollToBottom();
+    }
+  }, [conversationId, transferToHuman, wsConnected, connectWS, scrollToBottom]);
 
   const handleReconnect = useCallback(() => {
     // 非 closed/idle 状态时忽略点击（避免给 Taro 事件处理器传 undefined 导致 removeEventListener 崩溃）
@@ -265,8 +278,6 @@ const CustomerServicePage: React.FC = () => {
         scrollY
         className={styles.chatContainer}
         scrollWithAnimation
-        ref={scrollRef}
-        onScroll={onScroll}
       >
         <View className={styles.dateDivider}>
           <Text className={styles.dateText}>今天</Text>
@@ -277,31 +288,39 @@ const CustomerServicePage: React.FC = () => {
             <Text className={styles.loadingText}>加载消息中...</Text>
           </View>
         ) : (
-          <>
+          <View>
             {/* 每个会话消息列表最顶部固定显示客服欢迎消息 */}
             {renderWelcomeMessage()}
             {messages.map(renderMessage)}
-          </>
+          </View>
         )}
       </ScrollView>
 
-      {/* 底部输入栏 */}
-      <View className={styles.inputBar}>
-        <Input
-          className={styles.input}
-          placeholder="请输入您的问题..."
-          value={inputValue}
-          onInput={handleInputChange}
-          onConfirm={handleSend}
-          confirmType="send"
-          adjustPosition
-        />
-        <Text
-          className={`${styles.sendBtn} ${!inputValue.trim() ? styles.disabled : ''}`}
-          onClick={handleSend}
-        >
-          发送
-        </Text>
+      {/* 底部操作栏 */}
+      <View className={styles.bottomBar}>
+        <View className={styles.quickActions}>
+          <View className={styles.humanBtn} onClick={handleHumanService}>
+            <Text className={styles.humanIcon}>客服</Text>
+            <Text className={styles.humanText}>转人工</Text>
+          </View>
+        </View>
+        <View className={styles.inputBar}>
+          <Input
+            className={styles.input}
+            placeholder="请输入您的问题..."
+            value={inputValue}
+            onInput={handleInputChange}
+            onConfirm={handleSend}
+            confirmType="send"
+            adjustPosition
+          />
+          <Text
+            className={`${styles.sendBtn} ${!inputValue.trim() ? styles.disabled : ''}`}
+            onClick={handleSend}
+          >
+            发送
+          </Text>
+        </View>
       </View>
     </View>
   );

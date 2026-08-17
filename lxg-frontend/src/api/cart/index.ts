@@ -73,44 +73,180 @@ function pickFirstValidId(...candidates: any[]): string {
     return '';
 }
 
+/**
+ * 兜底提取商品信息：兼容后端把商品字段平铺在退款记录上，或嵌套在 product/sku/goods/orderItem 等结构里
+ */
+function extractFallbackProduct(raw: any): any {
+    if (!raw || typeof raw !== 'object') return null;
+    const product = raw.product ?? raw.Product ?? raw.goods ?? raw.Goods ?? raw.item ?? raw.Item
+        ?? raw.orderItem ?? raw.OrderItem ?? raw.refundItem ?? raw.RefundItem ?? {};
+    const sku = raw.sku ?? raw.Sku ?? product.sku ?? product.Sku ?? {};
+
+    const productName =
+        raw.productName ?? raw.product_name ?? raw.ProductName ?? raw.name ?? raw.Name
+        ?? raw.title ?? raw.Title ?? raw.goodsName ?? raw.goods_name ?? raw.GoodsName
+        ?? product.name ?? product.Name ?? product.productName ?? product.title ?? product.Title
+        ?? product.goodsName ?? '';
+
+    let skuName =
+        raw.skuName ?? raw.sku_name ?? raw.SkuName ?? raw.specName ?? raw.spec_name ?? raw.SpecName
+        ?? raw.specs ?? sku.name ?? sku.skuName ?? sku.specName ?? sku.specs ?? '';
+    if (!skuName && (raw.specValues || sku.specValues)) {
+        const sv = raw.specValues || sku.specValues;
+        if (typeof sv === 'object') {
+            skuName = Object.values(sv).join('/') || '';
+        }
+    }
+
+    let image =
+        raw.productImage ?? raw.product_image ?? raw.ProductImage ?? raw.image ?? raw.Image
+        ?? raw.pic ?? raw.Pic ?? product.image ?? product.Image ?? product.pic ?? product.Pic ?? '';
+    if (!image) {
+        const arr = product.images ?? product.Images ?? product.imageList ?? product.ImageList
+            ?? sku.images ?? sku.Images;
+        if (Array.isArray(arr) && arr.length > 0) {
+            image = arr[0];
+        }
+    }
+    if (typeof image === 'string') {
+        if (image.startsWith('[')) {
+            try {
+                const parsed = JSON.parse(image);
+                if (Array.isArray(parsed) && parsed.length > 0) {
+                    image = String(parsed[0]).replace(/^`|`$/g, '');
+                }
+            } catch { /* ignore */ }
+        } else {
+            image = image.replace(/^`|`$/g, '');
+        }
+    }
+
+    const price = Number(
+        raw.price ?? raw.Price ?? raw.refundPrice ?? raw.refund_price ?? raw.RefundPrice
+        ?? raw.amount ?? raw.Amount ?? sku.price ?? sku.Price ?? product.price ?? product.Price ?? 0
+    );
+    const quantity = Number(
+        raw.quantity ?? raw.Quantity ?? raw.count ?? raw.Count ?? raw.num ?? raw.Num
+        ?? sku.quantity ?? product.quantity ?? 1
+    );
+
+    if (!productName && !image) return null;
+    return { productName, skuName, image, price, quantity };
+}
+
 export function transformCartItem(raw: any): Record<string, any> {
+    const id = pickFirstValidId(
+        raw.id, raw.Id, raw.ID,
+        raw.cartId, raw.cart_id, raw.CartId, raw.Cart_id,
+        raw.cartItemId, raw.cart_item_id, raw.CartItemId, raw.CartItemID, raw.cartItemID,
+        raw.cid, raw.Cid, raw.CID,
+        raw.itemId, raw.item_id, raw.ItemId, raw.ItemID,
+        raw.shoppingCartId, raw.shopping_cart_id, raw.ShoppingCartId,
+        raw.shoppingCartItemId, raw.shopping_cart_item_id, raw.ShoppingCartItemId
+    );
+    if (!id) {
+        console.warn('[transformCartItem] 无法提取有效购物车ID，原始数据:', JSON.stringify(raw));
+    }
+
+    // 兼容后端返回的嵌套商品/SKU结构：
+    // 1. { product: {...}, sku: {...}, quantity: 1 }
+    // 2. { sku: { product: {...}, ... }, quantity: 1 }
+    const rawSku = raw.sku ?? raw.Sku ?? raw.skuInfo ?? raw.SkuInfo ?? {};
+    const product = raw.product ?? raw.Product ?? raw.goods ?? raw.Goods ?? raw.item ?? raw.Item
+        ?? rawSku.product ?? rawSku.Product ?? rawSku.goods ?? rawSku.Goods ?? {};
+
     // 处理 specValues：后端返回对象 {"颜色":"红色"}，需要转为字符串
-    let skuName = raw.skuName ?? raw.sku_name ?? raw.SkuName ?? raw.specName ?? '';
+    let skuName = raw.skuName ?? raw.sku_name ?? raw.SkuName ?? raw.specName ??
+        rawSku.name ?? rawSku.skuName ?? rawSku.sku_name ?? rawSku.SkuName ?? rawSku.specName ?? rawSku.title ?? rawSku.Title ?? '';
     if (!skuName && raw.specValues && typeof raw.specValues === 'object') {
         skuName = Object.values(raw.specValues).join('/') || '';
     }
+    if (!skuName && rawSku.specValues && typeof rawSku.specValues === 'object') {
+        skuName = Object.values(rawSku.specValues).join('/') || '';
+    }
+    if (!skuName && rawSku.specs && typeof rawSku.specs === 'object') {
+        skuName = Object.values(rawSku.specs).join('/') || '';
+    }
+    if (!skuName && product.specs && typeof product.specs === 'object') {
+        skuName = Object.values(product.specs).join('/') || '';
+    }
 
-    // 处理 image：后端可能返回 JSON 字符串 '["url"]' 或普通字符串
-    let image = raw.image ?? raw.imageUrl ?? raw.image_url ?? raw.Image ?? raw.pic ?? '';
-    if (typeof image === 'string' && image.startsWith('[')) {
-        try {
-            const parsed = JSON.parse(image);
-            if (Array.isArray(parsed) && parsed.length > 0) {
-                // 去除模板字符串的反引号
-                image = parsed[0].replace(/^`|`$/g, '');
-            }
-        } catch { /* ignore */ }
+    // 处理 image：后端可能返回 JSON 字符串 '["url"]' 或普通字符串，URL 前后可能带反引号
+    const imageCandidates = [
+        raw.image, raw.imageUrl, raw.image_url, raw.Image, raw.pic,
+        raw.mainImage, raw.main_image, raw.MainImage,
+        raw.cover, raw.Cover, raw.thumbnail, raw.Thumbnail,
+        raw.productImage, raw.product_image, raw.ProductImage,
+        rawSku.image, rawSku.Image, rawSku.pic, rawSku.skuImage, rawSku.SkuImage,
+        rawSku.mainImage, rawSku.main_image, rawSku.MainImage,
+        rawSku.cover, rawSku.Cover, rawSku.thumbnail, rawSku.Thumbnail,
+        rawSku.product?.images?.[0], rawSku.product?.Images?.[0],
+        rawSku.product?.mainImage, rawSku.product?.MainImage,
+        rawSku.product?.image, rawSku.product?.Image,
+        product.image, product.Image, product.pic,
+        product.images?.[0], product.Images?.[0],
+        product.mainImage, product.MainImage, product.main_image,
+        product.imageUrl, product.image_url, product.ImageUrl,
+        product.cover, product.Cover,
+        product.thumbnail, product.Thumbnail,
+    ];
+    let image = '';
+    for (const candidate of imageCandidates) {
+        if (candidate !== undefined && candidate !== null && candidate !== '') {
+            image = candidate;
+            break;
+        }
+    }
+    if (typeof image === 'string') {
+        if (image.startsWith('[')) {
+            try {
+                const parsed = JSON.parse(image);
+                if (Array.isArray(parsed) && parsed.length > 0) {
+                    image = String(parsed[0]).replace(/^`|`$/g, '');
+                }
+            } catch { /* ignore */ }
+        } else {
+            image = image.replace(/^`|`$/g, '');
+        }
+    }
+
+    const productName = raw.productName ?? raw.product_name ?? raw.ProductName ?? raw.name ?? raw.title ??
+        product.name ?? product.Name ?? product.title ?? product.Title ?? product.productName ?? product.product_name ?? '';
+    const price = Number(
+        raw.price ?? raw.Price ?? raw.salePrice ?? raw.sale_price ?? raw.discountPrice ?? raw.amount ??
+        rawSku.price ?? rawSku.Price ?? rawSku.salePrice ?? rawSku.sale_price ?? rawSku.discountPrice ??
+        product.price ?? product.Price ?? product.salePrice ?? product.sale_price ?? 0
+    );
+
+    // 当转换后关键信息缺失时打印完整原始数据，便于排查后端字段问题
+    // 注意：image 为空不算关键信息缺失（后端可能返回空 image，由 getImageUrl 补占位图）
+    if (!productName || (price === 0 && !raw.price && !raw.Price && !raw.amount)) {
+        console.warn('[transformCartItem] 商品关键信息缺失，原始数据:', JSON.stringify(raw));
     }
 
     return {
-        id: pickFirstValidId(raw.id, raw.Id, raw.cartId, raw.cart_id, raw.cartItemId, raw.cart_item_id, raw.CartItemId, raw.cid, raw.itemId, raw.item_id, raw.ID),
-        productId: pickFirstValidId(raw.productId, raw.product_id, raw.ProductId, raw.pid, raw.productID),
-        productName: raw.productName ?? raw.product_name ?? raw.ProductName ?? raw.name ?? '',
-        skuId: pickFirstValidId(raw.skuId, raw.sku_id, raw.SkuId, raw.skuID),
+        id,
+        productId: pickFirstValidId(
+            raw.productId, raw.product_id, raw.ProductId, raw.pid, raw.productID,
+            product.id, product.Id, product.ID,
+            rawSku.productId, rawSku.product?.id, rawSku.product?.ID
+        ),
+        productName,
+        skuId: pickFirstValidId(raw.skuId, raw.sku_id, raw.SkuId, raw.skuID, rawSku.id, rawSku.Id, rawSku.ID),
         skuName,
-        price: Number(raw.price ?? raw.Price ?? raw.salePrice ?? raw.sale_price ?? raw.discountPrice ?? raw.amount ?? 0),
+        price,
         quantity: Number(raw.quantity ?? raw.Quantity ?? raw.count ?? raw.num ?? 1),
-        stock: Number(raw.stock ?? raw.Stock ?? raw.maxQuantity ?? 999),
+        stock: Number(raw.stock ?? raw.Stock ?? raw.maxQuantity ?? rawSku.stock ?? rawSku.Stock ?? product.stock ?? product.Stock ?? 999),
         image,
         selected: raw.selected ?? raw.Selected ?? true,
-        isSeckill: raw.isSeckill ?? raw.is_seckill ?? raw.IsSeckill ?? false,
-        seckillPrice: raw.seckillPrice ?? raw.seckill_price ?? raw.SeckillPrice ?? null,
-        originalPrice: raw.originalPrice ?? raw.original_price ?? raw.OriginalPrice ?? raw.marketPrice ?? null,
-        storeId: raw.storeId ?? raw.store_id ?? raw.StoreId ?? null,
-        storeName: raw.storeName ?? raw.store_name ?? raw.StoreName ?? '',
+        isSeckill: raw.isSeckill ?? raw.is_seckill ?? raw.IsSeckill ?? product.isSeckill ?? product.is_seckill ?? false,
+        seckillPrice: raw.seckillPrice ?? raw.seckill_price ?? raw.SeckillPrice ?? rawSku.seckillPrice ?? rawSku.seckill_price ?? product.seckillPrice ?? null,
+        originalPrice: raw.originalPrice ?? raw.original_price ?? raw.OriginalPrice ?? raw.marketPrice ?? rawSku.originalPrice ?? product.originalPrice ?? null,
+        storeId: raw.storeId ?? raw.store_id ?? raw.StoreId ?? product.storeId ?? product.store_id ?? null,
+        storeName: raw.storeName ?? raw.store_name ?? raw.StoreName ?? product.storeName ?? product.store_name ?? '',
         checked: raw.checked ?? raw.Checked ?? null,
-        skuCode: raw.skuCode ?? raw.sku_code ?? raw.SkuCode ?? '',
-        productCode: raw.productCode ?? raw.product_code ?? raw.ProductCode ?? '',
+        skuCode: raw.skuCode ?? raw.sku_code ?? raw.SkuCode ?? rawSku.skuCode ?? rawSku.sku_code ?? rawSku.SkuCode ?? '',
+        productCode: raw.productCode ?? raw.product_code ?? raw.ProductCode ?? product.productCode ?? product.product_code ?? '',
         createTime: raw.createTime ?? raw.create_time ?? raw.CreateTime ?? raw.CreatedAt ?? '',
         updateTime: raw.updateTime ?? raw.update_time ?? raw.UpdateTime ?? raw.UpdatedAt ?? '',
     };
@@ -206,6 +342,7 @@ export async function updateCartItem(id: string | number, payload: {
 }) {
     const numericId = toNumericId(id);
     if (!numericId) {
+        console.error('[updateCartItem] 无效的购物车ID:', id, '类型:', typeof id);
         throw new Error('无效的购物车ID');
     }
     const body: Record<string, any> = {};
@@ -223,6 +360,7 @@ export async function updateCartItem(id: string | number, payload: {
 export async function deleteCartItem(id: string | number) {
     const numericId = toNumericId(id);
     if (!numericId) {
+        console.error('[deleteCartItem] 无效的购物车ID:', id, '类型:', typeof id);
         throw new Error('无效的购物车ID');
     }
     const res = await apiDelete(cartApi.delete, {}, { id: numericId });
@@ -499,14 +637,22 @@ export async function submitOrderReview(
 /**
  * 获取订单评价列表
  * GET /api/v1/orders/{id}/reviews
+ * 注意：该接口在后端未实现时返回 404，此处静默处理为空评价列表，
+ *      避免订单列表页兜底查询评价时在控制台刷屏报错。
  */
 export async function fetchOrderReviews(id: string | number) {
-    const res = await apiGet(orderApi.reviewList, {}, { id });
-    const list = Array.isArray(res?.data) ? res.data : (res?.data?.list ?? res?.data?.items ?? []);
-    return {
-        ...res,
-        data: list.map(normalizeReview),
-    };
+    try {
+        // silent=true：接口未实现时不打印网络错误日志、不触发登录弹窗
+        const res = await apiGet(orderApi.reviewList, {}, { id }, true);
+        const list = Array.isArray(res?.data) ? res.data : (res?.data?.list ?? res?.data?.items ?? []);
+        return {
+            ...res,
+            data: list.map(normalizeReview),
+        };
+    } catch (err: any) {
+        // 404 = 接口未实现；其他静默失败也视为无评价，不抛错打断订单列表加载
+        return { code: 200, data: [] };
+    }
 }
 
 // ==================== 退款 API ====================
@@ -530,14 +676,9 @@ export function normalizeRefundReason(raw: any): Record<string, any> {
 export function normalizeRefund(raw: any): Record<string, any> {
     const rawStatus = raw.status ?? raw.Status ?? raw.refundStatus ?? raw.refund_status;
     const statusTextMap: { [key: string]: string } = {
-        'pending': '待处理',
-        'processing': '处理中',
-        'approved': '已同意',
+        'pending': '待审核',
+        'approved': '已通过',
         'rejected': '已拒绝',
-        'refunding': '退款中',
-        'refund_rejected': '商家已拒绝',
-        'refunded': '已退款',
-        'cancelled': '已取消',
         'completed': '已完成',
     };
     const typeTextMap: { [key: string]: string } = {
@@ -553,13 +694,9 @@ export function normalizeRefund(raw: any): Record<string, any> {
         statusCode = rawStatus;
         const numericMap: { [key: number]: string } = {
             0: 'pending',
-            1: 'processing',
-            2: 'approved',
-            3: 'rejected',
-            4: 'cancelled',
-            5: 'refunding',
-            6: 'refund_rejected',
-            7: 'refunded',
+            1: 'approved',
+            2: 'rejected',
+            3: 'completed',
         };
         status = numericMap[rawStatus] || 'pending';
     }
@@ -574,10 +711,26 @@ export function normalizeRefund(raw: any): Record<string, any> {
         type = typeNumericMap[rawType] || 'refund_only';
     }
 
-    const items = Array.isArray(raw.items) ? raw.items.map(transformCartItem)
-        : (Array.isArray(raw.Items) ? raw.Items.map(transformCartItem)
-            : (Array.isArray(raw.refundItems) ? raw.refundItems.map(transformCartItem)
-                : (Array.isArray(raw.goodsList) ? raw.goodsList.map(transformCartItem) : [])));
+    const itemKeys = [
+        'items', 'Items', 'refundItems', 'RefundItems', 'goodsList', 'GoodsList',
+        'orderItems', 'OrderItems', 'products', 'Products', 'goods', 'Goods',
+        'list', 'List', 'records', 'Records', 'data', 'Data',
+    ];
+    const rawItems = itemKeys.map(k => raw[k]).find(Array.isArray) || [];
+    let items = rawItems.map(transformCartItem).map((item, index) => {
+        // 如果 transformCartItem 没有解析出商品关键信息，尝试从原始元素兜底提取
+        if ((item.productName || item.image) && item.quantity) return item;
+        const fallback = extractFallbackProduct(rawItems[index]);
+        return fallback ? { id: item.id || '', ...fallback } : item;
+    });
+
+    // 兜底：后端未返回商品项时，从退款记录自身的商品字段构建一条商品信息
+    if (!items || items.length === 0) {
+        const fallback = extractFallbackProduct(raw);
+        if (fallback) {
+            items = [fallback];
+        }
+    }
 
     return {
         id: raw.id ?? raw.Id ?? raw.refundId ?? raw.refund_id ?? raw.ID ?? '',

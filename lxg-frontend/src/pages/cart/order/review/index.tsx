@@ -63,7 +63,7 @@ const OrderReviewPage: React.FC = () => {
           id: raw.id ?? raw.Id ?? '',
           orderNo: raw.orderNo ?? raw.order_no ?? raw.OrderNo ?? '',
           items,
-          store: raw.store ?? raw.Store ?? { name: '官方自营' },
+          store: raw.store ?? raw.Store ?? { name: '' },
         });
 
         // 查询是否已有评价（该接口后端可能未实现，404时静默忽略）
@@ -244,13 +244,16 @@ const OrderReviewPage: React.FC = () => {
       <ScrollView scrollY className={styles.scrollView}>
         <View className={styles.storeSection}>
           <View className={styles.storeInfo}>
-            <Text className={styles.storeName}>🏪 {order.store?.name || '官方自营'}</Text>
+            <Text className={styles.storeName}>🏪 {order.store?.name || ''}</Text>
             <Text className={styles.storeStatus}>完成</Text>
           </View>
-          <View className={styles.storeTags}>
-            <Text className={styles.storeTag}>支持7天无理由退货</Text>
-            <Text className={styles.storeTag}>7天价保</Text>
-          </View>
+          {order.store?.service?.length > 0 && (
+            <View className={styles.storeTags}>
+              {order.store.service.map((tag: string) => (
+                <Text key={tag} className={styles.storeTag}>{tag}</Text>
+              ))}
+            </View>
+          )}
         </View>
 
         {(order.items || []).map((item: any) => (

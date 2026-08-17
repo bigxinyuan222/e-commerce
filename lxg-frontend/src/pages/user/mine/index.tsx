@@ -2,7 +2,6 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { View, Text, Image, ScrollView } from '@tarojs/components';
 import Taro from '@tarojs/taro';
 import { useAppContext } from '@/store/AppContext';
-import { userInfo as defaultUserInfo } from '@/data/user/user';
 import { apiGet } from '@/api/common';
 import { userApi } from '@/api/user';
 import { normalizeUserProfile } from '@/api/user/normalize';
@@ -114,6 +113,14 @@ const MinePage: React.FC = () => {
     Taro.navigateTo({ url: `/pages/cart/order/list/index?status=${status || 'all'}` });
   }, [isLoggedIn, goToLogin]);
 
+  const goToRefundList = useCallback(() => {
+    if (!isLoggedIn) {
+      goToLogin();
+      return;
+    }
+    Taro.navigateTo({ url: '/pages/cart/order/refund-list/index' });
+  }, [isLoggedIn, goToLogin]);
+
   const goToMyCoupons = useCallback(() => {
     if (!isLoggedIn) {
       goToLogin();
@@ -150,8 +157,8 @@ const MinePage: React.FC = () => {
             <View className={styles.userDetails}>
               {isLoggedIn ? (
                 <>
-                  <Text className={styles.nickname}>{profile?.nickname || userInfo.nickname || defaultUserInfo.nickname}</Text>
-                  <Text className={styles.userPhone}>{profile?.phone || userInfo.phone || defaultUserInfo.phone}</Text>
+                  <Text className={styles.nickname}>{profile?.nickname || userInfo.nickname}</Text>
+                  <Text className={styles.userPhone}>{profile?.phone || userInfo.phone}</Text>
                 </>
               ) : (
                 <>
@@ -195,7 +202,7 @@ const MinePage: React.FC = () => {
             <OrderStatusItem 
               icon="💳" 
               label="退款/售后" 
-              onClick={() => goToOrderList('refunding')} 
+              onClick={() => goToRefundList()} 
             />
           </View>
         </View>

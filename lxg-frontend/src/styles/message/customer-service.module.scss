@@ -1,7 +1,7 @@
 @use '@/styles/variables.scss' as *;
 
 .customerServicePage {
-  min-height: 100vh;
+  height: 100vh;
   background-color: $color-bg-page;
   display: flex;
   flex-direction: column;
@@ -83,8 +83,8 @@
 // ------- 聊天区 -------
 .chatContainer {
   flex: 1;
+  min-height: 0;
   padding: 24rpx;
-  overflow-y: auto;
   padding-bottom: 120rpx;
 }
 
@@ -218,18 +218,58 @@
   color: $color-text-placeholder;
 }
 
+// ------- 底部操作栏 -------
+.bottomBar {
+  background-color: $color-bg-card;
+  border-top: 1px solid $color-divider;
+  position: sticky;
+  bottom: 0;
+  z-index: 99;
+}
+
+.quickActions {
+  display: flex;
+  align-items: center;
+  padding: 16rpx 32rpx 8rpx;
+  gap: 20rpx;
+}
+
+.humanBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8rpx;
+  padding: 12rpx 24rpx;
+  background: linear-gradient(135deg, $color-primary, #ff6b6b);
+  border-radius: 32rpx;
+  box-shadow: 0 4rpx 16rpx rgba($color-primary, 0.25);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+
+  &:active {
+    transform: scale(0.96);
+    box-shadow: 0 2rpx 8rpx rgba($color-primary, 0.2);
+  }
+
+  .humanIcon {
+    font-size: 28rpx;
+    line-height: 1;
+  }
+
+  .humanText {
+    font-size: 26rpx;
+    font-weight: $font-weight-medium;
+    color: #ffffff;
+    line-height: 1;
+  }
+}
+
 // ------- 底部输入栏 -------
 .inputBar {
   min-height: 112rpx;
   background-color: $color-bg-card;
   display: flex;
   align-items: center;
-  padding: 16rpx 32rpx;
-  border-top: 1px solid $color-divider;
+  padding: 8rpx 32rpx 16rpx;
   gap: 20rpx;
-  position: sticky;
-  bottom: 0;
-  z-index: 99;
 }
 
 .input {

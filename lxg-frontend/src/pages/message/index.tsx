@@ -45,12 +45,21 @@ const MessagePage: React.FC = () => {
       const data = res?.data;
       if (!data) return;
       const convData = Array.isArray(data) ? data : data?.list || [];
+      console.log('[消息页] 会话列表原始数据:', JSON.stringify(convData)?.slice(0, 500));
       const result: Message[] = convData.map((conv: any) => {
         const convId = String(
           conv.id ?? conv.ID ?? conv.Id
           ?? conv.conversationId ?? conv.ConversationId
           ?? conv.conv_id ?? conv.sessionId ?? conv.SessionId
           ?? `conv-${Math.random().toString(36).slice(2, 10)}`
+        );
+        const unreadCount = Number(
+          conv.unreadCount ?? conv.UnreadCount
+          ?? conv.userUnread ?? conv.UserUnread
+          ?? conv.user_unread ?? conv.user_unread_count
+          ?? conv.unread_count ?? conv.Unread_Count
+          ?? conv.unread ?? conv.Unread
+          ?? 0
         );
         return {
           id: convId,
@@ -59,11 +68,12 @@ const MessagePage: React.FC = () => {
           content: conv.lastMessage ?? conv.LastMessage ?? conv.content ?? conv.Content ?? '',
           avatar: getImageUrl(conv.avatar ?? conv.Avatar ?? conv.avatarUrl ?? conv.AvatarUrl ?? ''),
           time: formatMessageTime(conv.lastTime ?? conv.LastTime ?? conv.time ?? conv.UpdatedAt ?? conv.updatedAt ?? ''),
-          unreadCount: Number(conv.unreadCount ?? conv.UnreadCount ?? conv.userUnread ?? conv.UserUnread ?? 0),
+          unreadCount,
           tag: conv.tag,
           isOfficial: false,
         };
       });
+      console.log('[消息页] 会话列表解析后:', result.map(c => ({ id: c.id, title: c.title, unreadCount: c.unreadCount })));
       setConversations(result);
     } catch (error) {
       console.error('加载会话列表失败:', error);
@@ -136,20 +146,22 @@ const MessagePage: React.FC = () => {
   }));
 
   // 固定置顶的客服入口：每个账号消息列表最顶部都固定显示一条客服会话
-  // 后端若返回了客服会话，合并其未读数与最新消息，避免重复显示
+  // 只取最新一条客服会话的最新内容与未读数（避免聚合多个会话造成混淆）
   const serviceConvs = conversations.filter((c) => (c.title || '').includes('客服'));
   const otherConvs = conversations.filter((c) => !(c.title || '').includes('客服'));
-  const serviceUnread = serviceConvs.reduce((sum, c) => sum + (c.unreadCount || 0), 0);
-  const latestService = serviceConvs[0];
+  // 按时间倒序取最新一条
+  const latestService = serviceConvs.sort(
+    (a, b) => new Date(b.time || 0).getTime() - new Date(a.time || 0).getTime()
+  )[0];
 
   const fixedCustomerService: Message = {
-    id: 'fixed-customer-service',
+    id: latestService?.id ?? 'fixed-customer-service',
     type: 'session',
     title: '乐享购官方客服',
     content: latestService?.content || '您好，请问有什么可以帮您？',
     avatar: getImageUrl(latestService?.avatar || ''),
     time: formatMessageTime(latestService?.time || ''),
-    unreadCount: serviceUnread,
+    unreadCount: latestService?.unreadCount ?? 0,
     tag: '客服',
     isOfficial: false,
   };
