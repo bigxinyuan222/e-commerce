@@ -498,6 +498,18 @@ const ProductDetailPage: React.FC = () => {
         return;
       }
 
+      // 防护：微信支付最小金额为 1 分钱，0 元订单无法发起微信支付
+      // 如果秒杀价为 0 或无法获取，跳过支付，直接跳转订单详情
+      if (!seckillPrice || seckillPrice <= 0) {
+        Taro.hideLoading();
+        console.warn('[秒杀支付] 秒杀价格为 0 或未获取到，跳过微信支付。请检查后端秒杀订单金额是否正确写入。');
+        Taro.showToast({ title: '抢购成功，请到订单中查看', icon: 'none' });
+        setTimeout(() => {
+          Taro.redirectTo({ url: `/pages/cart/order/detail/index?id=${realOrderId}` });
+        }, 1500);
+        return;
+      }
+
       Taro.showLoading({ title: '发起支付...', mask: true });
       try {
         const payRes = await payOrder(realOrderId, { paymentMethod: 'wechat' });

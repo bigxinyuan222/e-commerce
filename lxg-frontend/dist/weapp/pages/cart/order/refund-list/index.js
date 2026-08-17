@@ -1,1 +1,370 @@
-"use strict";(wx["webpackJsonp"]=wx["webpackJsonp"]||[]).push([[7800],{5352:function(e,r,a){var s=a(8870),t=a(1212),c=a(467),n=a(5544),o=a(9379),l=a(2284),i=a(6540),d=a(118),u=a(758),m=a.n(u),p=a(4473),h=a(678),A=a(8007),x=a(4848),f={pending:"\u5f85\u5ba1\u6838",approved:"\u5df2\u901a\u8fc7",rejected:"\u5df2\u62d2\u7edd",completed:"\u5df2\u5b8c\u6210"},N={pending:"#faad14",approved:"#52c41a",rejected:"#ff4d4f",completed:"#52c41a"};function j(){for(var e=arguments.length,r=new Array(e),a=0;a<e;a++)r[a]=arguments[a];for(var s=0,t=r;s<t.length;s++){var c=t[s];if(void 0!==c&&null!==c&&""!==c&&0!==c&&"0"!==c)return String(c)}return""}function v(e){var r=e.skuName||e.SkuName||"";!r&&e.specValues&&"object"===(0,l.A)(e.specValues)&&(r=Object.values(e.specValues).join("/")||"");var a=e.image||e.Image||"";if("string"===typeof a&&a.startsWith("["))try{var s=JSON.parse(a);Array.isArray(s)&&s.length>0&&(a=s[0].replace(/^`|`$/g,""))}catch(e){}return{id:j(e.id,e.ID,e.productId,e.ProductID),productId:j(e.productId,e.ProductID),productName:e.productName||e.ProductName||"",skuId:j(e.skuId,e.SkuID),skuName:r,price:null!=e.price?e.price:e.Price||0,quantity:null!=e.quantity?e.quantity:e.Quantity||0,image:(0,h.VG)(a)}}function g(e){var r=(e.items||[]).map(function(e){return(0,o.A)((0,o.A)({},v(e)),{},{image:(0,h.VG)(e.image||e.Image||"")})}),a=e.status||"pending";return{id:e.id||"",orderId:e.orderId||"",orderNo:e.refundNo||e.orderNo||"",status:a,statusText:f[a]||e.statusText||"\u5f85\u5904\u7406",createTime:e.applyTime||"",payAmount:e.amount||e.payAmount||0,totalAmount:e.amount||0,items:r}}var y=i.memo(function(e){var r=e.product;return(0,x.jsxs)(d.Ss,{className:A.A.orderProduct,children:[(0,x.jsx)(d._V,(0,o.A)({src:r.image,className:A.A.productImage,mode:"aspectFill"},(0,h.aI)())),(0,x.jsxs)(d.Ss,{className:A.A.productInfo,children:[(0,x.jsx)(d.EY,{className:A.A.productName,children:r.productName}),(0,x.jsx)(d.EY,{className:A.A.productSpecs,children:r.skuName}),(0,x.jsxs)(d.Ss,{className:A.A.productBottom,children:[(0,x.jsxs)(d.EY,{className:A.A.productPrice,children:["\xa5",r.price]}),(0,x.jsxs)(d.EY,{className:A.A.productQuantity,children:["x",r.quantity]})]})]})]})}),S=i.memo(function(e){var r=e.record;return(0,x.jsxs)(d.Ss,{className:A.A.orderCard,children:[(0,x.jsxs)(d.Ss,{className:A.A.orderHeader,children:[(0,x.jsxs)(d.EY,{className:A.A.orderId,children:["\u9000\u8d27\u7f16\u53f7: ",r.orderNo]}),(0,x.jsx)(d.EY,{className:A.A.orderStatus,style:{color:N[r.status]||"#999"},children:r.statusText})]}),(0,x.jsx)(d.Ss,{className:A.A.orderProducts,children:(r.items||[]).map(function(e,a){return(0,x.jsx)(y,{product:e},"".concat(r.id,"-").concat(e.productId,"-").concat(a))})}),(0,x.jsx)(d.Ss,{className:A.A.orderFooter,children:(0,x.jsxs)(d.Ss,{className:A.A.orderTotal,children:[(0,x.jsx)(d.EY,{className:A.A.totalLabel,children:"\u5408\u8ba1:"}),(0,x.jsxs)(d.EY,{className:A.A.totalValue,children:["\xa5",r.payAmount]})]})})]})}),b=[{key:"all",label:"\u5168\u90e8"},{key:"pending",label:"\u5f85\u5ba1\u6838"},{key:"approved",label:"\u5df2\u901a\u8fc7"},{key:"rejected",label:"\u5df2\u62d2\u7edd"},{key:"completed",label:"\u5df2\u5b8c\u6210"}],k=["pending","approved","rejected","completed"],I=function(){var e=(0,i.useState)("all"),r=(0,n.A)(e,2),a=r[0],s=r[1],o=(0,i.useState)([]),l=(0,n.A)(o,2),u=l[0],h=l[1],f=(0,i.useState)(!0),N=(0,n.A)(f,2),j=N[0],v=N[1],y=(0,i.useCallback)((0,c.A)((0,t.A)().m(function e(){var r,a,s,c;return(0,t.A)().w(function(e){while(1)switch(e.p=e.n){case 0:return v(!0),e.p=1,e.n=2,(0,p.hW)({page:1,size:100});case 2:r=e.v,a=Array.isArray(null===r||void 0===r?void 0:r.data)?r.data:[],s=a.map(g).filter(function(e){return k.includes(e.status)}),h(s),e.n=4;break;case 3:e.p=3,c=e.v,console.error("\u52a0\u8f7d\u9000\u6b3e/\u552e\u540e\u5217\u8868\u5931\u8d25:",c),m().showToast({title:(null===c||void 0===c?void 0:c.message)||"\u52a0\u8f7d\u5931\u8d25",icon:"none"}),h([]);case 4:return e.p=4,v(!1),e.f(4);case 5:return e.a(2)}},e,null,[[1,3,4,5]])})),[]);(0,i.useEffect)(function(){y()},[y]);var I=(0,i.useMemo)(function(){return"all"===a?u:u.filter(function(e){return e.status===a})},[u,a]),E=(0,i.useMemo)(function(){return b.findIndex(function(e){return e.key===a})},[a]),Y=(0,i.useCallback)(function(){m().switchTab({url:"/pages/home/index"})},[]);return(0,x.jsxs)(d.Ss,{className:A.A.orderListPage,children:[(0,x.jsx)(d.Ss,{className:A.A.refundHeader,children:(0,x.jsx)(d.EY,{className:A.A.refundTitle,children:"\u9000\u6b3e/\u552e\u540e"})}),(0,x.jsx)(d.BM,{scrollX:!0,className:A.A.tabBar,showScrollbar:!1,children:(0,x.jsx)(d.Ss,{className:A.A.tabList,children:b.map(function(e,r){return(0,x.jsxs)(d.Ss,{className:"".concat(A.A.tabItem," ").concat(E===r?A.A.active:""),onClick:function(){return s(e.key)},children:[(0,x.jsx)(d.EY,{className:A.A.tabText,children:e.label}),E===r&&(0,x.jsx)(d.Ss,{className:A.A.tabIndicator})]},e.key)})})}),j?(0,x.jsx)(d.Ss,{className:A.A.loading,children:(0,x.jsx)(d.EY,{children:"\u52a0\u8f7d\u4e2d..."})}):I.length>0?(0,x.jsx)(d.BM,{scrollY:!0,className:A.A.orderList,enhanced:!0,showScrollbar:!1,children:I.map(function(e,r){return(0,x.jsx)(S,{record:e},e.id||"refund-".concat(r))})}):(0,x.jsxs)(d.Ss,{className:A.A.emptyOrder,children:[(0,x.jsx)(d.Ss,{className:A.A.emptyIcon,children:(0,x.jsx)(d.EY,{children:"\ud83d\udce6"})}),(0,x.jsx)(d.EY,{className:A.A.emptyText,children:"\u6682\u65e0\u9000\u6b3e/\u552e\u540e\u8bb0\u5f55"}),(0,x.jsx)(d.Ss,{className:A.A.goShoppingBtn,onClick:Y,children:"\u53bb\u8d2d\u7269"})]})]})},E=i.memo(I),Y={},w=(0,s.eU)(E,"pages/cart/order/refund-list/index",{root:{cn:[]}},Y||{});E&&E.behaviors&&(w.behaviors=(w.behaviors||[]).concat(E.behaviors));Page(w)}},function(e){var r=function(r){return e(e.s=r)};e.O(0,[6907,8096,2076],function(){return r(5352)});e.O()}]);
+"use strict";
+(wx["webpackJsonp"] = wx["webpackJsonp"] || []).push([["pages/cart/order/refund-list/index"],{
+
+/***/ "./node_modules/@tarojs/taro-loader/lib/entry-cache.js?name=pages/cart/order/refund-list/index!./src/pages/cart/order/refund-list/index.tsx":
+/*!**************************************************************************************************************************************************!*\
+  !*** ./node_modules/@tarojs/taro-loader/lib/entry-cache.js?name=pages/cart/order/refund-list/index!./src/pages/cart/order/refund-list/index.tsx ***!
+  \**************************************************************************************************************************************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+/* harmony import */ var D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ./node_modules/@babel/runtime/helpers/esm/regenerator.js */ "./node_modules/@babel/runtime/helpers/esm/regenerator.js");
+/* harmony import */ var D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./node_modules/@babel/runtime/helpers/esm/asyncToGenerator.js */ "./node_modules/@babel/runtime/helpers/esm/asyncToGenerator.js");
+/* harmony import */ var D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_slicedToArray_js__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./node_modules/@babel/runtime/helpers/esm/slicedToArray.js */ "./node_modules/@babel/runtime/helpers/esm/slicedToArray.js");
+/* harmony import */ var D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./node_modules/@babel/runtime/helpers/esm/objectSpread2.js */ "./node_modules/@babel/runtime/helpers/esm/objectSpread2.js");
+/* harmony import */ var D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_typeof_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./node_modules/@babel/runtime/helpers/esm/typeof.js */ "./node_modules/@babel/runtime/helpers/esm/typeof.js");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _tarojs_components__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! @tarojs/components */ "./node_modules/@tarojs/plugin-platform-weapp/dist/components-react.js");
+/* harmony import */ var _tarojs_taro__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @tarojs/taro */ "./node_modules/@tarojs/taro/index.js");
+/* harmony import */ var _tarojs_taro__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_tarojs_taro__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _api_cart__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @/api/cart */ "./src/api/cart/index.ts");
+/* harmony import */ var _utils_image__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @/utils/image */ "./src/utils/image.ts");
+/* harmony import */ var _index_module_scss__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./index.module.scss */ "./src/pages/cart/order/refund-list/index.module.scss");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/cjs/react-jsx-runtime.production.min.js");
+
+
+
+
+
+
+
+
+
+
+
+
+var refundStatusTextMap = {
+  'pending': '待审核',
+  'approved': '已通过',
+  'rejected': '已拒绝',
+  'completed': '已完成'
+};
+var refundStatusColorMap = {
+  'pending': '#faad14',
+  'approved': '#52c41a',
+  'rejected': '#ff4d4f',
+  'completed': '#52c41a'
+};
+function pickFirstValid() {
+  for (var _len = arguments.length, candidates = new Array(_len), _key = 0; _key < _len; _key++) {
+    candidates[_key] = arguments[_key];
+  }
+  for (var _i = 0, _candidates = candidates; _i < _candidates.length; _i++) {
+    var value = _candidates[_i];
+    if (value !== undefined && value !== null && value !== '' && value !== 0 && value !== '0') {
+      return String(value);
+    }
+  }
+  return '';
+}
+function transformOrderItem(item) {
+  var skuName = item.skuName || item.SkuName || '';
+  if (!skuName && item.specValues && (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_typeof_js__WEBPACK_IMPORTED_MODULE_6__["default"])(item.specValues) === 'object') {
+    skuName = Object.values(item.specValues).join('/') || '';
+  }
+  var image = item.image || item.Image || '';
+  if (typeof image === 'string' && image.startsWith('[')) {
+    try {
+      var parsed = JSON.parse(image);
+      if (Array.isArray(parsed) && parsed.length > 0) {
+        image = parsed[0].replace(/^`|`$/g, '');
+      }
+    } catch (_unused) {/* ignore */}
+  }
+  return {
+    id: pickFirstValid(item.id, item.ID, item.productId, item.ProductID),
+    productId: pickFirstValid(item.productId, item.ProductID),
+    productName: item.productName || item.ProductName || '',
+    skuId: pickFirstValid(item.skuId, item.SkuID),
+    skuName: skuName,
+    price: item.price != null ? item.price : item.Price || 0,
+    quantity: item.quantity != null ? item.quantity : item.Quantity || 0,
+    image: (0,_utils_image__WEBPACK_IMPORTED_MODULE_3__.getImageUrl)(image)
+  };
+}
+function transformRefund(refund) {
+  var items = (refund.items || []).map(function (item) {
+    return (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_7__["default"])((0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_7__["default"])({}, transformOrderItem(item)), {}, {
+      image: (0,_utils_image__WEBPACK_IMPORTED_MODULE_3__.getImageUrl)(item.image || item.Image || '')
+    });
+  });
+  var status = refund.status || 'pending';
+  return {
+    id: refund.id || '',
+    orderId: refund.orderId || '',
+    orderNo: refund.refundNo || refund.orderNo || '',
+    status: status,
+    statusText: refundStatusTextMap[status] || refund.statusText || '待处理',
+    createTime: refund.applyTime || '',
+    payAmount: refund.amount || refund.payAmount || 0,
+    totalAmount: refund.amount || 0,
+    items: items
+  };
+}
+var RefundProductItem = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().memo(function (_ref) {
+  var product = _ref.product;
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_8__.View, {
+    className: _index_module_scss__WEBPACK_IMPORTED_MODULE_4__["default"].orderProduct,
+    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_8__.Image, (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_7__["default"])({
+      src: product.image,
+      className: _index_module_scss__WEBPACK_IMPORTED_MODULE_4__["default"].productImage,
+      mode: "aspectFill"
+    }, (0,_utils_image__WEBPACK_IMPORTED_MODULE_3__.lazyImgProps)())), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_8__.View, {
+      className: _index_module_scss__WEBPACK_IMPORTED_MODULE_4__["default"].productInfo,
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_8__.Text, {
+        className: _index_module_scss__WEBPACK_IMPORTED_MODULE_4__["default"].productName,
+        children: product.productName
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_8__.Text, {
+        className: _index_module_scss__WEBPACK_IMPORTED_MODULE_4__["default"].productSpecs,
+        children: product.skuName
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_8__.View, {
+        className: _index_module_scss__WEBPACK_IMPORTED_MODULE_4__["default"].productBottom,
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_8__.Text, {
+          className: _index_module_scss__WEBPACK_IMPORTED_MODULE_4__["default"].productPrice,
+          children: ["\xA5", product.price]
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_8__.Text, {
+          className: _index_module_scss__WEBPACK_IMPORTED_MODULE_4__["default"].productQuantity,
+          children: ["x", product.quantity]
+        })]
+      })]
+    })]
+  });
+});
+var RefundCard = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().memo(function (_ref2) {
+  var record = _ref2.record;
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_8__.View, {
+    className: _index_module_scss__WEBPACK_IMPORTED_MODULE_4__["default"].orderCard,
+    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_8__.View, {
+      className: _index_module_scss__WEBPACK_IMPORTED_MODULE_4__["default"].orderHeader,
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_8__.Text, {
+        className: _index_module_scss__WEBPACK_IMPORTED_MODULE_4__["default"].orderId,
+        children: ["\u9000\u8D27\u7F16\u53F7: ", record.orderNo]
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_8__.Text, {
+        className: _index_module_scss__WEBPACK_IMPORTED_MODULE_4__["default"].orderStatus,
+        style: {
+          color: refundStatusColorMap[record.status] || '#999'
+        },
+        children: record.statusText
+      })]
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_8__.View, {
+      className: _index_module_scss__WEBPACK_IMPORTED_MODULE_4__["default"].orderProducts,
+      children: (record.items || []).map(function (product, index) {
+        return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(RefundProductItem, {
+          product: product
+        }, "".concat(record.id, "-").concat(product.productId, "-").concat(index));
+      })
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_8__.View, {
+      className: _index_module_scss__WEBPACK_IMPORTED_MODULE_4__["default"].orderFooter,
+      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_8__.View, {
+        className: _index_module_scss__WEBPACK_IMPORTED_MODULE_4__["default"].orderTotal,
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_8__.Text, {
+          className: _index_module_scss__WEBPACK_IMPORTED_MODULE_4__["default"].totalLabel,
+          children: "\u5408\u8BA1:"
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_8__.Text, {
+          className: _index_module_scss__WEBPACK_IMPORTED_MODULE_4__["default"].totalValue,
+          children: ["\xA5", record.payAmount]
+        })]
+      })
+    })]
+  });
+});
+var tabs = [{
+  key: 'all',
+  label: '全部'
+}, {
+  key: 'pending',
+  label: '待审核'
+}, {
+  key: 'approved',
+  label: '已通过'
+}, {
+  key: 'rejected',
+  label: '已拒绝'
+}, {
+  key: 'completed',
+  label: '已完成'
+}];
+var validRefundStatuses = ['pending', 'approved', 'rejected', 'completed'];
+var RefundListPage = function RefundListPage() {
+  var _useState = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)('all'),
+    _useState2 = (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_slicedToArray_js__WEBPACK_IMPORTED_MODULE_9__["default"])(_useState, 2),
+    activeTab = _useState2[0],
+    setActiveTab = _useState2[1];
+  var _useState3 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)([]),
+    _useState4 = (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_slicedToArray_js__WEBPACK_IMPORTED_MODULE_9__["default"])(_useState3, 2),
+    records = _useState4[0],
+    setRecords = _useState4[1];
+  var _useState5 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(true),
+    _useState6 = (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_slicedToArray_js__WEBPACK_IMPORTED_MODULE_9__["default"])(_useState5, 2),
+    loading = _useState6[0],
+    setLoading = _useState6[1];
+  var loadRecords = (0,react__WEBPACK_IMPORTED_MODULE_0__.useCallback)(/*#__PURE__*/(0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_10__["default"])(/*#__PURE__*/(0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_11__["default"])().m(function _callee() {
+    var res, list, refundRecords, _t;
+    return (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_11__["default"])().w(function (_context) {
+      while (1) switch (_context.p = _context.n) {
+        case 0:
+          setLoading(true);
+          _context.p = 1;
+          _context.n = 2;
+          return (0,_api_cart__WEBPACK_IMPORTED_MODULE_2__.fetchRefundList)({
+            page: 1,
+            size: 100
+          });
+        case 2:
+          res = _context.v;
+          list = Array.isArray(res === null || res === void 0 ? void 0 : res.data) ? res.data : [];
+          refundRecords = list.map(transformRefund).filter(function (r) {
+            return validRefundStatuses.includes(r.status);
+          });
+          setRecords(refundRecords);
+          _context.n = 4;
+          break;
+        case 3:
+          _context.p = 3;
+          _t = _context.v;
+          console.error('加载退款/售后列表失败:', _t);
+          _tarojs_taro__WEBPACK_IMPORTED_MODULE_1___default().showToast({
+            title: (_t === null || _t === void 0 ? void 0 : _t.message) || '加载失败',
+            icon: 'none'
+          });
+          setRecords([]);
+        case 4:
+          _context.p = 4;
+          setLoading(false);
+          return _context.f(4);
+        case 5:
+          return _context.a(2);
+      }
+    }, _callee, null, [[1, 3, 4, 5]]);
+  })), []);
+  (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(function () {
+    loadRecords();
+  }, [loadRecords]);
+  var filteredRecords = (0,react__WEBPACK_IMPORTED_MODULE_0__.useMemo)(function () {
+    if (activeTab === 'all') return records;
+    return records.filter(function (r) {
+      return r.status === activeTab;
+    });
+  }, [records, activeTab]);
+  var activeTabIndex = (0,react__WEBPACK_IMPORTED_MODULE_0__.useMemo)(function () {
+    return tabs.findIndex(function (tab) {
+      return tab.key === activeTab;
+    });
+  }, [activeTab]);
+  var goShopping = (0,react__WEBPACK_IMPORTED_MODULE_0__.useCallback)(function () {
+    _tarojs_taro__WEBPACK_IMPORTED_MODULE_1___default().switchTab({
+      url: '/pages/home/index'
+    });
+  }, []);
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_8__.View, {
+    className: _index_module_scss__WEBPACK_IMPORTED_MODULE_4__["default"].orderListPage,
+    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_8__.View, {
+      className: _index_module_scss__WEBPACK_IMPORTED_MODULE_4__["default"].refundHeader,
+      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_8__.Text, {
+        className: _index_module_scss__WEBPACK_IMPORTED_MODULE_4__["default"].refundTitle,
+        children: "\u9000\u6B3E/\u552E\u540E"
+      })
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_8__.ScrollView, {
+      scrollX: true,
+      className: _index_module_scss__WEBPACK_IMPORTED_MODULE_4__["default"].tabBar,
+      showScrollbar: false,
+      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_8__.View, {
+        className: _index_module_scss__WEBPACK_IMPORTED_MODULE_4__["default"].tabList,
+        children: tabs.map(function (tab, index) {
+          return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_8__.View, {
+            className: "".concat(_index_module_scss__WEBPACK_IMPORTED_MODULE_4__["default"].tabItem, " ").concat(activeTabIndex === index ? _index_module_scss__WEBPACK_IMPORTED_MODULE_4__["default"].active : ''),
+            onClick: function onClick() {
+              return setActiveTab(tab.key);
+            },
+            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_8__.Text, {
+              className: _index_module_scss__WEBPACK_IMPORTED_MODULE_4__["default"].tabText,
+              children: tab.label
+            }), activeTabIndex === index && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_8__.View, {
+              className: _index_module_scss__WEBPACK_IMPORTED_MODULE_4__["default"].tabIndicator
+            })]
+          }, tab.key);
+        })
+      })
+    }), loading ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_8__.View, {
+      className: _index_module_scss__WEBPACK_IMPORTED_MODULE_4__["default"].loading,
+      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_8__.Text, {
+        children: "\u52A0\u8F7D\u4E2D..."
+      })
+    }) : filteredRecords.length > 0 ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_8__.ScrollView, {
+      scrollY: true,
+      className: _index_module_scss__WEBPACK_IMPORTED_MODULE_4__["default"].orderList,
+      enhanced: true,
+      showScrollbar: false,
+      children: filteredRecords.map(function (record, index) {
+        return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(RefundCard, {
+          record: record
+        }, record.id || "refund-".concat(index));
+      })
+    }) : /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_8__.View, {
+      className: _index_module_scss__WEBPACK_IMPORTED_MODULE_4__["default"].emptyOrder,
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_8__.View, {
+        className: _index_module_scss__WEBPACK_IMPORTED_MODULE_4__["default"].emptyIcon,
+        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_8__.Text, {
+          children: "\uD83D\uDCE6"
+        })
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_8__.Text, {
+        className: _index_module_scss__WEBPACK_IMPORTED_MODULE_4__["default"].emptyText,
+        children: "\u6682\u65E0\u9000\u6B3E/\u552E\u540E\u8BB0\u5F55"
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_8__.View, {
+        className: _index_module_scss__WEBPACK_IMPORTED_MODULE_4__["default"].goShoppingBtn,
+        onClick: goShopping,
+        children: "\u53BB\u8D2D\u7269"
+      })]
+    })]
+  });
+};
+/* harmony default export */ __webpack_exports__["default"] = (/*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().memo(RefundListPage));
+
+/***/ }),
+
+/***/ "./src/pages/cart/order/refund-list/index.tsx":
+/*!****************************************************!*\
+  !*** ./src/pages/cart/order/refund-list/index.tsx ***!
+  \****************************************************/
+/***/ (function(__unused_webpack_module, __unused_webpack___webpack_exports__, __webpack_require__) {
+
+/* harmony import */ var _tarojs_runtime__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @tarojs/runtime */ "./node_modules/@tarojs/runtime/dist/dsl/common.js");
+/* harmony import */ var _node_modules_tarojs_taro_loader_lib_entry_cache_js_name_pages_cart_order_refund_list_index_index_tsx__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! !!../../../../../node_modules/@tarojs/taro-loader/lib/entry-cache.js?name=pages/cart/order/refund-list/index!./index.tsx */ "./node_modules/@tarojs/taro-loader/lib/entry-cache.js?name=pages/cart/order/refund-list/index!./src/pages/cart/order/refund-list/index.tsx");
+
+
+var config = {};
+
+
+
+var taroOption = (0,_tarojs_runtime__WEBPACK_IMPORTED_MODULE_1__.createPageConfig)(_node_modules_tarojs_taro_loader_lib_entry_cache_js_name_pages_cart_order_refund_list_index_index_tsx__WEBPACK_IMPORTED_MODULE_0__["default"], 'pages/cart/order/refund-list/index', {root:{cn:[]}}, config || {})
+if (_node_modules_tarojs_taro_loader_lib_entry_cache_js_name_pages_cart_order_refund_list_index_index_tsx__WEBPACK_IMPORTED_MODULE_0__["default"] && _node_modules_tarojs_taro_loader_lib_entry_cache_js_name_pages_cart_order_refund_list_index_index_tsx__WEBPACK_IMPORTED_MODULE_0__["default"].behaviors) {
+  taroOption.behaviors = (taroOption.behaviors || []).concat(_node_modules_tarojs_taro_loader_lib_entry_cache_js_name_pages_cart_order_refund_list_index_index_tsx__WEBPACK_IMPORTED_MODULE_0__["default"].behaviors)
+}
+var inst = Page(taroOption)
+
+
+
+/* unused harmony default export */ var __WEBPACK_DEFAULT_EXPORT__ = (_node_modules_tarojs_taro_loader_lib_entry_cache_js_name_pages_cart_order_refund_list_index_index_tsx__WEBPACK_IMPORTED_MODULE_0__["default"]);
+
+
+/***/ }),
+
+/***/ "./src/pages/cart/order/refund-list/index.module.scss":
+/*!************************************************************!*\
+  !*** ./src/pages/cart/order/refund-list/index.module.scss ***!
+  \************************************************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__) {
+
+// extracted by mini-css-extract-plugin
+/* harmony default export */ __webpack_exports__["default"] = ({"orderListPage":"index-module__orderListPage___cn4lH","tabBar":"index-module__tabBar___gSukb","tabList":"index-module__tabList___fwdBy","tabItem":"index-module__tabItem___V9BpS","tabText":"index-module__tabText___wP_No","active":"index-module__active___WMK0e","tabIndicator":"index-module__tabIndicator___Nofy2","orderList":"index-module__orderList___vIfi9","orderCard":"index-module__orderCard___WDdzP","orderHeader":"index-module__orderHeader___RArmR","orderId":"index-module__orderId___MHWNc","orderStatus":"index-module__orderStatus___N79Oa","storeInfo":"index-module__storeInfo___J9aV9","storeName":"index-module__storeName___KrJ7O","storeAddress":"index-module__storeAddress___VI2hJ","orderProducts":"index-module__orderProducts___lZtoS","orderProduct":"index-module__orderProduct___brI8I","productImage":"index-module__productImage___C1S91","productInfo":"index-module__productInfo___H7IAh","productName":"index-module__productName___zn_Nj","productSpecs":"index-module__productSpecs___e9evB","productBottom":"index-module__productBottom___PgHfI","productPrice":"index-module__productPrice___YbAmK","productQuantity":"index-module__productQuantity___OQv2T","orderFooter":"index-module__orderFooter___erKyR","orderTotal":"index-module__orderTotal___qw7Mm","totalLabel":"index-module__totalLabel___C2YPj","totalValue":"index-module__totalValue___Up9Rq","orderActions":"index-module__orderActions___CcEu7","actionBtn":"index-module__actionBtn___IgHYg","primary":"index-module__primary___P0AVK","secondary":"index-module__secondary___Zx4y6","danger":"index-module__danger___CG9Mm","emptyOrder":"index-module__emptyOrder___uJpUZ","emptyIcon":"index-module__emptyIcon___YKhvm","emptyText":"index-module__emptyText___ooyrb","goShoppingBtn":"index-module__goShoppingBtn___rKxbs","loading":"index-module__loading___i8e4J","refundHeader":"index-module__refundHeader___TOHTs","refundTitle":"index-module__refundTitle___heQZF","refundStatusActions":"index-module__refundStatusActions___X8MmY","refundStatusBtn":"index-module__refundStatusBtn___zjpSs"});
+
+/***/ })
+
+},
+/******/ function(__webpack_require__) { // webpackRuntimeModules
+/******/ var __webpack_exec__ = function(moduleId) { return __webpack_require__(__webpack_require__.s = moduleId); }
+/******/ __webpack_require__.O(0, ["taro","vendors","common"], function() { return __webpack_exec__("./src/pages/cart/order/refund-list/index.tsx"); });
+/******/ var __webpack_exports__ = __webpack_require__.O();
+/******/ }
+]);
+//# sourceMappingURL=index.js.map

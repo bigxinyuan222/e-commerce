@@ -1,1 +1,1028 @@
-"use strict";(wx["webpackJsonp"]=wx["webpackJsonp"]||[]).push([[8504],{1790:function(e,a,t){var n=t(8870),o=t(9379),s=t(1212),r=t(436),l=t(467),i=t(5544),c=t(6540),u=t(118),d=t(758),_=t.n(d),m=t(5948),x=t(678),v=t(5826),p={evaluationPage:"evaluations-module__evaluationPage___Apb7L",statsSection:"evaluations-module__statsSection___J7eF8",scoreArea:"evaluations-module__scoreArea___U6lq9",scoreValue:"evaluations-module__scoreValue___JOnBs",scoreLabel:"evaluations-module__scoreLabel___fjrIz",stars:"evaluations-module__stars___FTNLP",starActive:"evaluations-module__starActive___WH9aO",starInactive:"evaluations-module__starInactive___i9sbc",distribution:"evaluations-module__distribution___U13eI",distItem:"evaluations-module__distItem___tYKuL",distLabel:"evaluations-module__distLabel___rimIw",distBarWrap:"evaluations-module__distBarWrap___SIDKx",distBar:"evaluations-module__distBar____Hjta",distPercent:"evaluations-module__distPercent___p0qCA",goodRate:"evaluations-module__goodRate___lWc_U",goodRateLabel:"evaluations-module__goodRateLabel___T00wE",goodRateValue:"evaluations-module__goodRateValue___kyOch",filterSection:"evaluations-module__filterSection___KoZRC",filterTabs:"evaluations-module__filterTabs___zsjLZ",filterTab:"evaluations-module__filterTab___xNhgq",active:"evaluations-module__active___Q8IzT",filterCount:"evaluations-module__filterCount___qf3oX",tagSection:"evaluations-module__tagSection___rktz2",tagList:"evaluations-module__tagList___f7JQz",tagItem:"evaluations-module__tagItem___h4C5o",tagCount:"evaluations-module__tagCount___be6fx",tagMore:"evaluations-module__tagMore___D5kRx",moreArrow:"evaluations-module__moreArrow___lq2VO",sortSection:"evaluations-module__sortSection___uxqGC",sortLabel:"evaluations-module__sortLabel___sBdqe",sortOptions:"evaluations-module__sortOptions___VQLDa",sortOption:"evaluations-module__sortOption___hMMmA",sortDivider:"evaluations-module__sortDivider___F4AlO",sortArrow:"evaluations-module__sortArrow___DG_Am",evaluationList:"evaluations-module__evaluationList___oGrDC",evaluationItem:"evaluations-module__evaluationItem___vCdDZ",evalHeader:"evaluations-module__evalHeader___HqlOq",userAvatar:"evaluations-module__userAvatar___VpvJy",userInfo:"evaluations-module__userInfo___Zj0k_",userNameRow:"evaluations-module__userNameRow___ROLAD",userName:"evaluations-module__userName___FXRNP",userTag:"evaluations-module__userTag___Xt6id",purchaseInfo:"evaluations-module__purchaseInfo___S3cOw",evalTime:"evaluations-module__evalTime___NDIpe",ratingRow:"evaluations-module__ratingRow___uujA1",ratingLabel:"evaluations-module__ratingLabel___VSe6K",ratingStars:"evaluations-module__ratingStars___oWAtv",evalContent:"evaluations-module__evalContent___aflqu",expandBtn:"evaluations-module__expandBtn___FU62x",imageGrid:"evaluations-module__imageGrid___KpUJW",evalImage:"evaluations-module__evalImage___UeGg3",evalActions:"evaluations-module__evalActions___DHmWl",actionItem:"evaluations-module__actionItem___zMe1B",liked:"evaluations-module__liked___btMat",actionIcon:"evaluations-module__actionIcon___U3ZXO",actionText:"evaluations-module__actionText___ZmPiC",commentList:"evaluations-module__commentList___k6kI_",commentItem:"evaluations-module__commentItem___dd70I",commentAvatar:"evaluations-module__commentAvatar___PcnBN",commentContent:"evaluations-module__commentContent___oDZjw",commentHeader:"evaluations-module__commentHeader___YDrBE",commentUserName:"evaluations-module__commentUserName___Zcoyt",commentTime:"evaluations-module__commentTime___EwQpc",commentText:"evaluations-module__commentText___WaHjP",commentLike:"evaluations-module__commentLike___eMILE",commentLikeCount:"evaluations-module__commentLikeCount___TG145",commentModal:"evaluations-module__commentModal___P4yON",modalMask:"evaluations-module__modalMask___PXfSA",commentModalContent:"evaluations-module__commentModalContent___ffq0s",commentModalHeader:"evaluations-module__commentModalHeader___Bfr06",commentModalTitle:"evaluations-module__commentModalTitle____LDhj",commentModalClose:"evaluations-module__commentModalClose___JCgQs",commentModalBody:"evaluations-module__commentModalBody___NVeBt",emptyComment:"evaluations-module__emptyComment___jPtxB",commentModalFooter:"evaluations-module__commentModalFooter___POwLW",commentInput:"evaluations-module__commentInput___xCjR_",commentSendBtn:"evaluations-module__commentSendBtn___qmiEb"},g=t(4848),h=function(){var e=(0,c.useState)(""),a=(0,i.A)(e,2),t=a[0],n=a[1],d=(0,c.useState)([]),h=(0,i.A)(d,2),f=h[0],b=h[1],j=(0,c.useState)(null),A=(0,i.A)(j,2),S=A[0],k=A[1],y=(0,c.useState)(null),N=(0,i.A)(y,2),w=N[0],I=N[1],C=(0,c.useState)("all"),L=(0,i.A)(C,2),T=L[0],E=L[1],Y=(0,c.useState)("newest"),R=(0,i.A)(Y,2),M=R[0],B=(R[1],(0,c.useState)(!0)),z=(0,i.A)(B,2),D=z[0],O=z[1],H=(0,c.useState)(1),F=(0,i.A)(H,2),P=F[0],V=F[1],W=(0,c.useState)(!0),q=(0,i.A)(W,2),U=q[0],G=q[1],Z=(0,c.useState)(!1),J=(0,i.A)(Z,2),X=J[0],K=J[1],Q=(0,c.useState)(!1),$=(0,i.A)(Q,2),ee=$[0],ae=$[1],te=(0,c.useState)(null),ne=(0,i.A)(te,2),oe=ne[0],se=ne[1],re=(0,c.useState)(""),le=(0,i.A)(re,2),ie=le[0],ce=le[1],ue=(0,c.useState)(!1),de=(0,i.A)(ue,2),_e=de[0],me=de[1],xe=10,ve=(0,c.useCallback)(function(){var e=(0,l.A)((0,s.A)().m(function e(a,t){var n,o,l,i,c,u=arguments;return(0,s.A)().w(function(e){while(1)switch(e.p=e.n){case 0:if(n=u.length>2&&void 0!==u[2]?u[2]:1,o=u.length>3&&void 0!==u[3]&&u[3],a){e.n=1;break}return e.a(2);case 1:return o?K(!0):O(!0),e.p=2,e.n=3,(0,m.j)({productId:a,page:n,size:xe,type:t});case 3:l=e.v,i=Array.isArray(null===l||void 0===l?void 0:l.data)?l.data:[],b(o?function(e){return[].concat((0,r.A)(e),(0,r.A)(i))}:i),G(i.length>=xe),V(n),e.n=5;break;case 4:e.p=4,c=e.v,console.error("[\u8bc4\u4ef7\u5217\u8868] \u52a0\u8f7d\u5931\u8d25:",(null===c||void 0===c?void 0:c.message)||c),o||b([]);case 5:return e.p=5,O(!1),K(!1),e.f(5);case 6:return e.a(2)}},e,null,[[2,4,5,6]])}));return function(a,t){return e.apply(this,arguments)}}(),[]),pe=(0,c.useCallback)(function(){var e=(0,l.A)((0,s.A)().m(function e(a){var t,n;return(0,s.A)().w(function(e){while(1)switch(e.p=e.n){case 0:if(a){e.n=1;break}return e.a(2);case 1:return e.p=1,e.n=2,(0,m.SX)(a);case 2:t=e.v,null!==t&&void 0!==t&&t.data&&k(t.data),e.n=4;break;case 3:e.p=3,n=e.v,console.error("[\u8bc4\u4ef7\u7edf\u8ba1] \u52a0\u8f7d\u5931\u8d25:",(null===n||void 0===n?void 0:n.message)||n);case 4:return e.a(2)}},e,null,[[1,3]])}));return function(a){return e.apply(this,arguments)}}(),[]),ge=(0,c.useState)(!0),he=(0,i.A)(ge,2),fe=he[0],be=he[1],je=(0,c.useCallback)(function(){var e=(0,l.A)((0,s.A)().m(function e(a){var t,n;return(0,s.A)().w(function(e){while(1)switch(e.p=e.n){case 0:if(a){e.n=1;break}return e.a(2);case 1:return be(!0),e.p=2,e.n=3,(0,m.jO)(a);case 3:t=e.v,null!==t&&void 0!==t&&t.data&&I(t.data),e.n=5;break;case 4:e.p=4,n=e.v,console.error("[AI\u8bc4\u4ef7\u6458\u8981] \u52a0\u8f7d\u5931\u8d25:",(null===n||void 0===n?void 0:n.message)||n);case 5:return e.p=5,be(!1),e.f(5);case 6:return e.a(2)}},e,null,[[2,4,5,6]])}));return function(a){return e.apply(this,arguments)}}(),[]);(0,c.useEffect)(function(){var e;_().setNavigationBarTitle({title:"\u5546\u54c1\u8bc4\u4ef7"});var a=(null===(e=_().getCurrentInstance())||void 0===e||null===(e=e.router)||void 0===e||null===(e=e.params)||void 0===e?void 0:e.id)||"";if(!a)return _().showToast({title:"\u7f3a\u5c11\u5546\u54c1ID",icon:"none"}),void O(!1);n(a),ve(a,"all",1,!1),pe(a),je(a)},[]);var Ae=(0,c.useCallback)(function(e){E(e),t&&ve(t,e,1,!1)},[t,ve]),Se=(0,c.useCallback)(function(){!X&&U&&t&&ve(t,T,P+1,!0)},[X,U,t,P,T,ve]),ke=c.useMemo(function(){var e=(0,r.A)(f);return"newest"===M?e.sort(function(e,a){var t=new Date(String(e.createdAt||e.createTime||"").replace(/-/g,"/")).getTime()||0,n=new Date(String(a.createdAt||a.createTime||"").replace(/-/g,"/")).getTime()||0;return n-t}):e.sort(function(e,a){return(a.likeCount||0)-(e.likeCount||0)})},[f,M]),ye=(0,c.useCallback)(function(){var e=(0,l.A)((0,s.A)().m(function e(a){var t;return(0,s.A)().w(function(e){while(1)switch(e.p=e.n){case 0:if(a){e.n=1;break}return e.a(2);case 1:return b(function(e){return e.map(function(e){return e.id===a?(0,o.A)((0,o.A)({},e),{},{isLike:!e.isLike,likeCount:e.isLike?(e.likeCount||0)-1:(e.likeCount||0)+1}):e})}),e.p=2,e.n=3,(0,m.iZ)(a);case 3:e.n=5;break;case 4:e.p=4,t=e.v,console.error("Failed to like review:",t),b(function(e){return e.map(function(e){return e.id===a?(0,o.A)((0,o.A)({},e),{},{isLike:!e.isLike,likeCount:e.isLike?(e.likeCount||0)-1:(e.likeCount||0)+1}):e})}),_().showToast({title:"\u70b9\u8d5e\u5931\u8d25",icon:"none"});case 5:return e.a(2)}},e,null,[[2,4]])}));return function(a){return e.apply(this,arguments)}}(),[]),Ne=(0,c.useCallback)(function(){var e=(0,l.A)((0,s.A)().m(function e(a){var t,n,r;return(0,s.A)().w(function(e){while(1)switch(e.p=e.n){case 0:return se((0,o.A)((0,o.A)({},a),{},{comments:[],loadingReplies:!0})),ae(!0),e.p=1,e.n=2,(0,m.nb)({reviewId:a.id,page:1,size:50});case 2:t=e.v,n=Array.isArray(null===t||void 0===t?void 0:t.data)?t.data:[],se(function(e){return e?(0,o.A)((0,o.A)({},e),{},{comments:n,loadingReplies:!1}):e}),e.n=4;break;case 3:e.p=3,r=e.v,console.error("Failed to load review replies:",r),se(function(e){return e?(0,o.A)((0,o.A)({},e),{},{comments:[],loadingReplies:!1}):e});case 4:return e.a(2)}},e,null,[[1,3]])}));return function(a){return e.apply(this,arguments)}}(),[]),we=(0,c.useCallback)(function(){ae(!1),se(null),ce("")},[]),Ie=(0,c.useCallback)((0,l.A)((0,s.A)().m(function e(){var a,t;return(0,s.A)().w(function(e){while(1)switch(e.p=e.n){case 0:if(ie.trim()){e.n=1;break}return _().showToast({title:"\u8bf7\u8f93\u5165\u8bc4\u8bba\u5185\u5bb9",icon:"none"}),e.a(2);case 1:if(null!==oe&&void 0!==oe&&oe.id){e.n=2;break}return _().showToast({title:"\u8bc4\u4ef7\u4fe1\u606f\u5f02\u5e38",icon:"none"}),e.a(2);case 2:if(!_e){e.n=3;break}return e.a(2);case 3:return me(!0),e.p=4,e.n=5,(0,m.Yk)({reviewId:oe.id,content:ie.trim()});case 5:a={id:"comment-".concat(Date.now()),reviewId:oe.id,userId:"user-current",userName:"\u6211",userAvatar:"",content:ie.trim(),createdAt:(new Date).toLocaleString(),likeCount:0,isLike:!1},se(function(e){return e?(0,o.A)((0,o.A)({},e),{},{comments:[].concat((0,r.A)(e.comments||[]),[a])}):e}),ce(""),_().showToast({title:"\u8bc4\u8bba\u6210\u529f",icon:"success"}),e.n=7;break;case 6:e.p=6,t=e.v,console.error("Failed to send reply:",t),_().showToast({title:(null===t||void 0===t?void 0:t.message)||"\u8bc4\u8bba\u5931\u8d25",icon:"none"});case 7:return e.p=7,me(!1),e.f(7);case 8:return e.a(2)}},e,null,[[4,6,7,8]])})),[ie,oe,_e]);return(0,g.jsxs)(u.Ss,{className:p.evaluationPage,children:[(0,g.jsxs)(u.Ss,{style:{position:"relative",margin:"20rpx",padding:"32rpx 28rpx 28rpx",borderRadius:"24rpx",overflow:"hidden",background:"linear-gradient(135deg, #1a1f3a 0%, #2d1b69 45%, #4a2c7a 100%)",boxShadow:"0 8rpx 28rpx rgba(74, 44, 122, 0.35)",color:"#fff"},children:[(0,g.jsxs)(u.Ss,{style:{position:"relative",zIndex:1,display:"flex",alignItems:"center",marginBottom:"24rpx"},children:[(0,g.jsx)(u.Ss,{style:{width:"64rpx",height:"64rpx",borderRadius:"999rpx",background:"linear-gradient(135deg, #a88bff 0%, #6c5ce7 100%)",display:"flex",alignItems:"center",justifyContent:"center",marginRight:"16rpx",boxShadow:"0 4rpx 12rpx rgba(168, 139, 255, 0.5)"},children:(0,g.jsx)(u.EY,{style:{fontSize:"36rpx",lineHeight:1},children:"\ud83e\udd16"})}),(0,g.jsx)(u.EY,{style:{flex:1,fontSize:"34rpx",fontWeight:"700",color:"#fff",letterSpacing:"1rpx"},children:"AI\u667a\u80fd\u603b\u8bc4"}),(0,g.jsx)(u.EY,{style:{fontSize:"20rpx",color:"#c8b6ff",background:"rgba(168, 139, 255, 0.15)",border:"1rpx solid rgba(168, 139, 255, 0.3)",padding:"4rpx 14rpx",borderRadius:"999rpx",marginLeft:"12rpx"},children:"AI"}),w&&w.averageRating>0&&(0,g.jsxs)(u.Ss,{style:{display:"flex",flexDirection:"column",alignItems:"flex-end",marginLeft:"12rpx"},children:[(0,g.jsxs)(u.EY,{style:{fontSize:"44rpx",fontWeight:"700",color:"#ffd700",lineHeight:1},children:[Math.round(20*w.averageRating),"%"]}),(0,g.jsx)(u.EY,{style:{fontSize:"20rpx",color:"rgba(255,255,255,0.65)",marginTop:"6rpx"},children:"\u7efc\u5408\u8bc4\u5206"})]})]}),(fe||w&&!w.overall)&&(0,g.jsxs)(u.Ss,{style:{position:"relative",zIndex:1,display:"flex",alignItems:"center",padding:"28rpx 24rpx",marginBottom:"20rpx",background:"rgba(255,255,255,0.06)",borderRadius:"16rpx",borderLeft:"4rpx solid rgba(168,139,255,0.5)"},children:[(0,g.jsxs)(u.Ss,{style:{display:"flex",marginRight:"16rpx"},children:[(0,g.jsx)(u.EY,{style:{width:"12rpx",height:"12rpx",borderRadius:"999rpx",background:"#a88bff",marginRight:"8rpx",opacity:.4},children:" "}),(0,g.jsx)(u.EY,{style:{width:"12rpx",height:"12rpx",borderRadius:"999rpx",background:"#a88bff",marginRight:"8rpx",opacity:.7},children:" "}),(0,g.jsx)(u.EY,{style:{width:"12rpx",height:"12rpx",borderRadius:"999rpx",background:"#a88bff",opacity:1},children:" "})]}),(0,g.jsxs)(u.Ss,{style:{flex:1},children:[(0,g.jsx)(u.EY,{style:{fontSize:"30rpx",color:"rgba(255,255,255,0.75)"},children:"AI \u6b63\u5728\u5206\u6790\u8be5\u5546\u54c1\u7684\u8bc4\u4ef7..."}),(0,g.jsx)(u.EY,{style:{display:"block",fontSize:"22rpx",color:"rgba(255,255,255,0.45)",marginTop:"6rpx"},children:fe?"\u57fa\u4e8e\u771f\u5b9e\u7528\u6237\u8bc4\u4ef7\u667a\u80fd\u751f\u6210":"\u8bc4\u4ef7\u6570\u636e\u79ef\u7d2f\u540e\u5c06\u81ea\u52a8\u751f\u6210\u603b\u8bc4"})]})]}),!fe&&w&&w.overall&&(0,g.jsxs)(g.Fragment,{children:[(0,g.jsx)(u.EY,{style:{position:"relative",zIndex:1,display:"block",fontSize:"30rpx",color:"rgba(255,255,255,0.92)",lineHeight:1.7,marginBottom:"24rpx",padding:"20rpx 24rpx",background:"rgba(255,255,255,0.06)",borderRadius:"16rpx",borderLeft:"4rpx solid #a88bff"},children:w.overall}),w.strengths&&w.strengths.length>0&&(0,g.jsxs)(u.Ss,{style:{position:"relative",zIndex:1,marginBottom:"16rpx"},children:[(0,g.jsx)(u.EY,{style:{fontSize:"28rpx",color:"rgba(255,255,255,0.85)",marginBottom:"12rpx",fontWeight:"500"},children:"\ud83d\udc4d \u597d\u8bc4\u4eae\u70b9"}),(0,g.jsx)(u.Ss,{style:{display:"flex",flexWrap:"wrap"},children:w.strengths.map(function(e,a){return(0,g.jsx)(u.EY,{style:{fontSize:"28rpx",color:"#b9f5d4",background:"rgba(72, 209, 104, 0.18)",border:"1rpx solid rgba(72, 209, 104, 0.35)",padding:"8rpx 20rpx",borderRadius:"999rpx",marginRight:"12rpx",marginBottom:"12rpx"},children:e},a)})})]}),w.weaknesses&&w.weaknesses.length>0&&(0,g.jsxs)(u.Ss,{style:{position:"relative",zIndex:1},children:[(0,g.jsx)(u.EY,{style:{fontSize:"28rpx",color:"rgba(255,255,255,0.85)",marginBottom:"12rpx",fontWeight:"500"},children:"\ud83d\udc4e \u5f85\u6539\u8fdb"}),(0,g.jsx)(u.Ss,{style:{display:"flex",flexWrap:"wrap"},children:w.weaknesses.map(function(e,a){return(0,g.jsx)(u.EY,{style:{fontSize:"28rpx",color:"#ffd3a0",background:"rgba(255, 159, 67, 0.18)",border:"1rpx solid rgba(255, 159, 67, 0.35)",padding:"8rpx 20rpx",borderRadius:"999rpx",marginRight:"12rpx",marginBottom:"12rpx"},children:e},a)})})]})]})]}),(0,g.jsx)(u.Ss,{className:p.filterSection,children:(0,g.jsxs)(u.BM,{scrollX:!0,className:p.filterTabs,children:[(0,g.jsx)(u.Ss,{className:"".concat(p.filterTab," ").concat("all"===T?p.active:""),onClick:function(){return Ae("all")},children:(0,g.jsxs)(u.EY,{children:["\u5168\u90e8 ",(null===S||void 0===S?void 0:S.total)||""]})}),(0,g.jsx)(u.Ss,{className:"".concat(p.filterTab," ").concat("good"===T?p.active:""),onClick:function(){return Ae("good")},children:(0,g.jsxs)(u.EY,{children:["\u597d\u8bc4 ",(null===S||void 0===S?void 0:S.goodCount)||""]})}),(0,g.jsx)(u.Ss,{className:"".concat(p.filterTab," ").concat("bad"===T?p.active:""),onClick:function(){return Ae("bad")},children:(0,g.jsxs)(u.EY,{children:["\u5dee\u8bc4 ",(null===S||void 0===S?void 0:S.badCount)||""]})})]})}),(0,g.jsx)(u.BM,{scrollY:!0,className:p.evaluationList,onScrollToLower:Se,style:{height:"calc(100vh - 400rpx)"},children:D?(0,g.jsx)(u.Ss,{style:{padding:"100rpx",textAlign:"center"},children:(0,g.jsx)(u.EY,{style:{color:"#999"},children:"\u52a0\u8f7d\u4e2d..."})}):0===ke.length?(0,g.jsx)(u.Ss,{style:{padding:"100rpx",textAlign:"center"},children:(0,g.jsx)(u.EY,{style:{color:"#999"},children:"\u6682\u65e0\u8bc4\u4ef7\uff0c\u5feb\u6765\u53d1\u8868\u7b2c\u4e00\u6761\u8bc4\u4ef7\u5427~"})}):(0,g.jsxs)(g.Fragment,{children:[ke.map(function(e,a){return(0,g.jsxs)(u.Ss,{className:p.evaluationItem,children:[(0,g.jsxs)(u.Ss,{className:p.evalHeader,children:[(0,g.jsx)(u._V,(0,o.A)({src:(0,x.VG)(e.userAvatar),className:p.userAvatar,mode:"aspectFill"},(0,x.aI)())),(0,g.jsxs)(u.Ss,{className:p.userInfo,children:[(0,g.jsxs)(u.Ss,{className:p.userNameRow,children:[(0,g.jsx)(u.EY,{className:p.userName,children:e.userName||"\u533f\u540d\u7528\u6237"}),0===a&&(0,g.jsx)(u.EY,{className:p.userTag,children:"PLUS"})]}),(0,g.jsx)(u.EY,{className:p.purchaseInfo,children:e.specs||e.skuName||""})]}),(0,g.jsx)(u.EY,{className:p.evalTime,children:(0,v.r)(e.createdAt||e.createTime||"")})]}),(0,g.jsx)(u.Ss,{className:p.ratingRow,children:(0,g.jsx)(u.EY,{className:p.ratingLabel,children:"\u597d\u8bc4"})}),(0,g.jsx)(u.EY,{className:p.evalContent,children:e.content&&e.content.length>200?e.content.slice(0,200)+"...":e.content}),e.images&&e.images.length>0&&(0,g.jsx)(u.Ss,{className:p.imageGrid,children:e.images.map(function(e,a){return(0,g.jsx)(u._V,(0,o.A)({src:(0,x.VG)(e),className:p.evalImage,mode:"aspectFill"},(0,x.aI)()),a)})}),(0,g.jsxs)(u.Ss,{className:p.evalActions,children:[(0,g.jsxs)(u.Ss,{className:"".concat(p.actionItem," ").concat(e.isLike?p.liked:""),onClick:function(){return ye(e.id)},children:[(0,g.jsx)(u.EY,{className:p.actionIcon,children:e.isLike?"\u2764\ufe0f":"\ud83d\udc4d"}),(0,g.jsx)(u.EY,{className:p.actionText,children:e.likeCount||0})]}),(0,g.jsxs)(u.Ss,{className:p.actionItem,onClick:function(){return Ne(e)},children:[(0,g.jsx)(u.EY,{className:p.actionIcon,children:"\ud83d\udcac"}),(0,g.jsx)(u.EY,{className:p.actionText,children:e.replyCount||e.comments&&e.comments.length||0})]})]})]},e.id||a)}),X&&(0,g.jsx)(u.Ss,{style:{padding:"30rpx",textAlign:"center"},children:(0,g.jsx)(u.EY,{style:{color:"#999",fontSize:"24rpx"},children:"\u52a0\u8f7d\u66f4\u591a..."})}),!U&&ke.length>0&&(0,g.jsx)(u.Ss,{style:{padding:"30rpx",textAlign:"center"},children:(0,g.jsx)(u.EY,{style:{color:"#999",fontSize:"24rpx"},children:"\u6ca1\u6709\u66f4\u591a\u8bc4\u4ef7\u4e86"})})]})}),ee&&oe&&(0,g.jsxs)(u.Ss,{className:p.commentModal,children:[(0,g.jsx)(u.Ss,{className:p.modalMask,onClick:we}),(0,g.jsxs)(u.Ss,{className:p.commentModalContent,children:[(0,g.jsxs)(u.Ss,{className:p.commentModalHeader,children:[(0,g.jsx)(u.EY,{className:p.commentModalTitle,children:"\u5168\u90e8\u8ba8\u8bba"}),(0,g.jsx)(u.Ss,{className:p.commentModalClose,onClick:we,children:(0,g.jsx)(u.EY,{children:"\xd7"})})]}),(0,g.jsx)(u.BM,{scrollY:!0,className:p.commentModalBody,children:oe.loadingReplies?(0,g.jsx)(u.Ss,{className:p.emptyComment,children:(0,g.jsx)(u.EY,{children:"\u52a0\u8f7d\u4e2d..."})}):oe.comments&&0!==oe.comments.length?(0,g.jsx)(u.Ss,{className:p.commentList,children:(oe.comments||[]).map(function(e){return(0,g.jsxs)(u.Ss,{className:p.commentItem,children:[(0,g.jsx)(u._V,(0,o.A)({src:(0,x.VG)(e.userAvatar),className:p.commentAvatar,mode:"aspectFill"},(0,x.aI)())),(0,g.jsxs)(u.Ss,{className:p.commentContent,children:[(0,g.jsxs)(u.Ss,{className:p.commentHeader,children:[(0,g.jsx)(u.EY,{className:p.commentUserName,children:e.userName||"\u533f\u540d\u7528\u6237"}),(0,g.jsx)(u.EY,{className:p.commentTime,children:(0,v.r)(e.createdAt||e.createTime||"")})]}),(0,g.jsx)(u.EY,{className:p.commentText,children:e.content})]})]},e.id)})}):(0,g.jsx)(u.Ss,{className:p.emptyComment,children:(0,g.jsx)(u.EY,{children:"\u6682\u65e0\u8bc4\u8bba\uff0c\u5feb\u6765\u53d1\u8868\u7b2c\u4e00\u6761\u8bc4\u8bba\u5427~"})})}),(0,g.jsxs)(u.Ss,{className:p.commentModalFooter,children:[(0,g.jsx)(u.pd,{className:p.commentInput,placeholder:"\u5199\u4e0b\u4f60\u7684\u8bc4\u8bba...",value:ie,onInput:function(e){return ce(e.detail.value)},onConfirm:Ie}),(0,g.jsx)(u.Ss,{className:p.commentSendBtn,onClick:Ie,style:_e?{opacity:.6}:{},children:(0,g.jsx)(u.EY,{children:_e?"\u53d1\u9001\u4e2d":"\u53d1\u9001"})})]})]})]})]})},f=h,b={},j=(0,n.eU)(f,"pages/home/evaluations/index",{root:{cn:[]}},b||{});f&&f.behaviors&&(j.behaviors=(j.behaviors||[]).concat(f.behaviors));Page(j)}},function(e){var a=function(a){return e(e.s=a)};e.O(0,[6907,8096,2076],function(){return a(1790)});e.O()}]);
+"use strict";
+(wx["webpackJsonp"] = wx["webpackJsonp"] || []).push([["pages/home/evaluations/index"],{
+
+/***/ "./node_modules/@tarojs/taro-loader/lib/entry-cache.js?name=pages/home/evaluations/index!./src/pages/home/evaluations/index.tsx":
+/*!**************************************************************************************************************************************!*\
+  !*** ./node_modules/@tarojs/taro-loader/lib/entry-cache.js?name=pages/home/evaluations/index!./src/pages/home/evaluations/index.tsx ***!
+  \**************************************************************************************************************************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+/* harmony import */ var D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./node_modules/@babel/runtime/helpers/esm/objectSpread2.js */ "./node_modules/@babel/runtime/helpers/esm/objectSpread2.js");
+/* harmony import */ var D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./node_modules/@babel/runtime/helpers/esm/regenerator.js */ "./node_modules/@babel/runtime/helpers/esm/regenerator.js");
+/* harmony import */ var D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_toConsumableArray_js__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./node_modules/@babel/runtime/helpers/esm/toConsumableArray.js */ "./node_modules/@babel/runtime/helpers/esm/toConsumableArray.js");
+/* harmony import */ var D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./node_modules/@babel/runtime/helpers/esm/asyncToGenerator.js */ "./node_modules/@babel/runtime/helpers/esm/asyncToGenerator.js");
+/* harmony import */ var D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_slicedToArray_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./node_modules/@babel/runtime/helpers/esm/slicedToArray.js */ "./node_modules/@babel/runtime/helpers/esm/slicedToArray.js");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _tarojs_components__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! @tarojs/components */ "./node_modules/@tarojs/plugin-platform-weapp/dist/components-react.js");
+/* harmony import */ var _tarojs_taro__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @tarojs/taro */ "./node_modules/@tarojs/taro/index.js");
+/* harmony import */ var _tarojs_taro__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_tarojs_taro__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _api_home__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @/api/home */ "./src/api/home/index.ts");
+/* harmony import */ var _utils_image__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @/utils/image */ "./src/utils/image.ts");
+/* harmony import */ var _utils_time__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! @/utils/time */ "./src/utils/time.ts");
+/* harmony import */ var _styles_home_evaluations_module_scss__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @/styles/home/evaluations.module.scss */ "./src/styles/home/evaluations.module.scss");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/cjs/react-jsx-runtime.production.min.js");
+
+
+
+
+
+
+
+
+
+
+
+
+
+var ProductEvaluationsPage = function ProductEvaluationsPage() {
+  var _useState = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(''),
+    _useState2 = (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_slicedToArray_js__WEBPACK_IMPORTED_MODULE_6__["default"])(_useState, 2),
+    productId = _useState2[0],
+    setProductId = _useState2[1];
+  var _useState3 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)([]),
+    _useState4 = (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_slicedToArray_js__WEBPACK_IMPORTED_MODULE_6__["default"])(_useState3, 2),
+    evaluations = _useState4[0],
+    setEvaluations = _useState4[1];
+  var _useState5 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(null),
+    _useState6 = (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_slicedToArray_js__WEBPACK_IMPORTED_MODULE_6__["default"])(_useState5, 2),
+    stats = _useState6[0],
+    setStats = _useState6[1];
+  var _useState7 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(null),
+    _useState8 = (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_slicedToArray_js__WEBPACK_IMPORTED_MODULE_6__["default"])(_useState7, 2),
+    aiSummary = _useState8[0],
+    setAiSummary = _useState8[1];
+  var _useState9 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)('all'),
+    _useState0 = (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_slicedToArray_js__WEBPACK_IMPORTED_MODULE_6__["default"])(_useState9, 2),
+    currentFilter = _useState0[0],
+    setCurrentFilter = _useState0[1];
+  var _useState1 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)('newest'),
+    _useState10 = (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_slicedToArray_js__WEBPACK_IMPORTED_MODULE_6__["default"])(_useState1, 2),
+    sortType = _useState10[0],
+    setSortType = _useState10[1];
+  var _useState11 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(true),
+    _useState12 = (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_slicedToArray_js__WEBPACK_IMPORTED_MODULE_6__["default"])(_useState11, 2),
+    loading = _useState12[0],
+    setLoading = _useState12[1];
+  var _useState13 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(1),
+    _useState14 = (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_slicedToArray_js__WEBPACK_IMPORTED_MODULE_6__["default"])(_useState13, 2),
+    page = _useState14[0],
+    setPage = _useState14[1];
+  var _useState15 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(true),
+    _useState16 = (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_slicedToArray_js__WEBPACK_IMPORTED_MODULE_6__["default"])(_useState15, 2),
+    hasMore = _useState16[0],
+    setHasMore = _useState16[1];
+  var _useState17 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(false),
+    _useState18 = (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_slicedToArray_js__WEBPACK_IMPORTED_MODULE_6__["default"])(_useState17, 2),
+    loadingMore = _useState18[0],
+    setLoadingMore = _useState18[1];
+  var _useState19 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(false),
+    _useState20 = (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_slicedToArray_js__WEBPACK_IMPORTED_MODULE_6__["default"])(_useState19, 2),
+    showCommentModal = _useState20[0],
+    setShowCommentModal = _useState20[1];
+  var _useState21 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(null),
+    _useState22 = (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_slicedToArray_js__WEBPACK_IMPORTED_MODULE_6__["default"])(_useState21, 2),
+    currentEvaluation = _useState22[0],
+    setCurrentEvaluation = _useState22[1];
+  var _useState23 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(''),
+    _useState24 = (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_slicedToArray_js__WEBPACK_IMPORTED_MODULE_6__["default"])(_useState23, 2),
+    commentInput = _useState24[0],
+    setCommentInput = _useState24[1];
+  var _useState25 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(false),
+    _useState26 = (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_slicedToArray_js__WEBPACK_IMPORTED_MODULE_6__["default"])(_useState25, 2),
+    submittingReply = _useState26[0],
+    setSubmittingReply = _useState26[1];
+  var pageSize = 10;
+
+  // 加载评价列表
+  var loadReviews = (0,react__WEBPACK_IMPORTED_MODULE_0__.useCallback)(/*#__PURE__*/function () {
+    var _ref = (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_7__["default"])(/*#__PURE__*/(0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_8__["default"])().m(function _callee(pId, filter) {
+      var pageNum,
+        append,
+        res,
+        list,
+        _args = arguments,
+        _t;
+      return (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_8__["default"])().w(function (_context) {
+        while (1) switch (_context.p = _context.n) {
+          case 0:
+            pageNum = _args.length > 2 && _args[2] !== undefined ? _args[2] : 1;
+            append = _args.length > 3 && _args[3] !== undefined ? _args[3] : false;
+            if (pId) {
+              _context.n = 1;
+              break;
+            }
+            return _context.a(2);
+          case 1:
+            if (append) {
+              setLoadingMore(true);
+            } else {
+              setLoading(true);
+            }
+            _context.p = 2;
+            _context.n = 3;
+            return (0,_api_home__WEBPACK_IMPORTED_MODULE_2__.fetchReviewList)({
+              productId: pId,
+              page: pageNum,
+              size: pageSize,
+              type: filter
+            });
+          case 3:
+            res = _context.v;
+            list = Array.isArray(res === null || res === void 0 ? void 0 : res.data) ? res.data : [];
+            if (append) {
+              setEvaluations(function (prev) {
+                return [].concat((0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_toConsumableArray_js__WEBPACK_IMPORTED_MODULE_9__["default"])(prev), (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_toConsumableArray_js__WEBPACK_IMPORTED_MODULE_9__["default"])(list));
+              });
+            } else {
+              setEvaluations(list);
+            }
+            setHasMore(list.length >= pageSize);
+            setPage(pageNum);
+            _context.n = 5;
+            break;
+          case 4:
+            _context.p = 4;
+            _t = _context.v;
+            console.error('[评价列表] 加载失败:', (_t === null || _t === void 0 ? void 0 : _t.message) || _t);
+            if (!append) setEvaluations([]);
+          case 5:
+            _context.p = 5;
+            setLoading(false);
+            setLoadingMore(false);
+            return _context.f(5);
+          case 6:
+            return _context.a(2);
+        }
+      }, _callee, null, [[2, 4, 5, 6]]);
+    }));
+    return function (_x, _x2) {
+      return _ref.apply(this, arguments);
+    };
+  }(), []);
+
+  // 加载评价统计
+  var loadStats = (0,react__WEBPACK_IMPORTED_MODULE_0__.useCallback)(/*#__PURE__*/function () {
+    var _ref2 = (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_7__["default"])(/*#__PURE__*/(0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_8__["default"])().m(function _callee2(pId) {
+      var res, _t2;
+      return (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_8__["default"])().w(function (_context2) {
+        while (1) switch (_context2.p = _context2.n) {
+          case 0:
+            if (pId) {
+              _context2.n = 1;
+              break;
+            }
+            return _context2.a(2);
+          case 1:
+            _context2.p = 1;
+            _context2.n = 2;
+            return (0,_api_home__WEBPACK_IMPORTED_MODULE_2__.fetchReviewStats)(pId);
+          case 2:
+            res = _context2.v;
+            if (res !== null && res !== void 0 && res.data) {
+              setStats(res.data);
+            }
+            _context2.n = 4;
+            break;
+          case 3:
+            _context2.p = 3;
+            _t2 = _context2.v;
+            console.error('[评价统计] 加载失败:', (_t2 === null || _t2 === void 0 ? void 0 : _t2.message) || _t2);
+          case 4:
+            return _context2.a(2);
+        }
+      }, _callee2, null, [[1, 3]]);
+    }));
+    return function (_x3) {
+      return _ref2.apply(this, arguments);
+    };
+  }(), []);
+
+  // 加载AI评价摘要（即使 content 为空也保留，由 UI 显示占位框架）
+  var _useState27 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(true),
+    _useState28 = (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_slicedToArray_js__WEBPACK_IMPORTED_MODULE_6__["default"])(_useState27, 2),
+    aiLoading = _useState28[0],
+    setAiLoading = _useState28[1];
+  var loadAiSummary = (0,react__WEBPACK_IMPORTED_MODULE_0__.useCallback)(/*#__PURE__*/function () {
+    var _ref3 = (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_7__["default"])(/*#__PURE__*/(0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_8__["default"])().m(function _callee3(pId) {
+      var res, _t3;
+      return (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_8__["default"])().w(function (_context3) {
+        while (1) switch (_context3.p = _context3.n) {
+          case 0:
+            if (pId) {
+              _context3.n = 1;
+              break;
+            }
+            return _context3.a(2);
+          case 1:
+            setAiLoading(true);
+            _context3.p = 2;
+            _context3.n = 3;
+            return (0,_api_home__WEBPACK_IMPORTED_MODULE_2__.fetchReviewAiSummary)(pId);
+          case 3:
+            res = _context3.v;
+            if (res !== null && res !== void 0 && res.data) {
+              setAiSummary(res.data);
+            }
+            _context3.n = 5;
+            break;
+          case 4:
+            _context3.p = 4;
+            _t3 = _context3.v;
+            console.error('[AI评价摘要] 加载失败:', (_t3 === null || _t3 === void 0 ? void 0 : _t3.message) || _t3);
+          case 5:
+            _context3.p = 5;
+            setAiLoading(false);
+            return _context3.f(5);
+          case 6:
+            return _context3.a(2);
+        }
+      }, _callee3, null, [[2, 4, 5, 6]]);
+    }));
+    return function (_x4) {
+      return _ref3.apply(this, arguments);
+    };
+  }(), []);
+  (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(function () {
+    var _Taro$getCurrentInsta;
+    _tarojs_taro__WEBPACK_IMPORTED_MODULE_1___default().setNavigationBarTitle({
+      title: '商品评价'
+    });
+    var id = ((_Taro$getCurrentInsta = _tarojs_taro__WEBPACK_IMPORTED_MODULE_1___default().getCurrentInstance()) === null || _Taro$getCurrentInsta === void 0 || (_Taro$getCurrentInsta = _Taro$getCurrentInsta.router) === null || _Taro$getCurrentInsta === void 0 || (_Taro$getCurrentInsta = _Taro$getCurrentInsta.params) === null || _Taro$getCurrentInsta === void 0 ? void 0 : _Taro$getCurrentInsta.id) || '';
+    if (!id) {
+      _tarojs_taro__WEBPACK_IMPORTED_MODULE_1___default().showToast({
+        title: '缺少商品ID',
+        icon: 'none'
+      });
+      setLoading(false);
+      return;
+    }
+    setProductId(id);
+    // 并行加载评价列表、统计、AI摘要
+    loadReviews(id, 'all', 1, false);
+    loadStats(id);
+    loadAiSummary(id);
+  }, []);
+
+  // 筛选切换
+  var handleFilterChange = (0,react__WEBPACK_IMPORTED_MODULE_0__.useCallback)(function (filter) {
+    setCurrentFilter(filter);
+    if (productId) {
+      loadReviews(productId, filter, 1, false);
+    }
+  }, [productId, loadReviews]);
+
+  // 加载更多
+  var handleLoadMore = (0,react__WEBPACK_IMPORTED_MODULE_0__.useCallback)(function () {
+    if (loadingMore || !hasMore || !productId) return;
+    loadReviews(productId, currentFilter, page + 1, true);
+  }, [loadingMore, hasMore, productId, page, currentFilter, loadReviews]);
+
+  // 排序
+  var sortedEvaluations = react__WEBPACK_IMPORTED_MODULE_0___default().useMemo(function () {
+    var sorted = (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_toConsumableArray_js__WEBPACK_IMPORTED_MODULE_9__["default"])(evaluations);
+    if (sortType === 'newest') {
+      return sorted.sort(function (a, b) {
+        var ta = new Date(String(a.createdAt || a.createTime || '').replace(/-/g, '/')).getTime() || 0;
+        var tb = new Date(String(b.createdAt || b.createTime || '').replace(/-/g, '/')).getTime() || 0;
+        return tb - ta;
+      });
+    }
+    return sorted.sort(function (a, b) {
+      return (b.likeCount || 0) - (a.likeCount || 0);
+    });
+  }, [evaluations, sortType]);
+
+  // 点赞
+  var handleLike = (0,react__WEBPACK_IMPORTED_MODULE_0__.useCallback)(/*#__PURE__*/function () {
+    var _ref4 = (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_7__["default"])(/*#__PURE__*/(0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_8__["default"])().m(function _callee4(evalId) {
+      var _t4;
+      return (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_8__["default"])().w(function (_context4) {
+        while (1) switch (_context4.p = _context4.n) {
+          case 0:
+            if (evalId) {
+              _context4.n = 1;
+              break;
+            }
+            return _context4.a(2);
+          case 1:
+            // 乐观更新
+            setEvaluations(function (prev) {
+              return prev.map(function (item) {
+                if (item.id === evalId) {
+                  return (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_10__["default"])((0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_10__["default"])({}, item), {}, {
+                    isLike: !item.isLike,
+                    likeCount: item.isLike ? (item.likeCount || 0) - 1 : (item.likeCount || 0) + 1
+                  });
+                }
+                return item;
+              });
+            });
+            _context4.p = 2;
+            _context4.n = 3;
+            return (0,_api_home__WEBPACK_IMPORTED_MODULE_2__.likeReview)(evalId);
+          case 3:
+            _context4.n = 5;
+            break;
+          case 4:
+            _context4.p = 4;
+            _t4 = _context4.v;
+            console.error('Failed to like review:', _t4);
+            // 回滚
+            setEvaluations(function (prev) {
+              return prev.map(function (item) {
+                if (item.id === evalId) {
+                  return (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_10__["default"])((0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_10__["default"])({}, item), {}, {
+                    isLike: !item.isLike,
+                    likeCount: item.isLike ? (item.likeCount || 0) - 1 : (item.likeCount || 0) + 1
+                  });
+                }
+                return item;
+              });
+            });
+            _tarojs_taro__WEBPACK_IMPORTED_MODULE_1___default().showToast({
+              title: '点赞失败',
+              icon: 'none'
+            });
+          case 5:
+            return _context4.a(2);
+        }
+      }, _callee4, null, [[2, 4]]);
+    }));
+    return function (_x5) {
+      return _ref4.apply(this, arguments);
+    };
+  }(), []);
+
+  // 打开评论弹窗 - 加载回复列表
+  var openCommentModal = (0,react__WEBPACK_IMPORTED_MODULE_0__.useCallback)(/*#__PURE__*/function () {
+    var _ref5 = (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_7__["default"])(/*#__PURE__*/(0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_8__["default"])().m(function _callee5(evaluation) {
+      var res, replies, _t5;
+      return (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_8__["default"])().w(function (_context5) {
+        while (1) switch (_context5.p = _context5.n) {
+          case 0:
+            setCurrentEvaluation((0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_10__["default"])((0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_10__["default"])({}, evaluation), {}, {
+              comments: [],
+              loadingReplies: true
+            }));
+            setShowCommentModal(true);
+            _context5.p = 1;
+            _context5.n = 2;
+            return (0,_api_home__WEBPACK_IMPORTED_MODULE_2__.fetchReviewReplies)({
+              reviewId: evaluation.id,
+              page: 1,
+              size: 50
+            });
+          case 2:
+            res = _context5.v;
+            replies = Array.isArray(res === null || res === void 0 ? void 0 : res.data) ? res.data : [];
+            setCurrentEvaluation(function (prev) {
+              return prev ? (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_10__["default"])((0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_10__["default"])({}, prev), {}, {
+                comments: replies,
+                loadingReplies: false
+              }) : prev;
+            });
+            _context5.n = 4;
+            break;
+          case 3:
+            _context5.p = 3;
+            _t5 = _context5.v;
+            console.error('Failed to load review replies:', _t5);
+            setCurrentEvaluation(function (prev) {
+              return prev ? (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_10__["default"])((0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_10__["default"])({}, prev), {}, {
+                comments: [],
+                loadingReplies: false
+              }) : prev;
+            });
+          case 4:
+            return _context5.a(2);
+        }
+      }, _callee5, null, [[1, 3]]);
+    }));
+    return function (_x6) {
+      return _ref5.apply(this, arguments);
+    };
+  }(), []);
+  var closeCommentModal = (0,react__WEBPACK_IMPORTED_MODULE_0__.useCallback)(function () {
+    setShowCommentModal(false);
+    setCurrentEvaluation(null);
+    setCommentInput('');
+  }, []);
+
+  // 提交回复
+  var handleSubmitReply = (0,react__WEBPACK_IMPORTED_MODULE_0__.useCallback)(/*#__PURE__*/(0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_7__["default"])(/*#__PURE__*/(0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_8__["default"])().m(function _callee6() {
+    var newComment, _t6;
+    return (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_8__["default"])().w(function (_context6) {
+      while (1) switch (_context6.p = _context6.n) {
+        case 0:
+          if (commentInput.trim()) {
+            _context6.n = 1;
+            break;
+          }
+          _tarojs_taro__WEBPACK_IMPORTED_MODULE_1___default().showToast({
+            title: '请输入评论内容',
+            icon: 'none'
+          });
+          return _context6.a(2);
+        case 1:
+          if (currentEvaluation !== null && currentEvaluation !== void 0 && currentEvaluation.id) {
+            _context6.n = 2;
+            break;
+          }
+          _tarojs_taro__WEBPACK_IMPORTED_MODULE_1___default().showToast({
+            title: '评价信息异常',
+            icon: 'none'
+          });
+          return _context6.a(2);
+        case 2:
+          if (!submittingReply) {
+            _context6.n = 3;
+            break;
+          }
+          return _context6.a(2);
+        case 3:
+          setSubmittingReply(true);
+          _context6.p = 4;
+          _context6.n = 5;
+          return (0,_api_home__WEBPACK_IMPORTED_MODULE_2__.replyToReview)({
+            reviewId: currentEvaluation.id,
+            content: commentInput.trim()
+          });
+        case 5:
+          newComment = {
+            id: "comment-".concat(Date.now()),
+            reviewId: currentEvaluation.id,
+            userId: 'user-current',
+            userName: '我',
+            userAvatar: '',
+            content: commentInput.trim(),
+            createdAt: new Date().toLocaleString(),
+            likeCount: 0,
+            isLike: false
+          };
+          setCurrentEvaluation(function (prev) {
+            return prev ? (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_10__["default"])((0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_10__["default"])({}, prev), {}, {
+              comments: [].concat((0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_toConsumableArray_js__WEBPACK_IMPORTED_MODULE_9__["default"])(prev.comments || []), [newComment])
+            }) : prev;
+          });
+          setCommentInput('');
+          _tarojs_taro__WEBPACK_IMPORTED_MODULE_1___default().showToast({
+            title: '评论成功',
+            icon: 'success'
+          });
+          _context6.n = 7;
+          break;
+        case 6:
+          _context6.p = 6;
+          _t6 = _context6.v;
+          console.error('Failed to send reply:', _t6);
+          _tarojs_taro__WEBPACK_IMPORTED_MODULE_1___default().showToast({
+            title: (_t6 === null || _t6 === void 0 ? void 0 : _t6.message) || '评论失败',
+            icon: 'none'
+          });
+        case 7:
+          _context6.p = 7;
+          setSubmittingReply(false);
+          return _context6.f(7);
+        case 8:
+          return _context6.a(2);
+      }
+    }, _callee6, null, [[4, 6, 7, 8]]);
+  })), [commentInput, currentEvaluation, submittingReply]);
+
+  // 渲染评分分布
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_11__.View, {
+    className: _styles_home_evaluations_module_scss__WEBPACK_IMPORTED_MODULE_4__["default"].evaluationPage,
+    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_11__.View, {
+      style: {
+        position: 'relative',
+        margin: '20rpx',
+        padding: '32rpx 28rpx 28rpx',
+        borderRadius: '24rpx',
+        overflow: 'hidden',
+        background: 'linear-gradient(135deg, #1a1f3a 0%, #2d1b69 45%, #4a2c7a 100%)',
+        boxShadow: '0 8rpx 28rpx rgba(74, 44, 122, 0.35)',
+        color: '#fff'
+      },
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_11__.View, {
+        style: {
+          position: 'relative',
+          zIndex: 1,
+          display: 'flex',
+          alignItems: 'center',
+          marginBottom: '24rpx'
+        },
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_11__.View, {
+          style: {
+            width: '64rpx',
+            height: '64rpx',
+            borderRadius: '999rpx',
+            background: 'linear-gradient(135deg, #a88bff 0%, #6c5ce7 100%)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            marginRight: '16rpx',
+            boxShadow: '0 4rpx 12rpx rgba(168, 139, 255, 0.5)'
+          },
+          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_11__.Text, {
+            style: {
+              fontSize: '36rpx',
+              lineHeight: 1
+            },
+            children: "\uD83E\uDD16"
+          })
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_11__.Text, {
+          style: {
+            flex: 1,
+            fontSize: '34rpx',
+            fontWeight: '700',
+            color: '#fff',
+            letterSpacing: '1rpx'
+          },
+          children: "AI\u667A\u80FD\u603B\u8BC4"
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_11__.Text, {
+          style: {
+            fontSize: '20rpx',
+            color: '#c8b6ff',
+            background: 'rgba(168, 139, 255, 0.15)',
+            border: '1rpx solid rgba(168, 139, 255, 0.3)',
+            padding: '4rpx 14rpx',
+            borderRadius: '999rpx',
+            marginLeft: '12rpx'
+          },
+          children: "AI"
+        }), aiSummary && aiSummary.averageRating > 0 && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_11__.View, {
+          style: {
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'flex-end',
+            marginLeft: '12rpx'
+          },
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_11__.Text, {
+            style: {
+              fontSize: '44rpx',
+              fontWeight: '700',
+              color: '#ffd700',
+              lineHeight: 1
+            },
+            children: [Math.round(aiSummary.averageRating * 20), "%"]
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_11__.Text, {
+            style: {
+              fontSize: '20rpx',
+              color: 'rgba(255,255,255,0.65)',
+              marginTop: '6rpx'
+            },
+            children: "\u7EFC\u5408\u8BC4\u5206"
+          })]
+        })]
+      }), (aiLoading || aiSummary && !aiSummary.overall) && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_11__.View, {
+        style: {
+          position: 'relative',
+          zIndex: 1,
+          display: 'flex',
+          alignItems: 'center',
+          padding: '28rpx 24rpx',
+          marginBottom: '20rpx',
+          background: 'rgba(255,255,255,0.06)',
+          borderRadius: '16rpx',
+          borderLeft: '4rpx solid rgba(168,139,255,0.5)'
+        },
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_11__.View, {
+          style: {
+            display: 'flex',
+            marginRight: '16rpx'
+          },
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_11__.Text, {
+            style: {
+              width: '12rpx',
+              height: '12rpx',
+              borderRadius: '999rpx',
+              background: '#a88bff',
+              marginRight: '8rpx',
+              opacity: 0.4
+            },
+            children: " "
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_11__.Text, {
+            style: {
+              width: '12rpx',
+              height: '12rpx',
+              borderRadius: '999rpx',
+              background: '#a88bff',
+              marginRight: '8rpx',
+              opacity: 0.7
+            },
+            children: " "
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_11__.Text, {
+            style: {
+              width: '12rpx',
+              height: '12rpx',
+              borderRadius: '999rpx',
+              background: '#a88bff',
+              opacity: 1
+            },
+            children: " "
+          })]
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_11__.View, {
+          style: {
+            flex: 1
+          },
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_11__.Text, {
+            style: {
+              fontSize: '30rpx',
+              color: 'rgba(255,255,255,0.75)'
+            },
+            children: "AI \u6B63\u5728\u5206\u6790\u8BE5\u5546\u54C1\u7684\u8BC4\u4EF7..."
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_11__.Text, {
+            style: {
+              display: 'block',
+              fontSize: '22rpx',
+              color: 'rgba(255,255,255,0.45)',
+              marginTop: '6rpx'
+            },
+            children: aiLoading ? '基于真实用户评价智能生成' : '评价数据积累后将自动生成总评'
+          })]
+        })]
+      }), !aiLoading && aiSummary && aiSummary.overall && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.Fragment, {
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_11__.Text, {
+          style: {
+            position: 'relative',
+            zIndex: 1,
+            display: 'block',
+            fontSize: '30rpx',
+            color: 'rgba(255,255,255,0.92)',
+            lineHeight: 1.7,
+            marginBottom: '24rpx',
+            padding: '20rpx 24rpx',
+            background: 'rgba(255,255,255,0.06)',
+            borderRadius: '16rpx',
+            borderLeft: '4rpx solid #a88bff'
+          },
+          children: aiSummary.overall
+        }), aiSummary.strengths && aiSummary.strengths.length > 0 && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_11__.View, {
+          style: {
+            position: 'relative',
+            zIndex: 1,
+            marginBottom: '16rpx'
+          },
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_11__.Text, {
+            style: {
+              fontSize: '28rpx',
+              color: 'rgba(255,255,255,0.85)',
+              marginBottom: '12rpx',
+              fontWeight: '500'
+            },
+            children: "\uD83D\uDC4D \u597D\u8BC4\u4EAE\u70B9"
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_11__.View, {
+            style: {
+              display: 'flex',
+              flexWrap: 'wrap'
+            },
+            children: aiSummary.strengths.map(function (tag, idx) {
+              return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_11__.Text, {
+                style: {
+                  fontSize: '28rpx',
+                  color: '#b9f5d4',
+                  background: 'rgba(72, 209, 104, 0.18)',
+                  border: '1rpx solid rgba(72, 209, 104, 0.35)',
+                  padding: '8rpx 20rpx',
+                  borderRadius: '999rpx',
+                  marginRight: '12rpx',
+                  marginBottom: '12rpx'
+                },
+                children: tag
+              }, idx);
+            })
+          })]
+        }), aiSummary.weaknesses && aiSummary.weaknesses.length > 0 && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_11__.View, {
+          style: {
+            position: 'relative',
+            zIndex: 1
+          },
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_11__.Text, {
+            style: {
+              fontSize: '28rpx',
+              color: 'rgba(255,255,255,0.85)',
+              marginBottom: '12rpx',
+              fontWeight: '500'
+            },
+            children: "\uD83D\uDC4E \u5F85\u6539\u8FDB"
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_11__.View, {
+            style: {
+              display: 'flex',
+              flexWrap: 'wrap'
+            },
+            children: aiSummary.weaknesses.map(function (tag, idx) {
+              return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_11__.Text, {
+                style: {
+                  fontSize: '28rpx',
+                  color: '#ffd3a0',
+                  background: 'rgba(255, 159, 67, 0.18)',
+                  border: '1rpx solid rgba(255, 159, 67, 0.35)',
+                  padding: '8rpx 20rpx',
+                  borderRadius: '999rpx',
+                  marginRight: '12rpx',
+                  marginBottom: '12rpx'
+                },
+                children: tag
+              }, idx);
+            })
+          })]
+        })]
+      })]
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_11__.View, {
+      className: _styles_home_evaluations_module_scss__WEBPACK_IMPORTED_MODULE_4__["default"].filterSection,
+      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_11__.ScrollView, {
+        scrollX: true,
+        className: _styles_home_evaluations_module_scss__WEBPACK_IMPORTED_MODULE_4__["default"].filterTabs,
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_11__.View, {
+          className: "".concat(_styles_home_evaluations_module_scss__WEBPACK_IMPORTED_MODULE_4__["default"].filterTab, " ").concat(currentFilter === 'all' ? _styles_home_evaluations_module_scss__WEBPACK_IMPORTED_MODULE_4__["default"].active : ''),
+          onClick: function onClick() {
+            return handleFilterChange('all');
+          },
+          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_11__.Text, {
+            children: ["\u5168\u90E8 ", (stats === null || stats === void 0 ? void 0 : stats.total) || '']
+          })
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_11__.View, {
+          className: "".concat(_styles_home_evaluations_module_scss__WEBPACK_IMPORTED_MODULE_4__["default"].filterTab, " ").concat(currentFilter === 'good' ? _styles_home_evaluations_module_scss__WEBPACK_IMPORTED_MODULE_4__["default"].active : ''),
+          onClick: function onClick() {
+            return handleFilterChange('good');
+          },
+          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_11__.Text, {
+            children: ["\u597D\u8BC4 ", (stats === null || stats === void 0 ? void 0 : stats.goodCount) || '']
+          })
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_11__.View, {
+          className: "".concat(_styles_home_evaluations_module_scss__WEBPACK_IMPORTED_MODULE_4__["default"].filterTab, " ").concat(currentFilter === 'bad' ? _styles_home_evaluations_module_scss__WEBPACK_IMPORTED_MODULE_4__["default"].active : ''),
+          onClick: function onClick() {
+            return handleFilterChange('bad');
+          },
+          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_11__.Text, {
+            children: ["\u5DEE\u8BC4 ", (stats === null || stats === void 0 ? void 0 : stats.badCount) || '']
+          })
+        })]
+      })
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_11__.ScrollView, {
+      scrollY: true,
+      className: _styles_home_evaluations_module_scss__WEBPACK_IMPORTED_MODULE_4__["default"].evaluationList,
+      onScrollToLower: handleLoadMore,
+      style: {
+        height: 'calc(100vh - 400rpx)'
+      },
+      children: loading ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_11__.View, {
+        style: {
+          padding: '100rpx',
+          textAlign: 'center'
+        },
+        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_11__.Text, {
+          style: {
+            color: '#999'
+          },
+          children: "\u52A0\u8F7D\u4E2D..."
+        })
+      }) : sortedEvaluations.length === 0 ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_11__.View, {
+        style: {
+          padding: '100rpx',
+          textAlign: 'center'
+        },
+        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_11__.Text, {
+          style: {
+            color: '#999'
+          },
+          children: "\u6682\u65E0\u8BC4\u4EF7\uFF0C\u5FEB\u6765\u53D1\u8868\u7B2C\u4E00\u6761\u8BC4\u4EF7\u5427~"
+        })
+      }) : /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.Fragment, {
+        children: [sortedEvaluations.map(function (evalItem, index) {
+          return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_11__.View, {
+            className: _styles_home_evaluations_module_scss__WEBPACK_IMPORTED_MODULE_4__["default"].evaluationItem,
+            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_11__.View, {
+              className: _styles_home_evaluations_module_scss__WEBPACK_IMPORTED_MODULE_4__["default"].evalHeader,
+              children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_11__.Image, (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_10__["default"])({
+                src: (0,_utils_image__WEBPACK_IMPORTED_MODULE_3__.getImageUrl)(evalItem.userAvatar),
+                className: _styles_home_evaluations_module_scss__WEBPACK_IMPORTED_MODULE_4__["default"].userAvatar,
+                mode: "aspectFill"
+              }, (0,_utils_image__WEBPACK_IMPORTED_MODULE_3__.lazyImgProps)())), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_11__.View, {
+                className: _styles_home_evaluations_module_scss__WEBPACK_IMPORTED_MODULE_4__["default"].userInfo,
+                children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_11__.View, {
+                  className: _styles_home_evaluations_module_scss__WEBPACK_IMPORTED_MODULE_4__["default"].userNameRow,
+                  children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_11__.Text, {
+                    className: _styles_home_evaluations_module_scss__WEBPACK_IMPORTED_MODULE_4__["default"].userName,
+                    children: evalItem.userName || '匿名用户'
+                  }), index === 0 && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_11__.Text, {
+                    className: _styles_home_evaluations_module_scss__WEBPACK_IMPORTED_MODULE_4__["default"].userTag,
+                    children: "PLUS"
+                  })]
+                }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_11__.Text, {
+                  className: _styles_home_evaluations_module_scss__WEBPACK_IMPORTED_MODULE_4__["default"].purchaseInfo,
+                  children: evalItem.specs || evalItem.skuName || ''
+                })]
+              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_11__.Text, {
+                className: _styles_home_evaluations_module_scss__WEBPACK_IMPORTED_MODULE_4__["default"].evalTime,
+                children: (0,_utils_time__WEBPACK_IMPORTED_MODULE_12__.formatDateTime)(evalItem.createdAt || evalItem.createTime || '')
+              })]
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_11__.View, {
+              className: _styles_home_evaluations_module_scss__WEBPACK_IMPORTED_MODULE_4__["default"].ratingRow,
+              children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_11__.Text, {
+                className: _styles_home_evaluations_module_scss__WEBPACK_IMPORTED_MODULE_4__["default"].ratingLabel,
+                children: "\u597D\u8BC4"
+              })
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_11__.Text, {
+              className: _styles_home_evaluations_module_scss__WEBPACK_IMPORTED_MODULE_4__["default"].evalContent,
+              children: evalItem.content && evalItem.content.length > 200 ? evalItem.content.slice(0, 200) + '...' : evalItem.content
+            }), evalItem.images && evalItem.images.length > 0 && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_11__.View, {
+              className: _styles_home_evaluations_module_scss__WEBPACK_IMPORTED_MODULE_4__["default"].imageGrid,
+              children: evalItem.images.map(function (img, idx) {
+                return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_11__.Image, (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_10__["default"])({
+                  src: (0,_utils_image__WEBPACK_IMPORTED_MODULE_3__.getImageUrl)(img),
+                  className: _styles_home_evaluations_module_scss__WEBPACK_IMPORTED_MODULE_4__["default"].evalImage,
+                  mode: "aspectFill"
+                }, (0,_utils_image__WEBPACK_IMPORTED_MODULE_3__.lazyImgProps)()), idx);
+              })
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_11__.View, {
+              className: _styles_home_evaluations_module_scss__WEBPACK_IMPORTED_MODULE_4__["default"].evalActions,
+              children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_11__.View, {
+                className: "".concat(_styles_home_evaluations_module_scss__WEBPACK_IMPORTED_MODULE_4__["default"].actionItem, " ").concat(evalItem.isLike ? _styles_home_evaluations_module_scss__WEBPACK_IMPORTED_MODULE_4__["default"].liked : ''),
+                onClick: function onClick() {
+                  return handleLike(evalItem.id);
+                },
+                children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_11__.Text, {
+                  className: _styles_home_evaluations_module_scss__WEBPACK_IMPORTED_MODULE_4__["default"].actionIcon,
+                  children: evalItem.isLike ? '❤️' : '👍'
+                }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_11__.Text, {
+                  className: _styles_home_evaluations_module_scss__WEBPACK_IMPORTED_MODULE_4__["default"].actionText,
+                  children: evalItem.likeCount || 0
+                })]
+              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_11__.View, {
+                className: _styles_home_evaluations_module_scss__WEBPACK_IMPORTED_MODULE_4__["default"].actionItem,
+                onClick: function onClick() {
+                  return openCommentModal(evalItem);
+                },
+                children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_11__.Text, {
+                  className: _styles_home_evaluations_module_scss__WEBPACK_IMPORTED_MODULE_4__["default"].actionIcon,
+                  children: "\uD83D\uDCAC"
+                }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_11__.Text, {
+                  className: _styles_home_evaluations_module_scss__WEBPACK_IMPORTED_MODULE_4__["default"].actionText,
+                  children: evalItem.replyCount || evalItem.comments && evalItem.comments.length || 0
+                })]
+              })]
+            })]
+          }, evalItem.id || index);
+        }), loadingMore && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_11__.View, {
+          style: {
+            padding: '30rpx',
+            textAlign: 'center'
+          },
+          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_11__.Text, {
+            style: {
+              color: '#999',
+              fontSize: '24rpx'
+            },
+            children: "\u52A0\u8F7D\u66F4\u591A..."
+          })
+        }), !hasMore && sortedEvaluations.length > 0 && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_11__.View, {
+          style: {
+            padding: '30rpx',
+            textAlign: 'center'
+          },
+          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_11__.Text, {
+            style: {
+              color: '#999',
+              fontSize: '24rpx'
+            },
+            children: "\u6CA1\u6709\u66F4\u591A\u8BC4\u4EF7\u4E86"
+          })
+        })]
+      })
+    }), showCommentModal && currentEvaluation && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_11__.View, {
+      className: _styles_home_evaluations_module_scss__WEBPACK_IMPORTED_MODULE_4__["default"].commentModal,
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_11__.View, {
+        className: _styles_home_evaluations_module_scss__WEBPACK_IMPORTED_MODULE_4__["default"].modalMask,
+        onClick: closeCommentModal
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_11__.View, {
+        className: _styles_home_evaluations_module_scss__WEBPACK_IMPORTED_MODULE_4__["default"].commentModalContent,
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_11__.View, {
+          className: _styles_home_evaluations_module_scss__WEBPACK_IMPORTED_MODULE_4__["default"].commentModalHeader,
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_11__.Text, {
+            className: _styles_home_evaluations_module_scss__WEBPACK_IMPORTED_MODULE_4__["default"].commentModalTitle,
+            children: "\u5168\u90E8\u8BA8\u8BBA"
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_11__.View, {
+            className: _styles_home_evaluations_module_scss__WEBPACK_IMPORTED_MODULE_4__["default"].commentModalClose,
+            onClick: closeCommentModal,
+            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_11__.Text, {
+              children: "\xD7"
+            })
+          })]
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_11__.ScrollView, {
+          scrollY: true,
+          className: _styles_home_evaluations_module_scss__WEBPACK_IMPORTED_MODULE_4__["default"].commentModalBody,
+          children: currentEvaluation.loadingReplies ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_11__.View, {
+            className: _styles_home_evaluations_module_scss__WEBPACK_IMPORTED_MODULE_4__["default"].emptyComment,
+            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_11__.Text, {
+              children: "\u52A0\u8F7D\u4E2D..."
+            })
+          }) : !currentEvaluation.comments || currentEvaluation.comments.length === 0 ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_11__.View, {
+            className: _styles_home_evaluations_module_scss__WEBPACK_IMPORTED_MODULE_4__["default"].emptyComment,
+            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_11__.Text, {
+              children: "\u6682\u65E0\u8BC4\u8BBA\uFF0C\u5FEB\u6765\u53D1\u8868\u7B2C\u4E00\u6761\u8BC4\u8BBA\u5427~"
+            })
+          }) : /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_11__.View, {
+            className: _styles_home_evaluations_module_scss__WEBPACK_IMPORTED_MODULE_4__["default"].commentList,
+            children: (currentEvaluation.comments || []).map(function (comment) {
+              return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_11__.View, {
+                className: _styles_home_evaluations_module_scss__WEBPACK_IMPORTED_MODULE_4__["default"].commentItem,
+                children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_11__.Image, (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_10__["default"])({
+                  src: (0,_utils_image__WEBPACK_IMPORTED_MODULE_3__.getImageUrl)(comment.userAvatar),
+                  className: _styles_home_evaluations_module_scss__WEBPACK_IMPORTED_MODULE_4__["default"].commentAvatar,
+                  mode: "aspectFill"
+                }, (0,_utils_image__WEBPACK_IMPORTED_MODULE_3__.lazyImgProps)())), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_11__.View, {
+                  className: _styles_home_evaluations_module_scss__WEBPACK_IMPORTED_MODULE_4__["default"].commentContent,
+                  children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_11__.View, {
+                    className: _styles_home_evaluations_module_scss__WEBPACK_IMPORTED_MODULE_4__["default"].commentHeader,
+                    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_11__.Text, {
+                      className: _styles_home_evaluations_module_scss__WEBPACK_IMPORTED_MODULE_4__["default"].commentUserName,
+                      children: comment.userName || '匿名用户'
+                    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_11__.Text, {
+                      className: _styles_home_evaluations_module_scss__WEBPACK_IMPORTED_MODULE_4__["default"].commentTime,
+                      children: (0,_utils_time__WEBPACK_IMPORTED_MODULE_12__.formatDateTime)(comment.createdAt || comment.createTime || '')
+                    })]
+                  }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_11__.Text, {
+                    className: _styles_home_evaluations_module_scss__WEBPACK_IMPORTED_MODULE_4__["default"].commentText,
+                    children: comment.content
+                  })]
+                })]
+              }, comment.id);
+            })
+          })
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_11__.View, {
+          className: _styles_home_evaluations_module_scss__WEBPACK_IMPORTED_MODULE_4__["default"].commentModalFooter,
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_11__.Input, {
+            className: _styles_home_evaluations_module_scss__WEBPACK_IMPORTED_MODULE_4__["default"].commentInput,
+            placeholder: "\u5199\u4E0B\u4F60\u7684\u8BC4\u8BBA...",
+            value: commentInput,
+            onInput: function onInput(e) {
+              return setCommentInput(e.detail.value);
+            },
+            onConfirm: handleSubmitReply
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_11__.View, {
+            className: _styles_home_evaluations_module_scss__WEBPACK_IMPORTED_MODULE_4__["default"].commentSendBtn,
+            onClick: handleSubmitReply,
+            style: submittingReply ? {
+              opacity: 0.6
+            } : {},
+            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_11__.Text, {
+              children: submittingReply ? '发送中' : '发送'
+            })
+          })]
+        })]
+      })]
+    })]
+  });
+};
+/* harmony default export */ __webpack_exports__["default"] = (ProductEvaluationsPage);
+
+/***/ }),
+
+/***/ "./src/pages/home/evaluations/index.tsx":
+/*!**********************************************!*\
+  !*** ./src/pages/home/evaluations/index.tsx ***!
+  \**********************************************/
+/***/ (function(__unused_webpack_module, __unused_webpack___webpack_exports__, __webpack_require__) {
+
+/* harmony import */ var _tarojs_runtime__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @tarojs/runtime */ "./node_modules/@tarojs/runtime/dist/dsl/common.js");
+/* harmony import */ var _node_modules_tarojs_taro_loader_lib_entry_cache_js_name_pages_home_evaluations_index_index_tsx__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! !!../../../../node_modules/@tarojs/taro-loader/lib/entry-cache.js?name=pages/home/evaluations/index!./index.tsx */ "./node_modules/@tarojs/taro-loader/lib/entry-cache.js?name=pages/home/evaluations/index!./src/pages/home/evaluations/index.tsx");
+
+
+var config = {};
+
+
+
+var taroOption = (0,_tarojs_runtime__WEBPACK_IMPORTED_MODULE_1__.createPageConfig)(_node_modules_tarojs_taro_loader_lib_entry_cache_js_name_pages_home_evaluations_index_index_tsx__WEBPACK_IMPORTED_MODULE_0__["default"], 'pages/home/evaluations/index', {root:{cn:[]}}, config || {})
+if (_node_modules_tarojs_taro_loader_lib_entry_cache_js_name_pages_home_evaluations_index_index_tsx__WEBPACK_IMPORTED_MODULE_0__["default"] && _node_modules_tarojs_taro_loader_lib_entry_cache_js_name_pages_home_evaluations_index_index_tsx__WEBPACK_IMPORTED_MODULE_0__["default"].behaviors) {
+  taroOption.behaviors = (taroOption.behaviors || []).concat(_node_modules_tarojs_taro_loader_lib_entry_cache_js_name_pages_home_evaluations_index_index_tsx__WEBPACK_IMPORTED_MODULE_0__["default"].behaviors)
+}
+var inst = Page(taroOption)
+
+
+
+/* unused harmony default export */ var __WEBPACK_DEFAULT_EXPORT__ = (_node_modules_tarojs_taro_loader_lib_entry_cache_js_name_pages_home_evaluations_index_index_tsx__WEBPACK_IMPORTED_MODULE_0__["default"]);
+
+
+/***/ }),
+
+/***/ "./src/styles/home/evaluations.module.scss":
+/*!*************************************************!*\
+  !*** ./src/styles/home/evaluations.module.scss ***!
+  \*************************************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__) {
+
+// extracted by mini-css-extract-plugin
+/* harmony default export */ __webpack_exports__["default"] = ({"evaluationPage":"evaluations-module__evaluationPage___Apb7L","statsSection":"evaluations-module__statsSection___J7eF8","scoreArea":"evaluations-module__scoreArea___U6lq9","scoreValue":"evaluations-module__scoreValue___JOnBs","scoreLabel":"evaluations-module__scoreLabel___fjrIz","stars":"evaluations-module__stars___FTNLP","starActive":"evaluations-module__starActive___WH9aO","starInactive":"evaluations-module__starInactive___i9sbc","distribution":"evaluations-module__distribution___U13eI","distItem":"evaluations-module__distItem___tYKuL","distLabel":"evaluations-module__distLabel___rimIw","distBarWrap":"evaluations-module__distBarWrap___SIDKx","distBar":"evaluations-module__distBar____Hjta","distPercent":"evaluations-module__distPercent___p0qCA","goodRate":"evaluations-module__goodRate___lWc_U","goodRateLabel":"evaluations-module__goodRateLabel___T00wE","goodRateValue":"evaluations-module__goodRateValue___kyOch","filterSection":"evaluations-module__filterSection___KoZRC","filterTabs":"evaluations-module__filterTabs___zsjLZ","filterTab":"evaluations-module__filterTab___xNhgq","active":"evaluations-module__active___Q8IzT","filterCount":"evaluations-module__filterCount___qf3oX","tagSection":"evaluations-module__tagSection___rktz2","tagList":"evaluations-module__tagList___f7JQz","tagItem":"evaluations-module__tagItem___h4C5o","tagCount":"evaluations-module__tagCount___be6fx","tagMore":"evaluations-module__tagMore___D5kRx","moreArrow":"evaluations-module__moreArrow___lq2VO","sortSection":"evaluations-module__sortSection___uxqGC","sortLabel":"evaluations-module__sortLabel___sBdqe","sortOptions":"evaluations-module__sortOptions___VQLDa","sortOption":"evaluations-module__sortOption___hMMmA","sortDivider":"evaluations-module__sortDivider___F4AlO","sortArrow":"evaluations-module__sortArrow___DG_Am","evaluationList":"evaluations-module__evaluationList___oGrDC","evaluationItem":"evaluations-module__evaluationItem___vCdDZ","evalHeader":"evaluations-module__evalHeader___HqlOq","userAvatar":"evaluations-module__userAvatar___VpvJy","userInfo":"evaluations-module__userInfo___Zj0k_","userNameRow":"evaluations-module__userNameRow___ROLAD","userName":"evaluations-module__userName___FXRNP","userTag":"evaluations-module__userTag___Xt6id","purchaseInfo":"evaluations-module__purchaseInfo___S3cOw","evalTime":"evaluations-module__evalTime___NDIpe","ratingRow":"evaluations-module__ratingRow___uujA1","ratingLabel":"evaluations-module__ratingLabel___VSe6K","ratingStars":"evaluations-module__ratingStars___oWAtv","evalContent":"evaluations-module__evalContent___aflqu","expandBtn":"evaluations-module__expandBtn___FU62x","imageGrid":"evaluations-module__imageGrid___KpUJW","evalImage":"evaluations-module__evalImage___UeGg3","evalActions":"evaluations-module__evalActions___DHmWl","actionItem":"evaluations-module__actionItem___zMe1B","liked":"evaluations-module__liked___btMat","actionIcon":"evaluations-module__actionIcon___U3ZXO","actionText":"evaluations-module__actionText___ZmPiC","commentList":"evaluations-module__commentList___k6kI_","commentItem":"evaluations-module__commentItem___dd70I","commentAvatar":"evaluations-module__commentAvatar___PcnBN","commentContent":"evaluations-module__commentContent___oDZjw","commentHeader":"evaluations-module__commentHeader___YDrBE","commentUserName":"evaluations-module__commentUserName___Zcoyt","commentTime":"evaluations-module__commentTime___EwQpc","commentText":"evaluations-module__commentText___WaHjP","commentLike":"evaluations-module__commentLike___eMILE","commentLikeCount":"evaluations-module__commentLikeCount___TG145","commentModal":"evaluations-module__commentModal___P4yON","modalMask":"evaluations-module__modalMask___PXfSA","commentModalContent":"evaluations-module__commentModalContent___ffq0s","commentModalHeader":"evaluations-module__commentModalHeader___Bfr06","commentModalTitle":"evaluations-module__commentModalTitle____LDhj","commentModalClose":"evaluations-module__commentModalClose___JCgQs","commentModalBody":"evaluations-module__commentModalBody___NVeBt","emptyComment":"evaluations-module__emptyComment___jPtxB","commentModalFooter":"evaluations-module__commentModalFooter___POwLW","commentInput":"evaluations-module__commentInput___xCjR_","commentSendBtn":"evaluations-module__commentSendBtn___qmiEb"});
+
+/***/ })
+
+},
+/******/ function(__webpack_require__) { // webpackRuntimeModules
+/******/ var __webpack_exec__ = function(moduleId) { return __webpack_require__(__webpack_require__.s = moduleId); }
+/******/ __webpack_require__.O(0, ["taro","vendors","common"], function() { return __webpack_exec__("./src/pages/home/evaluations/index.tsx"); });
+/******/ var __webpack_exports__ = __webpack_require__.O();
+/******/ }
+]);
+//# sourceMappingURL=index.js.map

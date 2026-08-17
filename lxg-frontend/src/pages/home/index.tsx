@@ -239,15 +239,18 @@ const HomePage: React.FC = () => {
         ]);
 
         if (bannerRes?.data) {
+          console.log('[首页] banner 原始数据:', JSON.stringify(bannerRes.data).slice(0, 500));
           const rawBanners = Array.isArray(bannerRes.data)
             ? bannerRes.data
             : bannerRes.data?.list || bannerRes.data?.data || bannerRes.data?.banners || [];
           const normalized = rawBanners.map((item: any) => ({
-            id: item.id ?? item.ID ?? item.bannerId ?? String(Math.random()),
-            image: item.image ?? item.Image ?? item.imageUrl ?? item.ImageUrl ?? item.pic ?? item.Pic ?? '',
-            type: item.type ?? item.Type ?? item.linkType ?? '',
-            targetId: item.targetId ?? item.TargetId ?? item.productId ?? item.linkId ?? '',
+            id: item.id ?? item.ID ?? item.bannerId ?? item.BannerId ?? String(Math.random()),
+            image: item.image ?? item.Image ?? item.image_url ?? item.imageUrl ?? item.ImageUrl ?? item.pic ?? item.Pic ?? item.cover ?? item.Cover ?? item.url ?? item.Url ?? item.img ?? item.Img ?? '',
+            // 兼容两种字段命名：后端返回 linkType/linkUrl，旧数据可能用 type/targetId
+            linkType: Number(item.linkType ?? item.link_type ?? item.type ?? item.Type ?? 0),
+            linkUrl: item.linkUrl ?? item.link_url ?? item.url ?? item.Url ?? item.targetId ?? item.TargetId ?? item.productId ?? '',
           }));
+          console.log('[首页] banner 规范化后:', normalized);
           setBanners(normalized);
         }
 
@@ -420,10 +423,37 @@ const HomePage: React.FC = () => {
                     mode="scaleToFill"
                     {...lazyImgProps()}
                     onClick={() => {
-                      if (banner.type === 'seckill') {
-                        goToSeckill();
-                      } else if (banner.type === 'product') {
-                        goToProductDetail(banner.targetId || '');
+                      // 后端 banner 跳转规则：linkType/linkUrl
+                      // 0=无跳转, 1=商品详情, 2=秒杀活动, 3=外部链接
+                      // 后端 linkUrl 可能是虚拟路径（如 /pages/seckill/detail?id=12），
+                      // 前端需根据 linkType 重新构建真实页面路径
+                      const rawUrl = String(banner.linkUrl || '');
+                      // 从 linkUrl 中提取 id 参数（兼容 ?id=X 或 &id=X）
+                      const idMatch = rawUrl.match(/[?&]id=(\d+)/);
+                      const extractedId = idMatch ? idMatch[1] : '';
+
+                      switch (banner.linkType) {
+                        case 0:
+                          break;
+                        case 1: {
+                          // 商品详情：/pages/home/detail/index?id=X
+                          const productId = extractedId || rawUrl;
+                          if (productId) Taro.navigateTo({ url: `/pages/home/detail/index?id=${productId}` });
+                          break;
+                        }
+                        case 2:
+                          // 秒杀活动：跳转秒杀列表页
+                          Taro.navigateTo({ url: '/pages/home/seckill/index' });
+                          break;
+                        case 3:
+                          // 外部链接：走 webview
+                          if (rawUrl) Taro.navigateTo({ url: `/pages/webview/index?url=${encodeURIComponent(rawUrl)}` });
+                          break;
+                        default:
+                          // 兜底：旧数据兼容 type/targetId
+                          if (banner.type === 'seckill') goToSeckill();
+                          else if (banner.type === 'product') goToProductDetail(banner.targetId || '');
+                          break;
                       }
                     }}
                   />
