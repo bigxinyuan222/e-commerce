@@ -1,1 +1,6687 @@
-"use strict";(wx["webpackJsonp"]=wx["webpackJsonp"]||[]).push([[2076],{4473:function(n,e,i){i.d(e,{FD:function(){return D},Ht:function(){return z},JX:function(){return R},KC:function(){return un},N4:function(){return P},NQ:function(){return Z},OZ:function(){return I},TL:function(){return tn},Tg:function(){return U},Tr:function(){return N},V2:function(){return T},Z7:function(){return C},gY:function(){return J},hW:function(){return nn},iw:function(){return x},lE:function(){return k},mB:function(){return K},pn:function(){return G},r5:function(){return h}});var t=i(1212),o=i(9379),l=i(467),u=i(2284),r=i(2458),a="http://192.168.10.7:8089",d="".concat(a,"/api/v1"),s={list:"".concat(d,"/cart"),add:"".concat(d,"/cart"),update:"".concat(d,"/cart/:id"),delete:"".concat(d,"/cart/:id"),batchDelete:"".concat(d,"/cart/batch-delete")},c={submit:"".concat(d,"/orders"),list:"".concat(d,"/orders"),detail:"".concat(d,"/orders/:id"),cancel:"".concat(d,"/orders/:id/cancel"),pay:"".concat(d,"/orders/:id/pay"),paymentStatus:"".concat(d,"/orders/:id/payment"),confirm:"".concat(d,"/orders/:id/confirm"),confirmPickup:"".concat(d,"/orders/:id/pickup"),refund:"".concat(d,"/orders/:id/refund"),review:"".concat(d,"/orders/:id/review"),reviewList:"".concat(d,"/orders/:id/reviews")},v=("".concat(d,"/payment/callback"),{reasonList:"".concat(d,"/refund-reasons"),list:"".concat(d,"/refunds"),apply:"".concat(d,"/refunds"),detail:"".concat(d,"/refunds/:id")}),m={list:"".concat(d,"/address"),default:"".concat(d,"/address/default"),detail:"".concat(d,"/address/:id"),create:"".concat(d,"/address"),update:"".concat(d,"/address/:id"),delete:"".concat(d,"/address/:id")};function g(n){return void 0===n||null===n||""===n||0===n||"0"===n}function p(){for(var n=arguments.length,e=new Array(n),i=0;i<n;i++)e[i]=arguments[i];for(var t=0,o=e;t<o.length;t++){var l=o[t];if(!g(l))return String(l)}return""}function y(n){var e,i,t,o,l,r,a,d,s,c,v,m,g,p,y,I,M,A,N,f,h,_,T,w,D,S,k,j,C,b,z,L,x,O,P,E,U,Y,Q,R,W,Z,H,B,G,F,J,V,q,X,K,$,nn,en,tn,on,ln,un,rn,an,dn,sn,cn,vn,mn,gn,pn,yn,In,Mn,An;if(!n||"object"!==(0,u.A)(n))return null;var Nn=null!==(e=null!==(i=null!==(t=null!==(o=null!==(l=null!==(r=null!==(a=null!==(d=null!==(s=null!==(c=n.product)&&void 0!==c?c:n.Product)&&void 0!==s?s:n.goods)&&void 0!==d?d:n.Goods)&&void 0!==a?a:n.item)&&void 0!==r?r:n.Item)&&void 0!==l?l:n.orderItem)&&void 0!==o?o:n.OrderItem)&&void 0!==t?t:n.refundItem)&&void 0!==i?i:n.RefundItem)&&void 0!==e?e:{},fn=null!==(v=null!==(m=null!==(g=null!==(p=n.sku)&&void 0!==p?p:n.Sku)&&void 0!==g?g:Nn.sku)&&void 0!==m?m:Nn.Sku)&&void 0!==v?v:{},hn=null!==(y=null!==(I=null!==(M=null!==(A=null!==(N=null!==(f=null!==(h=null!==(_=null!==(T=null!==(w=null!==(D=null!==(S=null!==(k=null!==(j=null!==(C=null!==(b=n.productName)&&void 0!==b?b:n.product_name)&&void 0!==C?C:n.ProductName)&&void 0!==j?j:n.name)&&void 0!==k?k:n.Name)&&void 0!==S?S:n.title)&&void 0!==D?D:n.Title)&&void 0!==w?w:n.goodsName)&&void 0!==T?T:n.goods_name)&&void 0!==_?_:n.GoodsName)&&void 0!==h?h:Nn.name)&&void 0!==f?f:Nn.Name)&&void 0!==N?N:Nn.productName)&&void 0!==A?A:Nn.title)&&void 0!==M?M:Nn.Title)&&void 0!==I?I:Nn.goodsName)&&void 0!==y?y:"",_n=null!==(z=null!==(L=null!==(x=null!==(O=null!==(P=null!==(E=null!==(U=null!==(Y=null!==(Q=null!==(R=null!==(W=n.skuName)&&void 0!==W?W:n.sku_name)&&void 0!==R?R:n.SkuName)&&void 0!==Q?Q:n.specName)&&void 0!==Y?Y:n.spec_name)&&void 0!==U?U:n.SpecName)&&void 0!==E?E:n.specs)&&void 0!==P?P:fn.name)&&void 0!==O?O:fn.skuName)&&void 0!==x?x:fn.specName)&&void 0!==L?L:fn.specs)&&void 0!==z?z:"";if(!_n&&(n.specValues||fn.specValues)){var Tn=n.specValues||fn.specValues;"object"===(0,u.A)(Tn)&&(_n=Object.values(Tn).join("/")||"")}var wn=null!==(Z=null!==(H=null!==(B=null!==(G=null!==(F=null!==(J=null!==(V=null!==(q=null!==(X=null!==(K=null!==($=n.productImage)&&void 0!==$?$:n.product_image)&&void 0!==K?K:n.ProductImage)&&void 0!==X?X:n.image)&&void 0!==q?q:n.Image)&&void 0!==V?V:n.pic)&&void 0!==J?J:n.Pic)&&void 0!==F?F:Nn.image)&&void 0!==G?G:Nn.Image)&&void 0!==B?B:Nn.pic)&&void 0!==H?H:Nn.Pic)&&void 0!==Z?Z:"";if(!wn){var Dn,Sn,kn,jn,Cn,bn=null!==(Dn=null!==(Sn=null!==(kn=null!==(jn=null!==(Cn=Nn.images)&&void 0!==Cn?Cn:Nn.Images)&&void 0!==jn?jn:Nn.imageList)&&void 0!==kn?kn:Nn.ImageList)&&void 0!==Sn?Sn:fn.images)&&void 0!==Dn?Dn:fn.Images;Array.isArray(bn)&&bn.length>0&&(wn=bn[0])}if("string"===typeof wn)if(wn.startsWith("["))try{var zn=JSON.parse(wn);Array.isArray(zn)&&zn.length>0&&(wn=String(zn[0]).replace(/^`|`$/g,""))}catch(n){}else wn=wn.replace(/^`|`$/g,"");var Ln=Number(null!==(nn=null!==(en=null!==(tn=null!==(on=null!==(ln=null!==(un=null!==(rn=null!==(an=null!==(dn=null!==(sn=null!==(cn=n.price)&&void 0!==cn?cn:n.Price)&&void 0!==sn?sn:n.refundPrice)&&void 0!==dn?dn:n.refund_price)&&void 0!==an?an:n.RefundPrice)&&void 0!==rn?rn:n.amount)&&void 0!==un?un:n.Amount)&&void 0!==ln?ln:fn.price)&&void 0!==on?on:fn.Price)&&void 0!==tn?tn:Nn.price)&&void 0!==en?en:Nn.Price)&&void 0!==nn?nn:0),xn=Number(null!==(vn=null!==(mn=null!==(gn=null!==(pn=null!==(yn=null!==(In=null!==(Mn=null!==(An=n.quantity)&&void 0!==An?An:n.Quantity)&&void 0!==Mn?Mn:n.count)&&void 0!==In?In:n.Count)&&void 0!==yn?yn:n.num)&&void 0!==pn?pn:n.Num)&&void 0!==gn?gn:fn.quantity)&&void 0!==mn?mn:Nn.quantity)&&void 0!==vn?vn:1);return hn||wn?{productName:hn,skuName:_n,image:wn,price:Ln,quantity:xn}:null}function I(n){var e,i,t,o,l,r,a,d,s,c,v,m,g,y,I,M,A,N,f,h,_,T,w,D,S,k,j,C,b,z,L,x,O,P,E,U,Y,Q,R,W,Z,H,B,G,F,J,V,q,X,K,$,nn,en,tn,on,ln,un,rn,an,dn,sn,cn,vn,mn,gn,pn,yn,In,Mn,An,Nn,fn,hn,_n,Tn,wn,Dn,Sn,kn,jn,Cn,bn,zn,Ln,xn,On,Pn,En,Un,Yn,Qn,Rn,Wn,Zn,Hn,Bn,Gn,Fn,Jn,Vn,qn,Xn,Kn,$n,ne,ee,ie,te,oe,le,ue,re,ae,de,se,ce,ve,me,ge,pe,ye,Ie,Me=p(n.id,n.Id,n.ID,n.cartId,n.cart_id,n.CartId,n.Cart_id,n.cartItemId,n.cart_item_id,n.CartItemId,n.CartItemID,n.cartItemID,n.cid,n.Cid,n.CID,n.itemId,n.item_id,n.ItemId,n.ItemID,n.shoppingCartId,n.shopping_cart_id,n.ShoppingCartId,n.shoppingCartItemId,n.shopping_cart_item_id,n.ShoppingCartItemId);Me||console.warn("[transformCartItem] \u65e0\u6cd5\u63d0\u53d6\u6709\u6548\u8d2d\u7269\u8f66ID\uff0c\u539f\u59cb\u6570\u636e:",JSON.stringify(n));var Ae=null!==(e=null!==(i=null!==(t=null!==(o=n.sku)&&void 0!==o?o:n.Sku)&&void 0!==t?t:n.skuInfo)&&void 0!==i?i:n.SkuInfo)&&void 0!==e?e:{},Ne=null!==(l=null!==(r=null!==(a=null!==(d=null!==(s=null!==(c=null!==(v=null!==(m=null!==(g=null!==(y=n.product)&&void 0!==y?y:n.Product)&&void 0!==g?g:n.goods)&&void 0!==m?m:n.Goods)&&void 0!==v?v:n.item)&&void 0!==c?c:n.Item)&&void 0!==s?s:Ae.product)&&void 0!==d?d:Ae.Product)&&void 0!==a?a:Ae.goods)&&void 0!==r?r:Ae.Goods)&&void 0!==l?l:{},fe=null!==(I=null!==(M=null!==(A=null!==(N=null!==(f=null!==(h=null!==(_=null!==(T=null!==(w=null!==(D=null!==(S=n.skuName)&&void 0!==S?S:n.sku_name)&&void 0!==D?D:n.SkuName)&&void 0!==w?w:n.specName)&&void 0!==T?T:Ae.name)&&void 0!==_?_:Ae.skuName)&&void 0!==h?h:Ae.sku_name)&&void 0!==f?f:Ae.SkuName)&&void 0!==N?N:Ae.specName)&&void 0!==A?A:Ae.title)&&void 0!==M?M:Ae.Title)&&void 0!==I?I:"";!fe&&n.specValues&&"object"===(0,u.A)(n.specValues)&&(fe=Object.values(n.specValues).join("/")||""),!fe&&Ae.specValues&&"object"===(0,u.A)(Ae.specValues)&&(fe=Object.values(Ae.specValues).join("/")||""),!fe&&Ae.specs&&"object"===(0,u.A)(Ae.specs)&&(fe=Object.values(Ae.specs).join("/")||""),!fe&&Ne.specs&&"object"===(0,u.A)(Ne.specs)&&(fe=Object.values(Ne.specs).join("/")||"");for(var he=[n.image,n.imageUrl,n.image_url,n.Image,n.pic,n.mainImage,n.main_image,n.MainImage,n.cover,n.Cover,n.thumbnail,n.Thumbnail,n.productImage,n.product_image,n.ProductImage,Ae.image,Ae.Image,Ae.pic,Ae.skuImage,Ae.SkuImage,Ae.mainImage,Ae.main_image,Ae.MainImage,Ae.cover,Ae.Cover,Ae.thumbnail,Ae.Thumbnail,null===(k=Ae.product)||void 0===k||null===(k=k.images)||void 0===k?void 0:k[0],null===(j=Ae.product)||void 0===j||null===(j=j.Images)||void 0===j?void 0:j[0],null===(C=Ae.product)||void 0===C?void 0:C.mainImage,null===(b=Ae.product)||void 0===b?void 0:b.MainImage,null===(z=Ae.product)||void 0===z?void 0:z.image,null===(L=Ae.product)||void 0===L?void 0:L.Image,Ne.image,Ne.Image,Ne.pic,null===(x=Ne.images)||void 0===x?void 0:x[0],null===(O=Ne.Images)||void 0===O?void 0:O[0],Ne.mainImage,Ne.MainImage,Ne.main_image,Ne.imageUrl,Ne.image_url,Ne.ImageUrl,Ne.cover,Ne.Cover,Ne.thumbnail,Ne.Thumbnail],_e="",Te=0,we=he;Te<we.length;Te++){var De=we[Te];if(void 0!==De&&null!==De&&""!==De){_e=De;break}}if("string"===typeof _e)if(_e.startsWith("["))try{var Se=JSON.parse(_e);Array.isArray(Se)&&Se.length>0&&(_e=String(Se[0]).replace(/^`|`$/g,""))}catch(n){}else _e=_e.replace(/^`|`$/g,"");var ke=null!==(P=null!==(E=null!==(U=null!==(Y=null!==(Q=null!==(R=null!==(W=null!==(Z=null!==(H=null!==(B=null!==(G=n.productName)&&void 0!==G?G:n.product_name)&&void 0!==B?B:n.ProductName)&&void 0!==H?H:n.name)&&void 0!==Z?Z:n.title)&&void 0!==W?W:Ne.name)&&void 0!==R?R:Ne.Name)&&void 0!==Q?Q:Ne.title)&&void 0!==Y?Y:Ne.Title)&&void 0!==U?U:Ne.productName)&&void 0!==E?E:Ne.product_name)&&void 0!==P?P:"",je=Number(null!==(F=null!==(J=null!==(V=null!==(q=null!==(X=null!==(K=null!==($=null!==(nn=null!==(en=null!==(tn=null!==(on=null!==(ln=null!==(un=null!==(rn=null!==(an=n.price)&&void 0!==an?an:n.Price)&&void 0!==rn?rn:n.salePrice)&&void 0!==un?un:n.sale_price)&&void 0!==ln?ln:n.discountPrice)&&void 0!==on?on:n.amount)&&void 0!==tn?tn:Ae.price)&&void 0!==en?en:Ae.Price)&&void 0!==nn?nn:Ae.salePrice)&&void 0!==$?$:Ae.sale_price)&&void 0!==K?K:Ae.discountPrice)&&void 0!==X?X:Ne.price)&&void 0!==q?q:Ne.Price)&&void 0!==V?V:Ne.salePrice)&&void 0!==J?J:Ne.sale_price)&&void 0!==F?F:0);return ke&&(0!==je||n.price||n.Price||n.amount)||console.warn("[transformCartItem] \u5546\u54c1\u5173\u952e\u4fe1\u606f\u7f3a\u5931\uff0c\u539f\u59cb\u6570\u636e:",JSON.stringify(n)),{id:Me,productId:p(n.productId,n.product_id,n.ProductId,n.pid,n.productID,Ne.id,Ne.Id,Ne.ID,Ae.productId,null===(dn=Ae.product)||void 0===dn?void 0:dn.id,null===(sn=Ae.product)||void 0===sn?void 0:sn.ID),productName:ke,skuId:p(n.skuId,n.sku_id,n.SkuId,n.skuID,Ae.id,Ae.Id,Ae.ID),skuName:fe,price:je,quantity:Number(null!==(cn=null!==(vn=null!==(mn=null!==(gn=n.quantity)&&void 0!==gn?gn:n.Quantity)&&void 0!==mn?mn:n.count)&&void 0!==vn?vn:n.num)&&void 0!==cn?cn:1),stock:Number(null!==(pn=null!==(yn=null!==(In=null!==(Mn=null!==(An=null!==(Nn=null!==(fn=n.stock)&&void 0!==fn?fn:n.Stock)&&void 0!==Nn?Nn:n.maxQuantity)&&void 0!==An?An:Ae.stock)&&void 0!==Mn?Mn:Ae.Stock)&&void 0!==In?In:Ne.stock)&&void 0!==yn?yn:Ne.Stock)&&void 0!==pn?pn:999),image:_e,selected:null===(hn=null!==(_n=n.selected)&&void 0!==_n?_n:n.Selected)||void 0===hn||hn,isSeckill:null!==(Tn=null!==(wn=null!==(Dn=null!==(Sn=null!==(kn=n.isSeckill)&&void 0!==kn?kn:n.is_seckill)&&void 0!==Sn?Sn:n.IsSeckill)&&void 0!==Dn?Dn:Ne.isSeckill)&&void 0!==wn?wn:Ne.is_seckill)&&void 0!==Tn&&Tn,seckillPrice:null!==(jn=null!==(Cn=null!==(bn=null!==(zn=null!==(Ln=null!==(xn=n.seckillPrice)&&void 0!==xn?xn:n.seckill_price)&&void 0!==Ln?Ln:n.SeckillPrice)&&void 0!==zn?zn:Ae.seckillPrice)&&void 0!==bn?bn:Ae.seckill_price)&&void 0!==Cn?Cn:Ne.seckillPrice)&&void 0!==jn?jn:null,originalPrice:null!==(On=null!==(Pn=null!==(En=null!==(Un=null!==(Yn=null!==(Qn=n.originalPrice)&&void 0!==Qn?Qn:n.original_price)&&void 0!==Yn?Yn:n.OriginalPrice)&&void 0!==Un?Un:n.marketPrice)&&void 0!==En?En:Ae.originalPrice)&&void 0!==Pn?Pn:Ne.originalPrice)&&void 0!==On?On:null,storeId:null!==(Rn=null!==(Wn=null!==(Zn=null!==(Hn=null!==(Bn=n.storeId)&&void 0!==Bn?Bn:n.store_id)&&void 0!==Hn?Hn:n.StoreId)&&void 0!==Zn?Zn:Ne.storeId)&&void 0!==Wn?Wn:Ne.store_id)&&void 0!==Rn?Rn:null,storeName:null!==(Gn=null!==(Fn=null!==(Jn=null!==(Vn=null!==(qn=n.storeName)&&void 0!==qn?qn:n.store_name)&&void 0!==Vn?Vn:n.StoreName)&&void 0!==Jn?Jn:Ne.storeName)&&void 0!==Fn?Fn:Ne.store_name)&&void 0!==Gn?Gn:"",checked:null!==(Xn=null!==(Kn=n.checked)&&void 0!==Kn?Kn:n.Checked)&&void 0!==Xn?Xn:null,skuCode:null!==($n=null!==(ne=null!==(ee=null!==(ie=null!==(te=null!==(oe=n.skuCode)&&void 0!==oe?oe:n.sku_code)&&void 0!==te?te:n.SkuCode)&&void 0!==ie?ie:Ae.skuCode)&&void 0!==ee?ee:Ae.sku_code)&&void 0!==ne?ne:Ae.SkuCode)&&void 0!==$n?$n:"",productCode:null!==(le=null!==(ue=null!==(re=null!==(ae=null!==(de=n.productCode)&&void 0!==de?de:n.product_code)&&void 0!==ae?ae:n.ProductCode)&&void 0!==re?re:Ne.productCode)&&void 0!==ue?ue:Ne.product_code)&&void 0!==le?le:"",createTime:null!==(se=null!==(ce=null!==(ve=null!==(me=n.createTime)&&void 0!==me?me:n.create_time)&&void 0!==ve?ve:n.CreateTime)&&void 0!==ce?ce:n.CreatedAt)&&void 0!==se?se:"",updateTime:null!==(ge=null!==(pe=null!==(ye=null!==(Ie=n.updateTime)&&void 0!==Ie?Ie:n.update_time)&&void 0!==ye?ye:n.UpdateTime)&&void 0!==pe?pe:n.UpdatedAt)&&void 0!==ge?ge:""}}var M={0:"pending_payment",2:"pending_delivery",3:"pending_pickup",4:"completed",5:"cancelled"};function A(n){var e,i,t,o,l,u,r,a,d,s,c,v,m,g,y,A,N,f,h,_,T,w,D,S,k,j,C,b,z,L,x,O,P,E,U,Y,Q,R,W,Z,H,B,G,F,J,V,q,X=null!==(e=null!==(i=null!==(t=n.status)&&void 0!==t?t:n.Status)&&void 0!==i?i:n.orderStatus)&&void 0!==e?e:"",K="number"===typeof X?null!==(o=M[X])&&void 0!==o?o:String(X):X;return{id:p(n.id,n.Id,n.ID,n.orderId,n.order_id),orderNo:p(n.orderNo,n.order_no,n.OrderNo,n.OrderNO),status:K,totalAmount:Number(null!==(l=null!==(u=null!==(r=n.totalAmount)&&void 0!==r?r:n.total_amount)&&void 0!==u?u:n.TotalAmount)&&void 0!==l?l:0),payAmount:Number(null!==(a=null!==(d=null!==(s=n.payAmount)&&void 0!==s?s:n.pay_amount)&&void 0!==d?d:n.PayAmount)&&void 0!==a?a:0),freightAmount:Number(null!==(c=null!==(v=null!==(m=n.freightAmount)&&void 0!==m?m:n.freight_amount)&&void 0!==v?v:n.FreightAmount)&&void 0!==c?c:0),couponAmount:Number(null!==(g=null!==(y=null!==(A=null!==(N=null!==(f=n.couponAmount)&&void 0!==f?f:n.coupon_amount)&&void 0!==N?N:n.CouponAmount)&&void 0!==A?A:n.discountAmount)&&void 0!==y?y:n.discount_amount)&&void 0!==g?g:0),itemCount:Number(null!==(h=null!==(_=null!==(T=n.itemCount)&&void 0!==T?T:n.item_count)&&void 0!==_?_:n.ItemCount)&&void 0!==h?h:Array.isArray(n.items)?n.items.length:0),createdAt:null!==(w=null!==(D=null!==(S=null!==(k=null!==(j=n.createdAt)&&void 0!==j?j:n.created_at)&&void 0!==k?k:n.createTime)&&void 0!==S?S:n.CreateTime)&&void 0!==D?D:n.CreatedAt)&&void 0!==w?w:"",payAt:null!==(C=null!==(b=null!==(z=null!==(L=null!==(x=n.payAt)&&void 0!==x?x:n.pay_at)&&void 0!==L?L:n.PayAt)&&void 0!==z?z:n.paidAt)&&void 0!==b?b:n.PaidAt)&&void 0!==C?C:"",items:Array.isArray(n.items)?n.items.map(I):[],address:null!==(O=null!==(P=n.address)&&void 0!==P?P:n.Address)&&void 0!==O?O:null,storeName:null!==(E=null!==(U=null!==(Y=null!==(Q=n.storeName)&&void 0!==Q?Q:n.store_name)&&void 0!==Y?Y:n.StoreName)&&void 0!==U?U:null===(R=n.store)||void 0===R?void 0:R.name)&&void 0!==E?E:"",store:null!==(W=null!==(Z=n.store)&&void 0!==Z?Z:n.Store)&&void 0!==W?W:null,remark:null!==(H=null!==(B=n.remark)&&void 0!==B?B:n.Remark)&&void 0!==H?H:"",isReviewed:null!==(G=null!==(F=null!==(J=null!==(V=null!==(q=n.isReviewed)&&void 0!==q?q:n.is_reviewed)&&void 0!==V?V:n.IsReviewed)&&void 0!==J?J:n.reviewed)&&void 0!==F?F:n.Reviewed)&&void 0!==G&&G}}function N(){return f.apply(this,arguments)}function f(){return f=(0,l.A)((0,t.A)().m(function n(){var e,i,l,u,a,d,c,v=arguments;return(0,t.A)().w(function(n){while(1)switch(n.n){case 0:return a=v.length>0&&void 0!==v[0]?v[0]:{},n.n=1,(0,r.Vg)(s.list,a);case 1:return d=n.v,c=Array.isArray(null===d||void 0===d?void 0:d.data)?d.data:null!==(e=null!==(i=null===d||void 0===d||null===(l=d.data)||void 0===l?void 0:l.list)&&void 0!==i?i:null===d||void 0===d||null===(u=d.data)||void 0===u?void 0:u.items)&&void 0!==e?e:[],c.length>0&&console.log("[fetchCartList] \u540e\u7aef\u539f\u59cb\u7b2c\u4e00\u6761:",JSON.stringify(c[0],null,2)),n.a(2,(0,o.A)((0,o.A)({},d),{},{data:c.map(I)}))}},n)})),f.apply(this,arguments)}function h(n){return _.apply(this,arguments)}function _(){return _=(0,l.A)((0,t.A)().m(function n(e){var i,o;return(0,t.A)().w(function(n){while(1)switch(n.n){case 0:return i={productId:(0,r.KF)(e.productId),skuId:(0,r.KF)(e.skuId),quantity:e.quantity},void 0!==e.storeId&&null!==e.storeId&&(i.storeId=(0,r.KF)(e.storeId)),e.remark&&(i.remark=e.remark),n.n=1,(0,r.$P)(s.add,i,{},{},!1);case 1:return o=n.v,n.a(2,o)}},n)})),_.apply(this,arguments)}function T(n,e){return w.apply(this,arguments)}function w(){return w=(0,l.A)((0,t.A)().m(function n(e,i){var o,l,a;return(0,t.A)().w(function(n){while(1)switch(n.n){case 0:if(o=(0,r.KF)(e),o){n.n=1;break}throw console.error("[updateCartItem] \u65e0\u6548\u7684\u8d2d\u7269\u8f66ID:",e,"\u7c7b\u578b:",(0,u.A)(e)),new Error("\u65e0\u6548\u7684\u8d2d\u7269\u8f66ID");case 1:return l={},void 0!==i.quantity&&(l.quantity=i.quantity),void 0!==i.selected&&(l.selected=i.selected),n.n=2,(0,r.mu)(s.update,l,{id:o});case 2:return a=n.v,n.a(2,a)}},n)})),w.apply(this,arguments)}function D(n){return S.apply(this,arguments)}function S(){return S=(0,l.A)((0,t.A)().m(function n(e){var i,o;return(0,t.A)().w(function(n){while(1)switch(n.n){case 0:if(i=(0,r.KF)(e),i){n.n=1;break}throw console.error("[deleteCartItem] \u65e0\u6548\u7684\u8d2d\u7269\u8f66ID:",e,"\u7c7b\u578b:",(0,u.A)(e)),new Error("\u65e0\u6548\u7684\u8d2d\u7269\u8f66ID");case 1:return n.n=2,(0,r.Al)(s.delete,{},{id:i});case 2:return o=n.v,n.a(2,o)}},n)})),S.apply(this,arguments)}function k(n){return j.apply(this,arguments)}function j(){return j=(0,l.A)((0,t.A)().m(function n(e){var i,o;return(0,t.A)().w(function(n){while(1)switch(n.n){case 0:if(i=e.map(r.KF).filter(Boolean),0!==i.length){n.n=1;break}throw new Error("\u65e0\u6548\u7684\u8d2d\u7269\u8f66ID");case 1:return n.n=2,(0,r.$P)(s.batchDelete,{ids:i},{},{},!1);case 2:return o=n.v,n.a(2,o)}},n)})),j.apply(this,arguments)}function C(n){return b.apply(this,arguments)}function b(){return b=(0,l.A)((0,t.A)().m(function n(e){var i,o;return(0,t.A)().w(function(n){while(1)switch(n.n){case 0:return i={},Array.isArray(e.cartIds)?i.cartIds=e.cartIds.map(function(n){return(0,r.KF)(n)}):Array.isArray(e.items)?i.cartIds=e.items.filter(function(n){return n.id}).map(function(n){return(0,r.KF)(n.id)}):i.cartIds=[],i.storeId=(0,r.KF)(e.storeId),void 0!==e.userCouponId&&null!==e.userCouponId&&0!==e.userCouponId?i.userCouponId=(0,r.KF)(e.userCouponId):i.userCouponId=null,i.remark=e.remark||"",console.log("[SubmitOrder API] Sending payload:",JSON.stringify(i)),n.n=1,(0,r.$P)(c.submit,i,{},{},!1);case 1:return o=n.v,n.a(2,o)}},n)})),b.apply(this,arguments)}function z(){return L.apply(this,arguments)}function L(){return L=(0,l.A)((0,t.A)().m(function n(){var e,i,l,u,a,d,s,v=arguments;return(0,t.A)().w(function(n){while(1)switch(n.n){case 0:return a=v.length>0&&void 0!==v[0]?v[0]:{},n.n=1,(0,r.Vg)(c.list,a);case 1:return d=n.v,s=Array.isArray(null===d||void 0===d?void 0:d.data)?d.data:null!==(e=null!==(i=null===d||void 0===d||null===(l=d.data)||void 0===l?void 0:l.list)&&void 0!==i?i:null===d||void 0===d||null===(u=d.data)||void 0===u?void 0:u.items)&&void 0!==e?e:[],n.a(2,(0,o.A)((0,o.A)({},d),{},{data:s.map(A)}))}},n)})),L.apply(this,arguments)}function x(n){return O.apply(this,arguments)}function O(){return O=(0,l.A)((0,t.A)().m(function n(e){var i;return(0,t.A)().w(function(n){while(1)switch(n.n){case 0:return n.n=1,(0,r.Vg)(c.detail,{},{id:e});case 1:if(i=n.v,null===i||void 0===i||!i.data){n.n=2;break}return n.a(2,(0,o.A)((0,o.A)({},i),{},{data:A(i.data)}));case 2:return n.a(2,i)}},n)})),O.apply(this,arguments)}function P(n){return E.apply(this,arguments)}function E(){return E=(0,l.A)((0,t.A)().m(function n(e){var i;return(0,t.A)().w(function(n){while(1)switch(n.n){case 0:return n.n=1,(0,r.mu)(c.cancel,{},{id:e});case 1:return i=n.v,n.a(2,i)}},n)})),E.apply(this,arguments)}function U(n,e){return Y.apply(this,arguments)}function Y(){return Y=(0,l.A)((0,t.A)().m(function n(e,i){var o;return(0,t.A)().w(function(n){while(1)switch(n.n){case 0:return n.n=1,(0,r.$P)(c.pay,i||{},{id:e},{},!1);case 1:return o=n.v,n.a(2,o)}},n)})),Y.apply(this,arguments)}function Q(n){var e,i,t,o,l,u,r,a,d,s,c,v,m,g,p,y,I,M,A,N,f,h,_,T,w,D,S,k,j,C,b,z,L,x,O,P=null!==(e=null!==(i=null!==(t=null!==(o=null!==(l=n.status)&&void 0!==l?l:n.Status)&&void 0!==o?o:n.payStatus)&&void 0!==t?t:n.pay_status)&&void 0!==i?i:n.paymentStatus)&&void 0!==e?e:"",E="paid"===P||"success"===P||"SUCCESS"===P||1===P||"1"===P||!0===n.isPaid||!0===n.IsPaid||!0===n.is_paid;return{orderId:null!==(u=null!==(r=null!==(a=null!==(d=n.orderId)&&void 0!==d?d:n.order_id)&&void 0!==a?a:n.OrderId)&&void 0!==r?r:n.OrderID)&&void 0!==u?u:"",orderNo:null!==(s=null!==(c=null!==(v=n.orderNo)&&void 0!==v?v:n.order_no)&&void 0!==c?c:n.OrderNo)&&void 0!==s?s:"",status:P,isPaid:E,paymentMethod:null!==(m=null!==(g=null!==(p=null!==(y=null!==(I=n.paymentMethod)&&void 0!==I?I:n.payment_method)&&void 0!==y?y:n.PaymentMethod)&&void 0!==p?p:n.payType)&&void 0!==g?g:n.pay_type)&&void 0!==m?m:"",transactionId:null!==(M=null!==(A=null!==(N=null!==(f=n.transactionId)&&void 0!==f?f:n.transaction_id)&&void 0!==N?N:n.TransactionId)&&void 0!==A?A:n.TransactionID)&&void 0!==M?M:"",amount:Number(null!==(h=null!==(_=null!==(T=null!==(w=null!==(D=n.amount)&&void 0!==D?D:n.Amount)&&void 0!==w?w:n.payAmount)&&void 0!==T?T:n.pay_amount)&&void 0!==_?_:n.PayAmount)&&void 0!==h?h:0),paidAt:null!==(S=null!==(k=null!==(j=null!==(C=null!==(b=null!==(z=n.paidAt)&&void 0!==z?z:n.paid_at)&&void 0!==b?b:n.PaidAt)&&void 0!==C?C:n.payTime)&&void 0!==j?j:n.pay_time)&&void 0!==k?k:n.PayTime)&&void 0!==S?S:"",message:null!==(L=null!==(x=null!==(O=n.message)&&void 0!==O?O:n.Message)&&void 0!==x?x:n.msg)&&void 0!==L?L:""}}function R(n){return W.apply(this,arguments)}function W(){return W=(0,l.A)((0,t.A)().m(function n(e){var i;return(0,t.A)().w(function(n){while(1)switch(n.n){case 0:return n.n=1,(0,r.Vg)(c.paymentStatus,{},{id:e});case 1:if(i=n.v,null===i||void 0===i||!i.data){n.n=2;break}return n.a(2,(0,o.A)((0,o.A)({},i),{},{data:Q(i.data)}));case 2:return n.a(2,i)}},n)})),W.apply(this,arguments)}function Z(n){return H.apply(this,arguments)}function H(){return H=(0,l.A)((0,t.A)().m(function n(e){var i;return(0,t.A)().w(function(n){while(1)switch(n.n){case 0:return n.n=1,(0,r.mu)(c.confirm,{},{id:e});case 1:return i=n.v,n.a(2,i)}},n)})),H.apply(this,arguments)}function B(n){var e,i,t,o,l,u,r,a,d,s,c,v,m,g,p,y,I,M,A,N,f,h,_,T,w,D,S,k,j,C,b,z,L,x,O,P,E,U,Y,Q,R,W,Z,H,B,G,F,J,V,q,X,K,$,nn,en,tn,on,ln,un,rn,an,dn,sn,cn,vn,mn;return{id:null!==(e=null!==(i=null!==(t=null!==(o=null!==(l=n.id)&&void 0!==l?l:n.Id)&&void 0!==o?o:n.reviewId)&&void 0!==t?t:n.review_id)&&void 0!==i?i:n.ID)&&void 0!==e?e:"",orderId:null!==(u=null!==(r=null!==(a=null!==(d=n.orderId)&&void 0!==d?d:n.order_id)&&void 0!==a?a:n.OrderId)&&void 0!==r?r:n.OrderID)&&void 0!==u?u:"",productId:null!==(s=null!==(c=null!==(v=null!==(m=n.productId)&&void 0!==m?m:n.product_id)&&void 0!==v?v:n.ProductId)&&void 0!==c?c:n.ProductID)&&void 0!==s?s:"",productName:null!==(g=null!==(p=null!==(y=null!==(I=n.productName)&&void 0!==I?I:n.product_name)&&void 0!==y?y:n.ProductName)&&void 0!==p?p:n.name)&&void 0!==g?g:"",skuId:null!==(M=null!==(A=null!==(N=null!==(f=n.skuId)&&void 0!==f?f:n.sku_id)&&void 0!==N?N:n.SkuId)&&void 0!==A?A:n.SkuID)&&void 0!==M?M:"",skuName:null!==(h=null!==(_=null!==(T=null!==(w=n.skuName)&&void 0!==w?w:n.sku_name)&&void 0!==T?T:n.SkuName)&&void 0!==_?_:n.specName)&&void 0!==h?h:"",rating:Number(null!==(D=null!==(S=null!==(k=null!==(j=n.rating)&&void 0!==j?j:n.Rating)&&void 0!==k?k:n.score)&&void 0!==S?S:n.Score)&&void 0!==D?D:5),ratingType:null!==(C=null!==(b=null!==(z=n.ratingType)&&void 0!==z?z:n.rating_type)&&void 0!==b?b:n.RatingType)&&void 0!==C?C:n.rating>=4?"good":n.rating<=2?"bad":"neutral",content:null!==(L=null!==(x=null!==(O=null!==(P=null!==(E=null!==(U=n.content)&&void 0!==U?U:n.Content)&&void 0!==E?E:n.reviewContent)&&void 0!==P?P:n.review_content)&&void 0!==O?O:n.comment)&&void 0!==x?x:n.Comment)&&void 0!==L?L:"",images:Array.isArray(n.images)?n.images:Array.isArray(n.Images)?n.Images:Array.isArray(n.pics)?n.pics:Array.isArray(n.imageList)?n.imageList:[],anonymous:null!==(Y=null!==(Q=null!==(R=null!==(W=n.anonymous)&&void 0!==W?W:n.Anonymous)&&void 0!==R?R:n.isAnonymous)&&void 0!==Q?Q:n.is_anonymous)&&void 0!==Y&&Y,createdAt:null!==(Z=null!==(H=null!==(B=null!==(G=n.createdAt)&&void 0!==G?G:n.created_at)&&void 0!==B?B:n.CreateTime)&&void 0!==H?H:n.createTime)&&void 0!==Z?Z:"",userId:null!==(F=null!==(J=null!==(V=n.userId)&&void 0!==V?V:n.user_id)&&void 0!==J?J:n.UserId)&&void 0!==F?F:"",userName:null!==(q=null!==(X=null!==(K=null!==($=null!==(nn=n.userName)&&void 0!==nn?nn:n.user_name)&&void 0!==$?$:n.UserName)&&void 0!==K?K:n.nickname)&&void 0!==X?X:n.NickName)&&void 0!==q?q:"",userAvatar:null!==(en=null!==(tn=null!==(on=null!==(ln=null!==(un=n.userAvatar)&&void 0!==un?un:n.user_avatar)&&void 0!==ln?ln:n.UserAvatar)&&void 0!==on?on:n.avatar)&&void 0!==tn?tn:n.Avatar)&&void 0!==en?en:"",reply:null!==(rn=null!==(an=null!==(dn=null!==(sn=n.reply)&&void 0!==sn?sn:n.Reply)&&void 0!==dn?dn:n.replyContent)&&void 0!==an?an:n.reply_content)&&void 0!==rn?rn:"",replyAt:null!==(cn=null!==(vn=null!==(mn=n.replyAt)&&void 0!==mn?mn:n.reply_at)&&void 0!==vn?vn:n.ReplyAt)&&void 0!==cn?cn:""}}function G(n,e){return F.apply(this,arguments)}function F(){return F=(0,l.A)((0,t.A)().m(function n(e,i){var o,l;return(0,t.A)().w(function(n){while(1)switch(n.n){case 0:return o={},void 0!==i.rating&&(o.rating=i.rating),void 0!==i.ratingType&&(o.ratingType=i.ratingType),void 0!==i.content&&(o.content=i.content),Array.isArray(i.images)&&(o.images=i.images),void 0!==i.anonymous&&(o.anonymous=i.anonymous),Array.isArray(i.items)&&(o.items=i.items.map(function(n){return{productId:(0,r.KF)(n.productId),skuId:(0,r.KF)(n.skuId),rating:n.rating,content:n.content,images:Array.isArray(n.images)?n.images:[]}})),n.n=1,(0,r.$P)(c.review,o,{id:(0,r.KF)(e)},{},!1);case 1:return l=n.v,n.a(2,l)}},n)})),F.apply(this,arguments)}function J(n){return V.apply(this,arguments)}function V(){return V=(0,l.A)((0,t.A)().m(function n(e){var i,l,u,a,d,s;return(0,t.A)().w(function(n){while(1)switch(n.p=n.n){case 0:return n.p=0,n.n=1,(0,r.Vg)(c.reviewList,{},{id:e},!0);case 1:return d=n.v,s=Array.isArray(null===d||void 0===d?void 0:d.data)?d.data:null!==(i=null!==(l=null===d||void 0===d||null===(u=d.data)||void 0===u?void 0:u.list)&&void 0!==l?l:null===d||void 0===d||null===(a=d.data)||void 0===a?void 0:a.items)&&void 0!==i?i:[],n.a(2,(0,o.A)((0,o.A)({},d),{},{data:s.map(B)}));case 2:return n.p=2,n.v,n.a(2,{code:200,data:[]})}},n,null,[[0,2]])})),V.apply(this,arguments)}function q(n){var e,i,t,o,l,u,r,a,d,s,c,v,m,g,p,y,I,M,A,N,f,h,_,T,w,D,S,k,j,C,b,z,L,x;return{id:null!==(e=null!==(i=null!==(t=null!==(o=null!==(l=null!==(u=n.id)&&void 0!==u?u:n.Id)&&void 0!==l?l:n.reasonId)&&void 0!==o?o:n.reason_id)&&void 0!==t?t:n.ID)&&void 0!==i?i:n.code)&&void 0!==e?e:"",name:null!==(r=null!==(a=null!==(d=null!==(s=null!==(c=null!==(v=null!==(m=null!==(g=null!==(p=null!==(y=n.name)&&void 0!==y?y:n.Name)&&void 0!==p?p:n.reasonName)&&void 0!==g?g:n.reason_name)&&void 0!==m?m:n.title)&&void 0!==v?v:n.Title)&&void 0!==c?c:n.label)&&void 0!==s?s:n.Label)&&void 0!==d?d:n.content)&&void 0!==a?a:n.Content)&&void 0!==r?r:"",sort:Number(null!==(I=null!==(M=null!==(A=null!==(N=null!==(f=null!==(h=n.sort)&&void 0!==h?h:n.Sort)&&void 0!==f?f:n.order)&&void 0!==N?N:n.Order)&&void 0!==A?A:n.seq)&&void 0!==M?M:n.Seq)&&void 0!==I?I:0),enabled:null===(_=null!==(T=null!==(w=null!==(D=null!==(S=null!==(k=n.enabled)&&void 0!==k?k:n.Enabled)&&void 0!==S?S:n.status)&&void 0!==D?D:n.Status)&&void 0!==w?w:n.active)&&void 0!==T?T:n.Active)||void 0===_||_,description:null!==(j=null!==(C=null!==(b=null!==(z=null!==(L=null!==(x=n.description)&&void 0!==x?x:n.Description)&&void 0!==L?L:n.desc)&&void 0!==z?z:n.Desc)&&void 0!==b?b:n.remark)&&void 0!==C?C:n.Remark)&&void 0!==j?j:""}}function X(n){var e,i,t,l,u,r,a,d,s,c,v,m,g,p,M,A,N,f,h,_,T,w,D,S,k,j,C,b,z,L,x,O,P,E,U,Y,Q,R,W,Z,H,B,G,F,J,V,q,X,K,$,nn,en,tn,on,ln,un,rn,an,dn,sn,cn,vn,mn,gn,pn,yn,In,Mn,An,Nn,fn,hn,_n,Tn,wn,Dn,Sn,kn,jn,Cn,bn,zn,Ln,xn,On,Pn,En,Un,Yn,Qn,Rn,Wn,Zn,Hn,Bn,Gn,Fn,Jn,Vn,qn,Xn,Kn,$n,ne,ee,ie,te,oe,le,ue,re,ae,de,se,ce,ve,me,ge,pe,ye,Ie,Me,Ae,Ne,fe,he,_e,Te,we,De,Se,ke,je,Ce,be,ze,Le,xe,Oe,Pe,Ee,Ue,Ye,Qe,Re,We,Ze=null!==(e=null!==(i=null!==(t=n.status)&&void 0!==t?t:n.Status)&&void 0!==i?i:n.refundStatus)&&void 0!==e?e:n.refund_status,He={pending:"\u5f85\u5ba1\u6838",approved:"\u5df2\u901a\u8fc7",rejected:"\u5df2\u62d2\u7edd",completed:"\u5df2\u5b8c\u6210"},Be={refund_only:"\u4ec5\u9000\u6b3e",return_refund:"\u9000\u8d27\u9000\u6b3e",only_refund:"\u4ec5\u9000\u6b3e",return_and_refund:"\u9000\u8d27\u9000\u6b3e"},Ge=Ze,Fe=null;if("number"===typeof Ze){Fe=Ze;var Je={0:"pending",1:"approved",2:"rejected",3:"completed"};Ge=Je[Ze]||"pending"}var Ve=null!==(l=null!==(u=null!==(r=null!==(a=null!==(d=n.type)&&void 0!==d?d:n.Type)&&void 0!==a?a:n.refundType)&&void 0!==r?r:n.refund_type)&&void 0!==u?u:n.applyType)&&void 0!==l?l:n.apply_type,qe=Ve;if("number"===typeof Ve){var Xe={1:"refund_only",2:"return_refund"};qe=Xe[Ve]||"refund_only"}var Ke=["items","Items","refundItems","RefundItems","goodsList","GoodsList","orderItems","OrderItems","products","Products","goods","Goods","list","List","records","Records","data","Data"],$e=Ke.map(function(e){return n[e]}).find(Array.isArray)||[],ni=$e.map(I).map(function(n,e){if((n.productName||n.image)&&n.quantity)return n;var i=y($e[e]);return i?(0,o.A)({id:n.id||""},i):n});if(!ni||0===ni.length){var ei=y(n);ei&&(ni=[ei])}return{id:null!==(s=null!==(c=null!==(v=null!==(m=null!==(g=n.id)&&void 0!==g?g:n.Id)&&void 0!==m?m:n.refundId)&&void 0!==v?v:n.refund_id)&&void 0!==c?c:n.ID)&&void 0!==s?s:"",refundNo:null!==(p=null!==(M=null!==(A=null!==(N=null!==(f=null!==(h=null!==(_=null!==(T=n.refundNo)&&void 0!==T?T:n.refund_no)&&void 0!==_?_:n.RefundNo)&&void 0!==h?h:n.RefundNO)&&void 0!==f?f:n.sn)&&void 0!==N?N:n.SN)&&void 0!==A?A:n.code)&&void 0!==M?M:n.Code)&&void 0!==p?p:"",orderId:null!==(w=null!==(D=null!==(S=null!==(k=null!==(j=null!==(C=null!==(b=n.orderId)&&void 0!==b?b:n.order_id)&&void 0!==C?C:n.OrderId)&&void 0!==j?j:n.OrderID)&&void 0!==k?k:n.orderNo)&&void 0!==S?S:n.order_no)&&void 0!==D?D:n.OrderNo)&&void 0!==w?w:"",orderNo:null!==(z=null!==(L=null!==(x=null!==(O=n.orderNo)&&void 0!==O?O:n.order_no)&&void 0!==x?x:n.OrderNo)&&void 0!==L?L:n.OrderNO)&&void 0!==z?z:"",userId:null!==(P=null!==(E=null!==(U=null!==(Y=n.userId)&&void 0!==Y?Y:n.user_id)&&void 0!==U?U:n.UserId)&&void 0!==E?E:n.UserID)&&void 0!==P?P:"",type:qe,typeText:null!==(Q=null!==(R=null!==(W=null!==(Z=Be[qe])&&void 0!==Z?Z:n.typeText)&&void 0!==W?W:n.type_text)&&void 0!==R?R:n.TypeText)&&void 0!==Q?Q:"return_refund"===qe?"\u9000\u8d27\u9000\u6b3e":"\u4ec5\u9000\u6b3e",status:Ge,statusCode:Fe,statusText:null!==(H=null!==(B=null!==(G=null!==(F=null!==(J=n.statusText)&&void 0!==J?J:n.status_text)&&void 0!==F?F:n.StatusText)&&void 0!==G?G:He[Ge])&&void 0!==B?B:Ge)&&void 0!==H?H:"",reason:null!==(V=null!==(q=null!==(X=null!==(K=n.reason)&&void 0!==K?K:n.Reason)&&void 0!==X?X:n.refundReason)&&void 0!==q?q:n.refund_reason)&&void 0!==V?V:"",reasonId:null!==($=null!==(nn=null!==(en=null!==(tn=n.reasonId)&&void 0!==tn?tn:n.reason_id)&&void 0!==en?en:n.ReasonId)&&void 0!==nn?nn:n.ReasonID)&&void 0!==$?$:"",amount:Number(null!==(on=null!==(ln=null!==(un=null!==(rn=null!==(an=null!==(dn=null!==(sn=n.amount)&&void 0!==sn?sn:n.Amount)&&void 0!==dn?dn:n.refundAmount)&&void 0!==an?an:n.refund_amount)&&void 0!==rn?rn:n.totalAmount)&&void 0!==un?un:n.total_amount)&&void 0!==ln?ln:n.TotalAmount)&&void 0!==on?on:0),payAmount:Number(null!==(cn=null!==(vn=null!==(mn=null!==(gn=null!==(pn=null!==(yn=n.payAmount)&&void 0!==yn?yn:n.pay_amount)&&void 0!==pn?pn:n.PayAmount)&&void 0!==gn?gn:n.orderAmount)&&void 0!==mn?mn:n.order_amount)&&void 0!==vn?vn:n.OrderAmount)&&void 0!==cn?cn:0),freightAmount:Number(null!==(In=null!==(Mn=null!==(An=n.freightAmount)&&void 0!==An?An:n.freight_amount)&&void 0!==Mn?Mn:n.FreightAmount)&&void 0!==In?In:0),couponAmount:Number(null!==(Nn=null!==(fn=null!==(hn=n.couponAmount)&&void 0!==hn?hn:n.coupon_amount)&&void 0!==fn?fn:n.CouponAmount)&&void 0!==Nn?Nn:0),quantity:Number(null!==(_n=null!==(Tn=null!==(wn=null!==(Dn=null!==(Sn=null!==(kn=n.quantity)&&void 0!==kn?kn:n.Quantity)&&void 0!==Sn?Sn:n.count)&&void 0!==Dn?Dn:n.Count)&&void 0!==wn?wn:n.num)&&void 0!==Tn?Tn:n.Num)&&void 0!==_n?_n:0),description:null!==(jn=null!==(Cn=null!==(bn=null!==(zn=null!==(Ln=null!==(xn=n.description)&&void 0!==xn?xn:n.Description)&&void 0!==Ln?Ln:n.remark)&&void 0!==zn?zn:n.Remark)&&void 0!==bn?bn:n.desc)&&void 0!==Cn?Cn:n.Desc)&&void 0!==jn?jn:"",images:Array.isArray(n.images)?n.images:Array.isArray(n.Images)?n.Images:Array.isArray(n.pics)?n.pics:Array.isArray(n.vouchers)?n.vouchers:Array.isArray(n.imageList)?n.imageList:[],items:ni,applyTime:null!==(On=null!==(Pn=null!==(En=null!==(Un=null!==(Yn=null!==(Qn=null!==(Rn=null!==(Wn=null!==(Zn=n.applyTime)&&void 0!==Zn?Zn:n.apply_time)&&void 0!==Wn?Wn:n.ApplyTime)&&void 0!==Rn?Rn:n.createTime)&&void 0!==Qn?Qn:n.create_time)&&void 0!==Yn?Yn:n.CreateTime)&&void 0!==Un?Un:n.createdAt)&&void 0!==En?En:n.created_at)&&void 0!==Pn?Pn:n.CreatedAt)&&void 0!==On?On:"",auditTime:null!==(Hn=null!==(Bn=null!==(Gn=null!==(Fn=null!==(Jn=null!==(Vn=n.auditTime)&&void 0!==Vn?Vn:n.audit_time)&&void 0!==Jn?Jn:n.AuditTime)&&void 0!==Fn?Fn:n.reviewTime)&&void 0!==Gn?Gn:n.review_time)&&void 0!==Bn?Bn:n.ReviewTime)&&void 0!==Hn?Hn:"",auditRemark:null!==(qn=null!==(Xn=null!==(Kn=null!==($n=null!==(ne=null!==(ee=n.auditRemark)&&void 0!==ee?ee:n.audit_remark)&&void 0!==ne?ne:n.AuditRemark)&&void 0!==$n?$n:n.rejectReason)&&void 0!==Kn?Kn:n.reject_reason)&&void 0!==Xn?Xn:n.RejectReason)&&void 0!==qn?qn:"",refundTime:null!==(ie=null!==(te=null!==(oe=null!==(le=null!==(ue=null!==(re=n.refundTime)&&void 0!==re?re:n.refund_time)&&void 0!==ue?ue:n.RefundTime)&&void 0!==le?le:n.completeTime)&&void 0!==oe?oe:n.complete_time)&&void 0!==te?te:n.CompleteTime)&&void 0!==ie?ie:"",trackingNo:null!==(ae=null!==(de=null!==(se=null!==(ce=null!==(ve=null!==(me=null!==(ge=null!==(pe=null!==(ye=n.trackingNo)&&void 0!==ye?ye:n.tracking_no)&&void 0!==pe?pe:n.TrackingNo)&&void 0!==ge?ge:n.expressNo)&&void 0!==me?me:n.express_no)&&void 0!==ve?ve:n.ExpressNo)&&void 0!==ce?ce:n.logisticsNo)&&void 0!==se?se:n.logistics_no)&&void 0!==de?de:n.LogisticsNo)&&void 0!==ae?ae:"",trackingCompany:null!==(Ie=null!==(Me=null!==(Ae=null!==(Ne=null!==(fe=null!==(he=null!==(_e=null!==(Te=null!==(we=n.trackingCompany)&&void 0!==we?we:n.tracking_company)&&void 0!==Te?Te:n.TrackingCompany)&&void 0!==_e?_e:n.expressCompany)&&void 0!==he?he:n.express_company)&&void 0!==fe?fe:n.ExpressCompany)&&void 0!==Ne?Ne:n.logisticsCompany)&&void 0!==Ae?Ae:n.logistics_company)&&void 0!==Me?Me:n.LogisticsCompany)&&void 0!==Ie?Ie:"",receiverName:null!==(De=null!==(Se=null!==(ke=null!==(je=null!==(Ce=n.receiverName)&&void 0!==Ce?Ce:n.receiver_name)&&void 0!==je?je:n.ReceiverName)&&void 0!==ke?ke:n.consignee)&&void 0!==Se?Se:n.Consignee)&&void 0!==De?De:"",receiverPhone:null!==(be=null!==(ze=null!==(Le=null!==(xe=null!==(Oe=null!==(Pe=null!==(Ee=n.receiverPhone)&&void 0!==Ee?Ee:n.receiver_phone)&&void 0!==Pe?Pe:n.ReceiverPhone)&&void 0!==Oe?Oe:n.mobile)&&void 0!==xe?xe:n.Mobile)&&void 0!==Le?Le:n.phone)&&void 0!==ze?ze:n.Phone)&&void 0!==be?be:"",receiverAddress:null!==(Ue=null!==(Ye=null!==(Qe=null!==(Re=null!==(We=n.receiverAddress)&&void 0!==We?We:n.receiver_address)&&void 0!==Re?Re:n.ReceiverAddress)&&void 0!==Qe?Qe:n.address)&&void 0!==Ye?Ye:n.Address)&&void 0!==Ue?Ue:""}}function K(){return $.apply(this,arguments)}function $(){return $=(0,l.A)((0,t.A)().m(function n(){var e,i,l,u,a,d,s,c,m,g,p=arguments;return(0,t.A)().w(function(n){while(1)switch(n.n){case 0:return s=p.length>0&&void 0!==p[0]?p[0]:{},c={},void 0!==s.page&&(c.page=s.page),void 0!==s.size&&(c.size=s.size),void 0!==s.enabled&&(c.enabled=s.enabled),n.n=1,(0,r.Vg)(v.reasonList,c);case 1:return m=n.v,g=Array.isArray(null===m||void 0===m?void 0:m.data)?m.data:null!==(e=null!==(i=null!==(l=null===m||void 0===m||null===(u=m.data)||void 0===u?void 0:u.list)&&void 0!==l?l:null===m||void 0===m||null===(a=m.data)||void 0===a?void 0:a.items)&&void 0!==i?i:null===m||void 0===m||null===(d=m.data)||void 0===d?void 0:d.records)&&void 0!==e?e:[],n.a(2,(0,o.A)((0,o.A)({},m),{},{data:g.map(q)}))}},n)})),$.apply(this,arguments)}function nn(){return en.apply(this,arguments)}function en(){return en=(0,l.A)((0,t.A)().m(function n(){var e,i,l,u,a,d,s,c,m,g,p=arguments;return(0,t.A)().w(function(n){while(1)switch(n.n){case 0:return s=p.length>0&&void 0!==p[0]?p[0]:{},c={},void 0!==s.status&&(c.status=s.status),void 0!==s.type&&(c.type=s.type),void 0!==s.orderId&&(c.orderId=s.orderId),void 0!==s.page&&(c.page=s.page),void 0!==s.size&&(c.size=s.size),n.n=1,(0,r.Vg)(v.list,c);case 1:return m=n.v,g=Array.isArray(null===m||void 0===m?void 0:m.data)?m.data:null!==(e=null!==(i=null!==(l=null===m||void 0===m||null===(u=m.data)||void 0===u?void 0:u.list)&&void 0!==l?l:null===m||void 0===m||null===(a=m.data)||void 0===a?void 0:a.items)&&void 0!==i?i:null===m||void 0===m||null===(d=m.data)||void 0===d?void 0:d.records)&&void 0!==e?e:[],n.a(2,(0,o.A)((0,o.A)({},m),{},{data:g.map(X)}))}},n)})),en.apply(this,arguments)}function tn(n){return on.apply(this,arguments)}function on(){return on=(0,l.A)((0,t.A)().m(function n(e){var i,o;return(0,t.A)().w(function(n){while(1)switch(n.n){case 0:return i={orderId:(0,r.KF)(e.orderId)},void 0!==e.reasonId&&null!==e.reasonId&&(i.refundReasonId=(0,r.KF)(e.reasonId)),void 0!==e.description&&(i.description=e.description),Array.isArray(e.images)&&(i.images=e.images),n.n=1,(0,r.$P)(v.apply,i,{},{},!1);case 1:return o=n.v,n.a(2,o)}},n)})),on.apply(this,arguments)}function ln(n){var e,i,t,o,l,r,a,d,s,c,v,m,g,p,y,I,M,A,N,f,h,_,T,w,D,S,k,j,C,b,z,L,x,O,P,E,U,Y,Q,R,W;return n&&"object"===(0,u.A)(n)?{id:null!==(e=null!==(i=null!==(t=null!==(o=n.id)&&void 0!==o?o:n.ID)&&void 0!==t?t:n.addressId)&&void 0!==i?i:n.address_id)&&void 0!==e?e:"",consignee:null!==(l=null!==(r=null!==(a=null!==(d=null!==(s=null!==(c=n.consignee)&&void 0!==c?c:n.Consignee)&&void 0!==s?s:n.name)&&void 0!==d?d:n.receiver)&&void 0!==a?a:n.receiverName)&&void 0!==r?r:n.receiver_name)&&void 0!==l?l:"",phone:null!==(v=null!==(m=null!==(g=null!==(p=null!==(y=null!==(I=n.phone)&&void 0!==I?I:n.Phone)&&void 0!==y?y:n.mobile)&&void 0!==p?p:n.tel)&&void 0!==g?g:n.phoneNumber)&&void 0!==m?m:n.phone_number)&&void 0!==v?v:"",province:null!==(M=null!==(A=null!==(N=null!==(f=n.province)&&void 0!==f?f:n.Province)&&void 0!==N?N:n.provinceName)&&void 0!==A?A:n.province_name)&&void 0!==M?M:"",city:null!==(h=null!==(_=null!==(T=null!==(w=n.city)&&void 0!==w?w:n.City)&&void 0!==T?T:n.cityName)&&void 0!==_?_:n.city_name)&&void 0!==h?h:"",district:null!==(D=null!==(S=null!==(k=null!==(j=null!==(C=null!==(b=n.district)&&void 0!==b?b:n.District)&&void 0!==C?C:n.area)&&void 0!==j?j:n.Area)&&void 0!==k?k:n.districtName)&&void 0!==S?S:n.district_name)&&void 0!==D?D:"",detail:null!==(z=null!==(L=null!==(x=null!==(O=null!==(P=null!==(E=n.detail)&&void 0!==E?E:n.Detail)&&void 0!==P?P:n.address)&&void 0!==O?O:n.Address)&&void 0!==x?x:n.addressDetail)&&void 0!==L?L:n.address_detail)&&void 0!==z?z:"",isDefault:null!==(U=null!==(Y=null!==(Q=null!==(R=null!==(W=n.isDefault)&&void 0!==W?W:n.is_default)&&void 0!==R?R:n.IsDefault)&&void 0!==Q?Q:n.default)&&void 0!==Y?Y:n.Default)&&void 0!==U&&U}:{}}function un(){return rn.apply(this,arguments)}function rn(){return rn=(0,l.A)((0,t.A)().m(function n(){var e;return(0,t.A)().w(function(n){while(1)switch(n.n){case 0:return n.n=1,(0,r.Vg)(m.default);case 1:if(e=n.v,null===e||void 0===e||!e.data){n.n=2;break}return n.a(2,(0,o.A)((0,o.A)({},e),{},{data:ln(e.data)}));case 2:return n.a(2,e)}},n)})),rn.apply(this,arguments)}},2458:function(n,e,i){i.d(e,{$P:function(){return h},Al:function(){return D},KF:function(){return s},V6:function(){return x},Vg:function(){return N},c4:function(){return c},mu:function(){return T}});var t=i(1212),o=i(2284),l=i(467),u=i(9379),r=i(758),a=i.n(r),d=i(4490)["URLSearchParams"];function s(n){if(void 0===n||null===n||""===n)return 0;var e=Number(n);return Number.isFinite(e)?e:0}function c(){try{var n,e,i,t=a().getStorageSync("lxg_user");if(!t)return"";var o="string"===typeof t?JSON.parse(t):t;return null!==(n=null!==(e=null!==(i=null===o||void 0===o?void 0:o.token)&&void 0!==i?i:null===o||void 0===o?void 0:o.Token)&&void 0!==e?e:null===o||void 0===o?void 0:o.accessToken)&&void 0!==n?n:""}catch(n){return console.error("[getAuthToken] \u8bfb\u53d6\u767b\u5f55\u6001\u5931\u8d25:",n),""}}function v(n,e){var i=n;return Object.keys(e).forEach(function(n){i=i.replace(":".concat(n),String(e[n]))}),i}function m(n){switch(n){case 400:return"\u8bf7\u6c42\u53c2\u6570\u6709\u8bef";case 401:return"\u767b\u5f55\u5df2\u5931\u6548\uff0c\u8bf7\u91cd\u65b0\u767b\u5f55";case 403:return"\u6682\u65e0\u6743\u9650\u6267\u884c\u6b64\u64cd\u4f5c";case 404:return"\u63a5\u53e3\u6682\u672a\u5b9e\u73b0\u6216\u5df2\u79fb\u9664";case 405:return"\u8bf7\u6c42\u65b9\u5f0f\u4e0d\u652f\u6301";case 408:return"\u8bf7\u6c42\u8d85\u65f6\uff0c\u8bf7\u7a0d\u540e\u91cd\u8bd5";case 409:return"\u64cd\u4f5c\u51b2\u7a81\uff0c\u8bf7\u5237\u65b0\u540e\u91cd\u8bd5";case 413:return"\u63d0\u4ea4\u6570\u636e\u8fc7\u5927";case 429:return"\u64cd\u4f5c\u8fc7\u4e8e\u9891\u7e41\uff0c\u8bf7\u7a0d\u540e\u518d\u8bd5";case 500:return"\u670d\u52a1\u5f02\u5e38\uff0c\u8bf7\u7a0d\u540e\u91cd\u8bd5";case 501:return"\u670d\u52a1\u6682\u672a\u5b9e\u73b0";case 502:return"\u670d\u52a1\u7f51\u5173\u5f02\u5e38";case 503:return"\u670d\u52a1\u6682\u65f6\u4e0d\u53ef\u7528\uff0c\u8bf7\u7a0d\u540e\u91cd\u8bd5";case 504:return"\u7f51\u5173\u8d85\u65f6\uff0c\u8bf7\u7a0d\u540e\u91cd\u8bd5";default:return n>=500?"\u670d\u52a1\u5f02\u5e38\uff0c\u8bf7\u7a0d\u540e\u91cd\u8bd5":"\u8bf7\u6c42\u5931\u8d25\uff0c\u8bf7\u7a0d\u540e\u91cd\u8bd5"}}function g(n,e){if(!n)return"\u7f51\u7edc\u5f02\u5e38\uff0c\u8bf7\u7a0d\u540e\u91cd\u8bd5";var i=n.toLowerCase();return i.includes("timeout")||i.includes("\u8bf7\u6c42\u8d85\u65f6")?"\u8bf7\u6c42\u8d85\u65f6\uff0c\u8bf7\u68c0\u67e5\u7f51\u7edc\u540e\u91cd\u8bd5":i.includes("abort")?"\u8bf7\u6c42\u5df2\u53d6\u6d88":i.includes("invalid url")||i.includes("600009")?"\u8bf7\u6c42\u5730\u5740\u5f02\u5e38":i.includes("not in domain list")||i.includes("url not in domain")?"\u8bf7\u5728\u540e\u53f0\u914d\u7f6e\u5408\u6cd5\u57df\u540d":i.includes("network")||i.includes("\u7f51\u7edc")?"\u7f51\u7edc\u5f02\u5e38\uff0c\u8bf7\u68c0\u67e5\u7f51\u7edc\u8fde\u63a5":i.includes("fail")?"\u7f51\u7edc\u8bf7\u6c42\u5931\u8d25\uff0c\u8bf7\u7a0d\u540e\u91cd\u8bd5":n}function p(n,e,i){if(n&&/\u89e3\u6790\u5931\u8d25|parse\s*fail/i.test(n))return!1;var t=["\u7f3a\u5c11\u8ba4\u8bc1\u4fe1\u606f","\u672a\u767b\u5f55","\u767b\u5f55\u5df2\u5931\u6548","token expired","token is expired","token\u8fc7\u671f","token\u5931\u6548","token\u65e0\u6548","\u672a\u6388\u6743","unauthorized","Unauthorized","\u8bf7\u5148\u767b\u5f55","\u8ba4\u8bc1\u5931\u8d25"];return 401===e||403===e||(401===i||403===i||t.some(function(e){return n.includes(e)}))}var y=!1;function I(n){var e;if(!y){var i=!!c();if(i)try{a().removeStorageSync("lxg_user"),a().removeStorageSync("userInfo")}catch(n){}var t=a().getCurrentPages(),o=(null===(e=t[t.length-1])||void 0===e?void 0:e.route)||"",l=o.includes("/pages/user/login/index")||"pages/user/login/index"===o;l||(y=!0,a().showModal({title:i?"\u767b\u5f55\u5df2\u5931\u6548":"\u8bf7\u5148\u767b\u5f55",content:i?n||"\u8bf7\u91cd\u65b0\u767b\u5f55":"\u6b64\u64cd\u4f5c\u9700\u8981\u767b\u5f55\u8d26\u53f7",showCancel:!1,confirmText:"\u53bb\u767b\u5f55",success:function(){a().navigateTo({url:"/pages/user/login/index"})},complete:function(){y=!1}}))}}function M(n){return A.apply(this,arguments)}function A(){return A=(0,l.A)((0,t.A)().m(function n(e){var i,o,l,r,d,s,v,y,M,A,N,f,h,_,T,w=arguments;return(0,t.A)().w(function(n){while(1)switch(n.p=n.n){case 0:return i=w.length>1&&void 0!==w[1]?w[1]:{},o={"Content-Type":"application/x-www-form-urlencoded"},l=c(),l&&(o["Authorization"]="Bearer ".concat(l)),n.p=1,console.log("[API Request]",{url:e,method:i.method||"GET",data:i.data,headers:(0,u.A)((0,u.A)({},o),i.headers||{})}),n.n=2,a().request({url:e,method:i.method||"GET",data:i.data,header:(0,u.A)((0,u.A)({},o),i.headers||{}),timeout:1e4});case 2:if(r=n.v,console.log("[API Response]",{url:e,statusCode:r.statusCode,data:r.data}),401!==r.statusCode){n.n=3;break}throw I("\u767b\u5f55\u5df2\u5931\u6548\uff0c\u8bf7\u91cd\u65b0\u767b\u5f55"),new Error("\u767b\u5f55\u5df2\u5931\u6548\uff0c\u8bf7\u91cd\u65b0\u767b\u5f55");case 3:if(!(r.statusCode<200||r.statusCode>=300)){n.n=4;break}throw v=(null===(d=r.data)||void 0===d?void 0:d.message)||(null===(s=r.data)||void 0===s?void 0:s.msg),i.silent||console.error("[API Error]",{url:e,statusCode:r.statusCode,data:r.data}),y=v||m(r.statusCode),M=new Error(y),M.statusCode=r.statusCode,M.response=r.data,M.rawUrl=e,p(M.message,r.statusCode)&&!i.silent&&I(M.message),M;case 4:if(A=r.data,!A||"number"!==typeof A.code||200===A.code){n.n=5;break}throw N=A.message||A.msg||"\u8bf7\u6c42\u5931\u8d25",f=new Error(N),f.code=A.code,f.response=A,p(f.message,void 0,A.code)&&!i.silent&&I(f.message),f;case 5:return n.a(2,r.data);case 6:throw n.p=6,T=n.v,h=(null===T||void 0===T?void 0:T.errMsg)||(null===T||void 0===T?void 0:T.message)||String(T),_=null===T||void 0===T?void 0:T.errno,i.silent||console.error("[API Network Error]",{url:e,rawErrMsg:h,errno:_,error:T}),T instanceof Error&&(p(T.message)&&!i.silent&&I(T.message),T.message=g(T.message,e)),T;case 7:return n.a(2)}},n,null,[[1,6]])})),A.apply(this,arguments)}function N(n){return f.apply(this,arguments)}function f(){return f=(0,l.A)((0,t.A)().m(function n(e){var i,o,l,u,r,a,s,c=arguments;return(0,t.A)().w(function(n){while(1)switch(n.n){case 0:if(i=c.length>1&&void 0!==c[1]?c[1]:{},o=c.length>2&&void 0!==c[2]?c[2]:{},l=c.length>3&&void 0!==c[3]&&c[3],e){n.n=1;break}throw u=new Error("[apiGet] \u8bf7\u6c42\u5730\u5740\u7f3a\u5931\uff0c\u8bf7\u68c0\u67e5\u8c03\u7528\u65b9\u662f\u5426\u4f20\u5165\u4e86\u672a\u5b9a\u4e49\u7684 API URL"),console.error(u),console.error("[apiGet] \u8c03\u7528\u6808:",(new Error).stack),u;case 1:return r=v(e,o),a=new d(i),s=r+(a.toString()?"?"+a.toString():""),n.a(2,M(s,{method:"GET",silent:l}))}},n)})),f.apply(this,arguments)}function h(n){return _.apply(this,arguments)}function _(){return _=(0,l.A)((0,t.A)().m(function n(e){var i,o,l,r,a,s,c,m,g,p,y,I,A,N=arguments;return(0,t.A)().w(function(n){while(1)switch(n.n){case 0:if(i=N.length>1&&void 0!==N[1]?N[1]:{},o=N.length>2&&void 0!==N[2]?N[2]:{},l=N.length>3&&void 0!==N[3]?N[3]:{},r=!(N.length>4&&void 0!==N[4])||N[4],a=N.length>5&&void 0!==N[5]&&N[5],s=N.length>6&&void 0!==N[6]?N[6]:{},e){n.n=1;break}throw c=new Error("[apiPost] \u8bf7\u6c42\u5730\u5740\u7f3a\u5931\uff0c\u8bf7\u68c0\u67e5\u8c03\u7528\u65b9\u662f\u5426\u4f20\u5165\u4e86\u672a\u5b9a\u4e49\u7684 API URL"),console.error(c),console.error("[apiPost] \u8c03\u7528\u6808:",(new Error).stack),c;case 1:return m=v(e,o),g={},Object.keys(l).forEach(function(n){g[n]=String(l[n])}),p=new d(g),y=m+(p.toString()?"?"+p.toString():""),I=(0,u.A)({},s),A=i,r?(I["Content-Type"]="application/x-www-form-urlencoded",A=new d(i).toString()):(I["Content-Type"]="application/json",A=i),n.a(2,M(y,{method:"POST",data:A,headers:I,silent:a}))}},n)})),_.apply(this,arguments)}function T(n){return w.apply(this,arguments)}function w(){return w=(0,l.A)((0,t.A)().m(function n(e){var i,o,l,u,r=arguments;return(0,t.A)().w(function(n){while(1)switch(n.n){case 0:if(i=r.length>1&&void 0!==r[1]?r[1]:{},o=r.length>2&&void 0!==r[2]?r[2]:{},e){n.n=1;break}throw l=new Error("[apiPut] \u8bf7\u6c42\u5730\u5740\u7f3a\u5931\uff0c\u8bf7\u68c0\u67e5\u8c03\u7528\u65b9\u662f\u5426\u4f20\u5165\u4e86\u672a\u5b9a\u4e49\u7684 API URL"),console.error(l),l;case 1:return u=v(e,o),n.a(2,M(u,{method:"PUT",data:i}))}},n)})),w.apply(this,arguments)}function D(n){return S.apply(this,arguments)}function S(){return S=(0,l.A)((0,t.A)().m(function n(e){var i,o,l,u,r=arguments;return(0,t.A)().w(function(n){while(1)switch(n.n){case 0:if(i=r.length>1&&void 0!==r[1]?r[1]:{},o=r.length>2&&void 0!==r[2]?r[2]:{},e){n.n=1;break}throw l=new Error("[apiDelete] \u8bf7\u6c42\u5730\u5740\u7f3a\u5931\uff0c\u8bf7\u68c0\u67e5\u8c03\u7528\u65b9\u662f\u5426\u4f20\u5165\u4e86\u672a\u5b9a\u4e49\u7684 API URL"),console.error(l),l;case 1:return u=v(e,o),n.a(2,M(u,{method:"DELETE",data:i}))}},n)})),S.apply(this,arguments)}function k(n){var e,i;if(!n)return"";var t=null!==(e=null!==(i=n.data)&&void 0!==i?i:n.result)&&void 0!==e?e:n;if("string"===typeof t)return t;if(!t||"object"!==(0,o.A)(t))return"";for(var l=[t.url,t.URL,t.Url,t.imageUrl,t.image_url,t.ImageUrl,t.avatarUrl,t.avatar_url,t.AvatarUrl,t.filePath,t.file_url,t.FileUrl,t.fileUrl,t.path,t.Path,t.link,t.Link,t.src,t.Src],u=0,r=l;u<r.length;u++){var a=r[u];if("string"===typeof a&&a)return a}for(var d=0,s=Object.keys(t);d<s.length;d++){var c=s[d],v=t[c];if("string"===typeof v&&/^https?:\/\//i.test(v))return v}return""}function j(n){return C.apply(this,arguments)}function C(){return C=(0,l.A)((0,t.A)().m(function n(e){var i,o,l,u,r,d,s=arguments;return(0,t.A)().w(function(n){while(1)switch(n.p=n.n){case 0:i=s.length>1&&void 0!==s[1]?s[1]:1048576,n.n=1;break;case 1:return n.p=1,n.n=2,a().getFileInfo({filePath:e});case 2:if(l=n.v,u=null!==(o=null===l||void 0===l?void 0:l.size)&&void 0!==o?o:0,console.log("[Upload] \u539f\u59cb\u6587\u4ef6\u5927\u5c0f:",u,"bytes"),!(u<=i)){n.n=3;break}return n.a(2,e);case 3:return n.n=4,a().compressImage({src:e,quality:50});case 4:return r=n.v,console.log("[Upload] \u538b\u7f29\u540e\u8def\u5f84:",r.tempFilePath),n.a(2,r.tempFilePath);case 5:return n.p=5,d=n.v,console.warn("[Upload] \u83b7\u53d6\u6587\u4ef6\u4fe1\u606f\u6216\u538b\u7f29\u5931\u8d25\uff0c\u4f7f\u7528\u539f\u6587\u4ef6:",d),n.a(2,e)}},n,null,[[1,5]])})),C.apply(this,arguments)}function b(n){var e=n.match(/\.(\w+)(?:\?|$)/),i=e?e[1].toLowerCase():"";return["jpg","jpeg","png","gif","webp","bmp"].includes(i)?"jpeg"===i?".jpg":".".concat(i):".jpg"}function z(n){return L.apply(this,arguments)}function L(){return L=(0,l.A)((0,t.A)().m(function n(e){var i,o,l,u,r,d;return(0,t.A)().w(function(n){while(1)switch(n.p=n.n){case 0:if(!/\.(jpg|jpeg|png|gif|webp|bmp)$/i.test(e)){n.n=1;break}return n.a(2,e);case 1:if(n.p=1,o=b(e),l=null===(i=a().env)||void 0===i?void 0:i.USER_DATA_PATH,l){n.n=2;break}return n.a(2,e);case 2:return u="".concat(l,"/upload_").concat(Date.now()).concat(o),r=a().getFileSystemManager(),n.n=3,new Promise(function(n,i){r.copyFile({srcPath:e,destPath:u,success:function(){return n()},fail:i})});case 3:return console.log("[Upload] \u6587\u4ef6\u5df2\u590d\u5236\u5230\u5e26\u6269\u5c55\u540d\u7684\u8def\u5f84:",u),n.a(2,u);case 4:return n.p=4,d=n.v,console.warn("[Upload] \u590d\u5236\u6587\u4ef6\u5931\u8d25\uff0c\u4f7f\u7528\u539f\u8def\u5f84:",d),n.a(2,e)}},n,null,[[1,4]])})),L.apply(this,arguments)}function x(n,e){return O.apply(this,arguments)}function O(){return O=(0,l.A)((0,t.A)().m(function n(e,i){var o,l,u,r,d,s,v,m,g,p,y,I,M,A,N,f,h,_,T,w=arguments;return(0,t.A)().w(function(n){while(1)switch(n.p=n.n){case 0:return m=w.length>2&&void 0!==w[2]?w[2]:"file",g=w.length>3&&void 0!==w[3]?w[3]:{},p=c(),y={},p&&(y["Authorization"]="Bearer ".concat(p)),n.n=1,j(i);case 1:return I=n.v,n.n=2,z(I);case 2:return I=n.v,M="upload".concat(b(i)),console.log("[Upload Request]",{url:e,filePath:I,fileName:M,name:m,formData:g}),n.n=3,a().uploadFile({url:e,filePath:I,name:m,fileName:M,formData:g,header:y,timeout:3e4});case 3:if(A=n.v,console.log("[Upload Response]",{statusCode:A.statusCode,data:A.data}),401!==A.statusCode){n.n=4;break}throw a().removeStorageSync("lxg_user"),a().navigateTo({url:"/pages/user/login/index"}),new Error("\u767b\u5f55\u5df2\u5931\u6548\uff0c\u8bf7\u91cd\u65b0\u767b\u5f55");case 4:if(200===A.statusCode){n.n=5;break}N="";try{f="string"===typeof A.data?JSON.parse(A.data):A.data,N=(null===f||void 0===f?void 0:f.message)||(null===f||void 0===f?void 0:f.msg)||""}catch(n){}throw new Error(N||"\u4e0a\u4f20\u5931\u8d25\uff0cHTTP\u72b6\u6001: ".concat(A.statusCode));case 5:n.p=5,h="string"===typeof A.data?JSON.parse(A.data):A.data,n.n=8;break;case 6:if(n.p=6,n.v,"string"!==typeof A.data||!/^https?:\/\//i.test(A.data.trim())){n.n=7;break}return n.a(2,A.data.trim());case 7:throw new Error("\u4e0a\u4f20\u54cd\u5e94\u683c\u5f0f\u65e0\u6cd5\u8bc6\u522b");case 8:if(_=null!==(o=null!==(l=null!==(u=null===(r=h)||void 0===r?void 0:r.code)&&void 0!==u?u:null===(d=h)||void 0===d?void 0:d.Code)&&void 0!==l?l:null===(s=h)||void 0===s?void 0:s.errcode)&&void 0!==o?o:null===(v=h)||void 0===v?void 0:v.errno,"number"!==typeof _||200===_||0===_){n.n=9;break}throw console.error("[Upload] \u540e\u7aef\u4e1a\u52a1\u9519\u8bef\uff0c\u5b8c\u6574\u54cd\u5e94:",h),new Error(h.message||h.msg||h.Message||h.errMsg||"\u4e0a\u4f20\u5931\u8d25");case 9:if(T=k(h),T){n.n=10;break}throw console.warn("[Upload] \u672a\u80fd\u4ece\u54cd\u5e94\u4e2d\u63d0\u53d6\u5230\u56fe\u7247URL\uff0c\u539f\u59cb\u54cd\u5e94:",h),new Error("\u4e0a\u4f20\u6210\u529f\u4f46\u672a\u83b7\u53d6\u5230\u56fe\u7247\u5730\u5740");case 10:return n.a(2,T)}},n,null,[[5,6]])})),O.apply(this,arguments)}},5948:function(n,e,i){i.d(e,{BP:function(){return s},CN:function(){return c},GQ:function(){return v},SX:function(){return A},Yk:function(){return _},aD:function(){return d},iZ:function(){return S},j:function(){return I},jO:function(){return f},nb:function(){return w}});var t=i(1212),o=i(9379),l=i(467),u=i(2458),r="http://192.168.10.7:8089",a="".concat(r,"/api/v1"),d={banners:"".concat(a,"/homepage/banners"),recommend:"".concat(a,"/product/recommend"),seckillActivities:"".concat(a,"/home/seckill-activities"),activities:"".concat(a,"/seckill/activities"),activityProducts:"".concat(a,"/seckill/activities/:id/products"),productDetail:"".concat(a,"/seckill/activities/:id/products/:product_id")},s={list:"".concat(a,"/categories"),products:"".concat(a,"/categories/:id/products"),stores:"".concat(a,"/stores"),storeDetail:"".concat(a,"/stores/:id"),categoryTree:"".concat(a,"/get/categorytree"),categoryOne:"".concat(a,"/get/category/one"),categorySecond:"".concat(a,"/get/category/second")},c={list:"".concat(a,"/brands"),products:"".concat(a,"/brands/:id/products"),brandTree:"".concat(a,"/get/brandtree"),brandProducts:"".concat(a,"/get/brand/product")},v={detail:"".concat(a,"/product/detail"),search:"".concat(a,"/product/search")},m={list:"".concat(a,"/review/list"),stats:"".concat(a,"/review/state"),ai:"".concat(a,"/review/ai"),reply:"".concat(a,"/review/reply"),replyList:"".concat(a,"/review/reply/list"),like:"".concat(a,"/review/like"),summary:"".concat(a,"/review/ai")};function g(n){var e,i,t,o,l,u,r,a,d,s,c,v,m,g,p,y,I,M,A,N,f,h,_,T,w,D,S,k,j,C,b,z,L,x,O,P,E,U,Y,Q,R,W,Z,H,B,G,F,J,V,q,X,K,$,nn,en,tn,on,ln,un,rn,an,dn,sn,cn,vn,mn,gn,pn,yn,In,Mn,An,Nn,fn,hn,_n,Tn,wn,Dn,Sn,kn,jn,Cn,bn,zn,Ln,xn,On;return{id:null!==(e=null!==(i=null!==(t=null!==(o=null!==(l=n.id)&&void 0!==l?l:n.Id)&&void 0!==o?o:n.reviewId)&&void 0!==t?t:n.review_id)&&void 0!==i?i:n.ID)&&void 0!==e?e:"",productId:null!==(u=null!==(r=null!==(a=null!==(d=n.productId)&&void 0!==d?d:n.product_id)&&void 0!==a?a:n.ProductId)&&void 0!==r?r:n.ProductID)&&void 0!==u?u:"",productName:null!==(s=null!==(c=null!==(v=null!==(m=n.productName)&&void 0!==m?m:n.product_name)&&void 0!==v?v:n.ProductName)&&void 0!==c?c:n.name)&&void 0!==s?s:"",skuId:null!==(g=null!==(p=null!==(y=n.skuId)&&void 0!==y?y:n.sku_id)&&void 0!==p?p:n.SkuId)&&void 0!==g?g:"",skuName:null!==(I=null!==(M=null!==(A=null!==(N=null!==(f=n.skuName)&&void 0!==f?f:n.sku_name)&&void 0!==N?N:n.SkuName)&&void 0!==A?A:n.specs)&&void 0!==M?M:n.spec)&&void 0!==I?I:"",rating:Number(null!==(h=null!==(_=null!==(T=null!==(w=n.rating)&&void 0!==w?w:n.Rating)&&void 0!==T?T:n.score)&&void 0!==_?_:n.Score)&&void 0!==h?h:5),ratingType:null!==(D=null!==(S=null!==(k=n.ratingType)&&void 0!==k?k:n.rating_type)&&void 0!==S?S:n.RatingType)&&void 0!==D?D:Number(null!==(j=null!==(C=n.rating)&&void 0!==C?C:n.Rating)&&void 0!==j?j:5)>=4?"good":Number(null!==(b=null!==(z=n.rating)&&void 0!==z?z:n.Rating)&&void 0!==b?b:5)<=2?"bad":"neutral",content:null!==(L=null!==(x=null!==(O=null!==(P=null!==(E=null!==(U=n.content)&&void 0!==U?U:n.Content)&&void 0!==E?E:n.reviewContent)&&void 0!==P?P:n.review_content)&&void 0!==O?O:n.comment)&&void 0!==x?x:n.Comment)&&void 0!==L?L:"",images:Array.isArray(n.images)?n.images:Array.isArray(n.Images)?n.Images:Array.isArray(n.pics)?n.pics:Array.isArray(n.imageList)?n.imageList:[],anonymous:null!==(Y=null!==(Q=null!==(R=null!==(W=null!==(Z=n.anonymous)&&void 0!==Z?Z:n.Anonymous)&&void 0!==W?W:n.isAnonymous)&&void 0!==R?R:n.is_anonymous)&&void 0!==Q?Q:n.isAnonymity)&&void 0!==Y&&Y,createdAt:null!==(H=null!==(B=null!==(G=null!==(F=null!==(J=n.createdAt)&&void 0!==J?J:n.created_at)&&void 0!==F?F:n.CreateTime)&&void 0!==G?G:n.createTime)&&void 0!==B?B:n.CreateAt)&&void 0!==H?H:"",userId:null!==(V=null!==(q=null!==(X=null!==(K=n.userId)&&void 0!==K?K:n.user_id)&&void 0!==X?X:n.UserId)&&void 0!==q?q:n.userID)&&void 0!==V?V:"",userName:null!==($=null!==(nn=null!==(en=null!==(tn=null!==(on=null!==(ln=n.userName)&&void 0!==ln?ln:n.user_name)&&void 0!==on?on:n.UserName)&&void 0!==tn?tn:n.nickname)&&void 0!==en?en:n.NickName)&&void 0!==nn?nn:n.nickName)&&void 0!==$?$:"",userAvatar:null!==(un=null!==(rn=null!==(an=null!==(dn=null!==(sn=null!==(cn=null!==(vn=n.userAvatar)&&void 0!==vn?vn:n.user_avatar)&&void 0!==cn?cn:n.UserAvatar)&&void 0!==sn?sn:n.avatar)&&void 0!==dn?dn:n.Avatar)&&void 0!==an?an:n.headImg)&&void 0!==rn?rn:n.head_img)&&void 0!==un?un:"",specs:null!==(mn=null!==(gn=null!==(pn=null!==(yn=null!==(In=n.specs)&&void 0!==In?In:n.spec)&&void 0!==yn?yn:n.skuName)&&void 0!==pn?pn:n.sku_name)&&void 0!==gn?gn:n.SkuName)&&void 0!==mn?mn:"",likeCount:Number(null!==(Mn=null!==(An=null!==(Nn=null!==(fn=null!==(hn=null!==(_n=n.likeCount)&&void 0!==_n?_n:n.like_count)&&void 0!==hn?hn:n.LikeCount)&&void 0!==fn?fn:n.likes)&&void 0!==Nn?Nn:n.Likes)&&void 0!==An?An:n.likesCount)&&void 0!==Mn?Mn:0),isLike:null!==(Tn=null!==(wn=null!==(Dn=null!==(Sn=null!==(kn=n.isLike)&&void 0!==kn?kn:n.is_like)&&void 0!==Sn?Sn:n.IsLike)&&void 0!==Dn?Dn:n.liked)&&void 0!==wn?wn:n.Liked)&&void 0!==Tn&&Tn,replyCount:Number(null!==(jn=null!==(Cn=null!==(bn=null!==(zn=null!==(Ln=n.replyCount)&&void 0!==Ln?Ln:n.reply_count)&&void 0!==zn?zn:n.ReplyCount)&&void 0!==bn?bn:n.commentCount)&&void 0!==Cn?Cn:n.comment_count)&&void 0!==jn?jn:0),status:null!==(xn=null!==(On=n.status)&&void 0!==On?On:n.Status)&&void 0!==xn?xn:"show"}}function p(n){var e,i,t,o,l,u,r,a,d,s,c,v,m,g,p,y,I,M,A,N,f,h,_,T,w,D,S,k,j,C,b,z,L,x,O,P,E,U,Y,Q,R,W,Z,H,B,G,F,J,V,q;return{id:null!==(e=null!==(i=null!==(t=null!==(o=null!==(l=null!==(u=null!==(r=n.id)&&void 0!==r?r:n.Id)&&void 0!==u?u:n.replyId)&&void 0!==l?l:n.reply_id)&&void 0!==o?o:n.commentId)&&void 0!==t?t:n.comment_id)&&void 0!==i?i:n.ID)&&void 0!==e?e:"",reviewId:null!==(a=null!==(d=null!==(s=null!==(c=null!==(v=n.reviewId)&&void 0!==v?v:n.review_id)&&void 0!==c?c:n.ReviewId)&&void 0!==s?s:n.evaluationId)&&void 0!==d?d:n.evaluation_id)&&void 0!==a?a:"",parentId:null!==(m=null!==(g=null!==(p=null!==(y=null!==(I=n.parentId)&&void 0!==I?I:n.parent_id)&&void 0!==y?y:n.ParentId)&&void 0!==p?p:n.pid)&&void 0!==g?g:n.Pid)&&void 0!==m?m:"",userId:null!==(M=null!==(A=null!==(N=null!==(f=n.userId)&&void 0!==f?f:n.user_id)&&void 0!==N?N:n.UserId)&&void 0!==A?A:n.userID)&&void 0!==M?M:"",userName:null!==(h=null!==(_=null!==(T=null!==(w=null!==(D=null!==(S=n.userName)&&void 0!==S?S:n.user_name)&&void 0!==D?D:n.UserName)&&void 0!==w?w:n.nickname)&&void 0!==T?T:n.NickName)&&void 0!==_?_:n.nickName)&&void 0!==h?h:"",userAvatar:null!==(k=null!==(j=null!==(C=null!==(b=null!==(z=n.userAvatar)&&void 0!==z?z:n.user_avatar)&&void 0!==b?b:n.UserAvatar)&&void 0!==C?C:n.avatar)&&void 0!==j?j:n.Avatar)&&void 0!==k?k:"",content:null!==(L=null!==(x=null!==(O=null!==(P=null!==(E=null!==(U=n.content)&&void 0!==U?U:n.Content)&&void 0!==E?E:n.replyContent)&&void 0!==P?P:n.reply_content)&&void 0!==O?O:n.comment)&&void 0!==x?x:n.Comment)&&void 0!==L?L:"",likeCount:Number(null!==(Y=null!==(Q=null!==(R=n.likeCount)&&void 0!==R?R:n.like_count)&&void 0!==Q?Q:n.LikeCount)&&void 0!==Y?Y:0),isLike:null!==(W=null!==(Z=null!==(H=n.isLike)&&void 0!==H?H:n.is_like)&&void 0!==Z?Z:n.IsLike)&&void 0!==W&&W,createdAt:null!==(B=null!==(G=null!==(F=null!==(J=null!==(V=null!==(q=n.createdAt)&&void 0!==q?q:n.created_at)&&void 0!==V?V:n.CreateTime)&&void 0!==J?J:n.createTime)&&void 0!==F?F:n.replyTime)&&void 0!==G?G:n.reply_time)&&void 0!==B?B:""}}function y(n){var e,i,t,o,l,u,r,a,d,s,c,v,m,g,p,y,I,M,A,N,f,h,_,T,w,D,S,k,j,C,b,z,L,x,O,P,E,U,Y=null!==(e=null!==(i=null===n||void 0===n?void 0:n.data)&&void 0!==i?i:null===n||void 0===n?void 0:n.result)&&void 0!==e?e:n,Q=Number(null!==(t=null!==(o=null!==(l=null!==(u=null!==(r=null===Y||void 0===Y?void 0:Y.total)&&void 0!==r?r:null===Y||void 0===Y?void 0:Y.Total)&&void 0!==u?u:null===Y||void 0===Y?void 0:Y.totalCount)&&void 0!==l?l:null===Y||void 0===Y?void 0:Y.total_count)&&void 0!==o?o:null===Y||void 0===Y?void 0:Y.count)&&void 0!==t?t:0),R=Number(null!==(a=null!==(d=null!==(s=null!==(c=null!==(v=null===Y||void 0===Y?void 0:Y.goodCount)&&void 0!==v?v:null===Y||void 0===Y?void 0:Y.good_count)&&void 0!==c?c:null===Y||void 0===Y?void 0:Y.GoodCount)&&void 0!==s?s:null===Y||void 0===Y?void 0:Y.positive)&&void 0!==d?d:null===Y||void 0===Y?void 0:Y.Positive)&&void 0!==a?a:0),W=Number(null!==(m=null!==(g=null!==(p=null!==(y=null!==(I=null===Y||void 0===Y?void 0:Y.neutralCount)&&void 0!==I?I:null===Y||void 0===Y?void 0:Y.neutral_count)&&void 0!==y?y:null===Y||void 0===Y?void 0:Y.NeutralCount)&&void 0!==p?p:null===Y||void 0===Y?void 0:Y.middle)&&void 0!==g?g:null===Y||void 0===Y?void 0:Y.Middle)&&void 0!==m?m:0),Z=Number(null!==(M=null!==(A=null!==(N=null!==(f=null!==(h=null===Y||void 0===Y?void 0:Y.badCount)&&void 0!==h?h:null===Y||void 0===Y?void 0:Y.bad_count)&&void 0!==f?f:null===Y||void 0===Y?void 0:Y.BadCount)&&void 0!==N?N:null===Y||void 0===Y?void 0:Y.negative)&&void 0!==A?A:null===Y||void 0===Y?void 0:Y.Negative)&&void 0!==M?M:0),H=Number(null!==(_=null!==(T=null!==(w=null!==(D=null!==(S=null===Y||void 0===Y?void 0:Y.imageCount)&&void 0!==S?S:null===Y||void 0===Y?void 0:Y.image_count)&&void 0!==D?D:null===Y||void 0===Y?void 0:Y.ImageCount)&&void 0!==w?w:null===Y||void 0===Y?void 0:Y.hasImage)&&void 0!==T?T:null===Y||void 0===Y?void 0:Y.has_image)&&void 0!==_?_:0),B=Number(null!==(k=null!==(j=null!==(C=null!==(b=null!==(z=null!==(L=null===Y||void 0===Y?void 0:Y.averageRating)&&void 0!==L?L:null===Y||void 0===Y?void 0:Y.average_rating)&&void 0!==z?z:null===Y||void 0===Y?void 0:Y.AverageRating)&&void 0!==b?b:null===Y||void 0===Y?void 0:Y.avgScore)&&void 0!==C?C:null===Y||void 0===Y?void 0:Y.avg_score)&&void 0!==j?j:null===Y||void 0===Y?void 0:Y.score)&&void 0!==k?k:0),G=null!==(x=null!==(O=null!==(P=null===Y||void 0===Y?void 0:Y.goodRate)&&void 0!==P?P:null===Y||void 0===Y?void 0:Y.good_rate)&&void 0!==O?O:null===Y||void 0===Y?void 0:Y.GoodRate)&&void 0!==x?x:Q>0?Math.round(R/Q*100):100,F=null!==(E=null!==(U=null===Y||void 0===Y?void 0:Y.distribution)&&void 0!==U?U:null===Y||void 0===Y?void 0:Y.Distribution)&&void 0!==E?E:{},J={};return[5,4,3,2,1].forEach(function(n){var e,i,t;J[n]=Number(null!==(e=null!==(i=null!==(t=F[n])&&void 0!==t?t:F[String(n)])&&void 0!==i?i:F["star".concat(n)])&&void 0!==e?e:0)}),{total:Q,goodCount:R,neutralCount:W,badCount:Z,imageCount:H,averageRating:B,goodRate:G,distribution:J}}function I(){return M.apply(this,arguments)}function M(){return M=(0,l.A)((0,t.A)().m(function n(){var e,i,l,r,a,d,s,c,v,p,y,I,M=arguments;return(0,t.A)().w(function(n){while(1)switch(n.n){case 0:return v=M.length>0&&void 0!==M[0]?M[0]:{},p={},void 0!==v.productId&&null!==v.productId&&""!==v.productId&&(p.id=(0,u.KF)(v.productId)),void 0!==v.page&&(p.page=v.page),void 0!==v.size&&(p.size=v.size),void 0!==v.type&&(p.type=v.type),void 0!==v.ratingType&&(p.ratingType=v.ratingType),n.n=1,(0,u.Vg)(m.list,p,{},!1);case 1:return y=n.v,I=Array.isArray(null===y||void 0===y?void 0:y.data)?y.data:null!==(e=null!==(i=null!==(l=null!==(r=null===y||void 0===y||null===(a=y.data)||void 0===a?void 0:a.list)&&void 0!==r?r:null===y||void 0===y||null===(d=y.data)||void 0===d?void 0:d.items)&&void 0!==l?l:null===y||void 0===y||null===(s=y.data)||void 0===s?void 0:s.records)&&void 0!==i?i:null===y||void 0===y||null===(c=y.data)||void 0===c?void 0:c.reviews)&&void 0!==e?e:[],n.a(2,(0,o.A)((0,o.A)({},y),{},{data:I.map(g)}))}},n)})),M.apply(this,arguments)}function A(n){return N.apply(this,arguments)}function N(){return N=(0,l.A)((0,t.A)().m(function n(e){var i,l;return(0,t.A)().w(function(n){while(1)switch(n.n){case 0:return i={id:(0,u.KF)(e)},n.n=1,(0,u.Vg)(m.stats,i,{},!1);case 1:return l=n.v,n.a(2,(0,o.A)((0,o.A)({},l),{},{data:y(l)}))}},n)})),N.apply(this,arguments)}function f(n){return h.apply(this,arguments)}function h(){return h=(0,l.A)((0,t.A)().m(function n(e){var i,l,r,a,d,s,c,v,g,p,y,I,M,A,N,f,h,_,T,w;return(0,t.A)().w(function(n){while(1)switch(n.n){case 0:return f={id:(0,u.KF)(e)},n.n=1,(0,u.Vg)(m.ai,f,{},!0);case 1:return h=n.v,_=null!==(i=null===h||void 0===h?void 0:h.data)&&void 0!==i?i:h,T=String(null!==(l=null!==(r=null!==(a=null!==(d=null===_||void 0===_?void 0:_.content)&&void 0!==d?d:null===_||void 0===_?void 0:_.Content)&&void 0!==a?a:null===_||void 0===_?void 0:_.overall)&&void 0!==r?r:null===_||void 0===_?void 0:_.summary)&&void 0!==l?l:"").trim(),w={averageRating:Number(null!==(s=null!==(c=null!==(v=null!==(g=null!==(p=null===_||void 0===_?void 0:_.averageRating)&&void 0!==p?p:null===_||void 0===_?void 0:_.average_rating)&&void 0!==g?g:null===_||void 0===_?void 0:_.AverageRating)&&void 0!==v?v:null===_||void 0===_?void 0:_.rating)&&void 0!==c?c:null===_||void 0===_?void 0:_.score)&&void 0!==s?s:0),totalCount:Number(null!==(y=null!==(I=null!==(M=null!==(A=null!==(N=null===_||void 0===_?void 0:_.totalCount)&&void 0!==N?N:null===_||void 0===_?void 0:_.total_count)&&void 0!==A?A:null===_||void 0===_?void 0:_.TotalCount)&&void 0!==M?M:null===_||void 0===_?void 0:_.total)&&void 0!==I?I:null===_||void 0===_?void 0:_.reviewCount)&&void 0!==y?y:0),overall:T,strengths:Array.isArray(null===_||void 0===_?void 0:_.strengths)?_.strengths:Array.isArray(null===_||void 0===_?void 0:_.Strengths)?_.Strengths:Array.isArray(null===_||void 0===_?void 0:_.pros)?_.pros:Array.isArray(null===_||void 0===_?void 0:_.positives)?_.positives:Array.isArray(null===_||void 0===_?void 0:_.positive_points)?_.positive_points:[],weaknesses:Array.isArray(null===_||void 0===_?void 0:_.weaknesses)?_.weaknesses:Array.isArray(null===_||void 0===_?void 0:_.Weaknesses)?_.Weaknesses:Array.isArray(null===_||void 0===_?void 0:_.cons)?_.cons:Array.isArray(null===_||void 0===_?void 0:_.negatives)?_.negatives:Array.isArray(null===_||void 0===_?void 0:_.negative_points)?_.negative_points:[],tags:Array.isArray(null===_||void 0===_?void 0:_.tags)?_.tags:Array.isArray(null===_||void 0===_?void 0:_.Tags)?_.Tags:Array.isArray(null===_||void 0===_?void 0:_.keywords)?_.keywords:[]},T||console.warn("[AI\u8bc4\u4ef7\u6458\u8981] \u540e\u7aef\u8fd4\u56de content \u4e3a\u7a7a\uff0c\u53ef\u80fd\u8be5\u5546\u54c1\u5c1a\u672a\u751f\u6210 AI \u6458\u8981\uff0cproductId:",e),n.a(2,(0,o.A)((0,o.A)({},h),{},{data:w}))}},n)})),h.apply(this,arguments)}function _(n){return T.apply(this,arguments)}function T(){return T=(0,l.A)((0,t.A)().m(function n(e){var i,o;return(0,t.A)().w(function(n){while(1)switch(n.n){case 0:return i={id:(0,u.KF)(e.reviewId),content:e.content},void 0!==e.parentId&&null!==e.parentId&&""!==e.parentId&&(i.parentId=(0,u.KF)(e.parentId)),n.n=1,(0,u.$P)(m.reply,i,{},{},!1);case 1:return o=n.v,n.a(2,o)}},n)})),T.apply(this,arguments)}function w(){return D.apply(this,arguments)}function D(){return D=(0,l.A)((0,t.A)().m(function n(){var e,i,l,r,a,d,s,c,v,g,y,I,M=arguments;return(0,t.A)().w(function(n){while(1)switch(n.n){case 0:return v=M.length>0&&void 0!==M[0]?M[0]:{},g={id:(0,u.KF)(v.reviewId)},void 0!==v.page&&(g.page=v.page),void 0!==v.size&&(g.size=v.size),n.n=1,(0,u.Vg)(m.replyList,g,{},!1);case 1:return y=n.v,I=Array.isArray(null===y||void 0===y?void 0:y.data)?y.data:null!==(e=null!==(i=null!==(l=null!==(r=null===y||void 0===y||null===(a=y.data)||void 0===a?void 0:a.list)&&void 0!==r?r:null===y||void 0===y||null===(d=y.data)||void 0===d?void 0:d.items)&&void 0!==l?l:null===y||void 0===y||null===(s=y.data)||void 0===s?void 0:s.records)&&void 0!==i?i:null===y||void 0===y||null===(c=y.data)||void 0===c?void 0:c.replies)&&void 0!==e?e:[],n.a(2,(0,o.A)((0,o.A)({},y),{},{data:I.map(p)}))}},n)})),D.apply(this,arguments)}function S(n){return k.apply(this,arguments)}function k(){return k=(0,l.A)((0,t.A)().m(function n(e){var i,o;return(0,t.A)().w(function(n){while(1)switch(n.n){case 0:return i={review_id:(0,u.KF)(e)},n.n=1,(0,u.$P)(m.like,i,{},{},!1,!1);case 1:return o=n.v,n.a(2,o)}},n)})),k.apply(this,arguments)}},1194:function(n,e,i){i.d(e,{OT:function(){return d},Pt:function(){return a},ZF:function(){return u},fg:function(){return r},s7:function(){return s}});var t="http://192.168.10.7:8089",o="".concat(t,"/api/v1"),l="ws://192.168.10.7:8089",u=function(){return"".concat(l,"/api/v1/chat/ws")}(),r="".concat(l,"/api/v1/chat/ws"),a={createConversation:"".concat(o,"/chat/conversations"),conversations:"".concat(o,"/chat/conversations"),messages:"".concat(o,"/chat/conversations/:id/messages"),sendMessage:"".concat(o,"/chat/conversations/:id/messages"),readConversation:"".concat(o,"/chat/conversations/:id/read")},d={list:"".concat(o,"/notifications"),unreadCount:"".concat(o,"/notifications/unread-count"),read:"".concat(o,"/notifications/:id/read"),readAll:"".concat(o,"/notifications/read-all")},s=a},44:function(n,e,i){i.d(e,{Bo:function(){return g},Dt:function(){return A},Fr:function(){return _},ZL:function(){return M},kk:function(){return y}});var t=i(1212),o=i(9379),l=i(467),u=i(2284),r=i(2458),a="http://192.168.10.7:8089",d="".concat(a,"/api/v1"),s={activities:"".concat(d,"/seckill/activities"),activityProducts:"".concat(d,"/seckill/activities/products"),purchases:"".concat(d,"/seckill/purchases")};function c(n){var e,i,t,o,l,r,a,d,s,c,v,m,g,p,y,I,M,A,N,f,h,_,T,w,D,S,k,j,C,b,z,L,x,O,P,E,U,Y,Q,R,W,Z,H,B,G,F,J,V,q,X,K,$,nn,en,tn,on,ln,un,rn,an,dn,sn,cn,vn,mn,gn,pn,yn,In,Mn,An,Nn,fn,hn,_n,Tn,wn,Dn,Sn,kn,jn,Cn,bn,zn,Ln,xn,On,Pn,En,Un,Yn,Qn,Rn,Wn,Zn,Hn,Bn,Gn,Fn,Jn,Vn,qn,Xn,Kn,$n,ne,ee,ie,te;if(!n||"object"!==(0,u.A)(n))return{id:"",productId:"",productName:"",image:"",originalPrice:0,seckillPrice:0,stock:0,soldCount:0,soldPercent:0,limitCount:1,skuId:"",seckillSkuPriceId:"",activityId:"",raw:null};var oe=null!==(e=null!==(i=null!==(t=null!==(o=null!==(l=null!==(r=null!==(a=n.image)&&void 0!==a?a:n.Image)&&void 0!==r?r:n.imageUrl)&&void 0!==l?l:n.image_url)&&void 0!==o?o:n.ImageUrl)&&void 0!==t?t:n.pic)&&void 0!==i?i:n.Pic)&&void 0!==e?e:"";!oe&&Array.isArray(n.images)&&n.images.length>0&&(oe=n.images[0]),!oe&&Array.isArray(n.Images)&&n.Images.length>0&&(oe=n.Images[0]);var le,ue,re,ae,de,se,ce,ve,me,ge,pe=Array.isArray(n.skus)&&n.skus.length>0?n.skus[0]:null,ye=!!(null!==(d=null!==(s=null!==(c=n.activityId)&&void 0!==c?c:n.activity_id)&&void 0!==s?s:n.ActivityId)&&void 0!==d?d:n.activity),Ie=Number(null!==(v=null!==(m=null!==(g=null!==(p=null!==(y=null!==(I=null!==(M=null!==(A=null!==(N=null!==(f=null!==(h=n.seckillPrice)&&void 0!==h?h:n.seckill_price)&&void 0!==f?f:n.SeckillPrice)&&void 0!==N?N:n.seckill_price_cents)&&void 0!==A?A:n.price_seckill)&&void 0!==M?M:n.activityPrice)&&void 0!==I?I:n.activity_price)&&void 0!==y?y:n.ActivityPrice)&&void 0!==p?p:n.flashSalePrice)&&void 0!==g?g:n.flash_sale_price)&&void 0!==m?m:n.FlashSalePrice)&&void 0!==v?v:pe&&null!==(_=null!==(T=null!==(w=null!==(D=null!==(S=pe.seckill_price)&&void 0!==S?S:pe.seckillPrice)&&void 0!==D?D:pe.SeckillPrice)&&void 0!==w?w:pe.activityPrice)&&void 0!==T?T:pe.activity_price)&&void 0!==_?_:"");Ie||ye||(Ie=Number(null!==(le=null!==(ue=null!==(re=null!==(ae=null!==(de=null!==(se=null!==(ce=null!==(ve=n.price)&&void 0!==ve?ve:n.Price)&&void 0!==ce?ce:n.salePrice)&&void 0!==se?se:n.sale_price)&&void 0!==de?de:n.currentPrice)&&void 0!==ae?ae:n.current_price)&&void 0!==re?re:n.discountPrice)&&void 0!==ue?ue:n.discount_price)&&void 0!==le?le:pe&&null!==(me=null!==(ge=pe.price)&&void 0!==ge?ge:pe.Price)&&void 0!==me?me:""));var Me,Ae,Ne,fe,he=Number(null!==(k=null!==(j=null!==(C=null!==(b=null!==(z=null!==(L=null!==(x=null!==(O=n.originalPrice)&&void 0!==O?O:n.original_price)&&void 0!==x?x:n.OriginalPrice)&&void 0!==L?L:n.marketPrice)&&void 0!==z?z:n.market_price)&&void 0!==b?b:n.MarketPrice)&&void 0!==C?C:n.original_price_cents)&&void 0!==j?j:n.price_original)&&void 0!==k?k:pe&&null!==(P=null!==(E=pe.original_price)&&void 0!==E?E:pe.originalPrice)&&void 0!==P?P:"");!he&&ye&&(he=Number(null!==(Me=null!==(Ae=n.price)&&void 0!==Ae?Ae:n.Price)&&void 0!==Me?Me:pe?null!==(Ne=null!==(fe=pe.price)&&void 0!==fe?fe:pe.Price)&&void 0!==Ne?Ne:"":0));var _e=Number(null!==(U=null!==(Y=null!==(Q=null!==(R=null!==(W=null!==(Z=null!==(H=null!==(B=null!==(G=null!==(F=null!==(J=null!==(V=null!==(q=null!==(X=n.stock)&&void 0!==X?X:n.Stock)&&void 0!==q?q:n.totalStock)&&void 0!==V?V:n.total_stock)&&void 0!==J?J:n.TotalStock)&&void 0!==F?F:n.inventory)&&void 0!==G?G:n.Inventory)&&void 0!==B?B:n.availableStock)&&void 0!==H?H:n.available_stock)&&void 0!==Z?Z:n.remainingStock)&&void 0!==W?W:n.remaining_stock)&&void 0!==R?R:n.RemainingStock)&&void 0!==Q?Q:n.seckillStock)&&void 0!==Y?Y:n.seckill_stock)&&void 0!==U?U:pe&&null!==(K=null!==($=null!==(nn=pe.remaining_stock)&&void 0!==nn?nn:pe.stock)&&void 0!==$?$:pe.remainingStock)&&void 0!==K?K:0),Te=Number(null!==(en=null!==(tn=null!==(on=null!==(ln=null!==(un=null!==(rn=null!==(an=null!==(dn=n.soldCount)&&void 0!==dn?dn:n.sold_count)&&void 0!==an?an:n.SoldCount)&&void 0!==rn?rn:n.sold)&&void 0!==un?un:n.Sold)&&void 0!==ln?ln:n.sales)&&void 0!==on?on:n.salesVolume)&&void 0!==tn?tn:n.sales_volume)&&void 0!==en?en:0),we=null!==(sn=null!==(cn=null!==(vn=n.soldPercent)&&void 0!==vn?vn:n.sold_percent)&&void 0!==cn?cn:n.SoldPercent)&&void 0!==sn?sn:_e>0?Math.round(Te/(_e+Te)*100):0;return{id:null!==(mn=null!==(gn=null!==(pn=null!==(yn=null!==(In=null!==(Mn=n.id)&&void 0!==Mn?Mn:n.Id)&&void 0!==In?In:n.ID)&&void 0!==yn?yn:n.productId)&&void 0!==pn?pn:n.product_id)&&void 0!==gn?gn:n.ProductId)&&void 0!==mn?mn:"",productId:null!==(An=null!==(Nn=null!==(fn=null!==(hn=null!==(_n=null!==(Tn=null!==(wn=n.productId)&&void 0!==wn?wn:n.product_id)&&void 0!==Tn?Tn:n.ProductId)&&void 0!==_n?_n:n.ProductID)&&void 0!==hn?hn:n.pid)&&void 0!==fn?fn:n.Pid)&&void 0!==Nn?Nn:n.id)&&void 0!==An?An:"",productName:null!==(Dn=null!==(Sn=null!==(kn=null!==(jn=null!==(Cn=null!==(bn=null!==(zn=n.productName)&&void 0!==zn?zn:n.product_name)&&void 0!==bn?bn:n.ProductName)&&void 0!==Cn?Cn:n.name)&&void 0!==jn?jn:n.Name)&&void 0!==kn?kn:n.title)&&void 0!==Sn?Sn:n.Title)&&void 0!==Dn?Dn:"",image:oe,originalPrice:he,seckillPrice:Ie,stock:_e,soldCount:Te,soldPercent:we,limitCount:Number(null!==(Ln=null!==(xn=null!==(On=null!==(Pn=null!==(En=null!==(Un=n.limitCount)&&void 0!==Un?Un:n.limit_count)&&void 0!==En?En:n.LimitCount)&&void 0!==Pn?Pn:n.buyLimit)&&void 0!==On?On:n.buy_limit)&&void 0!==xn?xn:n.BuyLimit)&&void 0!==Ln?Ln:1),skuId:null!==(Yn=null!==(Qn=null!==(Rn=null!==(Wn=n.skuId)&&void 0!==Wn?Wn:n.sku_id)&&void 0!==Rn?Rn:n.SkuId)&&void 0!==Qn?Qn:n.skuID)&&void 0!==Yn?Yn:pe&&null!==(Zn=null!==(Hn=null!==(Bn=pe.sku_id)&&void 0!==Bn?Bn:pe.skuId)&&void 0!==Hn?Hn:pe.id)&&void 0!==Zn?Zn:"",seckillSkuPriceId:null!==(Gn=null!==(Fn=null!==(Jn=null!==(Vn=null!==(qn=n.seckillSkuPriceId)&&void 0!==qn?qn:n.seckill_sku_price_id)&&void 0!==Vn?Vn:n.SeckillSKUPriceID)&&void 0!==Jn?Jn:n.SeckillSkuPriceId)&&void 0!==Fn?Fn:n.seckillSkuPriceID)&&void 0!==Gn?Gn:pe&&null!==(Xn=null!==(Kn=null!==($n=pe.seckill_sku_price_id)&&void 0!==$n?$n:pe.seckillSkuPriceId)&&void 0!==Kn?Kn:pe.SeckillSKUPriceID)&&void 0!==Xn?Xn:"",activityId:null!==(ne=null!==(ee=null!==(ie=null!==(te=n.activityId)&&void 0!==te?te:n.activity_id)&&void 0!==ie?ie:n.ActivityId)&&void 0!==ee?ee:n.ActivityID)&&void 0!==ne?ne:"",raw:n}}function v(n){var e,i,t,o,l,r,a,d,s,v,m,g,p,y,I,M,A,N,f,h,_,T,w,D,S,k,j,C;if(!n||"object"!==(0,u.A)(n))return{id:"",name:"\u9650\u65f6\u79d2\u6740",status:"active",startTime:"",endTime:"",products:[]};var b=Array.isArray(n.products)?n.products:Array.isArray(n.Products)?n.Products:Array.isArray(n.items)?n.items:Array.isArray(n.productList)?n.productList:[];return{id:null!==(e=null!==(i=null!==(t=null!==(o=null!==(l=null!==(r=null!==(a=n.id)&&void 0!==a?a:n.Id)&&void 0!==r?r:n.ID)&&void 0!==l?l:n.activityId)&&void 0!==o?o:n.activity_id)&&void 0!==t?t:n.ActivityId)&&void 0!==i?i:n.ActivityID)&&void 0!==e?e:"",name:null!==(d=null!==(s=null!==(v=null!==(m=null!==(g=null!==(p=null!==(y=n.name)&&void 0!==y?y:n.Name)&&void 0!==p?p:n.title)&&void 0!==g?g:n.Title)&&void 0!==m?m:n.activityName)&&void 0!==v?v:n.activity_name)&&void 0!==s?s:n.ActivityName)&&void 0!==d?d:"\u9650\u65f6\u79d2\u6740",status:null!==(I=null!==(M=null!==(A=null!==(N=n.status)&&void 0!==N?N:n.Status)&&void 0!==A?A:n.activityStatus)&&void 0!==M?M:n.activity_status)&&void 0!==I?I:"active",startTime:null!==(f=null!==(h=null!==(_=null!==(T=null!==(w=n.startTime)&&void 0!==w?w:n.start_time)&&void 0!==T?T:n.StartTime)&&void 0!==_?_:n.beginTime)&&void 0!==h?h:n.begin_time)&&void 0!==f?f:"",endTime:null!==(D=null!==(S=null!==(k=null!==(j=null!==(C=n.endTime)&&void 0!==C?C:n.end_time)&&void 0!==j?j:n.EndTime)&&void 0!==k?k:n.finishTime)&&void 0!==S?S:n.finish_time)&&void 0!==D?D:"",products:b.map(c)}}function m(n){var e,i,t,o,l,r,a,d,s,c,v,m,g,p,y,I,M,A,N,f,h,_,T,w,D,S,k,j,C,b,z,L,x,O,P,E,U,Y,Q,R,W,Z,H,B,G,F,J,V,q,X,K,$,nn,en,tn,on,ln,un,rn,an,dn,sn,cn,vn,mn,gn,pn,yn,In,Mn,An,Nn,fn,hn,_n,Tn,wn;n&&"object"===(0,u.A)(n)||(n={});var Dn=null!==(e=null!==(i=null!==(t=null!==(o=null!==(l=n.status)&&void 0!==l?l:n.Status)&&void 0!==o?o:n.purchaseStatus)&&void 0!==t?t:n.purchase_status)&&void 0!==i?i:n.result)&&void 0!==e?e:n.Result,Sn=Dn,kn=null;if("number"===typeof Dn){var jn;kn=Dn;var Cn={0:"processing",1:"success",2:"failed",3:"cancelled"};Sn=null!==(jn=Cn[Dn])&&void 0!==jn?jn:"processing"}var bn={"\u79d2\u6740\u6210\u529f":"success","\u79d2\u6740\u5931\u8d25":"failed","\u5904\u7406\u4e2d":"processing","\u7b49\u5f85\u4e2d":"processing","\u6392\u961f\u4e2d":"processing","\u5df2\u53d6\u6d88":"cancelled","\u552e\u7f44":"out_of_stock","\u5df2\u552e\u7f44":"out_of_stock"};"string"===typeof Sn&&bn[Sn]&&(Sn=bn[Sn]);var zn={processing:"\u5904\u7406\u4e2d",pending:"\u5904\u7406\u4e2d",success:"\u6210\u529f",succeeded:"\u6210\u529f",paid:"\u6210\u529f",failed:"\u5931\u8d25",cancelled:"\u5df2\u53d6\u6d88",canceled:"\u5df2\u53d6\u6d88",out_of_stock:"\u552e\u7f44","out-of-stock":"\u552e\u7f44",sold_out:"\u552e\u7f44"};return{id:null!==(r=null!==(a=null!==(d=null!==(s=null!==(c=null!==(v=null!==(m=null!==(g=n.id)&&void 0!==g?g:n.Id)&&void 0!==m?m:n.ID)&&void 0!==v?v:n.purchaseId)&&void 0!==c?c:n.purchase_id)&&void 0!==s?s:n.PurchaseId)&&void 0!==d?d:n.orderId)&&void 0!==a?a:n.order_id)&&void 0!==r?r:"",purchaseId:null!==(p=null!==(y=null!==(I=null!==(M=null!==(A=n.purchaseId)&&void 0!==A?A:n.purchase_id)&&void 0!==M?M:n.PurchaseId)&&void 0!==I?I:n.id)&&void 0!==y?y:n.Id)&&void 0!==p?p:"",orderId:null!==(N=null!==(f=null!==(h=null!==(_=n.orderId)&&void 0!==_?_:n.order_id)&&void 0!==h?h:n.OrderId)&&void 0!==f?f:n.OrderID)&&void 0!==N?N:"",orderNo:null!==(T=null!==(w=null!==(D=null!==(S=n.orderNo)&&void 0!==S?S:n.order_no)&&void 0!==D?D:n.OrderNo)&&void 0!==w?w:n.OrderNO)&&void 0!==T?T:"",activityId:null!==(k=null!==(j=null!==(C=null!==(b=n.activityId)&&void 0!==b?b:n.activity_id)&&void 0!==C?C:n.ActivityId)&&void 0!==j?j:n.ActivityID)&&void 0!==k?k:"",productId:null!==(z=null!==(L=null!==(x=null!==(O=n.productId)&&void 0!==O?O:n.product_id)&&void 0!==x?x:n.ProductId)&&void 0!==L?L:n.ProductID)&&void 0!==z?z:"",skuId:null!==(P=null!==(E=null!==(U=n.skuId)&&void 0!==U?U:n.sku_id)&&void 0!==E?E:n.SkuId)&&void 0!==P?P:"",quantity:Number(null!==(Y=null!==(Q=null!==(R=null!==(W=null!==(Z=n.quantity)&&void 0!==Z?Z:n.Quantity)&&void 0!==W?W:n.count)&&void 0!==R?R:n.Count)&&void 0!==Q?Q:n.num)&&void 0!==Y?Y:1),seckillPrice:Number(null!==(H=null!==(B=null!==(G=null!==(F=null!==(J=n.seckillPrice)&&void 0!==J?J:n.seckill_price)&&void 0!==F?F:n.SeckillPrice)&&void 0!==G?G:n.price)&&void 0!==B?B:n.Price)&&void 0!==H?H:0),totalAmount:Number(null!==(V=null!==(q=null!==(X=null!==(K=null!==($=null!==(nn=null!==(en=n.totalAmount)&&void 0!==en?en:n.total_amount)&&void 0!==nn?nn:n.TotalAmount)&&void 0!==$?$:n.amount)&&void 0!==K?K:n.Amount)&&void 0!==X?X:n.payAmount)&&void 0!==q?q:n.pay_amount)&&void 0!==V?V:0),status:Sn,statusCode:kn,statusText:null!==(tn=null!==(on=null!==(ln=null!==(un=null!==(rn=n.statusText)&&void 0!==rn?rn:n.status_text)&&void 0!==un?un:n.StatusText)&&void 0!==ln?ln:zn[Sn])&&void 0!==on?on:Sn)&&void 0!==tn?tn:"",message:null!==(an=null!==(dn=null!==(sn=null!==(cn=null!==(vn=null!==(mn=n.message)&&void 0!==mn?mn:n.Message)&&void 0!==vn?vn:n.msg)&&void 0!==cn?cn:n.Msg)&&void 0!==sn?sn:n.remark)&&void 0!==dn?dn:n.Remark)&&void 0!==an?an:"",createdAt:null!==(gn=null!==(pn=null!==(yn=null!==(In=null!==(Mn=null!==(An=n.createdAt)&&void 0!==An?An:n.created_at)&&void 0!==Mn?Mn:n.CreatedAt)&&void 0!==In?In:n.createTime)&&void 0!==yn?yn:n.create_time)&&void 0!==pn?pn:n.CreateTime)&&void 0!==gn?gn:"",paidAt:null!==(Nn=null!==(fn=null!==(hn=null!==(_n=null!==(Tn=null!==(wn=n.paidAt)&&void 0!==wn?wn:n.paid_at)&&void 0!==Tn?Tn:n.PaidAt)&&void 0!==_n?_n:n.payTime)&&void 0!==hn?hn:n.pay_time)&&void 0!==fn?fn:n.PayTime)&&void 0!==Nn?Nn:""}}function g(){return p.apply(this,arguments)}function p(){return p=(0,l.A)((0,t.A)().m(function n(){var e,i,l,a,d,c,m,g,p,y,I=arguments;return(0,t.A)().w(function(n){while(1)switch(n.n){case 0:return l=I.length>0&&void 0!==I[0]?I[0]:{},a={page:null!==(e=l.page)&&void 0!==e?e:1,size:null!==(i=l.size)&&void 0!==i?i:20},void 0!==l.status&&(a.status=l.status),n.n=1,(0,r.Vg)(s.activities,a);case 1:return d=n.v,c=[],Array.isArray(null===d||void 0===d?void 0:d.data)?c=d.data:null!==d&&void 0!==d&&d.data&&"object"===(0,u.A)(d.data)&&(d.data.products||d.data.Products||d.data.items?c=[d.data]:(c=null!==(m=null!==(g=null!==(p=null!==(y=d.data.list)&&void 0!==y?y:d.data.items)&&void 0!==p?p:d.data.records)&&void 0!==g?g:d.data.activities)&&void 0!==m?m:[],Array.isArray(c)||(c=[]))),n.a(2,(0,o.A)((0,o.A)({},d),{},{data:c.map(v)}))}},n)})),p.apply(this,arguments)}function y(n){return I.apply(this,arguments)}function I(){return I=(0,l.A)((0,t.A)().m(function n(e){var i,l,u;return(0,t.A)().w(function(n){while(1)switch(n.n){case 0:return i={},void 0!==e.productId&&""!==e.productId&&null!==e.productId&&(i.productId=e.productId,i.product_id=e.productId),void 0!==e.activityId&&""!==e.activityId&&null!==e.activityId&&(i.activityId=e.activityId,i.activity_id=e.activityId),n.n=1,(0,r.Vg)(s.activityProducts,i);case 1:if(l=n.v,null===l||void 0===l||!l.data){n.n=4;break}if(u=l.data,!Array.isArray(u)){n.n=2;break}return n.a(2,(0,o.A)((0,o.A)({},l),{},{data:u.map(c)}));case 2:if(!u.products&&!u.Products){n.n=3;break}return n.a(2,(0,o.A)((0,o.A)({},l),{},{data:v(u)}));case 3:return n.a(2,(0,o.A)((0,o.A)({},l),{},{data:c(u)}));case 4:return n.a(2,l)}},n)})),I.apply(this,arguments)}function M(){var n=Date.now().toString(36),e=Math.random().toString(36).substring(2,10);return"sk_".concat(n,"_").concat(e)}function A(n){return N.apply(this,arguments)}function N(){return N=(0,l.A)((0,t.A)().m(function n(e){var i,l,a,d,c,v,g,p,y,I,M;return(0,t.A)().w(function(n){while(1)switch(n.p=n.n){case 0:return i={activity_id:(0,r.KF)(e.activityId),seckill_sku_price_id:(0,r.KF)(e.seckillSkuPriceId),store_id:(0,r.KF)(e.storeId),request_no:e.requestNo,quantity:e.quantity},console.log("[\u79d2\u6740\u8d2d\u4e70] \u8bf7\u6c42\u4f53:",JSON.stringify(i)),n.p=1,n.n=2,(0,r.$P)(s.purchases,i,{},{},!1,!0);case 2:if(l=n.v,null===l||void 0===l||!l.data){n.n=3;break}return n.a(2,(0,o.A)((0,o.A)({},l),{},{data:m(l.data),accepted:!1}));case 3:return n.a(2,(0,o.A)((0,o.A)({},l),{},{accepted:!1}));case 4:if(n.p=4,M=n.v,a=null===M||void 0===M?void 0:M.code,d=null===M||void 0===M?void 0:M.statusCode,c=String((null===M||void 0===M?void 0:M.message)||""),v=null===M||void 0===M?void 0:M.response,202!==a&&202!==d){n.n=5;break}return console.log("[\u79d2\u6740\u8d2d\u4e70] \u8fd4\u56de202\uff0c\u7b49\u5f85\u79d2\u6740\u7ed3\u679c\uff0crequest_no:",e.requestNo),n.a(2,{code:202,message:"\u7b49\u5f85\u79d2\u6740\u7ed3\u679c",data:null!==v&&void 0!==v&&v.data?m(v.data):{},accepted:!0});case 5:if(!c.includes("\u6210\u529f")&&!/succe/i.test(c)){n.n=6;break}return y=v&&"object"===(0,u.A)(v)?null!==(g=v.data)&&void 0!==g?g:v:{},I=m((0,o.A)((0,o.A)({},y),{},{status:null!==(p=y.status)&&void 0!==p?p:"success",message:c})),console.log("[\u79d2\u6740\u8d2d\u4e70] \u8bc6\u522b\u5230\u540c\u6b65\u6210\u529f\u54cd\u5e94\uff08\u88ab\u5f53\u4f5c\u9519\u8bef\u629b\u51fa\uff09\uff0c\u5df2\u8f6c\u4e3a\u6210\u529f\u8fd4\u56de:",I),n.a(2,{code:200,message:c,data:I,accepted:!1});case 6:throw M;case 7:return n.a(2)}},n,null,[[1,4]])})),N.apply(this,arguments)}function f(n){return h.apply(this,arguments)}function h(){return h=(0,l.A)((0,t.A)().m(function n(e){var i,l,a,d,c,v,g,p,y,I;return(0,t.A)().w(function(n){while(1)switch(n.p=n.n){case 0:return i={request_no:e.requestNo},n.p=1,n.n=2,(0,r.Vg)(s.purchases,i,{},!0);case 2:if(l=n.v,null===l||void 0===l||!l.data){n.n=4;break}if(a=l.data,!Array.isArray(a)){n.n=3;break}return n.a(2,(0,o.A)((0,o.A)({},l),{},{data:a.map(m)}));case 3:return n.a(2,(0,o.A)((0,o.A)({},l),{},{data:m(a)}));case 4:return n.a(2,l);case 5:if(n.p=5,I=n.v,d=String((null===I||void 0===I?void 0:I.message)||""),c=null===I||void 0===I?void 0:I.response,!d.includes("\u6210\u529f")&&!/succe/i.test(d)){n.n=6;break}return p=c&&"object"===(0,u.A)(c)?null!==(v=c.data)&&void 0!==v?v:c:{},y=m((0,o.A)((0,o.A)({},p),{},{status:null!==(g=p.status)&&void 0!==g?g:"success",message:d})),console.log("[\u79d2\u6740\u7ed3\u679c] \u8bc6\u522b\u5230\u6210\u529f\u54cd\u5e94\uff08\u88ab\u5f53\u4f5c\u9519\u8bef\u629b\u51fa\uff09\uff0c\u5df2\u8f6c\u4e3a\u6210\u529f\u8fd4\u56de:",y),n.a(2,{code:200,message:d,data:y});case 6:throw I;case 7:return n.a(2)}},n,null,[[1,5]])})),h.apply(this,arguments)}function _(n){return T.apply(this,arguments)}function T(){return T=(0,l.A)((0,t.A)().m(function n(e){var i,o,u,r,a,d,s=arguments;return(0,t.A)().w(function(n){while(1)switch(n.n){case 0:return u=s.length>1&&void 0!==s[1]?s[1]:{},r=null!==(i=u.interval)&&void 0!==i?i:1500,a=null!==(o=u.timeout)&&void 0!==o?o:15e3,d=Date.now(),n.a(2,new Promise(function(n,i){var o=function(){var u=(0,l.A)((0,t.A)().m(function l(){var u,s,c,v,m,g,p,y;return(0,t.A)().w(function(t){while(1)switch(t.p=t.n){case 0:if(!(Date.now()-d>a)){t.n=1;break}return i(new Error("\u79d2\u6740\u7ed3\u679c\u67e5\u8be2\u8d85\u65f6\uff0c\u8bf7\u7a0d\u540e\u5728\u8ba2\u5355\u4e2d\u67e5\u770b")),t.a(2);case 1:return t.p=1,t.n=2,f({requestNo:e});case 2:c=t.v,v=null!==(u=null===c||void 0===c?void 0:c.data)&&void 0!==u?u:{},m=String(null!==(s=v.status)&&void 0!==s?s:""),g=["success","succeeded","paid","failed","cancelled","canceled","out_of_stock","out-of-stock","sold_out"].includes(m),g?n(v):setTimeout(o,r),t.n=4;break;case 3:t.p=3,y=t.v,p=String((null===y||void 0===y?void 0:y.message)||""),p.includes("\u4e0d\u5b58\u5728")||p.includes("not found")||/not\s*exist/i.test(p)?(console.warn("[\u79d2\u6740\u8f6e\u8be2] \u8bf7\u6c42\u6682\u672a\u627e\u5230\uff0c\u7a0d\u540e\u91cd\u8bd5:",p),setTimeout(o,r)):i(y);case 4:return t.a(2)}},l,null,[[1,3]])}));return function(){return u.apply(this,arguments)}}();o()}))}},n)})),T.apply(this,arguments)}},1432:function(n,e,i){i.d(e,{Ny:function(){return N},ZQ:function(){return s},i$:function(){return c},lQ:function(){return y},yU:function(){return M}});var t=i(1212),o=i(467),l=i(9379),u=i(2284),r=i(2458),a="http://192.168.10.7:8089",d="".concat(a,"/api/v1"),s={register:"".concat(d,"/auth/register"),registerSendCode:"".concat(d,"/auth/registerofsendcode"),login:"".concat(d,"/auth/login"),wechatLogin:"".concat(d,"/auth/weixinlogin"),wechatPhone:"".concat(d,"/auth/weixinphone"),setPassword:"".concat(d,"/auth/setpassword"),resetPasswordSendCode:"".concat(d,"/auth/resetpassword/sendcode"),resetPassword:"".concat(d,"/auth/resetpassword/reset")},c={profile:"".concat(d,"/user/profile"),updateProfile:"".concat(d,"/user/profile"),upload:"".concat(d,"/user/upload")},v={available:"".concat(d,"/coupons/available"),mine:"".concat(d,"/coupons/mine"),claim:"".concat(d,"/coupons/:id/claim")};function m(n){if(null===n||void 0===n||""===n)return 0;if("number"===typeof n)return n;if("string"===typeof n){var e=n.replace(/[^\d.\-]/g,""),i=parseFloat(e);return isNaN(i)?0:i}return 0}function g(n){var e,i,t,o,r,a,d,s,c,v,g,p,y,I,M,A,N,f,h,_,T,w,D,S,k,j,C,b,z,L,x,O,P,E,U,Y,Q,R,W,Z,H,B,G,F,J,V,q,X,K,$,nn,en,tn,on,ln,un,rn,an,dn,sn,cn,vn,mn,gn,pn,yn,In,Mn,An,Nn,fn,hn,_n,Tn,wn,Dn,Sn,kn,jn,Cn,bn,zn,Ln,xn,On,Pn,En,Un,Yn,Qn,Rn,Wn,Zn,Hn,Bn,Gn,Fn,Jn,Vn,qn,Xn,Kn,$n,ne,ee,ie,te,oe,le,ue,re,ae,de,se,ce,ve,me,ge,pe,ye,Ie,Me,Ae,Ne,fe,he,_e,Te,we,De,Se,ke,je,Ce,be,ze,Le,xe,Oe,Pe,Ee,Ue,Ye,Qe,Re,We,Ze,He,Be,Ge,Fe,Je,Ve,qe,Xe,Ke,$e,ni,ei,ii,ti,oi,li,ui,ri,ai,di,si,ci,vi,mi,gi,pi,yi,Ii,Mi,Ai;if(!n||"object"!==(0,u.A)(n))return{};for(var Ni=n,fi=["coupon","couponInfo","coupon_info","data","info","item","detail"],hi=0,_i=fi;hi<_i.length;hi++){var Ti=_i[hi];if(n[Ti]&&"object"===(0,u.A)(n[Ti])&&!Array.isArray(n[Ti])){var wi="coupon"===Ti||"couponInfo"===Ti||"coupon_info"===Ti,Di=wi?1:2;if(Object.keys(n[Ti]).length>=Di){Ni=(0,l.A)((0,l.A)({},n),n[Ti]);break}}}var Si=null!==(e=null!==(i=null!==(t=null!==(o=null!==(r=Ni.type)&&void 0!==r?r:Ni.Type)&&void 0!==o?o:Ni.couponType)&&void 0!==t?t:Ni.coupon_type)&&void 0!==i?i:Ni.CouponType)&&void 0!==e?e:"cash",ki="cash";"string"===typeof Si&&(ki="discount"===Si||"\u6298\u6263"===Si||"discountRate"===Si?"discount":"cash");var ji=null!==(a=null!==(d=null!==(s=null!==(c=null!==(v=Ni.status)&&void 0!==v?v:Ni.Status)&&void 0!==c?c:Ni.state)&&void 0!==s?s:Ni.State)&&void 0!==d?d:Ni.couponStatus)&&void 0!==a?a:"available",Ci="available";if("string"===typeof ji){var bi=ji.toLowerCase();Ci="expired"===bi||"\u5df2\u8fc7\u671f"===bi||"2"===bi?"expired":"used"===bi||"\u5df2\u4f7f\u7528"===bi||"1"===bi?"used":"unclaimed"===bi||"\u672a\u9886\u53d6"===bi||"not_claimed"===bi||"3"===bi?"unclaimed":"available"}else"number"===typeof ji&&(Ci=1===ji?"used":2===ji?"expired":3===ji?"unclaimed":"available");var zi=null!==(g=null!==(p=null!==(y=null!==(I=null!==(M=null!==(A=null!==(N=null!==(f=null!==(h=null!==(_=null!==(T=null!==(w=null!==(D=null!==(S=null!==(k=null!==(j=null!==(C=null!==(b=null!==(z=null!==(L=null!==(x=null!==(O=null!==(P=null!==(E=null!==(U=null!==(Y=null!==(Q=null!==(R=null!==(W=null!==(Z=null!==(H=null!==(B=null!==(G=null!==(F=Ni.value)&&void 0!==F?F:Ni.Value)&&void 0!==G?G:Ni.couponValue)&&void 0!==B?B:Ni.coupon_value)&&void 0!==H?H:Ni.amount)&&void 0!==Z?Z:Ni.Amount)&&void 0!==W?W:Ni.reduceAmount)&&void 0!==R?R:Ni.reduce_amount)&&void 0!==Q?Q:Ni.discountAmount)&&void 0!==Y?Y:Ni.discount_amount)&&void 0!==U?U:Ni.discountValue)&&void 0!==E?E:Ni.discount_value)&&void 0!==P?P:Ni.parValue)&&void 0!==O?O:Ni.par_value)&&void 0!==x?x:Ni.offAmount)&&void 0!==L?L:Ni.off_amount)&&void 0!==z?z:Ni.minusAmount)&&void 0!==b?b:Ni.minus_amount)&&void 0!==C?C:Ni.denomination)&&void 0!==j?j:Ni.faceValue)&&void 0!==k?k:Ni.face_value)&&void 0!==S?S:Ni.price)&&void 0!==D?D:Ni.Price)&&void 0!==w?w:Ni.reducedAmount)&&void 0!==T?T:Ni.reduced_amount)&&void 0!==_?_:Ni.cashAmount)&&void 0!==h?h:Ni.cash_amount)&&void 0!==f?f:Ni.couponAmount)&&void 0!==N?N:Ni.coupon_amount)&&void 0!==A?A:Ni.promotionAmount)&&void 0!==M?M:Ni.promotion_amount)&&void 0!==I?I:Ni.discountRate)&&void 0!==y?y:Ni.discount_rate)&&void 0!==p?p:Ni.discount)&&void 0!==g?g:0,Li=null!==(J=null!==(V=null!==(q=null!==(X=null!==(K=null!==($=null!==(nn=null!==(en=null!==(tn=null!==(on=null!==(ln=null!==(un=null!==(rn=null!==(an=null!==(dn=null!==(sn=null!==(cn=null!==(vn=null!==(mn=null!==(gn=null!==(pn=null!==(yn=Ni.minAmount)&&void 0!==yn?yn:Ni.min_amount)&&void 0!==pn?pn:Ni.MinAmount)&&void 0!==gn?gn:Ni.conditionAmount)&&void 0!==mn?mn:Ni.condition_amount)&&void 0!==vn?vn:Ni.minOrderAmount)&&void 0!==cn?cn:Ni.min_order_amount)&&void 0!==sn?sn:Ni.thresholdAmount)&&void 0!==dn?dn:Ni.threshold_amount)&&void 0!==an?an:Ni.consumeAmount)&&void 0!==rn?rn:Ni.consume_amount)&&void 0!==un?un:Ni.minConsume)&&void 0!==ln?ln:Ni.min_consume)&&void 0!==on?on:Ni.threshold)&&void 0!==tn?tn:Ni.fullAmount)&&void 0!==en?en:Ni.full_amount)&&void 0!==nn?nn:Ni.needAmount)&&void 0!==$?$:Ni.need_amount)&&void 0!==K?K:Ni.consumeThreshold)&&void 0!==X?X:Ni.consume_threshold)&&void 0!==q?q:Ni.orderMinAmount)&&void 0!==V?V:Ni.order_min_amount)&&void 0!==J?J:0,xi=null!==(In=null!==(Mn=null!==(An=null!==(Nn=null!==(fn=null!==(hn=null!==(_n=null!==(Tn=null!==(wn=null!==(Dn=null!==(Sn=null!==(kn=null!==(jn=null!==(Cn=null!==(bn=null!==(zn=null!==(Ln=null!==(xn=null!==(On=Ni.name)&&void 0!==On?On:Ni.Name)&&void 0!==xn?xn:Ni.couponName)&&void 0!==Ln?Ln:Ni.coupon_name)&&void 0!==zn?zn:Ni.CouponName)&&void 0!==bn?bn:Ni.couponTitle)&&void 0!==Cn?Cn:Ni.coupon_title)&&void 0!==jn?jn:Ni.title)&&void 0!==kn?kn:Ni.Title)&&void 0!==Sn?Sn:Ni.subject)&&void 0!==Dn?Dn:Ni.Subject)&&void 0!==wn?wn:Ni.couponTitle)&&void 0!==Tn?Tn:Ni.coupon_title)&&void 0!==_n?_n:Ni.promotionName)&&void 0!==hn?hn:Ni.promotion_name)&&void 0!==fn?fn:Ni.activityName)&&void 0!==Nn?Nn:Ni.activity_name)&&void 0!==An?An:Ni.couponDesc)&&void 0!==Mn?Mn:Ni.coupon_desc)&&void 0!==In?In:"",Oi=null!==(Pn=null!==(En=null!==(Un=null!==(Yn=null!==(Qn=null!==(Rn=null!==(Wn=null!==(Zn=null!==(Hn=null!==(Bn=null!==(Gn=null!==(Fn=null!==(Jn=null!==(Vn=null!==(qn=null!==(Xn=null!==(Kn=null!==($n=null!==(ne=null!==(ee=null!==(ie=null!==(te=null!==(oe=Ni.scopeText)&&void 0!==oe?oe:Ni.scope_text)&&void 0!==te?te:Ni.ScopeText)&&void 0!==ie?ie:Ni.applicableText)&&void 0!==ee?ee:Ni.applicable_text)&&void 0!==ne?ne:Ni.description)&&void 0!==$n?$n:Ni.desc)&&void 0!==Kn?Kn:Ni.Description)&&void 0!==Xn?Xn:Ni.Desc)&&void 0!==qn?qn:Ni.useDesc)&&void 0!==Vn?Vn:Ni.use_desc)&&void 0!==Jn?Jn:Ni.conditionDesc)&&void 0!==Fn?Fn:Ni.condition_desc)&&void 0!==Gn?Gn:Ni.scopeDesc)&&void 0!==Bn?Bn:Ni.scope_desc)&&void 0!==Hn?Hn:Ni.useRange)&&void 0!==Zn?Zn:Ni.use_range)&&void 0!==Wn?Wn:Ni.applicableRange)&&void 0!==Rn?Rn:Ni.applicable_range)&&void 0!==Qn?Qn:Ni.rangeDesc)&&void 0!==Yn?Yn:Ni.range_desc)&&void 0!==Un?Un:Ni.useNotice)&&void 0!==En?En:Ni.use_notice)&&void 0!==Pn?Pn:"\u5168\u573a\u901a\u7528",Pi=null!==(le=null!==(ue=null!==(re=null!==(ae=null!==(de=null!==(se=null!==(ce=null!==(ve=null!==(me=null!==(ge=null!==(pe=null!==(ye=null!==(Ie=Ni.startTime)&&void 0!==Ie?Ie:Ni.start_time)&&void 0!==ye?ye:Ni.StartTime)&&void 0!==pe?pe:Ni.beginTime)&&void 0!==ge?ge:Ni.begin_time)&&void 0!==me?me:Ni.validFrom)&&void 0!==ve?ve:Ni.valid_from)&&void 0!==ce?ce:Ni.startDate)&&void 0!==se?se:Ni.start_date)&&void 0!==de?de:Ni.validStart)&&void 0!==ae?ae:Ni.valid_start)&&void 0!==re?re:Ni.beginDate)&&void 0!==ue?ue:Ni.begin_date)&&void 0!==le?le:"",Ei=null!==(Me=null!==(Ae=null!==(Ne=null!==(fe=null!==(he=null!==(_e=null!==(Te=null!==(we=null!==(De=null!==(Se=null!==(ke=null!==(je=null!==(Ce=Ni.endTime)&&void 0!==Ce?Ce:Ni.end_time)&&void 0!==je?je:Ni.EndTime)&&void 0!==ke?ke:Ni.expireTime)&&void 0!==Se?Se:Ni.expire_time)&&void 0!==De?De:Ni.validUntil)&&void 0!==we?we:Ni.valid_until)&&void 0!==Te?Te:Ni.endDate)&&void 0!==_e?_e:Ni.end_date)&&void 0!==he?he:Ni.validEnd)&&void 0!==fe?fe:Ni.valid_end)&&void 0!==Ne?Ne:Ni.finishDate)&&void 0!==Ae?Ae:Ni.finish_date)&&void 0!==Me?Me:"",Ui=null!==(be=null!==(ze=null!==(Le=null!==(xe=null!==(Oe=null!==(Pe=null!==(Ee=null!==(Ue=Ni.scope)&&void 0!==Ue?Ue:Ni.Scope)&&void 0!==Ee?Ee:Ni.useScope)&&void 0!==Pe?Pe:Ni.use_scope)&&void 0!==Oe?Oe:Ni.applicableScope)&&void 0!==xe?xe:Ni.applicable_scope)&&void 0!==Le?Le:Ni.range)&&void 0!==ze?ze:Ni.Range)&&void 0!==be?be:"all",Yi=null!==(Ye=null!==(Qe=null!==(Re=null!==(We=null!==(Ze=null!==(He=null!==(Be=null!==(Ge=null!==(Fe=null!==(Je=null!==(Ve=Ni.totalCount)&&void 0!==Ve?Ve:Ni.total_count)&&void 0!==Je?Je:Ni.TotalCount)&&void 0!==Fe?Fe:Ni.total)&&void 0!==Ge?Ge:Ni.Total)&&void 0!==Be?Be:Ni.totalNum)&&void 0!==He?He:Ni.total_num)&&void 0!==Ze?Ze:Ni.count)&&void 0!==We?We:Ni.Count)&&void 0!==Re?Re:Ni.stock)&&void 0!==Qe?Qe:Ni.Stock)&&void 0!==Ye?Ye:0,Qi=null!==(qe=null!==(Xe=null!==(Ke=null!==($e=null!==(ni=null!==(ei=null!==(ii=null!==(ti=null!==(oi=null!==(li=Ni.remainCount)&&void 0!==li?li:Ni.remain_count)&&void 0!==oi?oi:Ni.RemainCount)&&void 0!==ti?ti:Ni.remaining)&&void 0!==ii?ii:Ni.Remaining)&&void 0!==ei?ei:Ni.left)&&void 0!==ni?ni:Ni.leftCount)&&void 0!==$e?$e:Ni.left_count)&&void 0!==Ke?Ke:Ni.stockLeft)&&void 0!==Xe?Xe:Ni.stock_left)&&void 0!==qe?qe:0,Ri={id:null!==(ui=null!==(ri=null!==(ai=null!==(di=null!==(si=null!==(ci=Ni.id)&&void 0!==ci?ci:Ni.Id)&&void 0!==si?si:Ni.couponId)&&void 0!==di?di:Ni.coupon_id)&&void 0!==ai?ai:Ni.CouponId)&&void 0!==ri?ri:Ni.ID)&&void 0!==ui?ui:"",name:xi,type:ki,value:m(zi),minAmount:m(Li),scope:Ui,scopeText:Oi,categoryId:null!==(vi=null!==(mi=null!==(gi=null!==(pi=Ni.categoryId)&&void 0!==pi?pi:Ni.category_id)&&void 0!==gi?gi:Ni.CategoryId)&&void 0!==mi?mi:Ni.categoryCode)&&void 0!==vi?vi:null,productId:null!==(yi=null!==(Ii=null!==(Mi=null!==(Ai=Ni.productId)&&void 0!==Ai?Ai:Ni.product_id)&&void 0!==Mi?Mi:Ni.ProductId)&&void 0!==Ii?Ii:Ni.productCode)&&void 0!==yi?yi:null,startTime:Pi,endTime:Ei,totalCount:m(Yi),remainCount:m(Qi),status:Ci,_raw:Ni};return Ri}function p(n){var e,i,t,o,l,r;if(!n)return[];for(var a=null!==(e=n.data)&&void 0!==e?e:n,d=[a,a.list,a.items,a.coupons,a.data,null===(i=a.data)||void 0===i?void 0:i.list,null===(t=a.data)||void 0===t?void 0:t.items,null===(o=a.data)||void 0===o?void 0:o.coupons,a.result,a.records,a.rows,null===(l=a.list)||void 0===l?void 0:l.data,null===(r=a.items)||void 0===r?void 0:r.data],s=0,c=d;s<c.length;s++){var v=c[s];if(Array.isArray(v)&&v.length>0)return v}if(a&&"object"===(0,u.A)(a))for(var m=0,g=Object.keys(a);m<g.length;m++){var p=g[m];if(Array.isArray(a[p])&&a[p].length>0)return a[p]}return console.warn("[coupon] \u672a\u80fd\u63d0\u53d6\u5230\u4f18\u60e0\u5238\u5217\u8868\uff0c\u539f\u59cb\u54cd\u5e94:",n),[]}function y(){return I.apply(this,arguments)}function I(){return I=(0,o.A)((0,t.A)().m(function n(){var e,i,o,u=arguments;return(0,t.A)().w(function(n){while(1)switch(n.n){case 0:return e=u.length>0&&void 0!==u[0]?u[0]:{},n.n=1,(0,r.Vg)(v.available,e);case 1:return i=n.v,o=p(i),n.a(2,(0,l.A)((0,l.A)({},i),{},{data:o.map(g)}))}},n)})),I.apply(this,arguments)}function M(){return A.apply(this,arguments)}function A(){return A=(0,o.A)((0,t.A)().m(function n(){var e,i,o,u=arguments;return(0,t.A)().w(function(n){while(1)switch(n.n){case 0:return e=u.length>0&&void 0!==u[0]?u[0]:{},n.n=1,(0,r.Vg)(v.mine,e);case 1:return i=n.v,o=p(i),n.a(2,(0,l.A)((0,l.A)({},i),{},{data:o.map(g)}))}},n)})),A.apply(this,arguments)}function N(n){return f.apply(this,arguments)}function f(){return f=(0,o.A)((0,t.A)().m(function n(e){var i;return(0,t.A)().w(function(n){while(1)switch(n.n){case 0:return n.n=1,(0,r.$P)(v.claim,{},{id:e});case 1:return i=n.v,n.a(2,i)}},n)})),f.apply(this,arguments)}},7023:function(n,e,i){i.d(e,{i:function(){return u}});var t=i(2284),o=i(4765);function l(n,e){var i,t=(0,o.A)(e);try{for(t.s();!(i=t.n()).done;){var l=i.value,u=n[l];if(void 0!==u&&null!==u&&""!==u)return String(u)}}catch(n){t.e(n)}finally{t.f()}return""}function u(n){var e;if(!n||"object"!==(0,t.A)(n))return{id:"",nickname:"",avatar:"",phone:"",accountName:"",gender:"\u4fdd\u5bc6",birthday:"\u8bf7\u586b\u5199\u60a8\u7684\u751f\u65e5",registerDate:"",email:""};var i=null!==(e=n.data)&&void 0!==e?e:n;return{id:l(i,["id","ID","userId","UserId","user_id","uid","Uid"]),nickname:l(i,["nickname","NickName","nick_name","name","Name","userName","UserName","user_name"]),avatar:l(i,["avatar","Avatar","avatarUrl","AvatarUrl","avatar_url","headImg","head_img","HeadImg"]),phone:l(i,["phone","Phone","mobile","Mobile","phoneNum","phone_num","PhoneNumber","phoneNumber"]),accountName:l(i,["accountName","AccountName","account_name","account","Account","loginName","login_name"]),gender:l(i,["gender","Gender","sex","Sex"])||"\u4fdd\u5bc6",birthday:l(i,["birthday","Birthday","birth","Birth","birthDate","birth_date"])||"\u8bf7\u586b\u5199\u60a8\u7684\u751f\u65e5",registerDate:l(i,["registerDate","RegisterDate","register_date","created_at","createdAt","CreatedAt","createTime","create_time"]),email:l(i,["email","Email","eMail","mail","Mail"])}}},7798:function(n,e,i){i.d(e,{Q:function(){return o},x:function(){return l}});var t=i(2284);function o(n){if(!n||"object"!==(0,t.A)(n))return null;var e=function(){for(var e=arguments.length,i=new Array(e),t=0;t<e;t++)i[t]=arguments[t];for(var o=0,l=i;o<l.length;o++){var u=l[o],r=n[u];if(void 0!==r&&null!==r&&""!==r)return String(r)}return""},i=function(){for(var e=arguments.length,i=new Array(e),t=0;t<e;t++)i[t]=arguments[t];for(var o=0,l=i;o<l.length;o++){var u=l[o],r=n[u];if(void 0!==r&&null!==r&&""!==r){var a=Number(r);if(!isNaN(a))return a}}return 0},o=function(){for(var e=arguments.length,i=new Array(e),t=0;t<e;t++)i[t]=arguments[t];for(var o=0,l=i;o<l.length;o++){var u=l[o],r=n[u];if(Array.isArray(r))return r.map(function(n){return String(n)});if("string"===typeof r&&r)return r.split(/[,\uff0c|]/).map(function(n){return n.trim()}).filter(Boolean)}return[]},l=e("id","ID","storeId","store_id","shopId","shop_id"),u=e("name","Name","storeName","store_name","shopName","shop_name","title"),r=e("address","Address","storeAddress","store_address","addr","location"),a=e("phone","Phone","tel","telephone","mobile","contactPhone","contact_phone","contact"),d=e("hours","Hours","businessHours","business_hours","openHours","open_hours","workTime","work_time","\u8425\u4e1a\u65f6\u95f4"),s=e("image","Image","logo","avatar","cover","coverImage","cover_image","pic","picture","img"),c=e("description","desc","intro","remark","Description","Description","introduction"),v=e("status","Status","storeStatus","store_status","state"),m=i("distance","Distance","dist"),g=i("lat","latitude","Latitude","Lat"),p=i("lng","lon","lng","longitude","Longitude","Lng","Lon"),y=o("service","services","Service","Services","serviceList","service_list","tags","features","supportServices");return{id:l||"store-".concat(Date.now()),name:u||"\u672a\u77e5\u95e8\u5e97",address:r,phone:a,hours:d,distance:m,lat:g,lng:p,service:y,image:s,description:c,businessHours:d,status:v}}function l(n){if(!n)return[];var e=[];return Array.isArray(n)?e=n:Array.isArray(n.data)?e=n.data:n.data&&Array.isArray(n.data.list)?e=n.data.list:n.data&&Array.isArray(n.data.items)?e=n.data.items:n.data&&Array.isArray(n.data.stores)?e=n.data.stores:Array.isArray(n.list)?e=n.list:Array.isArray(n.items)?e=n.items:Array.isArray(n.stores)&&(e=n.stores),e.map(o).filter(Boolean)}},63:function(n,e,i){i.d(e,{Dv:function(){return m},Us:function(){return g}});var t=i(436),o=i(9379),l=i(5544),u=i(6540),r=i(758),a=i.n(r),d=i(4848),s={id:"",nickname:"",avatar:"",phone:"",accountName:"",gender:"\u4fdd\u5bc6",birthday:"\u8bf7\u586b\u5199\u60a8\u7684\u751f\u65e5",registerDate:"",email:"",isLoggedIn:!1},c=[],v=(0,u.createContext)(void 0),m=function(n){var e=n.children,i=(0,u.useState)(s),r=(0,l.A)(i,2),m=r[0],g=r[1],p=(0,u.useState)(c),y=(0,l.A)(p,2),I=y[0],M=y[1],A=(0,u.useState)(null),N=(0,l.A)(A,2),f=N[0],h=N[1];(0,u.useEffect)(function(){try{var n=a().getStorageSync("userInfo");n&&g(n);var e=a().getStorageSync("cartItems");e&&M(e);var i=a().getStorageSync("currentStore");i&&h(i)}catch(n){console.error("Failed to load data from storage:",n)}},[]);var _=(0,u.useCallback)(function(n){g(n);try{a().setStorageSync("userInfo",n)}catch(n){console.error("Failed to save userInfo:",n)}},[]),T=(0,u.useCallback)(function(n){M(n);try{a().setStorageSync("cartItems",n)}catch(n){console.error("Failed to save cartItems:",n)}},[]),w=(0,u.useCallback)(function(n){M(function(e){var i,l=e.find(function(e){return e.productId===n.productId&&e.skuId===n.skuId});if(l)i=e.map(function(e){return e.id===l.id?(0,o.A)((0,o.A)({},e),{},{quantity:e.quantity+n.quantity}):e});else{var u=(0,o.A)((0,o.A)({},n),{},{id:"cart-".concat(Date.now()),selected:!0});i=[].concat((0,t.A)(e),[u])}try{a().setStorageSync("cartItems",i)}catch(n){console.error("Failed to save cartItems:",n)}return i}),a().showToast({title:"\u5df2\u52a0\u5165\u8d2d\u7269\u8f66",icon:"success"})},[]),D=(0,u.useCallback)(function(n){M(function(e){var i=e.filter(function(e){return e.id!==n});try{a().setStorageSync("cartItems",i)}catch(n){console.error("Failed to save cartItems:",n)}return i})},[]),S=(0,u.useCallback)(function(n,e){e<=0?D(n):M(function(i){var t=i.map(function(i){return i.id===n?(0,o.A)((0,o.A)({},i),{},{quantity:e}):i});try{a().setStorageSync("cartItems",t)}catch(n){console.error("Failed to save cartItems:",n)}return t})},[D]),k=(0,u.useCallback)(function(n){M(function(e){var i=e.map(function(e){return e.id===n?(0,o.A)((0,o.A)({},e),{},{selected:!e.selected}):e});try{a().setStorageSync("cartItems",i)}catch(n){console.error("Failed to save cartItems:",n)}return i})},[]),j=(0,u.useCallback)(function(n){M(function(e){var i=e.map(function(e){return(0,o.A)((0,o.A)({},e),{},{selected:n})});try{a().setStorageSync("cartItems",i)}catch(n){console.error("Failed to save cartItems:",n)}return i})},[]),C=(0,u.useCallback)(function(){M([]);try{a().setStorageSync("cartItems",[])}catch(n){console.error("Failed to clear cartItems:",n)}},[]),b=(0,u.useMemo)(function(){var n=I.filter(function(n){return n.selected}),e=n.reduce(function(n,e){return n+e.price*e.quantity},0),i=I.reduce(function(n,e){return n+e.quantity},0),t=n.reduce(function(n,e){return n+e.quantity},0);return{totalAmount:e,totalCount:i,selectedCount:t}},[I]),z=(0,u.useCallback)(function(){return b},[b]),L=(0,u.useCallback)(function(n){h(n);try{a().setStorageSync("currentStore",n)}catch(n){console.error("Failed to save currentStore:",n)}},[]),x=(0,u.useMemo)(function(){return{userInfo:m,setUserInfo:_,cartItems:I,setCartItems:T,addToCart:w,removeFromCart:D,updateCartQuantity:S,toggleCartItem:k,selectAllCartItems:j,clearCart:C,getCartTotal:z,currentStore:f,setCurrentStore:L}},[m,_,I,T,w,D,S,k,j,C,z,f,L]);return(0,d.jsx)(v.Provider,{value:x,children:e})},g=function(){var n=(0,u.useContext)(v);if(!n)throw new Error("useAppContext must be used within AppProvider");return n}},1297:function(n,e,i){var t=i(4467),o=i(436),l=i(1212),u=i(467),r=i(9379),a=i(1621),d=i(758),s=i.n(d),c=i(2458),v=i(1194),m=i(5207);function g(n){if(!n)return"";var e=new Date(n);if(isNaN(e.getTime()))return String(n);var i=function(n){return String(n).padStart(2,"0")};return"".concat(i(e.getHours()),":").concat(i(e.getMinutes()))}function p(n){var e,i,t,o,l,u,a,d,s,c,v,m,g,p,y,I,M,A,N,f,h,_,T,w,D;return(0,r.A)((0,r.A)({},n||{}),{},{id:String(null!==(e=null!==(i=null!==(t=null!==(o=null!==(l=null!==(u=n.id)&&void 0!==u?u:n.ID)&&void 0!==l?l:n.Id)&&void 0!==o?o:n.conversationId)&&void 0!==t?t:n.ConversationId)&&void 0!==i?i:n.conv_id)&&void 0!==e?e:""),title:null!==(a=null!==(d=null!==(s=null!==(c=n.title)&&void 0!==c?c:n.Title)&&void 0!==s?s:n.name)&&void 0!==d?d:n.Name)&&void 0!==a?a:"\u4e50\u4eab\u8d2d\u5b98\u65b9\u5ba2\u670d",unreadCount:Number(null!==(v=null!==(m=null!==(g=n.unreadCount)&&void 0!==g?g:n.UnreadCount)&&void 0!==m?m:n.unread_count)&&void 0!==v?v:0),status:"closed"===n.status||0===n.Status||"closed"===n.Status?"closed":"ongoing",lastMessage:null!==(p=null!==(y=null!==(I=null!==(M=null!==(A=n.lastMessage)&&void 0!==A?A:n.LastMessage)&&void 0!==M?M:n.content)&&void 0!==I?I:n.Content)&&void 0!==y?y:n.last_message)&&void 0!==p?p:"",lastTime:null!==(N=null!==(f=null!==(h=null!==(_=null!==(T=null!==(w=null!==(D=n.lastTime)&&void 0!==D?D:n.LastTime)&&void 0!==w?w:n.time)&&void 0!==T?T:n.UpdatedAt)&&void 0!==_?_:n.updatedAt)&&void 0!==h?h:n.createdAt)&&void 0!==f?f:n.CreatedAt)&&void 0!==N?N:""})}function y(){try{var n=null;try{n=s().getStorageSync("userInfo")||null}catch(e){"undefined"!==typeof localStorage&&(n=localStorage.getItem("userInfo"))}if(n){var e,i,t,o,l=JSON.parse(n);return String(null!==(e=null!==(i=null!==(t=null!==(o=l.id)&&void 0!==o?o:l.userId)&&void 0!==t?t:l.user_id)&&void 0!==i?i:l.ID)&&void 0!==e?e:"")}}catch(n){}return null}var I=["service","agent","admin","cs","customer_service","customer-service","customerService","staff","operator","kefu","\u5ba2\u670d","\u5ba2\u670d\u5c0f\u4e50","\u5c0f\u4e50","ai\u5ba2\u670d","robot","bot","assistant","support"],M=["\u5ba2\u670d","\u5c0f\u4e50","AI\u5ba2\u670d","\u5ba2\u670d\u5c0f\u4e50","\u4e50\u4eab\u8d2d","\u5b98\u65b9\u5ba2\u670d"],A=["user","customer","client","buyer","member","visitor","guest","\u7528\u6237","\u5ba2\u6237"];function N(n){var e,i,t,o,l,u,r,a,d,s,c,v,m,g,p,N,f=y();if(f){var h,_,T,w,D,S,k,j,C,b=String(null!==(h=null!==(_=null!==(T=null!==(w=null!==(D=null!==(S=null!==(k=null!==(j=null!==(C=n.senderId)&&void 0!==C?C:n.SenderId)&&void 0!==j?j:n.sender_id)&&void 0!==k?k:n.userId)&&void 0!==S?S:n.user_id)&&void 0!==D?D:n.UserId)&&void 0!==w?w:n.createdBy)&&void 0!==T?T:n.created_by)&&void 0!==_?_:n.CreatedBy)&&void 0!==h?h:"").trim();if(b&&b===f)return console.log("[ChatStore] _isServiceSender: \u901a\u8fc7\u7528\u6237ID\u5339\u914d\u4e3a\u7528\u6237\u6d88\u606f",{msgSenderId:b,currentUserId:f}),!1;if(b&&b!==f)return console.log("[ChatStore] _isServiceSender: senderId \u4e0d\u5339\u914d\u5f53\u524d\u7528\u6237\uff0c\u5224\u5b9a\u4e3a\u5ba2\u670d\u6d88\u606f",{msgSenderId:b,currentUserId:f}),!0}var z=String(null!==(e=null!==(i=null!==(t=null!==(o=null!==(l=n.sender)&&void 0!==l?l:n.Sender)&&void 0!==o?o:n.senderType)&&void 0!==t?t:n.role)&&void 0!==i?i:n.sender_role)&&void 0!==e?e:"").toLowerCase().trim();if(z&&A.some(function(n){return z===n||z.includes(n)}))return!1;if(z&&I.some(function(n){return z===n||z.includes(n)}))return!0;if(""!==z&&/^\d+$/.test(z)){var L=Number(z);if(0===L)return!1;if(1===L||2===L||3===L||9===L)return!0}var x=String(null!==(u=null!==(r=null!==(a=null!==(d=n.senderName)&&void 0!==d?d:n.SenderName)&&void 0!==a?a:n.sender_name)&&void 0!==r?r:n.name)&&void 0!==u?u:"").toLowerCase().trim();if(x){if(M.some(function(n){return x.includes(n.toLowerCase())}))return!0;if(A.some(function(n){return x.includes(n)}))return!1}var O=String(null!==(s=null!==(c=null!==(v=null!==(m=n.senderAvatar)&&void 0!==m?m:n.SenderAvatar)&&void 0!==v?v:n.sender_avatar)&&void 0!==c?c:n.avatar)&&void 0!==s?s:"").toLowerCase();if(O&&I.some(function(n){return O.includes(n)}))return!0;var P=null!==(g=null!==(p=null!==(N=n.userType)&&void 0!==N?N:n.UserType)&&void 0!==p?p:n.user_type)&&void 0!==g?g:n.sender_type;if(void 0!==P&&null!==P){var E=Number(P);if(!isNaN(E)){if(0===E||2===E)return!1;if(1===E||3===E||9===E)return!0}}return console.warn("[ChatStore] _isServiceSender: \u65e0\u6cd5\u786e\u5b9a sender \u7c7b\u578b\uff0c\u9ed8\u8ba4\u5f53\u4f5c user",{senderRaw:z,nameRaw:x,userType:P,rawKeys:Object.keys(n||{}),raw:n}),!1}function f(n,e){var i,t,o,l,u,r,a,d,s,c,v,m,p,y,I,M,A,f,h,_,T,w,D,S,k,j,C,b,z,L,x,O,P,E,U=N(n),Y=U?"service":"user",Q=null!==(i=null!==(t=null!==(o=null!==(l=null!==(u=null!==(r=n.timestamp)&&void 0!==r?r:n.Timestamp)&&void 0!==u?u:n.createTime)&&void 0!==l?l:n.CreateTime)&&void 0!==o?o:n.created_at)&&void 0!==t?t:n.createdAt)&&void 0!==i?i:Date.now();return{id:String(null!==(a=null!==(d=null!==(s=null!==(c=null!==(v=null!==(m=n.id)&&void 0!==m?m:n.ID)&&void 0!==v?v:n.Id)&&void 0!==c?c:n.messageId)&&void 0!==s?s:n.MessageId)&&void 0!==d?d:n.msg_id)&&void 0!==a?a:"m-".concat(Math.random().toString(36).slice(2,10))),conversationId:e||String(null!==(p=null!==(y=null!==(I=n.conversationId)&&void 0!==I?I:n.ConversationId)&&void 0!==y?y:n.conv_id)&&void 0!==p?p:""),type:["text","image","order","product","system"].includes(null!==(M=n.type)&&void 0!==M?M:n.Type)?null!==(A=n.type)&&void 0!==A?A:n.Type:"text",content:String(null!==(f=null!==(h=null!==(_=null!==(T=n.content)&&void 0!==T?T:n.Content)&&void 0!==_?_:n.message)&&void 0!==h?h:n.text)&&void 0!==f?f:""),sender:Y,senderId:null!==(w=null!==(D=null!==(S=null!==(k=n.senderId)&&void 0!==k?k:n.SenderId)&&void 0!==S?S:n.sender_id)&&void 0!==D?D:n.userId)&&void 0!==w?w:n.user_id,senderName:null!==(j=null!==(C=n.senderName)&&void 0!==C?C:n.SenderName)&&void 0!==j?j:n.sender_name,senderAvatar:null!==(b=null!==(z=null!==(L=n.senderAvatar)&&void 0!==L?L:n.SenderAvatar)&&void 0!==z?z:n.sender_avatar)&&void 0!==b?b:n.avatar,createTime:"number"===typeof Q?g(Q):String(Q),timestamp:"number"===typeof Q?Q:new Date(Q).getTime(),status:["sending","sent","failed","read"].includes(null!==(x=n.status)&&void 0!==x?x:n.Status)?null!==(O=n.status)&&void 0!==O?O:n.Status:"sent",extra:null!==(P=null!==(E=n.extra)&&void 0!==E?E:n.payload)&&void 0!==P?P:void 0}}var h=(0,a.vt)(function(n,e){return{wsStatus:"idle",wsConnected:!1,conversations:[],conversationsLoading:!1,conversationsLoaded:!1,currentConversationId:null,currentConversation:null,messagesMap:{},messagesLoadingMap:{},messagesLoadedMap:{},messageCursorMap:{},_wsUnsubscribers:[],_subscribed:!1,init:function(){var i=e();if(!i._subscribed){var t=m.A.onMessage(function(n){return _(n)}),o=m.A.onStatusChange(function(i){n({wsStatus:i,wsConnected:"open"===i}),"open"===i&&e().fetchConversations(!0).catch(function(){})});n({_wsUnsubscribers:[t,o],_subscribed:!0})}},dispose:function(){var i=e();i._wsUnsubscribers.forEach(function(n){return n()}),m.A.disconnect(),n({_wsUnsubscribers:[],_subscribed:!1,wsStatus:"idle",wsConnected:!1})},connectWS:function(){return m.A.connect()},disconnectWS:function(){return m.A.disconnect()},fetchConversations:function(){var i=arguments;return(0,u.A)((0,l.A)().m(function t(){var o,u,r,a,d,m,g,y,I,M,A,N,f;return(0,l.A)().w(function(t){while(1)switch(t.p=t.n){case 0:if(o=i.length>0&&void 0!==i[0]&&i[0],u=e(),o||!u.conversationsLoaded||u.conversationsLoading){t.n=1;break}return t.a(2,u.conversations);case 1:return n({conversationsLoading:!0}),t.p=2,t.n=3,(0,c.Vg)(v.Pt.conversations);case 3:return y=t.v,I=null!==(r=null!==(a=null!==(d=null===y||void 0===y?void 0:y.data)&&void 0!==d?d:null===y||void 0===y?void 0:y.result)&&void 0!==a?a:y)&&void 0!==r?r:[],M=(Array.isArray(I)?I:null!==(m=null===I||void 0===I?void 0:I.list)&&void 0!==m?m:[]).map(p),M.sort(function(n,e){var i=new Date(n.lastTime||n.updatedAt||0).getTime(),t=new Date(e.lastTime||e.updatedAt||0).getTime();return t-i}),A=u.currentConversationId,N=A&&null!==(g=M.find(function(n){return n.id===A}))&&void 0!==g?g:null,n({conversations:M,conversationsLoaded:!0,currentConversation:null!==N&&void 0!==N?N:u.currentConversation}),t.a(2,M);case 4:return t.p=4,f=t.v,console.error("[ChatStore] fetchConversations \u5931\u8d25:",f),s().showToast({title:f.message||"\u52a0\u8f7d\u4f1a\u8bdd\u5931\u8d25",icon:"none"}),t.a(2,u.conversations);case 5:return t.p=5,n({conversationsLoading:!1}),t.f(5);case 6:return t.a(2)}},t,null,[[2,4,5,6]])}))()},createConversation:function(){var e=arguments;return(0,u.A)((0,l.A)().m(function i(){var t,u,a,d,m,g;return(0,l.A)().w(function(i){while(1)switch(i.p=i.n){case 0:return t=e.length>0&&void 0!==e[0]?e[0]:{},i.p=1,i.n=2,(0,c.$P)(v.Pt.createConversation,t,{},{},!1);case 2:if(a=i.v,d=null!==(u=null===a||void 0===a?void 0:a.data)&&void 0!==u?u:a,m=p(d),m.id){i.n=3;break}return console.warn("[ChatStore] createConversation \u8fd4\u56de\u65e0 ID:",d),i.a(2,null);case 3:return n(function(n){var e=n.conversations.some(function(n){return n.id===m.id});return{conversations:e?n.conversations.map(function(n){return n.id===m.id?(0,r.A)((0,r.A)({},n),m):n}):[m].concat((0,o.A)(n.conversations))}}),i.a(2,m);case 4:return i.p=4,g=i.v,console.error("[ChatStore] createConversation \u5931\u8d25:",g),s().showToast({title:g.message||"\u53d1\u8d77\u4f1a\u8bdd\u5931\u8d25",icon:"none"}),i.a(2,null)}},i,null,[[1,4]])}))()},markConversationRead:function(e){return(0,u.A)((0,l.A)().m(function i(){var t;return(0,l.A)().w(function(i){while(1)switch(i.p=i.n){case 0:if(e){i.n=1;break}return i.a(2);case 1:return i.p=1,i.n=2,(0,c.mu)(v.Pt.readConversation,{},{id:e});case 2:n(function(n){var i;return{conversations:n.conversations.map(function(n){return n.id===e?(0,r.A)((0,r.A)({},n),{},{unreadCount:0}):n}),currentConversation:(null===(i=n.currentConversation)||void 0===i?void 0:i.id)===e?(0,r.A)((0,r.A)({},n.currentConversation),{},{unreadCount:0}):n.currentConversation}}),i.n=4;break;case 3:i.p=3,t=i.v,console.error("[ChatStore] markConversationRead \u5931\u8d25:",t);case 4:return i.a(2)}},i,null,[[1,3]])}))()},getConversation:function(n){return e().conversations.find(function(e){return e.id===n})},setCurrentConversation:function(i){return(0,u.A)((0,l.A)().m(function t(){var o,u;return(0,l.A)().w(function(t){while(1)switch(t.n){case 0:if(n({currentConversationId:i}),!i){t.n=2;break}return u=null!==(o=e().conversations.find(function(n){return n.id===i}))&&void 0!==o?o:null,n({currentConversation:u}),t.n=1,e().fetchMessages(i,!1);case 1:t.n=3;break;case 2:n({currentConversation:null});case 3:return t.a(2)}},t)}))()},enterConversation:function(n){return(0,u.A)((0,l.A)().m(function i(){return(0,l.A)().w(function(i){while(1)switch(i.n){case 0:return i.n=1,e().setCurrentConversation(n);case 1:return i.n=2,e().markConversationRead(n);case 2:e().wsConnected||m.A.connect();case 3:return i.a(2)}},i)}))()},leaveConversation:function(){e().setCurrentConversation(null)},fetchMessages:function(i){var o=arguments;return(0,u.A)((0,l.A)().m(function u(){var a,d,s,c,v,g,p;return(0,l.A)().w(function(l){while(1)switch(l.p=l.n){case 0:if(a=o.length>1&&void 0!==o[1]&&o[1],i){l.n=1;break}return l.a(2,[]);case 1:if(d=e(),s=i,a||!d.messagesLoadedMap[s]||d.messagesLoadingMap[s]){l.n=2;break}return l.a(2,null!==(c=d.messagesMap[s])&&void 0!==c?c:[]);case 2:return n(function(n){return{messagesLoadingMap:(0,r.A)((0,r.A)({},n.messagesLoadingMap),{},(0,t.A)({},s,!0))}}),l.p=3,e().wsConnected||(console.log("[ChatStore] fetchMessages: WS \u672a\u8fde\u63a5\uff0c\u5148\u5efa\u7acb\u8fde\u63a5"),m.A.connect()),l.n=4,new Promise(function(e){var o=!1,l=null,u=function(){l&&(l(),l=null)},a=setTimeout(function(){var n;o||(o=!0,u(),console.log("[ChatStore] fetchMessages: WS \u5386\u53f2\u6d88\u606f\u8bf7\u6c42\u8d85\u65f6\uff0c\u8fd4\u56de\u5df2\u6709\u6d88\u606f"),e(null!==(n=d.messagesMap[s])&&void 0!==n?n:[]))},3e3);l=m.A.onMessage(function(l){if(!o){var d=l.type,c=l.data;if("messages/history"===d||"message/history"===d||"history"===d){var v,m,g;o=!0,clearTimeout(a),u();var p=Array.isArray(c)?c:null!==(v=null!==(m=null!==(g=null===c||void 0===c?void 0:c.list)&&void 0!==g?g:null===c||void 0===c?void 0:c.records)&&void 0!==m?m:null===c||void 0===c?void 0:c.messages)&&void 0!==v?v:[],y=p.map(function(n){return f(n,i)}).sort(function(n,e){var i,t;return(null!==(i=n.timestamp)&&void 0!==i?i:0)-(null!==(t=e.timestamp)&&void 0!==t?t:0)});n(function(n){return{messagesMap:(0,r.A)((0,r.A)({},n.messagesMap),{},(0,t.A)({},s,y)),messagesLoadedMap:(0,r.A)((0,r.A)({},n.messagesLoadedMap),{},(0,t.A)({},s,!0))}}),e(y)}}}),m.A.send({type:"messages/history",data:{conversationId:i,conversation_id:i,conv_id:i},id:"history-".concat(Date.now())})});case 4:return v=l.v,l.a(2,v);case 5:return l.p=5,p=l.v,console.error("[ChatStore] fetchMessages \u5931\u8d25:",p),l.a(2,null!==(g=d.messagesMap[s])&&void 0!==g?g:[]);case 6:return l.p=6,n(function(n){return{messagesLoadingMap:(0,r.A)((0,r.A)({},n.messagesLoadingMap),{},(0,t.A)({},s,!1))}}),l.f(6);case 7:return l.a(2)}},u,null,[[3,5,6,7]])}))()},sendMessage:function(i,o){return(0,u.A)((0,l.A)().m(function u(){var a,d,s,c,v;return(0,l.A)().w(function(l){while(1)switch(l.n){case 0:if(i&&null!==(a=o.content)&&void 0!==a&&a.trim()){l.n=1;break}return l.a(2,null);case 1:return d="tmp-".concat(Date.now(),"-").concat(Math.random().toString(36).slice(2,8)),s={id:d,conversationId:i,type:o.type,content:o.content,sender:"user",createTime:g(Date.now()),timestamp:Date.now(),status:"sending",extra:o.extra},e().addMessage(s),e().wsConnected||(console.log("[ChatStore] sendMessage: WS \u672a\u8fde\u63a5\uff0c\u6b63\u5728\u5efa\u7acb\u8fde\u63a5..."),m.A.connect()),c={type:"chat",data:{conversationId:Number(i),content:o.content,messageType:1},id:d},console.log("[ChatStore] sendMessage: \u901a\u8fc7 WebSocket \u53d1\u9001",{wsStatus:e().wsStatus,wsConnected:e().wsConnected,msg:c}),v=m.A.send(c),v||console.warn("[ChatStore] sendMessage: WS \u672a\u5c31\u7eea\uff0c\u6d88\u606f\u5df2\u5165\u961f\uff0c\u5c06\u5728\u8fde\u63a5\u540e\u81ea\u52a8 flush"),l.a(2,new Promise(function(o){var l=!1,u=null,a=function(){u&&(u(),u=null)},c=setTimeout(function(){if(!l){l=!0,a();var n=e().getMessages(i).find(function(n){return n.id===d});n&&"sending"===n.status&&(e().updateMessage(i,d,{status:"sent"}),console.warn("[ChatStore] sendMessage: \u7b49\u5f85 WS \u56de\u63a8\u8d85\u65f6\uff0c\u4e50\u89c2\u6807\u8bb0\u4e3a sent")),o(null!==n&&void 0!==n?n:null)}},3e3);u=m.A.onMessage(function(u){if(!l){var v=u.type,m=u.data;if(("chat"===v||"message/new"===v)&&m){var g,p,y,I,M,A,h,_=String(null!==(g=null!==(p=null!==(y=m.conversationId)&&void 0!==y?y:m.conv_id)&&void 0!==p?p:m.ConversationId)&&void 0!==g?g:""),T=!N(m),w=String(null!==(I=null!==(M=null!==(A=null!==(h=m.content)&&void 0!==h?h:m.Content)&&void 0!==A?A:m.message)&&void 0!==M?M:m.text)&&void 0!==I?I:"");if(_===i&&T&&w===s.content){var D,S,k,j,C,b,z=String(null!==(D=null!==(S=null!==(k=null!==(j=null!==(C=null!==(b=m.id)&&void 0!==b?b:m.ID)&&void 0!==C?C:m.Id)&&void 0!==j?j:m.messageId)&&void 0!==k?k:m.MessageId)&&void 0!==S?S:m.msg_id)&&void 0!==D?D:"");z&&z!==d&&n(function(n){var e;return{messagesMap:(0,r.A)((0,r.A)({},n.messagesMap),{},(0,t.A)({},i,(null!==(e=n.messagesMap[i])&&void 0!==e?e:[]).filter(function(n){return n.id!==d})))}}),l=!0,clearTimeout(c),a();var L=f(m,i),x=e().getMessages(i).find(function(n){return n.id===d});x?(e().updateMessage(i,d,{status:"sent"}),o(x)):o(L)}}}})}))}},u)}))()},addMessage:function(i){var l=i.conversationId;n(function(n){var e,u=null!==(e=n.messagesMap[l])&&void 0!==e?e:[];if(u.some(function(n){return n.id===i.id}))return{};var a=[].concat((0,o.A)(u),[i]).sort(function(n,e){var i,t;return(null!==(i=n.timestamp)&&void 0!==i?i:0)-(null!==(t=e.timestamp)&&void 0!==t?t:0)});return{messagesMap:(0,r.A)((0,r.A)({},n.messagesMap),{},(0,t.A)({},l,a))}});var u=e().currentConversationId,a=u===l;n(function(n){return{conversations:n.conversations.map(function(n){return n.id!==l?n:(0,r.A)((0,r.A)({},n),{},{lastMessage:i.content,lastTime:i.createTime,unreadCount:a?0:"user"!==i.sender?n.unreadCount+1:n.unreadCount})})}})},updateMessage:function(e,i,o){n(function(n){var l,u=null!==(l=n.messagesMap[e])&&void 0!==l?l:[];return{messagesMap:(0,r.A)((0,r.A)({},n.messagesMap),{},(0,t.A)({},e,u.map(function(n){return n.id===i?(0,r.A)((0,r.A)({},n),o):n})))}})},getMessages:function(n){var i;return null!==(i=e().messagesMap[n])&&void 0!==i?i:[]},getTotalUnread:function(){return e().conversations.reduce(function(n,e){return n+(e.unreadCount||0)},0)},clearAllUnread:function(){n(function(n){return{conversations:n.conversations.map(function(n){return(0,r.A)((0,r.A)({},n),{},{unreadCount:0})}),currentConversation:n.currentConversation?(0,r.A)((0,r.A)({},n.currentConversation),{},{unreadCount:0}):null}})},reset:function(){m.A.disconnect();var i=e()._wsUnsubscribers;i.forEach(function(n){return n()}),n({wsStatus:"idle",wsConnected:!1,conversations:[],conversationsLoading:!1,conversationsLoaded:!1,currentConversationId:null,currentConversation:null,messagesMap:{},messagesLoadingMap:{},messagesLoadedMap:{},messageCursorMap:{},_wsUnsubscribers:[],_subscribed:!1})}}});function _(n){var e=h.getState(),i=n.type,t=n.data;switch(i){case"chat":case"message/new":var l,u,a,d,s,c,v,m,g,y,I,M,A,N,_;if(!t)return;var T=String(null!==(l=null!==(u=null!==(a=null!==(d=t.conversationId)&&void 0!==d?d:t.conv_id)&&void 0!==a?a:t.ConversationId)&&void 0!==u?u:e.currentConversationId)&&void 0!==l?l:"");console.log("[ChatStore] WS \u6536\u5230\u6d88\u606f(type="+i+") \u539f\u59cb\u6570\u636e:",{dataKeys:Object.keys(t||{}),sender:null!==(s=null!==(c=null!==(v=null!==(m=null!==(g=null!==(y=t.sender)&&void 0!==y?y:t.Sender)&&void 0!==g?g:t.senderType)&&void 0!==m?m:t.role)&&void 0!==v?v:t.sender_role)&&void 0!==c?c:t.userType)&&void 0!==s?s:"(\u65e0)",senderName:null!==(I=null!==(M=null!==(A=null!==(N=t.senderName)&&void 0!==N?N:t.SenderName)&&void 0!==A?A:t.sender_name)&&void 0!==M?M:t.name)&&void 0!==I?I:"(\u65e0)",raw:JSON.stringify(t).slice(0,300)});var w=f(t,T);console.log("[ChatStore] WS \u6536\u5230\u6d88\u606f \u6807\u51c6\u5316\u540e:",{id:w.id,sender:w.sender,content:null===(_=w.content)||void 0===_?void 0:_.slice(0,30)}),e.addMessage(w);break;case"message/read":var D,S,k=String(null!==(D=null!==(S=null===t||void 0===t?void 0:t.conversationId)&&void 0!==S?S:e.currentConversationId)&&void 0!==D?D:""),j=Array.isArray(null===t||void 0===t?void 0:t.messageIds)?t.messageIds.map(String):null!==t&&void 0!==t&&t.messageId?[String(t.messageId)]:[];if(k&&j.length)j.forEach(function(n){return e.updateMessage(k,n,{status:"read"})});else if(k){var C=e.getMessages(k);C.forEach(function(n){"user"===n.sender&&e.updateMessage(k,n.id,{status:"read"})})}break;case"conversation/update":if(t){var b=p(t);h.setState(function(n){var e;return{conversations:n.conversations.some(function(n){return n.id===b.id})?n.conversations.map(function(n){return n.id===b.id?(0,r.A)((0,r.A)({},n),b):n}):[b].concat((0,o.A)(n.conversations)),currentConversation:(null===(e=n.currentConversation)||void 0===e?void 0:e.id)===b.id?(0,r.A)((0,r.A)({},n.currentConversation),b):n.currentConversation}})}break;case"conversation/read":var z,L,x=String(null!==(z=null!==(L=null===t||void 0===t?void 0:t.conversationId)&&void 0!==L?L:null===t||void 0===t?void 0:t.id)&&void 0!==z?z:"");x&&e.markConversationRead(x).catch(function(){});break;case"system":case"error":console.log("[ChatStore] WS ".concat(i,":"),t);break;default:console.debug("[ChatStore] \u672a\u5904\u7406 WS \u6d88\u606f\u7c7b\u578b:",i,t)}}e.A=h},1358:function(n,e,i){i.d(e,{q:function(){return v}});var t="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjZmZmIiBzdHJva2Utd2lkdGg9IjEuNSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIj48cGF0aCBkPSJNMTggOGgxYTQgNCAwIDAxMCA4aC0xIi8+PHBhdGggZD0iTTIgOGgxNnY5YTQgNCAwIDAxLTQgNEg2YTQgNCAwIDAxLTQtNFY4eiIvPjxsaW5lIHgxPSI2IiB5MT0iMSIgeDI9IjYiIHkyPSI0Ii8+PGxpbmUgeDE9IjEwIiB5MT0iMSIgeDI9IjEwIiB5Mj0iNCIvPjxsaW5lIHgxPSIxNCIgeTE9IjEiIHgyPSIxNCIgeTI9IjQiLz48L3N2Zz4=",o="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjZmZmIiBzdHJva2Utd2lkdGg9IjEuNSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIj48cmVjdCB4PSI1IiB5PSIyIiB3aWR0aD0iMTQiIGhlaWdodD0iMjAiIHJ4PSIyIiByeT0iMiIvPjxsaW5lIHgxPSIxMiIgeTE9IjE4IiB4Mj0iMTIuMDEiIHkyPSIxOCIvPjwvc3ZnPg==",l="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDI0IDEwMjQiPjxwYXRoIGQ9Ik04MjAuNDA5NDQ5IDc5Ny4yMjgzNDZxMCAyNS4xOTY4NS0xMC4wNzg3NCA0Ni44NjYxNDJ0LTI3LjcxNjUzNSAzOC4yOTkyMTMtNDEuMzIyODM1IDI2LjIwNDcyNC01MC44OTc2MzggOS41NzQ4MDNsLTM1Ny43OTUyNzYgMHEtMjcuMjEyNTk4IDAtNTAuODk3NjM4LTkuNTc0ODAzdC00MS4zMjI4MzUtMjYuMjA0NzI0LTI3LjcxNjUzNS0zOC4yOTkyMTMtMTAuMDc4NzQtNDYuODY2MTQybDAtNjc1LjI3NTU5MXEwLTI1LjE5Njg1IDEwLjA3ODc0LTQ3LjM3MDA3OXQyNy43MTY1MzUtMzguODAzMTUgNDEuMzIyODM1LTI2LjIwNDcyNCA1MC44OTc2MzgtOS41NzQ4MDNsMzU3Ljc5NTI3NiAwcTI3LjIxMjU5OCAwIDUwLjg5NzYzOCA5LjU3NDgwM3Q0MS4zMjI4MzUgMjYuMjA0NzI0IDI3LjcxNjUzNSAzOC44MDMxNSAxMC4wNzg3NCA0Ny4zNzAwNzlsMCA2NzUuMjc1NTkxek03MzguNzcxNjU0IDE3MC4zMzA3MDlsLTQ1NS41NTkwNTUgMCAwIDU3Ny41MTE4MTEgNDU1LjU1OTA1NSAwIDAtNTc3LjUxMTgxMXpNNTEwLjk5MjEyNiA3NzYuMDYyOTkycS0yMS4xNjUzNTQgMC0zNi43ODc0MDIgMTUuMTE4MTF0LTE1LjYyMjA0NyAzNy4yOTEzMzlxMCAyMS4xNjUzNTQgMTUuNjIyMDQ3IDM2Ljc4NzQwMnQzNi43ODc0MDIgMTUuNjIyMDQ3cTIyLjE3MzIyOCAwIDM3LjI5MTMzOS0xNS42MjIwNDd0MTUuMTE4MTEtMzYuNzg3NDAycTAtMjIuMTczMjI4LTE1LjExODExLTM3LjI5MTMzOXQtMzcuMjkxMzM5LTE1LjExODExek01OTEuNjIyMDQ3IDg0LjY2MTQxN3EwLTguMDYyOTkyLTUuMDM5MzctMTIuNTk4NDI1dC0xMS4wODY2MTQtNC41MzU0MzNsLTEyOCAwcS01LjAzOTM3IDAtMTAuNTgyNjc3IDQuNTM1NDMzdC01LjU0MzMwNyAxMi41OTg0MjUgNS4wMzkzNyAxMi41OTg0MjUgMTEuMDg2NjE0IDQuNTM1NDMzbDEyOCAwcTYuMDQ3MjQ0IDAgMTEuMDg2NjE0LTQuNTM1NDMzdDUuMDM5MzctMTIuNTk4NDI1eiIgZmlsbD0iIzRBNzJBOCIvPjwvc3ZnPgo=",u="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDI0IDEwMjQiPjxwYXRoIGQ9Ik01MTIgMEMyMjkuMjM2MzY0IDAgMCAyMjkuMjM2MzY0IDAgNTEyczIyOS4yMzYzNjQgNTEyIDUxMiA1MTIgNTEyLTIyOS4yMzYzNjQgNTEyLTUxMlM3OTQuNzYzNjM2IDAgNTEyIDB6TTU1OC41NDU0NTUgOTc1LjA4MDcyNyA1NTguNTQ1NDU1IDc5MS4yNzI3MjdsNDYuNTQ1NDU1IDBjNTEuMzg2MTgyIDAgOTMuMDkwOTA5LTQxLjcwNDcyNyA5My4wOTA5MDktOTMuMDkwOTA5TDY5OC4xODE4MTggMzcyLjM2MzYzNmwtOTMuMDkwOTA5IDBMNjA1LjA5MDkwOSAyMzIuNzI3MjczIDQxOC45MDkwOTEgMjMyLjcyNzI3M2wwIDEzOS42MzYzNjRMMzI1LjgxODE4MiAzNzIuMzYzNjM2bDAgMzI1LjgxODE4MmMwIDUxLjM4NjE4MiA0MS43MDQ3MjcgOTMuMDkwOTA5IDkzLjA5MDkwOSA5My4wOTA5MDlsNDYuNTQ1NDU1IDAgMCAxODMuODA4QzIzMC4yNjAzNjQgOTUxLjcxNDkwOSA0Ni41NDU0NTUgNzUzLjM4NDcyNyA0Ni41NDU0NTUgNTEyIDQ2LjU0NTQ1NSAyNTQuOTI5NDU1IDI1NC45NzYgNDYuNTQ1NDU1IDUxMiA0Ni41NDU0NTVzNDY1LjQ1NDU0NSAyMDguMzg0IDQ2NS40NTQ1NDUgNDY1LjQ1NDU0NUM5NzcuNDU0NTQ1IDc1My4zODQ3MjcgNzkzLjczOTYzNiA5NTEuNzE0OTA5IDU1OC41NDU0NTUgOTc1LjA4MDcyN3oiIGZpbGw9IiM0QTcyQTgiLz48L3N2Zz4K",r=i.p+"icons/category/runningshoe.svg",a="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDI0IDEwMjQiPjxwYXRoIGQ9Ik01MTIgOTYwYzIwMC4zMiAwIDM2Mi42ODgtMTM2LjE5MiAzNjIuNjg4LTM0MC40OCAwLTIzMi45Ni0xNjUuNjMyLTU1NS41Mi0yODYuMzM2LTU1NS41Mi0xMTkuMTY4IDAtMTc1LjE2OCAzOTIuOTYtMTg5LjU2OCA0OTQuMDgtMTAuMjQgNzIuMDY0LTM1LjkwNCA4Mi4zNjgtNDkuNTM2IDY1LjcyOC03Ny42MzItOTQuNTI4IDQyLjExMi00OTkuMiA0OS4yMTYtNTIyLjg4bDAuNjQtMi4yNGMyLjU2LTEwLjMwNC00LjI4OC0yOS42MzItMjcuNDU2LTE4LjA0OGE1MS40NTYgNTEuNDU2IDAgMCAwLTE1LjQ4OCAxMy4zMTJDMjA3LjU1MiAyNzAuNzIgMTQ5LjMxMiA0NDIuOTQ0IDE0OS4zMTIgNjE5LjUyIDE0OS4zMTIgODA3LjU1MiAzMTEuNzQ0IDk2MCA1MTIgOTYweiIgZmlsbD0iIzZCNDQyMyIvPjwvc3ZnPgo=",d="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjZmZmIiBzdHJva2Utd2lkdGg9IjEuNSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIj48cGF0aCBkPSJNMiAxN2gyMGEwIDAgMCAxMCAwIDB2MmEwIDAgMCAwMSAwIDBIMmEwIDAgMCAwMSAwIDB2LTJ6IiBzdHlsZT0ic3Ryb2tlLXdpZHRoOjEuNSIvPjxwYXRoIGQ9Ik0yIDE3bDEuNS02aDNsMi01aDZsNCA1aDR2NkgyeiIvPjxwYXRoIGQ9Ik04IDEybDItMyIvPjxwYXRoIGQ9Ik0xMSAxMmwxLjUtMyIvPjwvc3ZnPg==",s="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjZmZmIiBzdHJva2Utd2lkdGg9IjEuNSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIj48Y2lyY2xlIGN4PSI5IiBjeT0iMjEiIHI9IjEiLz48Y2lyY2xlIGN4PSIyMCIgY3k9IjIxIiByPSIxIi8+PHBhdGggZD0iTTEgMWg0bDIuNjggMTMuMzlhMiAyIDAgMDAyIDEuNjFoOS43MmEyIDIgMCAwMDItMS42MUwyMyA2SDYiLz48L3N2Zz4=",c=[{keywords:["\u5976\u8336","\u5496\u5561","\u8336","coffee","drink"],icon:t},{keywords:["\u667a\u80fd\u624b\u673a","smartphone"],icon:l},{keywords:["\u624b\u673a\u914d\u4ef6","\u914d\u4ef6","accessory"],icon:u},{keywords:["\u624b\u673a","\u6570\u7801","\u7535\u5b50","phone","digital","mobile"],icon:o},{keywords:["\u8dd1\u6b65\u978b","\u8dd1\u978b","runningshoe","running"],icon:r},{keywords:["\u575a\u679c","\u96f6\u98df","nut","snack","nutsnack"],icon:a},{keywords:["\u8fd0\u52a8","\u978b","\u670d","sport","sneaker","shoe","\u8dd1\u6b65"],icon:d},{keywords:["\u98df\u54c1","\u751f\u9c9c","\u8d85\u5e02","food","fresh","grocery"],icon:s}];function v(n,e){if(!n)return e||"";var i=n.toLowerCase(),t=c.find(function(n){return n.keywords.some(function(n){return i.includes(n.toLowerCase())})});return t?t.icon:e||o}},5207:function(n,e,i){var t=i(9379),o=i(3029),l=i(2901),u=i(4467),r=i(758),a=i.n(r),d=i(1194),s=i(2458),c=i(4490)["window"],v=3e4,m=9e4,g=3e4,p=1e3,y=.2,I=10,M=200,A=1e3,N=1,f=function(){function n(){(0,o.A)(this,n),(0,u.A)(this,"_ws",null),(0,u.A)(this,"_status","idle"),(0,u.A)(this,"_listeners",new Set),(0,u.A)(this,"_statusListeners",new Set),(0,u.A)(this,"_heartbeatTimer",null),(0,u.A)(this,"_idleTimer",null),(0,u.A)(this,"_reconnectTimer",null),(0,u.A)(this,"_reconnectAttempts",0),(0,u.A)(this,"_shouldReconnect",!0),(0,u.A)(this,"_manualClose",!1),(0,u.A)(this,"_authSent",!1),(0,u.A)(this,"_authTimer",null),(0,u.A)(this,"_useDirectFallback",!1),(0,u.A)(this,"_fallbackTried",!1),(0,u.A)(this,"_sendQueue",[]),(0,u.A)(this,"_lastServerSeq",null),(0,u.A)(this,"_msgBuffer",[]),(0,u.A)(this,"_connectTimeoutTimer",null)}return(0,l.A)(n,[{key:"_isH5",get:function(){return!1}},{key:"status",get:function(){return this._status}},{key:"connect",value:function(){"open"!==this._status&&"connecting"!==this._status?(this._manualClose=!1,this._shouldReconnect=!0,this._fallbackTried&&(this._useDirectFallback=!1,this._fallbackTried=!1,this._reconnectAttempts=0),this._doConnect()):console.debug("[ChatWS] \u5df2\u6709\u8fde\u63a5/\u6b63\u5728\u8fde\u63a5\uff0c\u8df3\u8fc7")}},{key:"disconnect",value:function(){this._manualClose=!0,this._shouldReconnect=!1,this._clearReconnectTimer(),this._clearAuthTimer(),this._doClose(1e3,"Client closing")}},{key:"send",value:function(n){var e,i=(0,t.A)((0,t.A)({},n),{},{id:null!==(e=n.id)&&void 0!==e?e:"c-".concat(Date.now(),"-").concat(Math.random().toString(36).slice(2,8))});return"open"===this._status&&this._authSent?this._doSend(i):(this._sendQueue.length>=M&&(console.warn("[ChatWS] \u53d1\u9001\u961f\u5217\u5df2\u6ee1\uff0c\u4e22\u5f03\u6700\u65e9\u6d88\u606f"),this._sendQueue.shift()),this._sendQueue.push(i),console.debug("[ChatWS] \u6d88\u606f\u5165\u961f\uff0c\u961f\u5217\u957f\u5ea6=",this._sendQueue.length),"idle"!==this._status&&"closed"!==this._status||this.connect(),!1)}},{key:"onMessage",value:function(n){var e=this;return this._listeners.add(n),function(){return e._listeners.delete(n)}}},{key:"onStatusChange",value:function(n){var e=this;return this._statusListeners.add(n),function(){return e._statusListeners.delete(n)}}},{key:"resetReconnect",value:function(){this._reconnectAttempts=0}},{key:"_doConnect",value:function(){var n=this;if("connecting"!==this._status){this._setStatus("connecting"),this._clearHeartbeat(),this._authSent=!1;var e,i=(0,s.c4)();this._isH5?this._useDirectFallback?(e=d.fg,console.log("[ChatWS] H5 \u8fde\u63a5\uff08\u76f4\u8fde\u540e\u7aef fallback\uff09:",e)):(e=d.ZF,console.log("[ChatWS] H5 \u8fde\u63a5\uff08\u8d70\u4ee3\u7406\uff09:",e)):(e=d.ZF,console.log("[ChatWS] \u5c0f\u7a0b\u5e8f\u8fde\u63a5\uff08\u76f4\u8fde\uff09:",e));var t=i?"".concat(e).concat(e.includes("?")?"&":"?","token=").concat(encodeURIComponent(i)):e;i||console.warn("[ChatWS] \u65e0 token\uff0c\u540e\u7aef\u53ef\u80fd\u62d2\u7edd\u63e1\u624b");try{if(this._ws){try{this._isH5&&(this._ws.onopen=null,this._ws.onmessage=null,this._ws.onerror=null,this._ws.onclose=null,this._ws.readyState!==WebSocket.OPEN&&this._ws.readyState!==WebSocket.CONNECTING||this._ws.close(4001,"Reconnecting"))}catch(n){}this._ws=null}this._connectTimeoutTimer&&clearTimeout(this._connectTimeoutTimer),this._connectTimeoutTimer=setTimeout(function(){"connecting"===n._status&&(console.warn("[ChatWS] \u8fde\u63a5\u8d85\u65f6\uff085\u79d2\uff09\uff0c\u5f3a\u5236\u5173\u95ed\u5e76\u91cd\u8fde"),n._ws?n._doClose(4e3,"Connection timeout"):(n._setStatus("closed"),n._tryFallbackOrReconnect()))},5e3),this._isH5&&"undefined"!==typeof WebSocket?(this._ws=new WebSocket(t),this._bindH5Events(this._ws,i)):(this._ws=null,a().connectSocket({url:t,protocols:[],complete:function(){}}).then(function(e){if("connecting"===n._status)n._ws=e,n._bindMiniEvents(e,i);else{console.log("[ChatWS] SocketTask \u5df2 resolve \u4f46\u8fde\u63a5\u72b6\u6001\u5df2\u53d8\u66f4:",n._status,"\uff0c\u5173\u95ed\u6b8b\u7559 task");try{e.close({code:4001,reason:"Cancelled",complete:function(){}})}catch(n){}}}).catch(function(e){console.error("[ChatWS] connectSocket Promise rejected:",e),"connecting"===n._status&&(n._setStatus("closed"),n._tryFallbackOrReconnect())}))}catch(n){console.error("[ChatWS] \u521b\u5efa\u8fde\u63a5\u5f02\u5e38:",n),this._setStatus("closed"),this._tryFallbackOrReconnect()}}else console.debug("[ChatWS] \u5df2\u6709\u8fde\u63a5\u6b63\u5728\u8fdb\u884c\u4e2d\uff0c\u8df3\u8fc7")}},{key:"_bindH5Events",value:function(n,e){var i=this;n.onopen=function(){return i._onOpen(e)},n.onmessage=function(n){return i._onMessage(n.data)},n.onerror=function(t){var o=n;console.error("[ChatWS] H5 WebSocket error:",{event:t,readyState:o.readyState,url:o.url,diagnostic:i._diagnoseError(o,e)}),i._probeOriginPolicy(o.url)},n.onclose=function(n){console.log("[ChatWS] H5 \u5173\u95ed code=".concat(n.code," reason=").concat(n.reason," wasClean=").concat(n.wasClean)),i._onClose()}}},{key:"_bindMiniEvents",value:function(n,e){var i=this;n.onOpen(function(){return i._onOpen(e)}),n.onMessage(function(n){var e;return i._onMessage(null!==(e=n.data)&&void 0!==e?e:n)}),n.onError(function(n){return console.error("[ChatWS] \u5c0f\u7a0b\u5e8f WebSocket error:",n)}),n.onClose(function(n){console.log("[ChatWS] \u5c0f\u7a0b\u5e8f WebSocket \u5173\u95ed code=".concat(null===n||void 0===n?void 0:n.code," reason=").concat(null===n||void 0===n?void 0:n.reason)),i._onClose()})}},{key:"_onOpen",value:function(n){console.log("[ChatWS] WebSocket \u63e1\u624b\u6210\u529f\uff08URL token \u9274\u6743\u901a\u8fc7\uff09"),this._connectTimeoutTimer&&(clearTimeout(this._connectTimeoutTimer),this._connectTimeoutTimer=null),this._setStatus("open"),this._reconnectAttempts=0,this._authSent=!0,this._startHeartbeat(),this._flushSendQueue(),console.log("[ChatWS] \u9274\u6743\u901a\u8fc7\uff08URL token\uff09\uff0c\u5f00\u59cb\u5fc3\u8df3\u5e76 flush \u53d1\u9001\u961f\u5217")}},{key:"_sendAuthMessage",value:function(n){var e=this;if(this._ws&&"open"===this._status){var i={type:"auth",data:{token:n}};try{var t=JSON.stringify(i);this._isH5?this._ws.send(t):this._ws.send({data:t,complete:function(){}}),this._authSent=!0,console.log("[ChatWS] \u9274\u6743\u6d88\u606f\u5df2\u53d1\u9001"),this._clearAuthTimer(),this._authTimer=setTimeout(function(){e._authSent||"open"!==e._status||(console.warn("[ChatWS] \u9274\u6743\u8d85\u65f6\uff0c\u5173\u95ed\u8fde\u63a5"),e._doClose(4001,"Auth timeout"))},5e3),this._startHeartbeat(),this._flushSendQueue()}catch(n){console.error("[ChatWS] \u9274\u6743\u6d88\u606f\u53d1\u9001\u5931\u8d25:",n),this._authSent=!1,this._startHeartbeat(),this._flushSendQueue()}}}},{key:"_clearAuthTimer",value:function(){this._authTimer&&(clearTimeout(this._authTimer),this._authTimer=null)}},{key:"_onClose",value:function(){this._connectTimeoutTimer&&(clearTimeout(this._connectTimeoutTimer),this._connectTimeoutTimer=null),this._clearHeartbeat(),this._clearAuthTimer(),this._authSent=!1,this._setStatus("closed"),this._ws=null,this._shouldReconnect&&!this._manualClose&&this._tryFallbackOrReconnect()}},{key:"_tryFallbackOrReconnect",value:function(){!this._isH5||this._useDirectFallback||this._fallbackTried?this._scheduleReconnect():(this._fallbackTried=!0,this._useDirectFallback=!0,console.warn("[ChatWS] \u4ee3\u7406\u8fde\u63a5\u5931\u8d25\uff0c\u5c1d\u8bd5\u76f4\u8fde\u540e\u7aef fallback..."),this._reconnectAttempts=0,this._scheduleReconnect(500))}},{key:"_doClose",value:function(n,e){if(this._ws){if("closed"!==this._status&&"closing"!==this._status){this._setStatus("closing");try{this._isH5?this._ws.close(n,e):this._ws.close({code:n,reason:e,complete:function(){}})}catch(n){console.warn("[ChatWS] \u5173\u95ed\u5f02\u5e38:",n)}}}else this._setStatus("closed")}},{key:"_doSend",value:function(n){if(!this._ws||"open"!==this._status||!this._authSent)return console.warn("[ChatWS] _doSend \u62d2\u7edd: ws=",!!this._ws,"status=",this._status,"authSent=",this._authSent),!1;try{var e=JSON.stringify(n);return console.log("[ChatWS] _doSend \u53d1\u9001:",e),this._isH5?this._ws.send(e):this._ws.send({data:e,fail:function(n){return console.error("[ChatWS] \u5c0f\u7a0b\u5e8f send \u5931\u8d25:",n)},complete:function(){}}),!0}catch(e){return console.error("[ChatWS] \u53d1\u9001\u5931\u8d25\uff0c\u91cd\u65b0\u5165\u961f:",e),this._sendQueue.length<M&&this._sendQueue.unshift(n),!1}}},{key:"_flushSendQueue",value:function(){if(0!==this._sendQueue.length){console.debug("[ChatWS] Flush \u53d1\u9001\u961f\u5217: ".concat(this._sendQueue.length," \u6761"));while(this._sendQueue.length>0&&"open"===this._status&&this._authSent){var n=this._sendQueue.shift();if(!this._doSend(n)){this._sendQueue.unshift(n);break}}}}},{key:"_onMessage",value:function(n){var e;try{e="string"===typeof n?JSON.parse(n):n}catch(e){return void console.warn("[ChatWS] \u975e JSON \u6d88\u606f\uff0c\u5ffd\u7565:",n)}if("auth_ack"===e.type)return this._authSent=!0,this._clearAuthTimer(),void console.log("[ChatWS] \u9274\u6743\u6210\u529f",e.data);if("pong"!==e.type)if("ping"!==e.type){if("number"===typeof e.seq&&null!==this._lastServerSeq){var i=e.seq-this._lastServerSeq-1;i>=N&&console.warn("[ChatWS] \u26a0\ufe0f \u68c0\u6d4b\u5230\u6d88\u606f gap! last=".concat(this._lastServerSeq,", cur=").concat(e.seq,", gap=").concat(i))}if("number"===typeof e.seq&&(this._lastServerSeq=e.seq),this._msgBuffer.push(e),this._msgBuffer.length>A){var t=this._msgBuffer.length-A;console.warn("[ChatWS] \ud83e\uddef \u5165\u7ad9\u7f13\u51b2\u6ea2\u51fa\uff0c\u4e22\u5f03 ".concat(t," \u6761\u65e7\u6d88\u606f")),this._msgBuffer.splice(0,t)}this._resetIdleTimer(),this._listeners.forEach(function(n){try{n(e)}catch(n){console.error("[ChatWS] listener error:",n)}})}else this.send({type:"pong"});else this._resetIdleTimer()}},{key:"_startHeartbeat",value:function(){var n=this;this._clearHeartbeat(),this._heartbeatTimer=setInterval(function(){"open"===n._status&&n._authSent&&n.send({type:"ping"})},v),this._resetIdleTimer()}},{key:"_clearHeartbeat",value:function(){this._heartbeatTimer&&(clearInterval(this._heartbeatTimer),this._heartbeatTimer=null),this._idleTimer&&(clearTimeout(this._idleTimer),this._idleTimer=null)}},{key:"_resetIdleTimer",value:function(){var n=this;this._idleTimer&&clearTimeout(this._idleTimer),this._idleTimer=setTimeout(function(){console.warn("[ChatWS] \u5fc3\u8df3\u8d85\u65f6\uff0c\u5173\u95ed\u8fde\u63a5\u5e76\u91cd\u8fde"),n._doClose(4e3,"Idle timeout")},m)}},{key:"_scheduleReconnect",value:function(n){var e=this;if(this._clearReconnectTimer(),this._shouldReconnect){if(this._reconnectAttempts>=I)return console.warn("[ChatWS] \u5df2\u8fbe\u6700\u5927\u91cd\u8fde\u6b21\u6570 (".concat(I,")\uff0c\u505c\u6b62\u81ea\u52a8\u91cd\u8fde\uff0c\u8bf7\u624b\u52a8\u89e6\u53d1")),void this._setStatus("closed");if(this._reconnectAttempts+=1,void 0!==n&&1===this._reconnectAttempts)return console.log("[ChatWS] \ud83d\udd04 fallback \u91cd\u8fde\uff0c".concat(n,"ms \u540e...")),void(this._reconnectTimer=setTimeout(function(){e._shouldReconnect&&e._doConnect()},n));var i=Math.min(p*Math.pow(2,this._reconnectAttempts-1),g),t=i*y*(2*Math.random()-1),o=Math.round(i+t);console.log("[ChatWS] \ud83d\udd04 \u8ba1\u5212\u7b2c ".concat(this._reconnectAttempts,"/").concat(I," \u6b21\u91cd\u8fde\uff0c").concat(o,"ms \u540e...")),this._reconnectTimer=setTimeout(function(){e._shouldReconnect&&e._doConnect()},o)}}},{key:"_clearReconnectTimer",value:function(){this._reconnectTimer&&(clearTimeout(this._reconnectTimer),this._reconnectTimer=null)}},{key:"_diagnoseError",value:function(n,e){var i=[];return i.push("readyState=".concat(n.readyState)),i.push("url=".concat(n.url||"N/A")),n.url?(n.url.startsWith("ws://localhost")||n.url.startsWith("ws://127.0.0.1"))&&i.push("\u26a0\ufe0f \u76f4\u8fde localhost/127.0.0.1\uff0c\u82e5\u540e\u7aef\u4e0d\u5728\u672c\u673a\u5c06\u65e0\u6cd5\u8fde\u63a5"):i.push("\u26a0\ufe0f WebSocket \u672a\u8bbe\u7f6e URL"),e||i.push("\u26a0\ufe0f \u65e0 token\uff0c\u53ef\u80fd\u56e0\u672a\u767b\u5f55\u88ab\u540e\u7aef\u62d2\u7edd"),i.push("\u4ee3\u7406\u914d\u7f6e: config/dev.ts \u4e2d /api \u4ee3\u7406 ws:true + onProxyReqWs \u5df2\u5265\u79bb Origin/Referer"),i.push("\u82e5\u76f4\u8fde\u540e\u7aef: \u540e\u7aef Origin \u4e2d\u95f4\u4ef6\u5fc5\u987b\u653e\u884c WebSocket \u63e1\u624b\uff0c\u5426\u5219\u6d4f\u89c8\u5668\u5f3a\u5236 Origin \u2192 403"),i.push('\u63e1\u624b\u9274\u6743: \u9996\u6761\u6d88\u606f {type:"auth",data:{token}} \u65b9\u6848\u5df2\u542f\u7528'),i.join(" | ")}},{key:"_probeOriginPolicy",value:function(n){if(n){var e=n.replace(/^wss?:\/\//,"").replace(/^[^/]+/,"")||"/",i="undefined"!==typeof c?c.location.origin:"",t=function(n,t){var o={};n&&(o["Origin"]=i),fetch(e,{method:"GET",headers:o,mode:"no-cors",cache:"no-store"}).then(function(){return console.info("[ChatWS] probe ".concat(t," OK (mode=no-cors)"))}).catch(function(n){return console.info("[ChatWS] probe ".concat(t," err:"),n)})};console.groupCollapsed("[ChatWS] Origin \u7b56\u7565\u63a2\u6d4b"),console.info("\u76ee\u6807\u8def\u5f84:",e),t(!0,"with-Origin"),t(!1,"no-Origin"),console.groupEnd()}}},{key:"_setStatus",value:function(n){this._status!==n&&(this._status=n,console.debug("[ChatWS] \u72b6\u6001\u53d8\u5316 \u2192 ".concat(n)),this._statusListeners.forEach(function(e){try{e(n)}catch(n){console.error("[ChatWS] status listener error:",n)}}))}}],[{key:"getInstance",value:function(){return n._instance||(n._instance=new n),n._instance}}])}();(0,u.A)(f,"_instance",null);var h=f.getInstance();e.A=h},678:function(n,e,i){i.d(e,{$T:function(){return N},VG:function(){return c},VP:function(){return s},aI:function(){return p},fv:function(){return m},z7:function(){return g}});var t=i(5544),o=i(2284),l=i(9379),u=i(4490)["URL"],r="https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?placeholder",a=["placeholder.com","test.com","demo.com","example.com","example.cn","xxx.com","xxx.cn","xxx.yyy","xxx","yyy","demo.example.com","test.example.com"];function d(n){try{return new u(n).hostname.toLowerCase()}catch(n){return""}}function s(n){if(!n||"string"!==typeof n)return!1;if(n.startsWith("data:"))return!0;if(n.startsWith("/"))return!0;var e=d(n);return!e||!a.some(function(n){return e===n||e.endsWith("."+n)})}function c(n){return n&&s(n)?n:r}function v(n){var e,i,u,r,a,d,s,v,m,g,p,y,I,M,A,N,f,h,_,T,w,D,S,k,j,C,b,z,L;if(!n)return n;var x=(0,l.A)({},n),O=null!==(e=null!==(i=null!==(u=null!==(r=null!==(a=null!==(d=null!==(s=n.specs)&&void 0!==s?s:n.spec_values)&&void 0!==d?d:n.SpecValues)&&void 0!==a?a:n.specValue)&&void 0!==r?r:n.SpecValue)&&void 0!==u?u:n.Specs)&&void 0!==i?i:n.spec)&&void 0!==e?e:{};x.specs=O,x.id=String(null!==(v=null!==(m=null!==(g=null!==(p=null!==(y=n.id)&&void 0!==y?y:n.ID)&&void 0!==p?p:n.skuId)&&void 0!==g?g:n.SkuId)&&void 0!==m?m:n.sku_id)&&void 0!==v?v:""),x.price=Number(null!==(I=null!==(M=null!==(A=null!==(N=n.price)&&void 0!==N?N:n.Price)&&void 0!==A?A:n.skuPrice)&&void 0!==M?M:n.SkuPrice)&&void 0!==I?I:0),x.stock=Number(null!==(f=null!==(h=null!==(_=null!==(T=null!==(w=null!==(D=n.stock)&&void 0!==D?D:n.Stock)&&void 0!==w?w:n.skuStock)&&void 0!==T?T:n.SkuStock)&&void 0!==_?_:n.inventory)&&void 0!==h?h:n.Inventory)&&void 0!==f?f:0),x.image=n.image?c(n.image):n.Image?c(n.Image):n.skuImage?c(n.skuImage):n.SkuImage?c(n.SkuImage):n.sku_image?c(n.sku_image):"";var P,E,U,Y=null!==(S=null!==(k=null!==(j=null!==(C=null!==(b=null!==(z=null!==(L=n.name)&&void 0!==L?L:n.Name)&&void 0!==z?z:n.skuName)&&void 0!==b?b:n.SkuName)&&void 0!==C?C:n.sku_name)&&void 0!==j?j:n.title)&&void 0!==k?k:n.Title)&&void 0!==S?S:"";(!Y&&x.specs&&"object"===(0,o.A)(x.specs)&&(Y=Object.entries(x.specs).map(function(n){var e=(0,t.A)(n,2),i=e[1];return i}).filter(Boolean).join(" ")),Y)||(Y=null!==(P=null!==(E=null!==(U=n.skuCode)&&void 0!==U?U:n.SkuCode)&&void 0!==E?E:n.sku_code)&&void 0!==P?P:"");return x.name=Y,x}function m(n){var e,i,t,o,u,r,a,d,s,m,g,p,y,I,M,A,N,f,h,_,T,w,D,S,k,j,C,b,z,L,x,O,P,E,U,Y,Q,R,W,Z,H,B,G,F,J,V,q,X,K,$,nn,en,tn,on,ln,un,rn,an,dn,sn,cn,vn,mn,gn,pn,yn,In,Mn,An,Nn,fn,hn,_n,Tn,wn,Dn,Sn,kn,jn,Cn,bn,zn,Ln;if(!n)return n;var xn,On,Pn,En,Un,Yn,Qn,Rn,Wn=(0,l.A)({},n);(Wn.images&&Array.isArray(Wn.images)?Wn.images=Wn.images.map(function(n){return c(n)}):Wn.Images&&Array.isArray(Wn.Images)?Wn.images=Wn.Images.map(function(n){return c(n)}):Wn.imageList&&Array.isArray(Wn.imageList)?Wn.images=Wn.imageList.map(function(n){return c(n)}):Wn.ImageList&&Array.isArray(Wn.ImageList)?Wn.images=Wn.ImageList.map(function(n){return c(n)}):Wn.images_list&&Array.isArray(Wn.images_list)&&(Wn.images=Wn.images_list.map(function(n){return c(n)})),Wn.image?Wn.image=c(Wn.image):Wn.Image&&(Wn.image=c(Wn.Image)),Wn.brandId=String(null!==(e=null!==(i=null!==(t=null!==(o=null!==(u=null!==(r=Wn.brandId)&&void 0!==r?r:Wn.BrandId)&&void 0!==u?u:Wn.brand_id)&&void 0!==o?o:Wn.brand_id)&&void 0!==t?t:null===(a=Wn.brand)||void 0===a?void 0:a.ID)&&void 0!==i?i:null===(d=Wn.brand)||void 0===d?void 0:d.id)&&void 0!==e?e:""),Wn.brandName=null!==(s=null!==(m=null!==(g=null!==(p=null!==(y=Wn.brandName)&&void 0!==y?y:Wn.BrandName)&&void 0!==p?p:Wn.brand_name)&&void 0!==g?g:null===(I=Wn.brand)||void 0===I?void 0:I.name)&&void 0!==m?m:null===(M=Wn.brand)||void 0===M?void 0:M.Name)&&void 0!==s?s:"",Wn.categoryId=String(null!==(A=null!==(N=null!==(f=null!==(h=null!==(_=null!==(T=Wn.categoryId)&&void 0!==T?T:Wn.CategoryId)&&void 0!==_?_:Wn.category_id)&&void 0!==h?h:Wn.category_id)&&void 0!==f?f:null===(w=Wn.category)||void 0===w?void 0:w.ID)&&void 0!==N?N:null===(D=Wn.category)||void 0===D?void 0:D.id)&&void 0!==A?A:""),Wn.categoryName=null!==(S=null!==(k=null!==(j=null!==(C=null!==(b=Wn.categoryName)&&void 0!==b?b:Wn.CategoryName)&&void 0!==C?C:Wn.category_name)&&void 0!==j?j:null===(z=Wn.category)||void 0===z?void 0:z.name)&&void 0!==k?k:null===(L=Wn.category)||void 0===L?void 0:L.Name)&&void 0!==S?S:"",Wn.price=Number(null!==(x=null!==(O=null!==(P=null!==(E=null!==(U=Wn.price)&&void 0!==U?U:Wn.Price)&&void 0!==E?E:Wn.salePrice)&&void 0!==P?P:Wn.SalePrice)&&void 0!==O?O:Wn.sale_price)&&void 0!==x?x:0),void 0===Wn.originalPrice||null===Wn.originalPrice)&&(Wn.originalPrice=Number(null!==(xn=null!==(On=null!==(Pn=null!==(En=null!==(Un=null!==(Yn=null!==(Qn=null!==(Rn=Wn.originalPrice)&&void 0!==Rn?Rn:Wn.OriginalPrice)&&void 0!==Qn?Qn:Wn.original_price)&&void 0!==Yn?Yn:Wn.original_price)&&void 0!==Un?Un:Wn.marketPrice)&&void 0!==En?En:Wn.MarketPrice)&&void 0!==Pn?Pn:Wn.market_price)&&void 0!==On?On:Wn.price)&&void 0!==xn?xn:0));Wn.stock=Number(null!==(Y=null!==(Q=null!==(R=null!==(W=null!==(Z=null!==(H=null!==(B=Wn.stock)&&void 0!==B?B:Wn.Stock)&&void 0!==H?H:Wn.totalStock)&&void 0!==Z?Z:Wn.TotalStock)&&void 0!==W?W:Wn.total_stock)&&void 0!==R?R:Wn.inventory)&&void 0!==Q?Q:Wn.Inventory)&&void 0!==Y?Y:0),Wn.sales=Number(null!==(G=null!==(F=null!==(J=null!==(V=null!==(q=null!==(X=null!==(K=Wn.sales)&&void 0!==K?K:Wn.Sales)&&void 0!==X?X:Wn.soldCount)&&void 0!==q?q:Wn.SoldCount)&&void 0!==V?V:Wn.sold_count)&&void 0!==J?J:Wn.sold)&&void 0!==F?F:Wn.Sold)&&void 0!==G?G:0);var Zn=null!==($=null!==(nn=null!==(en=null!==(tn=null!==(on=Wn.skus)&&void 0!==on?on:Wn.Skus)&&void 0!==tn?tn:Wn.SKUs)&&void 0!==en?en:Wn.skuList)&&void 0!==nn?nn:Wn.SkuList)&&void 0!==$?$:Wn.sku_list;Zn&&Array.isArray(Zn)&&(Wn.skus=Zn.map(function(n){return v(n)})),Wn.skus&&Array.isArray(Wn.skus)||(Wn.skus=[]),Wn.description=null!==(ln=null!==(un=null!==(rn=null!==(an=null!==(dn=null!==(sn=null!==(cn=null!==(vn=null!==(mn=null!==(gn=null!==(pn=null!==(yn=null!==(In=null!==(Mn=null!==(An=null!==(Nn=null!==(fn=null!==(hn=null!==(_n=null!==(Tn=null!==(wn=null!==(Dn=null!==(Sn=null!==(kn=null!==(jn=Wn.description)&&void 0!==jn?jn:Wn.Description)&&void 0!==kn?kn:Wn.detail)&&void 0!==Sn?Sn:Wn.Detail)&&void 0!==Dn?Dn:Wn.details)&&void 0!==wn?wn:Wn.Details)&&void 0!==Tn?Tn:Wn.content)&&void 0!==_n?_n:Wn.Content)&&void 0!==hn?hn:Wn.introduce)&&void 0!==fn?fn:Wn.Introduce)&&void 0!==Nn?Nn:Wn.introduction)&&void 0!==An?An:Wn.Introduction)&&void 0!==Mn?Mn:Wn.productDescription)&&void 0!==In?In:Wn.ProductDescription)&&void 0!==yn?yn:Wn.product_description)&&void 0!==pn?pn:Wn.product_desc)&&void 0!==gn?gn:Wn.desc)&&void 0!==mn?mn:Wn.Desc)&&void 0!==vn?vn:Wn.body)&&void 0!==cn?cn:Wn.Body)&&void 0!==sn?sn:Wn.richText)&&void 0!==dn?dn:Wn.RichText)&&void 0!==an?an:Wn.rich_text)&&void 0!==rn?rn:Wn.html)&&void 0!==un?un:Wn.Html)&&void 0!==ln?ln:"";var Hn=null!==(Cn=null!==(bn=null!==(zn=null!==(Ln=Wn.tags)&&void 0!==Ln?Ln:Wn.Tags)&&void 0!==zn?zn:Wn.tagList)&&void 0!==bn?bn:Wn.TagList)&&void 0!==Cn?Cn:[];if("string"===typeof Hn)try{var Bn=JSON.parse(Hn);Hn=Array.isArray(Bn)?Bn:[Hn]}catch(n){Hn=Hn?[Hn]:[]}return Wn.tags=Array.isArray(Hn)?Hn:[],Wn}function g(n){return n&&Array.isArray(n)?n.map(function(n){return m(n)}):[]}function p(){return{lazyLoad:!0}}var y={30:"huawei",31:"xiaomi",32:"apple",33:"nike",34:"squirrel",35:"rice"},I={"\u534e\u4e3a":"huawei","\u5c0f\u7c73":"xiaomi","\u82f9\u679c":"apple",nike:"nike",Nike:"nike",NIKE:"nike","\u4e09\u53ea\u677e\u9f20":"squirrel","\u5927\u7c73":"rice"},M={huawei:i(8052),xiaomi:i(6256),apple:i(1009),nike:i(2800),squirrel:i(654),rice:i(9940)};function A(n){if(!n||"string"!==typeof n)return!1;if(n.startsWith("data:"))return!0;var e=d(n);if(!e)return!1;var i="example.com"===e||e.endsWith(".example.com")||"example.cn"===e||e.endsWith(".example.cn")||"placeholder.com"===e||e.endsWith(".placeholder.com")||"xxx.com"===e||e.endsWith(".xxx.com")||"xxx.cn"===e||e.endsWith(".xxx.cn")||"xxx.yyy"===e||e.endsWith(".xxx.yyy")||"test.com"===e||e.endsWith(".test.com")||"demo.com"===e||e.endsWith(".demo.com");return!i}function N(n){if(!n)return M.huawei;var e=n.logo||n.image;if(A(e))return e;var t=void 0!==n.id?String(n.id):"",o=n.name||"",l=t?y[t]:null;if(l&&M[l])return M[l];var u=o?I[o]:null;return u&&M[u]?M[u]:i(565)}},5826:function(n,e,i){function t(n){if(!n)return"";var e=new Date(n);if(isNaN(e.getTime()))return String(n);var i=new Date,t=e.getFullYear(),o=(e.getMonth()+1).toString().padStart(2,"0"),l=e.getDate().toString().padStart(2,"0"),u=e.getHours().toString().padStart(2,"0"),r=e.getMinutes().toString().padStart(2,"0");return t===i.getFullYear()?"".concat(o,"\u6708").concat(l,"\u65e5 ").concat(u,"\u65f6").concat(r,"\u5206"):"".concat(t,"\u5e74").concat(o,"\u6708").concat(l,"\u65e5 ").concat(u,"\u65f6").concat(r,"\u5206")}function o(n){if(!n)return"";var e=new Date(n);if(isNaN(e.getTime()))return String(n);var i=e.getHours().toString().padStart(2,"0"),t=e.getMinutes().toString().padStart(2,"0");return"".concat(i,"\u65f6").concat(t,"\u5206")}i.d(e,{f:function(){return o},r:function(){return t}})},3903:function(n,e,i){i.d(e,{i6:function(){return N}});var t=i(1212),o=i(467),l=i(2284),u=i(758),r=i.n(u),a=i(4473),d=(i(4490)["navigator"],i(4490)["window"]),s=i(4490)["document"];function c(n){var e,i,t,o,u,r,a,d,s,c,v,m,g,p,y,I,M,A,N,f,h,_,T,w,D,S,k,j,C,b,z,L,x,O,P;if(!n||"object"!==(0,l.A)(n))return null;var E=null!==(e=n.data)&&void 0!==e?e:n,U=null!==(i=null!==(t=null!==(o=null!==(u=E.timeStamp)&&void 0!==u?u:E.time_stamp)&&void 0!==o?o:E.TimeStamp)&&void 0!==t?t:E.timestamp)&&void 0!==i?i:"",Y=null!==(r=null!==(a=null!==(d=null!==(s=E.nonceStr)&&void 0!==s?s:E.nonce_str)&&void 0!==d?d:E.NonceStr)&&void 0!==a?a:E.noncestr)&&void 0!==r?r:"",Q=null!==(c=null!==(v=null!==(m=null!==(g=E.package)&&void 0!==g?g:E.Package)&&void 0!==m?m:E.packageStr)&&void 0!==v?v:E.package_str)&&void 0!==c?c:"",R=null!==(p=null!==(y=null!==(I=E.signType)&&void 0!==I?I:E.sign_type)&&void 0!==y?y:E.SignType)&&void 0!==p?p:"MD5",W=null!==(M=null!==(A=null!==(N=null!==(f=E.paySign)&&void 0!==f?f:E.pay_sign)&&void 0!==N?N:E.PaySign)&&void 0!==A?A:E.signature)&&void 0!==M?M:"",Z=null!==(h=null!==(_=null!==(T=null!==(w=null!==(D=E.mwebUrl)&&void 0!==D?D:E.mweb_url)&&void 0!==w?w:E.MwebUrl)&&void 0!==T?T:E.h5_url)&&void 0!==_?_:E.h5Url)&&void 0!==h?h:"",H={timeStamp:String(U),nonceStr:String(Y),package:String(Q),signType:String(R),paySign:String(W),mwebUrl:Z?String(Z):void 0,prepayId:null!==(S=null!==(k=null!==(j=E.prepayId)&&void 0!==j?j:E.prepay_id)&&void 0!==k?k:E.PrepayId)&&void 0!==S?S:"",orderNo:null!==(C=null!==(b=null!==(z=E.orderNo)&&void 0!==z?z:E.order_no)&&void 0!==b?b:E.OrderNo)&&void 0!==C?C:"",amount:Number(null!==(L=null!==(x=E.amount)&&void 0!==x?x:E.Amount)&&void 0!==L?L:0),transactionId:null!==(O=null!==(P=E.transactionId)&&void 0!==P?P:E.transaction_id)&&void 0!==O?O:""},B=H.timeStamp&&H.nonceStr&&H.package&&H.paySign;return B||H.mwebUrl?H:(console.error("[\u5fae\u4fe1\u652f\u4ed8] \u540e\u7aef\u8fd4\u56de\u7684\u652f\u4ed8\u53c2\u6570\u4e0d\u5b8c\u6574:",E),null)}function v(){return!1}function m(n){return new Promise(function(e,i){r().requestPayment({timeStamp:n.timeStamp,nonceStr:n.nonceStr,package:n.package,signType:n.signType,paySign:n.paySign,success:function(){return e()},fail:function(n){var e=(null===n||void 0===n?void 0:n.errMsg)||(null===n||void 0===n?void 0:n.message)||"";/user\s*cancel/i.test(e)||e.includes("cancel")?i(new Error("\u53d6\u6d88\u652f\u4ed8")):(console.error("[\u5fae\u4fe1\u652f\u4ed8] requestPayment \u5931\u8d25:",n),i(new Error(e||"\u5fae\u4fe1\u652f\u4ed8\u5931\u8d25")))}})})}function g(n){return new Promise(function(e,i){if("undefined"!==typeof d.WeixinJSBridge){var t=function(){d.WeixinJSBridge.invoke("getBrandWCPayRequest",{timeStamp:n.timeStamp,nonceStr:n.nonceStr,package:n.package,signType:n.signType,paySign:n.paySign},function(n){var t=(null===n||void 0===n?void 0:n.err_msg)||"";t.includes("get_brand_wcpay_request:ok")?e():t.includes("cancel")?i(new Error("\u53d6\u6d88\u652f\u4ed8")):(console.error("[\u5fae\u4fe1\u652f\u4ed8] H5 JSAPI \u652f\u4ed8\u5931\u8d25:",n),i(new Error("\u5fae\u4fe1\u652f\u4ed8\u5931\u8d25")))})};d.WeixinJSBridge?t():(s.addEventListener("WeixinJSBridgeReady",t,!1),setTimeout(function(){return i(new Error("\u5fae\u4fe1\u652f\u4ed8\u73af\u5883\u521d\u59cb\u5316\u8d85\u65f6"))},5e3))}else i(new Error("\u5fae\u4fe1\u652f\u4ed8\u73af\u5883\u672a\u5c31\u7eea\uff0c\u8bf7\u5728\u5fae\u4fe1\u4e2d\u6253\u5f00"))})}function p(n){if(!n.mwebUrl)return Promise.reject(new Error("\u5f53\u524d\u73af\u5883\u4e0d\u652f\u6301\u5fae\u4fe1\u652f\u4ed8\uff0c\u8bf7\u5728\u5fae\u4fe1\u4e2d\u6253\u5f00"));var e=encodeURIComponent(d.location.href),i=n.mwebUrl+(n.mwebUrl.includes("?")?"&":"?")+"redirect_url=".concat(e);return d.location.href=i,new Promise(function(){})}function y(n){return I.apply(this,arguments)}function I(){return I=(0,o.A)((0,t.A)().m(function n(e){var i;return(0,t.A)().w(function(n){while(1)switch(n.n){case 0:if(i="weapp","weapp"!==i&&"alipay"!==i&&"tt"!==i&&"qq"!==i&&"swan"!==i){n.n=1;break}return n.a(2,m(e));case 1:if("h5"!==i){n.n=3;break}if(!v()){n.n=2;break}return n.a(2,g(e));case 2:return n.a(2,p(e));case 3:throw new Error("\u5f53\u524d\u73af\u5883\u6682\u4e0d\u652f\u6301\u5fae\u4fe1\u652f\u4ed8");case 4:return n.a(2)}},n)})),I.apply(this,arguments)}function M(n){return A.apply(this,arguments)}function A(){return A=(0,o.A)((0,t.A)().m(function n(e){var i,o,l,u,r,d,s,c,v,m,g=arguments;return(0,t.A)().w(function(n){while(1)switch(n.p=n.n){case 0:l=g.length>1&&void 0!==g[1]?g[1]:{},u=null!==(i=l.maxAttempts)&&void 0!==i?i:5,r=null!==(o=l.interval)&&void 0!==o?o:1500,d=null,s=1;case 1:if(!(s<=u)){n.n=8;break}return n.p=2,n.n=3,(0,a.JX)(e);case 3:if(v=n.v,d=null===v||void 0===v?void 0:v.data,null===(c=d)||void 0===c||!c.isPaid){n.n=4;break}return n.a(2,d);case 4:n.n=6;break;case 5:n.p=5,m=n.v,console.warn("[\u5fae\u4fe1\u652f\u4ed8] \u7b2c ".concat(s," \u6b21\u67e5\u8be2\u652f\u4ed8\u72b6\u6001\u5931\u8d25:"),m);case 6:if(!(s<u)){n.n=7;break}return n.n=7,new Promise(function(n){return setTimeout(n,r)});case 7:s++,n.n=1;break;case 8:return console.warn("[\u5fae\u4fe1\u652f\u4ed8] \u8f6e\u8be2 ".concat(u," \u6b21\u540e\u4ecd\u672a\u786e\u8ba4\u652f\u4ed8\u6210\u529f\uff0c\u6700\u540e\u72b6\u6001:"),d),n.a(2,d)}},n,null,[[2,5]])})),A.apply(this,arguments)}function N(n,e){return f.apply(this,arguments)}function f(){return f=(0,o.A)((0,t.A)().m(function n(e,i){var o,l,u,r=arguments;return(0,t.A)().w(function(n){while(1)switch(n.n){case 0:if(o=r.length>2&&void 0!==r[2]?r[2]:{},l=c(e),l){n.n=1;break}throw new Error("\u83b7\u53d6\u652f\u4ed8\u53c2\u6570\u5931\u8d25\uff0c\u8bf7\u91cd\u8bd5");case 1:return console.log("[\u5fae\u4fe1\u652f\u4ed8] \u652f\u4ed8\u53c2\u6570:",{hasTimeStamp:!!l.timeStamp,hasNonceStr:!!l.nonceStr,hasPackage:!!l.package,signType:l.signType,hasPaySign:!!l.paySign,hasMwebUrl:!!l.mwebUrl}),n.n=2,y(l);case 2:return n.n=3,M(i,o);case 3:return u=n.v,n.a(2,u)}},n)})),f.apply(this,arguments)}},8007:function(n,e){e.A={orderListPage:"order-list-module__orderListPage___NtfNi",tabBar:"order-list-module__tabBar___fgXNt",tabList:"order-list-module__tabList___M5ifq",tabItem:"order-list-module__tabItem___khtpq",tabText:"order-list-module__tabText___C2GiO",active:"order-list-module__active___XdTkM",tabIndicator:"order-list-module__tabIndicator___JQF3Q",orderList:"order-list-module__orderList___nmADa",orderCard:"order-list-module__orderCard___iToai",orderHeader:"order-list-module__orderHeader___sTeSn",orderId:"order-list-module__orderId___G1AlW",orderStatus:"order-list-module__orderStatus___hgp5E",storeInfo:"order-list-module__storeInfo___wWJ09",storeName:"order-list-module__storeName___lPQd_",storeAddress:"order-list-module__storeAddress___yfeEj",orderProducts:"order-list-module__orderProducts___sqxMT",orderProduct:"order-list-module__orderProduct___yZC9v",productImage:"order-list-module__productImage___bmf15",productInfo:"order-list-module__productInfo___n9Qjf",productName:"order-list-module__productName___T88Yy",productSpecs:"order-list-module__productSpecs___yaimj",productBottom:"order-list-module__productBottom___tzq6n",productPrice:"order-list-module__productPrice___yyiRX",productQuantity:"order-list-module__productQuantity___etwRG",orderFooter:"order-list-module__orderFooter___jDeh4",orderTotal:"order-list-module__orderTotal___ceNEl",totalLabel:"order-list-module__totalLabel___FTLHR",totalValue:"order-list-module__totalValue___BIc9O",orderActions:"order-list-module__orderActions___ieeGq",actionBtn:"order-list-module__actionBtn___WcUov",primary:"order-list-module__primary___SIXAn",secondary:"order-list-module__secondary___EkHH4",danger:"order-list-module__danger___AymX_",emptyOrder:"order-list-module__emptyOrder___dYhUd",emptyIcon:"order-list-module__emptyIcon___mar7D",emptyText:"order-list-module__emptyText___vPbX6",goShoppingBtn:"order-list-module__goShoppingBtn___Vuxgu",loading:"order-list-module__loading___NhZ5x",refundHeader:"order-list-module__refundHeader___aFemB",refundTitle:"order-list-module__refundTitle____pLln",refundStatusActions:"order-list-module__refundStatusActions___E96du",refundStatusBtn:"order-list-module__refundStatusBtn___fu_mj"}},565:function(n){n.exports="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMzMzIiBzdHJva2Utd2lkdGg9IjEuNSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIj48cGF0aCBkPSJNNiAyTDMgNnYxNGEyIDIgMCAwMDIgMmgxNGEyIDIgMCAwMDItMlY2bC0zLTR6Ii8+PGxpbmUgeDE9IjMiIHkxPSI2IiB4Mj0iMjEiIHkyPSI2Ii8+PHBhdGggZD0iTTE2IDEwYTQgNCAwIDAxLTggMCIvPjwvc3ZnPg=="},1009:function(n){n.exports="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDI0IDEwMjQiIHdpZHRoPSIyMDAiIGhlaWdodD0iMjAwIj48ZyB0cmFuc2Zvcm09InRyYW5zbGF0ZSg1MTIsIDUxMikgc2NhbGUoMC43OCkgdHJhbnNsYXRlKC01MTEuOTg2NywgLTUxMikiPjxwYXRoIGQ9Ik03OTEuNDg4IDU0NC4wOTVjLTEuMjgtMTI5LjY5NSAxMDUuNzYtMTkxLjg3MSAxMTAuNTI4LTE5NC45NzUtNjAuMTYtODguMDMyLTE1My44NTYtMTAwLjA2NC0xODcuMjMyLTEwMS40NzItNzkuNzQ0LTguMDY0LTE1NS41ODQgNDYuOTQ0LTE5Ni4wNjQgNDYuOTQ0LTQwLjM1MiAwLTEwMi44MTYtNDUuNzYtMTY4Ljk2LTQ0LjU0NC04Ni45MTIgMS4yOC0xNjcuMDcyIDUwLjUyOC0yMTEuODA4IDEyOC4zODQtOTAuMzA0IDE1Ni43MDMtMjMuMTM2IDM4OC44MzEgNjQuODk2IDUxNS45MzUgNDMuMDA4IDYyLjIwOCA5NC4zMDQgMTMyLjA2NCAxNjEuNjMyIDEyOS41NjggNjQuODMyLTIuNTkyIDg5LjM3Ni00MS45NTIgMTY3Ljc0NC00MS45NTJzMTAwLjQxNiA0MS45NTIgMTY5LjA1NiA0MC42NzJjNjkuNzYtMS4zMTIgMTEzLjk4NC02My4zOTIgMTU2LjcwNC0xMjUuNzkyIDQ5LjM3Ni03Mi4xNiA2OS43MjgtMTQyLjA0OCA3MC45MTItMTQ1LjYzMi0xLjUzNi0wLjcwNC0xMzYuMDY0LTUyLjIyNC0xMzcuNDA4LTIwNy4xMzZ6TTY2Mi41NiAxNjMuNTJDNjk4LjMwNCAxMjAuMTYgNzIyLjQzMiA2MCA3MTUuODQgMGMtNTEuNDg4IDIuMTEyLTExMy44ODggMzQuMzA0LTE1MC44MTYgNzcuNTM2LTMzLjE1MiAzOC4zNjgtNjIuMTQ0IDk5LjYxNi01NC4zNjggMTU4LjQzMiA1Ny40NzIgNC40OCAxMTYuMTI4LTI5LjIxNiAxNTEuOTA0LTcyLjQ0OHoiIGZpbGw9IiMwMDAiLz48L2c+PC9zdmc+Cg=="},8052:function(n){n.exports="data:image/svg+xml;base64,PHN2ZyB0PSIxNzg1NDg5NDgzNjAwIiBjbGFzcz0iaWNvbiIgdmlld0JveD0iMCAwIDEwMjQgMTAyNCIgdmVyc2lvbj0iMS4xIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHAtaWQ9IjY5MTEiPjxnIHRyYW5zZm9ybT0idHJhbnNsYXRlKDUxMiwgNTEyKSBzY2FsZSgwLjc5MjIpIHRyYW5zbGF0ZSgtNTEzLjE2NDEsIC00NjkuOTI1KSI+PHBhdGggZD0iTTQxMi4wOCA3NTMuODdRMjk3IDg1NS4wNiAyMjAuMTQgODU1LjEzdC0xMTcuMjctOTUuMDdsMzA5LjIxLTYuMjR6IG0yMDIuMTYgMGwzMDkuMjEgNi4xOVE4ODMgODU1LjEzIDgwNi4xOCA4NTUuMTNUNjE0LjI0IDc1My44MnpNMTUuOTEgNDg5LjFxMTc4IDk1IDIyOC40OSAxMjUuMzR0MTcxLjg5IDEwOC44OHEtMTkzLjEgMTItMjUyLjc1IDAuMzJjLTQ1LjQ5LTguODktODAuOS0yOC4yOS0xMTEuMjItNTguNjZRLTguMjIgNjA0LjQ0IDE1LjkxIDQ4OS4xeiBtOTk0LjUgMFExMDM0LjU2IDYwNC40MSA5NzQgNjY1Yy0zMC4zMSAzMC4zNy02NS43MiA0OS43Ny0xMTEuMjIgNTguNjZxLTU5LjY0IDExLjctMjUyLjctMC4zMiAxMjEuMjctNzguNTUgMTcxLjg1LTEwOC44OHQyMjguNDgtMTI1LjM2ek0xNjEuNDggMjI4LjI3cTkzLjA4IDEyMy4zNiAxMjcuNDEgMTc1Ljk0dDE1NSAyODMuMzhRMjA1Ljg4IDU4MC41NSAxMTMgNDc1Yy00NC40OS01MC41NC00NC40OS0xMzMuNDYgNi0yMDQuMjNxMTEtMTUuNCA0Mi40Ny00Mi40N3ogbTcwMy4zMSAwcTMxLjUxIDI3LjEgNDIuNDcgNDIuNDdjNTAuNTQgNzAuNzcgNTAuNTQgMTUzLjY1IDYuMDYgMjA0LjI2cS05Mi44OCAxMDUuNi0zMzEgMjEyLjYyIDEyMC42Ni0yMzAuOCAxNTUtMjgzLjQzdDEyNy40Ny0xNzUuOTJ6TTQ0MC42IDg0LjcycTQ2LjUxIDEzNy41MiA1Mi41NiAxOTQuMVQ0ODMuMDcgNjU5UTI4MC44MSAzNjcuODMgMjgwLjgxIDIzNi4zOVQ0NDAuNiA4NC43MnogbTE0NS4yMSAwUTc0NS41NSAxMDUgNzQ1LjU1IDIzNi4zOVQ1NDMuMzQgNjU5cS0xNi4xNy0zMjMuNTUtMTAuMDktMzgwLjE2dDUyLjU2LTE5NC4xeiIgZmlsbD0iI0ZFMDAwMCIgcC1pZD0iNjkxMiIgZGF0YS1zcG0tYW5jaG9yLWlkPSJhMzEzeC5zZWFyY2hfaW5kZXguMC5pMC4xNjZmM2E4MWVWQlRhaSIgY2xhc3M9IiI+PC9wYXRoPjwvZz48L3N2Zz4="},2800:function(n){n.exports="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDI0IDEwMjQiIHdpZHRoPSIyMDAiIGhlaWdodD0iMjAwIj48ZyB0cmFuc2Zvcm09InRyYW5zbGF0ZSg1MTIsIDUxMikgc2NhbGUoMC44NzM4KSB0cmFuc2xhdGUoLTUxMS42NjY5LCAtNTIzLjMwNjYpIj48cGF0aCBkPSJNMTY4LjI5NDQgMzcwLjM0NjY2N2MtMjEuMDM5Nzg3IDkxLjAyMzM2LTIxLjAzOTc4NyAxNDUuNjM2NjkzIDAgMTYzLjg0IDMxLjU2MzA5MyAyNy4zMDY2NjcgNzkuMzQ5NzYgMjAuNDggMTUyLjU3NiAwIDQ4LjgxNDA4LTEzLjY1MzMzMyAyNjQuNzY1NDQtNzEuMTA5OTczIDY0Ny44NTA2NjctMTcyLjM3MzMzNC00MTcuMTA5MzMzIDE4NS40NTY2NC02NTEuODM0MDI3IDI4Ni43Mi03MDQuMTcwNjY3IDMwMy43ODY2NjctNzguNTA2NjY3IDI1LjYtMTMzLjk4Njk4NyAyNS42LTE3NS42MjYyNCAwLTQxLjY0MjY2Ny0yNS42LTQ0LjM3MzMzMy0xMDIuNC0xMy42NTMzMzMtMTYwLjQyNjY2NyAyMC40OC0zOC42ODMzMDcgNTEuNDg2NzItODMuNjI2NjY3IDkzLjAyMzU3My0xMzQuODI2NjY2eiIgZmlsbD0iIzAwMCIvPjwvZz48L3N2Zz4K"},9940:function(n){n.exports="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMjggMTI4IiBmaWxsPSJub25lIj4KICA8ZyB0cmFuc2Zvcm09InRyYW5zbGF0ZSg2NCwgNjQpIHNjYWxlKDAuODMyKSB0cmFuc2xhdGUoLTY0LCAtNjQpIj4KICA8Y2lyY2xlIGN4PSI2NCIgY3k9IjY0IiByPSI2MCIgc3Ryb2tlPSIjRThEOEIwIiBzdHJva2Utd2lkdGg9IjIiIGZpbGw9IiNmZmYiLz4KICA8cGF0aCBkPSJNNjQgMzIgTDcwIDU2IEw5NiA1MCBMNzYgNjYgTDk2IDc4IEw3MCA3NCBMNjQgOTYgTDU4IDc0IEwzMiA3OCBMNTIgNjYgTDMyIDUwIEw1OCA1NiBaIiBzdHJva2U9IiNENEEwMTciIHN0cm9rZS13aWR0aD0iMiIgZmlsbD0iI0ZGRDcwMCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPgogIDxlbGxpcHNlIGN4PSI2NCIgY3k9IjY0IiByeD0iMTQiIHJ5PSIxNCIgc3Ryb2tlPSIjRjVGNURDIiBzdHJva2Utd2lkdGg9IjEuNSIgZmlsbD0iI0ZGRkFDRCIvPgogIDxjaXJjbGUgY3g9IjU4IiBjeT0iNjAiIHI9IjEuNSIgZmlsbD0iIzhCNDUxMyIvPgogIDxjaXJjbGUgY3g9IjcwIiBjeT0iNjAiIHI9IjEuNSIgZmlsbD0iIzhCNDUxMyIvPgogIDxwYXRoIGQ9Ik01OCA2OCBMNjQgNzIgTDcwIDY4IiBzdHJva2U9IiM4QjQ1MTMiIHN0cm9rZS13aWR0aD0iMS4yIiBmaWxsPSJub25lIiBzdHJva2UtbGluZWNhcD0icm91bmQiLz4KICA8L2c+Cjwvc3ZnPg=="},654:function(n){n.exports="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxNzEwIDEwMjQiIHdpZHRoPSIyMDAiIGhlaWdodD0iMjAwIj48ZyB0cmFuc2Zvcm09InRyYW5zbGF0ZSg4NTUsIDUxMikgc2NhbGUoMC43OCkgdHJhbnNsYXRlKC04NTQuODIzNywgLTUxMikiPjxwYXRoIGQ9Ik0wIDg2NC4yNjgxNWwyLjY5NTg5NiAxLjM0Nzk0OWE4MjIuMDIzNjgyIDgyMi4wMjM2ODIgMCAwIDAgMzIxLjQ4NTYyMiA2Mi42Nzk1ODZBODA1Ljg0ODMwNSA4MDUuODQ4MzA1IDAgMCAwIDc0MS4zNzE0NTQgODIyLjcwNjQxN2M3LjE4OTA1NyA1LjM5MTc5MiAxNC4zNzgxMTMgMTAuNzgzNTg1IDIyLjQ2NTgwMSAxNS43MjYwNjJsLTU4LjE4NjQyNiAxODEuOTcyOTkzLTEuMTIzMjkgMy41OTQ1MjhoNDg3Ljk1NzIxMnYtMi42OTU4OTZhODMuNTcyNzgyIDgzLjU3Mjc4MiAwIDAgMC0yLjQ3MTIzOS0xOS43Njk5MDZoMjEzLjIwMDQ1OHYtMi42OTU4OTZhODMuMTIzNDY2IDgzLjEyMzQ2NiAwIDAgMC04My4xMjM0NjYtODMuMTIzNDY2aC0xNDkuODQ2ODk3bDkuODg0OTUzLTE3Ljc0Nzk4M2ExODkuMTYyMDUgMTg5LjE2MjA1IDAgMCAwIDExNC4zNTA5My0xNjYuMjQ2OTMyIDg5Ljg2MzIwNyA4OS44NjMyMDcgMCAwIDAgNS4zOTE3OTItNy40MTM3MTVsNzguMTgwOTktMTIxLjk4OTMwMyA2Ny4zOTc0MDUtOS4yMTA5NzggNTAuMDk4NzM4IDExLjY4MjIxNyA2My44MDI4NzYtMjYuNTA5NjQ2di00Ny4xNzgxODRsOC4zMTIzNDctMS4xMjMyOSA0OS44NzQwNzkgMTEuNDU3NTU5IDY0LjAyNzUzNS0yNi4yODQ5ODh2LTEwMi42Njg3MTNsLTY0LjcwMTUwOS0xMy4yNTQ4MjMtNzUuNzA5NzUxIDMxLjAwMjgwNi00OC45NzU0NDgtNi4yOTA0MjUgNDkuNDI0NzY0LTc3LjA1NzY5OWg0MC4yMTM3ODVsNTAuNzcyNzEyLTYyLjQ1NDkyOSAxOS4wOTU5MzEgMzAuMTA0MTc0IDQyLjQ2MDM2NS04Ljk4NjMyVjIxMi45ODQ1NjFMMTcwOS42NDc1MDQgMTc5LjczNTE3NVYxMjEuMzI0MDlsLTEzNS45MTgxLTYxLjEwNjk4LTIwLjY2ODUzNy0yMi40NjU4MDJhMTIyLjIxMzk2MSAxMjIuMjEzOTYxIDAgMCAwLTYwLjY1NzY2NS0zMi4zNTA3NTRBMzI1LjMwNDgwOCAzMjUuMzA0ODA4IDAgMCAwIDE0MzMuMDkzNDg2IDAuMDA4NzYyYTMwNy4zMzIxNjYgMzA3LjMzMjE2NiAwIDAgMC05NS4yNTQ5OTkgMTQuMzc4MTEzbC0yMi40NjU4MDItOS4yMTA5NzloLTQ2LjcyODg2N3YyLjQ3MTIzOEExODkuODM2MDI0IDE4OS44MzYwMjQgMCAwIDAgMTI2Ny4wNzEyMTIgNDQuOTQwMzY1bC0xMjkuODUyMzMzIDQ0LjkzMTYwMy0yMjcuODAzMjI5IDM1Ljk0NTI4M2EzODYuNjM2NDQ2IDM4Ni42MzY0NDYgMCAwIDAtMjE4LjU5MjI1IDExNi4xNDgxOTQgMzkxLjU3ODkyMiAzOTEuNTc4OTIyIDAgMCAwLTUwLjk5NzM3IDQ2OS4zMTA1OTYgOTk3LjQ4MTU5MiA5OTcuNDgxNTkyIDAgMCAwLTE5MC41MDk5OTctMTguNjQ2NjE1Yy0xNjEuMDc5Nzk4IDAtMzEwLjcwMjAzNyA0MS41NjE3MzMtNDIxLjIzMzc4MSAxMTcuMjcxNDg0eiIgZmlsbD0iIzlBNkE0NCIvPjwvZz48L3N2Zz4K"},6256:function(n){n.exports="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDI0IDEwMjQiPjxnIHRyYW5zZm9ybT0idHJhbnNsYXRlKDUxMiwgNTEyKSBzY2FsZSgwLjg5ODYpIHRyYW5zbGF0ZSgtNTEwLjAyOTIsIC01MTEuODMwMikiPjxwYXRoIGQ9Ik03MDYuOTc1NjQ3IDc5NC4zOTE1NzlWMzg5LjQyMjI0NGMwLTkyLjAxNDY3LTc0LjU3MDM2OS0xNjYuNjE4ODA4LTE2Ni41NzQ4MDctMTY2LjYxODgwOUg3Mi4xNDkyMjdjLTMuNjEwMjI0IDAtNi41MzU4NTcgMi45MDkyNi02LjUzNTg1NyA2LjQ4MjY0NXY1NjUuMTAxNDA1YzAgMy41NzMzODUgMi45MjQ2MDkgNi40NjkzNDIgNi41MzU4NTcgNi40NjkzNDJoMTI1LjA3NDYyM2MzLjYxMTI0OCAwIDYuNTMxNzYzLTIuOTExMzA2IDYuNTMxNzY0LTYuNTA1MTU3VjM1MC44MTM5MjRjMC0zLjYwMTAxNSAyLjkyNDYwOS02LjUyMjU1NCA2LjUzNTg1Ni02LjUyMjU1NGgyNjguOTYyNzMyYzUwLjUwNzMyNCAwIDkxLjQ2NjE3OCA0MC45Mzk0MTEgOTEuNDY2MTc4IDkxLjQ1Mjg3NXYzNTguNTk0MTIyYzAgMy41OTc5NDUgMi45MjA1MTYgNi41MDIwODggNi41MTMzNDQgNi41MDIwODdINzAwLjQ2NzQxOWMzLjU4NDY0MiAwIDYuNTEzMzQ0LTIuOTAyMDk2IDYuNTEzMzQ0LTYuNDY5MzQybC0wLjAwNTExNiAwLjAyMDQ2N3ogbS0yNTIuNTc2NTMtMC4wNDQwMDNhNi40OTI4NzggNi40OTI4NzggMCAwIDEtNi41MDkyNSA2LjUwOTI1MUgzMjIuODQ0OTE5Yy0zLjYxMTI0OCAwLTYuNTM1ODU3LTIuOTExMzA2LTYuNTM1ODU3LTYuNTA5MjUxVjQ1NC40Njc2NzljMC0zLjU5Nzk0NSAyLjkyNDYwOS02LjUxODQ2IDYuNTM1ODU3LTYuNTE4NDYxaDEyNS4wNDQ5NDhhNi41MDMxMTEgNi41MDMxMTEgMCAwIDEgNi41MDkyNSA2LjUxODQ2MVY3OTQuMzY0OTczdi0wLjAxNzM5N201MDAuMDQ1NzM3IDBjMCAzLjYwMTAxNS0yLjkyODcwMiA2LjUwOTI1MS02LjUzODkyNiA2LjUwOTI1MUg4MjIuODg5NjMzYy0zLjYyMDQ1NyAwLTYuNTY0NTA5LTIuOTExMzA2LTYuNTY0NTA5LTYuNTA5MjUxVjIyOS4zNDY0NTVjMC0zLjYxNDMxNyAyLjk0NDA1Mi02LjUzMTc2MyA2LjU2NDUwOS02LjUzMTc2M2gxMjUuMDE2Mjk1YTYuNTI4Njk0IDYuNTI4Njk0IDAgMCAxIDYuNTM4OTI2IDYuNTMxNzYzdjU2NS4wMDExMjEiIGZpbGw9IiMyNzI1MzYiLz48L2c+PC9zdmc+Cg=="}}]);
+"use strict";
+(wx["webpackJsonp"] = wx["webpackJsonp"] || []).push([["common"],{
+
+/***/ "./src/api/cart/index.ts":
+/*!*******************************!*\
+  !*** ./src/api/cart/index.ts ***!
+  \*******************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   addToCartAPI: function() { return /* binding */ addToCartAPI; },
+/* harmony export */   applyRefund: function() { return /* binding */ applyRefund; },
+/* harmony export */   batchDeleteCartItem: function() { return /* binding */ batchDeleteCartItem; },
+/* harmony export */   cancelOrder: function() { return /* binding */ cancelOrder; },
+/* harmony export */   confirmOrder: function() { return /* binding */ confirmOrder; },
+/* harmony export */   deleteCartItem: function() { return /* binding */ deleteCartItem; },
+/* harmony export */   fetchCartList: function() { return /* binding */ fetchCartList; },
+/* harmony export */   fetchDefaultAddress: function() { return /* binding */ fetchDefaultAddress; },
+/* harmony export */   fetchOrderDetail: function() { return /* binding */ fetchOrderDetail; },
+/* harmony export */   fetchOrderList: function() { return /* binding */ fetchOrderList; },
+/* harmony export */   fetchOrderPaymentStatus: function() { return /* binding */ fetchOrderPaymentStatus; },
+/* harmony export */   fetchOrderReviews: function() { return /* binding */ fetchOrderReviews; },
+/* harmony export */   fetchRefundList: function() { return /* binding */ fetchRefundList; },
+/* harmony export */   fetchRefundReasons: function() { return /* binding */ fetchRefundReasons; },
+/* harmony export */   payOrder: function() { return /* binding */ payOrder; },
+/* harmony export */   submitOrder: function() { return /* binding */ submitOrder; },
+/* harmony export */   submitOrderReview: function() { return /* binding */ submitOrderReview; },
+/* harmony export */   transformCartItem: function() { return /* binding */ transformCartItem; },
+/* harmony export */   updateCartItem: function() { return /* binding */ updateCartItem; }
+/* harmony export */ });
+/* unused harmony exports cartApi, orderApi, paymentApi, refundApi, addressApi, transformOrderItem, paymentCallback, normalizePaymentStatus, confirmPickupOrder, refundOrder, normalizeReview, normalizeRefundReason, normalizeRefund, fetchRefundDetail, normalizeAddress, fetchAddressList */
+/* harmony import */ var D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./node_modules/@babel/runtime/helpers/esm/regenerator.js */ "./node_modules/@babel/runtime/helpers/esm/regenerator.js");
+/* harmony import */ var D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./node_modules/@babel/runtime/helpers/esm/objectSpread2.js */ "./node_modules/@babel/runtime/helpers/esm/objectSpread2.js");
+/* harmony import */ var D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./node_modules/@babel/runtime/helpers/esm/asyncToGenerator.js */ "./node_modules/@babel/runtime/helpers/esm/asyncToGenerator.js");
+/* harmony import */ var D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_typeof_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./node_modules/@babel/runtime/helpers/esm/typeof.js */ "./node_modules/@babel/runtime/helpers/esm/typeof.js");
+/* harmony import */ var _api_common__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @/api/common */ "./src/api/common/index.ts");
+
+
+
+
+// H5 端使用相对路径，通过 devServer proxy 转发，避免跨域
+// 小程序端不受 CORS 限制，直接使用完整后端地址
+
+var BACKEND_HOST = 'http://192.168.10.7:8089';
+var API_BASE_URL =  false ? 0 : "".concat(BACKEND_HOST, "/api/v1");
+
+// ==================== URL 常量 ====================
+var cartApi = {
+  list: "".concat(API_BASE_URL, "/cart"),
+  add: "".concat(API_BASE_URL, "/cart"),
+  update: "".concat(API_BASE_URL, "/cart/:id"),
+  delete: "".concat(API_BASE_URL, "/cart/:id"),
+  batchDelete: "".concat(API_BASE_URL, "/cart/batch-delete")
+};
+var orderApi = {
+  submit: "".concat(API_BASE_URL, "/orders"),
+  list: "".concat(API_BASE_URL, "/orders"),
+  detail: "".concat(API_BASE_URL, "/orders/:id"),
+  cancel: "".concat(API_BASE_URL, "/orders/:id/cancel"),
+  pay: "".concat(API_BASE_URL, "/orders/:id/pay"),
+  paymentStatus: "".concat(API_BASE_URL, "/orders/:id/payment"),
+  confirm: "".concat(API_BASE_URL, "/orders/:id/confirm"),
+  confirmPickup: "".concat(API_BASE_URL, "/orders/:id/pickup"),
+  refund: "".concat(API_BASE_URL, "/orders/:id/refund"),
+  review: "".concat(API_BASE_URL, "/orders/:id/review"),
+  reviewList: "".concat(API_BASE_URL, "/orders/:id/reviews")
+};
+var paymentApi = {
+  callback: "".concat(API_BASE_URL, "/payment/callback")
+};
+var refundApi = {
+  reasonList: "".concat(API_BASE_URL, "/refund-reasons"),
+  list: "".concat(API_BASE_URL, "/refunds"),
+  apply: "".concat(API_BASE_URL, "/refunds"),
+  detail: "".concat(API_BASE_URL, "/refunds/:id")
+};
+var addressApi = {
+  list: "".concat(API_BASE_URL, "/address"),
+  default: "".concat(API_BASE_URL, "/address/default"),
+  detail: "".concat(API_BASE_URL, "/address/:id"),
+  create: "".concat(API_BASE_URL, "/address"),
+  update: "".concat(API_BASE_URL, "/address/:id"),
+  delete: "".concat(API_BASE_URL, "/address/:id")
+};
+
+// ==================== 数据转换 ====================
+
+/**
+ * 转换购物车项：兼容后端可能返回的 snake_case / PascalCase / camelCase 字段名
+ */
+function isEmptyValue(value) {
+  return value === undefined || value === null || value === '' || value === 0 || value === '0';
+}
+function normalizeEmptyId(value) {
+  if (isEmptyValue(value)) return '';
+  return String(value);
+}
+function pickFirstValidId() {
+  for (var _len = arguments.length, candidates = new Array(_len), _key = 0; _key < _len; _key++) {
+    candidates[_key] = arguments[_key];
+  }
+  for (var _i = 0, _candidates = candidates; _i < _candidates.length; _i++) {
+    var value = _candidates[_i];
+    if (!isEmptyValue(value)) {
+      return String(value);
+    }
+  }
+  return '';
+}
+
+/**
+ * 兜底提取商品信息：兼容后端把商品字段平铺在退款记录上，或嵌套在 product/sku/goods/orderItem 等结构里
+ */
+function extractFallbackProduct(raw) {
+  var _ref, _ref2, _ref3, _ref4, _ref5, _ref6, _ref7, _ref8, _ref9, _raw$product, _ref0, _ref1, _ref10, _raw$sku, _ref11, _ref12, _ref13, _ref14, _ref15, _ref16, _ref17, _ref18, _ref19, _ref20, _ref21, _ref22, _ref23, _ref24, _ref25, _raw$productName, _ref26, _ref27, _ref28, _ref29, _ref30, _ref31, _ref32, _ref33, _ref34, _ref35, _raw$skuName, _ref36, _ref37, _ref38, _ref39, _ref40, _ref41, _ref42, _ref43, _ref44, _ref45, _raw$productImage, _ref50, _ref51, _ref52, _ref53, _ref54, _ref55, _ref56, _ref57, _ref58, _ref59, _raw$price, _ref60, _ref61, _ref62, _ref63, _ref64, _ref65, _ref66, _raw$quantity;
+  if (!raw || (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_typeof_js__WEBPACK_IMPORTED_MODULE_1__["default"])(raw) !== 'object') return null;
+  var product = (_ref = (_ref2 = (_ref3 = (_ref4 = (_ref5 = (_ref6 = (_ref7 = (_ref8 = (_ref9 = (_raw$product = raw.product) !== null && _raw$product !== void 0 ? _raw$product : raw.Product) !== null && _ref9 !== void 0 ? _ref9 : raw.goods) !== null && _ref8 !== void 0 ? _ref8 : raw.Goods) !== null && _ref7 !== void 0 ? _ref7 : raw.item) !== null && _ref6 !== void 0 ? _ref6 : raw.Item) !== null && _ref5 !== void 0 ? _ref5 : raw.orderItem) !== null && _ref4 !== void 0 ? _ref4 : raw.OrderItem) !== null && _ref3 !== void 0 ? _ref3 : raw.refundItem) !== null && _ref2 !== void 0 ? _ref2 : raw.RefundItem) !== null && _ref !== void 0 ? _ref : {};
+  var sku = (_ref0 = (_ref1 = (_ref10 = (_raw$sku = raw.sku) !== null && _raw$sku !== void 0 ? _raw$sku : raw.Sku) !== null && _ref10 !== void 0 ? _ref10 : product.sku) !== null && _ref1 !== void 0 ? _ref1 : product.Sku) !== null && _ref0 !== void 0 ? _ref0 : {};
+  var productName = (_ref11 = (_ref12 = (_ref13 = (_ref14 = (_ref15 = (_ref16 = (_ref17 = (_ref18 = (_ref19 = (_ref20 = (_ref21 = (_ref22 = (_ref23 = (_ref24 = (_ref25 = (_raw$productName = raw.productName) !== null && _raw$productName !== void 0 ? _raw$productName : raw.product_name) !== null && _ref25 !== void 0 ? _ref25 : raw.ProductName) !== null && _ref24 !== void 0 ? _ref24 : raw.name) !== null && _ref23 !== void 0 ? _ref23 : raw.Name) !== null && _ref22 !== void 0 ? _ref22 : raw.title) !== null && _ref21 !== void 0 ? _ref21 : raw.Title) !== null && _ref20 !== void 0 ? _ref20 : raw.goodsName) !== null && _ref19 !== void 0 ? _ref19 : raw.goods_name) !== null && _ref18 !== void 0 ? _ref18 : raw.GoodsName) !== null && _ref17 !== void 0 ? _ref17 : product.name) !== null && _ref16 !== void 0 ? _ref16 : product.Name) !== null && _ref15 !== void 0 ? _ref15 : product.productName) !== null && _ref14 !== void 0 ? _ref14 : product.title) !== null && _ref13 !== void 0 ? _ref13 : product.Title) !== null && _ref12 !== void 0 ? _ref12 : product.goodsName) !== null && _ref11 !== void 0 ? _ref11 : '';
+  var skuName = (_ref26 = (_ref27 = (_ref28 = (_ref29 = (_ref30 = (_ref31 = (_ref32 = (_ref33 = (_ref34 = (_ref35 = (_raw$skuName = raw.skuName) !== null && _raw$skuName !== void 0 ? _raw$skuName : raw.sku_name) !== null && _ref35 !== void 0 ? _ref35 : raw.SkuName) !== null && _ref34 !== void 0 ? _ref34 : raw.specName) !== null && _ref33 !== void 0 ? _ref33 : raw.spec_name) !== null && _ref32 !== void 0 ? _ref32 : raw.SpecName) !== null && _ref31 !== void 0 ? _ref31 : raw.specs) !== null && _ref30 !== void 0 ? _ref30 : sku.name) !== null && _ref29 !== void 0 ? _ref29 : sku.skuName) !== null && _ref28 !== void 0 ? _ref28 : sku.specName) !== null && _ref27 !== void 0 ? _ref27 : sku.specs) !== null && _ref26 !== void 0 ? _ref26 : '';
+  if (!skuName && (raw.specValues || sku.specValues)) {
+    var sv = raw.specValues || sku.specValues;
+    if ((0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_typeof_js__WEBPACK_IMPORTED_MODULE_1__["default"])(sv) === 'object') {
+      skuName = Object.values(sv).join('/') || '';
+    }
+  }
+  var image = (_ref36 = (_ref37 = (_ref38 = (_ref39 = (_ref40 = (_ref41 = (_ref42 = (_ref43 = (_ref44 = (_ref45 = (_raw$productImage = raw.productImage) !== null && _raw$productImage !== void 0 ? _raw$productImage : raw.product_image) !== null && _ref45 !== void 0 ? _ref45 : raw.ProductImage) !== null && _ref44 !== void 0 ? _ref44 : raw.image) !== null && _ref43 !== void 0 ? _ref43 : raw.Image) !== null && _ref42 !== void 0 ? _ref42 : raw.pic) !== null && _ref41 !== void 0 ? _ref41 : raw.Pic) !== null && _ref40 !== void 0 ? _ref40 : product.image) !== null && _ref39 !== void 0 ? _ref39 : product.Image) !== null && _ref38 !== void 0 ? _ref38 : product.pic) !== null && _ref37 !== void 0 ? _ref37 : product.Pic) !== null && _ref36 !== void 0 ? _ref36 : '';
+  if (!image) {
+    var _ref46, _ref47, _ref48, _ref49, _product$images;
+    var arr = (_ref46 = (_ref47 = (_ref48 = (_ref49 = (_product$images = product.images) !== null && _product$images !== void 0 ? _product$images : product.Images) !== null && _ref49 !== void 0 ? _ref49 : product.imageList) !== null && _ref48 !== void 0 ? _ref48 : product.ImageList) !== null && _ref47 !== void 0 ? _ref47 : sku.images) !== null && _ref46 !== void 0 ? _ref46 : sku.Images;
+    if (Array.isArray(arr) && arr.length > 0) {
+      image = arr[0];
+    }
+  }
+  if (typeof image === 'string') {
+    if (image.startsWith('[')) {
+      try {
+        var parsed = JSON.parse(image);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          image = String(parsed[0]).replace(/^`|`$/g, '');
+        }
+      } catch (_unused) {/* ignore */}
+    } else {
+      image = image.replace(/^`|`$/g, '');
+    }
+  }
+  var price = Number((_ref50 = (_ref51 = (_ref52 = (_ref53 = (_ref54 = (_ref55 = (_ref56 = (_ref57 = (_ref58 = (_ref59 = (_raw$price = raw.price) !== null && _raw$price !== void 0 ? _raw$price : raw.Price) !== null && _ref59 !== void 0 ? _ref59 : raw.refundPrice) !== null && _ref58 !== void 0 ? _ref58 : raw.refund_price) !== null && _ref57 !== void 0 ? _ref57 : raw.RefundPrice) !== null && _ref56 !== void 0 ? _ref56 : raw.amount) !== null && _ref55 !== void 0 ? _ref55 : raw.Amount) !== null && _ref54 !== void 0 ? _ref54 : sku.price) !== null && _ref53 !== void 0 ? _ref53 : sku.Price) !== null && _ref52 !== void 0 ? _ref52 : product.price) !== null && _ref51 !== void 0 ? _ref51 : product.Price) !== null && _ref50 !== void 0 ? _ref50 : 0);
+  var quantity = Number((_ref60 = (_ref61 = (_ref62 = (_ref63 = (_ref64 = (_ref65 = (_ref66 = (_raw$quantity = raw.quantity) !== null && _raw$quantity !== void 0 ? _raw$quantity : raw.Quantity) !== null && _ref66 !== void 0 ? _ref66 : raw.count) !== null && _ref65 !== void 0 ? _ref65 : raw.Count) !== null && _ref64 !== void 0 ? _ref64 : raw.num) !== null && _ref63 !== void 0 ? _ref63 : raw.Num) !== null && _ref62 !== void 0 ? _ref62 : sku.quantity) !== null && _ref61 !== void 0 ? _ref61 : product.quantity) !== null && _ref60 !== void 0 ? _ref60 : 1);
+  if (!productName && !image) return null;
+  return {
+    productName: productName,
+    skuName: skuName,
+    image: image,
+    price: price,
+    quantity: quantity
+  };
+}
+function transformCartItem(raw) {
+  var _ref67, _ref68, _ref69, _raw$sku2, _ref70, _ref71, _ref72, _ref73, _ref74, _ref75, _ref76, _ref77, _ref78, _raw$product2, _ref79, _ref80, _ref81, _ref82, _ref83, _ref84, _ref85, _ref86, _ref87, _ref88, _raw$skuName2, _rawSku$product, _rawSku$product2, _rawSku$product3, _rawSku$product4, _rawSku$product5, _rawSku$product6, _product$images2, _product$Images, _ref89, _ref90, _ref91, _ref92, _ref93, _ref94, _ref95, _ref96, _ref97, _ref98, _raw$productName2, _ref99, _ref100, _ref101, _ref102, _ref103, _ref104, _ref105, _ref106, _ref107, _ref108, _ref109, _ref110, _ref111, _ref112, _raw$price2, _rawSku$product7, _rawSku$product8, _ref113, _ref114, _ref115, _raw$quantity2, _ref116, _ref117, _ref118, _ref119, _ref120, _ref121, _raw$stock, _ref122, _raw$selected, _ref123, _ref124, _ref125, _ref126, _raw$isSeckill, _ref127, _ref128, _ref129, _ref130, _ref131, _raw$seckillPrice, _ref132, _ref133, _ref134, _ref135, _ref136, _raw$originalPrice, _ref137, _ref138, _ref139, _ref140, _raw$storeId, _ref141, _ref142, _ref143, _ref144, _raw$storeName, _ref145, _raw$checked, _ref146, _ref147, _ref148, _ref149, _ref150, _raw$skuCode, _ref151, _ref152, _ref153, _ref154, _raw$productCode, _ref155, _ref156, _ref157, _raw$createTime, _ref158, _ref159, _ref160, _raw$updateTime;
+  var id = pickFirstValidId(raw.id, raw.Id, raw.ID, raw.cartId, raw.cart_id, raw.CartId, raw.Cart_id, raw.cartItemId, raw.cart_item_id, raw.CartItemId, raw.CartItemID, raw.cartItemID, raw.cid, raw.Cid, raw.CID, raw.itemId, raw.item_id, raw.ItemId, raw.ItemID, raw.shoppingCartId, raw.shopping_cart_id, raw.ShoppingCartId, raw.shoppingCartItemId, raw.shopping_cart_item_id, raw.ShoppingCartItemId);
+  if (!id) {
+    console.warn('[transformCartItem] 无法提取有效购物车ID，原始数据:', JSON.stringify(raw));
+  }
+
+  // 兼容后端返回的嵌套商品/SKU结构：
+  // 1. { product: {...}, sku: {...}, quantity: 1 }
+  // 2. { sku: { product: {...}, ... }, quantity: 1 }
+  var rawSku = (_ref67 = (_ref68 = (_ref69 = (_raw$sku2 = raw.sku) !== null && _raw$sku2 !== void 0 ? _raw$sku2 : raw.Sku) !== null && _ref69 !== void 0 ? _ref69 : raw.skuInfo) !== null && _ref68 !== void 0 ? _ref68 : raw.SkuInfo) !== null && _ref67 !== void 0 ? _ref67 : {};
+  var product = (_ref70 = (_ref71 = (_ref72 = (_ref73 = (_ref74 = (_ref75 = (_ref76 = (_ref77 = (_ref78 = (_raw$product2 = raw.product) !== null && _raw$product2 !== void 0 ? _raw$product2 : raw.Product) !== null && _ref78 !== void 0 ? _ref78 : raw.goods) !== null && _ref77 !== void 0 ? _ref77 : raw.Goods) !== null && _ref76 !== void 0 ? _ref76 : raw.item) !== null && _ref75 !== void 0 ? _ref75 : raw.Item) !== null && _ref74 !== void 0 ? _ref74 : rawSku.product) !== null && _ref73 !== void 0 ? _ref73 : rawSku.Product) !== null && _ref72 !== void 0 ? _ref72 : rawSku.goods) !== null && _ref71 !== void 0 ? _ref71 : rawSku.Goods) !== null && _ref70 !== void 0 ? _ref70 : {};
+
+  // 处理 specValues：后端返回对象 {"颜色":"红色"}，需要转为字符串
+  var skuName = (_ref79 = (_ref80 = (_ref81 = (_ref82 = (_ref83 = (_ref84 = (_ref85 = (_ref86 = (_ref87 = (_ref88 = (_raw$skuName2 = raw.skuName) !== null && _raw$skuName2 !== void 0 ? _raw$skuName2 : raw.sku_name) !== null && _ref88 !== void 0 ? _ref88 : raw.SkuName) !== null && _ref87 !== void 0 ? _ref87 : raw.specName) !== null && _ref86 !== void 0 ? _ref86 : rawSku.name) !== null && _ref85 !== void 0 ? _ref85 : rawSku.skuName) !== null && _ref84 !== void 0 ? _ref84 : rawSku.sku_name) !== null && _ref83 !== void 0 ? _ref83 : rawSku.SkuName) !== null && _ref82 !== void 0 ? _ref82 : rawSku.specName) !== null && _ref81 !== void 0 ? _ref81 : rawSku.title) !== null && _ref80 !== void 0 ? _ref80 : rawSku.Title) !== null && _ref79 !== void 0 ? _ref79 : '';
+  if (!skuName && raw.specValues && (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_typeof_js__WEBPACK_IMPORTED_MODULE_1__["default"])(raw.specValues) === 'object') {
+    skuName = Object.values(raw.specValues).join('/') || '';
+  }
+  if (!skuName && rawSku.specValues && (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_typeof_js__WEBPACK_IMPORTED_MODULE_1__["default"])(rawSku.specValues) === 'object') {
+    skuName = Object.values(rawSku.specValues).join('/') || '';
+  }
+  if (!skuName && rawSku.specs && (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_typeof_js__WEBPACK_IMPORTED_MODULE_1__["default"])(rawSku.specs) === 'object') {
+    skuName = Object.values(rawSku.specs).join('/') || '';
+  }
+  if (!skuName && product.specs && (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_typeof_js__WEBPACK_IMPORTED_MODULE_1__["default"])(product.specs) === 'object') {
+    skuName = Object.values(product.specs).join('/') || '';
+  }
+
+  // 处理 image：后端可能返回 JSON 字符串 '["url"]' 或普通字符串，URL 前后可能带反引号
+  var imageCandidates = [raw.image, raw.imageUrl, raw.image_url, raw.Image, raw.pic, raw.mainImage, raw.main_image, raw.MainImage, raw.cover, raw.Cover, raw.thumbnail, raw.Thumbnail, raw.productImage, raw.product_image, raw.ProductImage, rawSku.image, rawSku.Image, rawSku.pic, rawSku.skuImage, rawSku.SkuImage, rawSku.mainImage, rawSku.main_image, rawSku.MainImage, rawSku.cover, rawSku.Cover, rawSku.thumbnail, rawSku.Thumbnail, (_rawSku$product = rawSku.product) === null || _rawSku$product === void 0 || (_rawSku$product = _rawSku$product.images) === null || _rawSku$product === void 0 ? void 0 : _rawSku$product[0], (_rawSku$product2 = rawSku.product) === null || _rawSku$product2 === void 0 || (_rawSku$product2 = _rawSku$product2.Images) === null || _rawSku$product2 === void 0 ? void 0 : _rawSku$product2[0], (_rawSku$product3 = rawSku.product) === null || _rawSku$product3 === void 0 ? void 0 : _rawSku$product3.mainImage, (_rawSku$product4 = rawSku.product) === null || _rawSku$product4 === void 0 ? void 0 : _rawSku$product4.MainImage, (_rawSku$product5 = rawSku.product) === null || _rawSku$product5 === void 0 ? void 0 : _rawSku$product5.image, (_rawSku$product6 = rawSku.product) === null || _rawSku$product6 === void 0 ? void 0 : _rawSku$product6.Image, product.image, product.Image, product.pic, (_product$images2 = product.images) === null || _product$images2 === void 0 ? void 0 : _product$images2[0], (_product$Images = product.Images) === null || _product$Images === void 0 ? void 0 : _product$Images[0], product.mainImage, product.MainImage, product.main_image, product.imageUrl, product.image_url, product.ImageUrl, product.cover, product.Cover, product.thumbnail, product.Thumbnail];
+  var image = '';
+  for (var _i2 = 0, _imageCandidates = imageCandidates; _i2 < _imageCandidates.length; _i2++) {
+    var candidate = _imageCandidates[_i2];
+    if (candidate !== undefined && candidate !== null && candidate !== '') {
+      image = candidate;
+      break;
+    }
+  }
+  if (typeof image === 'string') {
+    if (image.startsWith('[')) {
+      try {
+        var parsed = JSON.parse(image);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          image = String(parsed[0]).replace(/^`|`$/g, '');
+        }
+      } catch (_unused2) {/* ignore */}
+    } else {
+      image = image.replace(/^`|`$/g, '');
+    }
+  }
+  var productName = (_ref89 = (_ref90 = (_ref91 = (_ref92 = (_ref93 = (_ref94 = (_ref95 = (_ref96 = (_ref97 = (_ref98 = (_raw$productName2 = raw.productName) !== null && _raw$productName2 !== void 0 ? _raw$productName2 : raw.product_name) !== null && _ref98 !== void 0 ? _ref98 : raw.ProductName) !== null && _ref97 !== void 0 ? _ref97 : raw.name) !== null && _ref96 !== void 0 ? _ref96 : raw.title) !== null && _ref95 !== void 0 ? _ref95 : product.name) !== null && _ref94 !== void 0 ? _ref94 : product.Name) !== null && _ref93 !== void 0 ? _ref93 : product.title) !== null && _ref92 !== void 0 ? _ref92 : product.Title) !== null && _ref91 !== void 0 ? _ref91 : product.productName) !== null && _ref90 !== void 0 ? _ref90 : product.product_name) !== null && _ref89 !== void 0 ? _ref89 : '';
+  var price = Number((_ref99 = (_ref100 = (_ref101 = (_ref102 = (_ref103 = (_ref104 = (_ref105 = (_ref106 = (_ref107 = (_ref108 = (_ref109 = (_ref110 = (_ref111 = (_ref112 = (_raw$price2 = raw.price) !== null && _raw$price2 !== void 0 ? _raw$price2 : raw.Price) !== null && _ref112 !== void 0 ? _ref112 : raw.salePrice) !== null && _ref111 !== void 0 ? _ref111 : raw.sale_price) !== null && _ref110 !== void 0 ? _ref110 : raw.discountPrice) !== null && _ref109 !== void 0 ? _ref109 : raw.amount) !== null && _ref108 !== void 0 ? _ref108 : rawSku.price) !== null && _ref107 !== void 0 ? _ref107 : rawSku.Price) !== null && _ref106 !== void 0 ? _ref106 : rawSku.salePrice) !== null && _ref105 !== void 0 ? _ref105 : rawSku.sale_price) !== null && _ref104 !== void 0 ? _ref104 : rawSku.discountPrice) !== null && _ref103 !== void 0 ? _ref103 : product.price) !== null && _ref102 !== void 0 ? _ref102 : product.Price) !== null && _ref101 !== void 0 ? _ref101 : product.salePrice) !== null && _ref100 !== void 0 ? _ref100 : product.sale_price) !== null && _ref99 !== void 0 ? _ref99 : 0);
+
+  // 当转换后关键信息缺失时打印完整原始数据，便于排查后端字段问题
+  // 注意：image 为空不算关键信息缺失（后端可能返回空 image，由 getImageUrl 补占位图）
+  if (!productName || price === 0 && !raw.price && !raw.Price && !raw.amount) {
+    console.warn('[transformCartItem] 商品关键信息缺失，原始数据:', JSON.stringify(raw));
+  }
+  return {
+    id: id,
+    productId: pickFirstValidId(raw.productId, raw.product_id, raw.ProductId, raw.pid, raw.productID, product.id, product.Id, product.ID, rawSku.productId, (_rawSku$product7 = rawSku.product) === null || _rawSku$product7 === void 0 ? void 0 : _rawSku$product7.id, (_rawSku$product8 = rawSku.product) === null || _rawSku$product8 === void 0 ? void 0 : _rawSku$product8.ID),
+    productName: productName,
+    skuId: pickFirstValidId(raw.skuId, raw.sku_id, raw.SkuId, raw.skuID, rawSku.id, rawSku.Id, rawSku.ID),
+    skuName: skuName,
+    price: price,
+    quantity: Number((_ref113 = (_ref114 = (_ref115 = (_raw$quantity2 = raw.quantity) !== null && _raw$quantity2 !== void 0 ? _raw$quantity2 : raw.Quantity) !== null && _ref115 !== void 0 ? _ref115 : raw.count) !== null && _ref114 !== void 0 ? _ref114 : raw.num) !== null && _ref113 !== void 0 ? _ref113 : 1),
+    stock: Number((_ref116 = (_ref117 = (_ref118 = (_ref119 = (_ref120 = (_ref121 = (_raw$stock = raw.stock) !== null && _raw$stock !== void 0 ? _raw$stock : raw.Stock) !== null && _ref121 !== void 0 ? _ref121 : raw.maxQuantity) !== null && _ref120 !== void 0 ? _ref120 : rawSku.stock) !== null && _ref119 !== void 0 ? _ref119 : rawSku.Stock) !== null && _ref118 !== void 0 ? _ref118 : product.stock) !== null && _ref117 !== void 0 ? _ref117 : product.Stock) !== null && _ref116 !== void 0 ? _ref116 : 999),
+    image: image,
+    selected: (_ref122 = (_raw$selected = raw.selected) !== null && _raw$selected !== void 0 ? _raw$selected : raw.Selected) !== null && _ref122 !== void 0 ? _ref122 : true,
+    isSeckill: (_ref123 = (_ref124 = (_ref125 = (_ref126 = (_raw$isSeckill = raw.isSeckill) !== null && _raw$isSeckill !== void 0 ? _raw$isSeckill : raw.is_seckill) !== null && _ref126 !== void 0 ? _ref126 : raw.IsSeckill) !== null && _ref125 !== void 0 ? _ref125 : product.isSeckill) !== null && _ref124 !== void 0 ? _ref124 : product.is_seckill) !== null && _ref123 !== void 0 ? _ref123 : false,
+    seckillPrice: (_ref127 = (_ref128 = (_ref129 = (_ref130 = (_ref131 = (_raw$seckillPrice = raw.seckillPrice) !== null && _raw$seckillPrice !== void 0 ? _raw$seckillPrice : raw.seckill_price) !== null && _ref131 !== void 0 ? _ref131 : raw.SeckillPrice) !== null && _ref130 !== void 0 ? _ref130 : rawSku.seckillPrice) !== null && _ref129 !== void 0 ? _ref129 : rawSku.seckill_price) !== null && _ref128 !== void 0 ? _ref128 : product.seckillPrice) !== null && _ref127 !== void 0 ? _ref127 : null,
+    originalPrice: (_ref132 = (_ref133 = (_ref134 = (_ref135 = (_ref136 = (_raw$originalPrice = raw.originalPrice) !== null && _raw$originalPrice !== void 0 ? _raw$originalPrice : raw.original_price) !== null && _ref136 !== void 0 ? _ref136 : raw.OriginalPrice) !== null && _ref135 !== void 0 ? _ref135 : raw.marketPrice) !== null && _ref134 !== void 0 ? _ref134 : rawSku.originalPrice) !== null && _ref133 !== void 0 ? _ref133 : product.originalPrice) !== null && _ref132 !== void 0 ? _ref132 : null,
+    storeId: (_ref137 = (_ref138 = (_ref139 = (_ref140 = (_raw$storeId = raw.storeId) !== null && _raw$storeId !== void 0 ? _raw$storeId : raw.store_id) !== null && _ref140 !== void 0 ? _ref140 : raw.StoreId) !== null && _ref139 !== void 0 ? _ref139 : product.storeId) !== null && _ref138 !== void 0 ? _ref138 : product.store_id) !== null && _ref137 !== void 0 ? _ref137 : null,
+    storeName: (_ref141 = (_ref142 = (_ref143 = (_ref144 = (_raw$storeName = raw.storeName) !== null && _raw$storeName !== void 0 ? _raw$storeName : raw.store_name) !== null && _ref144 !== void 0 ? _ref144 : raw.StoreName) !== null && _ref143 !== void 0 ? _ref143 : product.storeName) !== null && _ref142 !== void 0 ? _ref142 : product.store_name) !== null && _ref141 !== void 0 ? _ref141 : '',
+    checked: (_ref145 = (_raw$checked = raw.checked) !== null && _raw$checked !== void 0 ? _raw$checked : raw.Checked) !== null && _ref145 !== void 0 ? _ref145 : null,
+    skuCode: (_ref146 = (_ref147 = (_ref148 = (_ref149 = (_ref150 = (_raw$skuCode = raw.skuCode) !== null && _raw$skuCode !== void 0 ? _raw$skuCode : raw.sku_code) !== null && _ref150 !== void 0 ? _ref150 : raw.SkuCode) !== null && _ref149 !== void 0 ? _ref149 : rawSku.skuCode) !== null && _ref148 !== void 0 ? _ref148 : rawSku.sku_code) !== null && _ref147 !== void 0 ? _ref147 : rawSku.SkuCode) !== null && _ref146 !== void 0 ? _ref146 : '',
+    productCode: (_ref151 = (_ref152 = (_ref153 = (_ref154 = (_raw$productCode = raw.productCode) !== null && _raw$productCode !== void 0 ? _raw$productCode : raw.product_code) !== null && _ref154 !== void 0 ? _ref154 : raw.ProductCode) !== null && _ref153 !== void 0 ? _ref153 : product.productCode) !== null && _ref152 !== void 0 ? _ref152 : product.product_code) !== null && _ref151 !== void 0 ? _ref151 : '',
+    createTime: (_ref155 = (_ref156 = (_ref157 = (_raw$createTime = raw.createTime) !== null && _raw$createTime !== void 0 ? _raw$createTime : raw.create_time) !== null && _ref157 !== void 0 ? _ref157 : raw.CreateTime) !== null && _ref156 !== void 0 ? _ref156 : raw.CreatedAt) !== null && _ref155 !== void 0 ? _ref155 : '',
+    updateTime: (_ref158 = (_ref159 = (_ref160 = (_raw$updateTime = raw.updateTime) !== null && _raw$updateTime !== void 0 ? _raw$updateTime : raw.update_time) !== null && _ref160 !== void 0 ? _ref160 : raw.UpdateTime) !== null && _ref159 !== void 0 ? _ref159 : raw.UpdatedAt) !== null && _ref158 !== void 0 ? _ref158 : ''
+  };
+}
+
+/**
+ * 转换订单列表项
+ */
+// 后端订单状态码：0=待支付 2=待发货 3=待自提 4=已完成 5=已取消
+var orderStatusCodeMap = {
+  0: 'pending_payment',
+  2: 'pending_delivery',
+  3: 'pending_pickup',
+  4: 'completed',
+  5: 'cancelled'
+};
+function transformOrderItem(raw) {
+  var _ref161, _ref162, _raw$status, _orderStatusCodeMap$r, _ref163, _ref164, _raw$totalAmount, _ref165, _ref166, _raw$payAmount, _ref167, _ref168, _raw$freightAmount, _ref169, _ref170, _ref171, _ref172, _raw$couponAmount, _ref173, _ref174, _raw$itemCount, _ref175, _ref176, _ref177, _ref178, _raw$createdAt, _ref179, _ref180, _ref181, _ref182, _raw$payAt, _ref183, _raw$address, _ref184, _ref185, _ref186, _raw$storeName2, _raw$store, _ref187, _raw$store2, _ref188, _raw$remark, _ref189, _ref190, _ref191, _ref192, _raw$isReviewed;
+  var rawStatus = (_ref161 = (_ref162 = (_raw$status = raw.status) !== null && _raw$status !== void 0 ? _raw$status : raw.Status) !== null && _ref162 !== void 0 ? _ref162 : raw.orderStatus) !== null && _ref161 !== void 0 ? _ref161 : '';
+  var status = typeof rawStatus === 'number' ? (_orderStatusCodeMap$r = orderStatusCodeMap[rawStatus]) !== null && _orderStatusCodeMap$r !== void 0 ? _orderStatusCodeMap$r : String(rawStatus) : rawStatus;
+  return {
+    id: pickFirstValidId(raw.id, raw.Id, raw.ID, raw.orderId, raw.order_id),
+    orderNo: pickFirstValidId(raw.orderNo, raw.order_no, raw.OrderNo, raw.OrderNO),
+    status: status,
+    totalAmount: Number((_ref163 = (_ref164 = (_raw$totalAmount = raw.totalAmount) !== null && _raw$totalAmount !== void 0 ? _raw$totalAmount : raw.total_amount) !== null && _ref164 !== void 0 ? _ref164 : raw.TotalAmount) !== null && _ref163 !== void 0 ? _ref163 : 0),
+    payAmount: Number((_ref165 = (_ref166 = (_raw$payAmount = raw.payAmount) !== null && _raw$payAmount !== void 0 ? _raw$payAmount : raw.pay_amount) !== null && _ref166 !== void 0 ? _ref166 : raw.PayAmount) !== null && _ref165 !== void 0 ? _ref165 : 0),
+    freightAmount: Number((_ref167 = (_ref168 = (_raw$freightAmount = raw.freightAmount) !== null && _raw$freightAmount !== void 0 ? _raw$freightAmount : raw.freight_amount) !== null && _ref168 !== void 0 ? _ref168 : raw.FreightAmount) !== null && _ref167 !== void 0 ? _ref167 : 0),
+    couponAmount: Number((_ref169 = (_ref170 = (_ref171 = (_ref172 = (_raw$couponAmount = raw.couponAmount) !== null && _raw$couponAmount !== void 0 ? _raw$couponAmount : raw.coupon_amount) !== null && _ref172 !== void 0 ? _ref172 : raw.CouponAmount) !== null && _ref171 !== void 0 ? _ref171 : raw.discountAmount) !== null && _ref170 !== void 0 ? _ref170 : raw.discount_amount) !== null && _ref169 !== void 0 ? _ref169 : 0),
+    itemCount: Number((_ref173 = (_ref174 = (_raw$itemCount = raw.itemCount) !== null && _raw$itemCount !== void 0 ? _raw$itemCount : raw.item_count) !== null && _ref174 !== void 0 ? _ref174 : raw.ItemCount) !== null && _ref173 !== void 0 ? _ref173 : Array.isArray(raw.items) ? raw.items.length : 0),
+    createdAt: (_ref175 = (_ref176 = (_ref177 = (_ref178 = (_raw$createdAt = raw.createdAt) !== null && _raw$createdAt !== void 0 ? _raw$createdAt : raw.created_at) !== null && _ref178 !== void 0 ? _ref178 : raw.createTime) !== null && _ref177 !== void 0 ? _ref177 : raw.CreateTime) !== null && _ref176 !== void 0 ? _ref176 : raw.CreatedAt) !== null && _ref175 !== void 0 ? _ref175 : '',
+    payAt: (_ref179 = (_ref180 = (_ref181 = (_ref182 = (_raw$payAt = raw.payAt) !== null && _raw$payAt !== void 0 ? _raw$payAt : raw.pay_at) !== null && _ref182 !== void 0 ? _ref182 : raw.PayAt) !== null && _ref181 !== void 0 ? _ref181 : raw.paidAt) !== null && _ref180 !== void 0 ? _ref180 : raw.PaidAt) !== null && _ref179 !== void 0 ? _ref179 : '',
+    items: Array.isArray(raw.items) ? raw.items.map(transformCartItem) : [],
+    address: (_ref183 = (_raw$address = raw.address) !== null && _raw$address !== void 0 ? _raw$address : raw.Address) !== null && _ref183 !== void 0 ? _ref183 : null,
+    storeName: (_ref184 = (_ref185 = (_ref186 = (_raw$storeName2 = raw.storeName) !== null && _raw$storeName2 !== void 0 ? _raw$storeName2 : raw.store_name) !== null && _ref186 !== void 0 ? _ref186 : raw.StoreName) !== null && _ref185 !== void 0 ? _ref185 : (_raw$store = raw.store) === null || _raw$store === void 0 ? void 0 : _raw$store.name) !== null && _ref184 !== void 0 ? _ref184 : '',
+    store: (_ref187 = (_raw$store2 = raw.store) !== null && _raw$store2 !== void 0 ? _raw$store2 : raw.Store) !== null && _ref187 !== void 0 ? _ref187 : null,
+    remark: (_ref188 = (_raw$remark = raw.remark) !== null && _raw$remark !== void 0 ? _raw$remark : raw.Remark) !== null && _ref188 !== void 0 ? _ref188 : '',
+    isReviewed: (_ref189 = (_ref190 = (_ref191 = (_ref192 = (_raw$isReviewed = raw.isReviewed) !== null && _raw$isReviewed !== void 0 ? _raw$isReviewed : raw.is_reviewed) !== null && _ref192 !== void 0 ? _ref192 : raw.IsReviewed) !== null && _ref191 !== void 0 ? _ref191 : raw.reviewed) !== null && _ref190 !== void 0 ? _ref190 : raw.Reviewed) !== null && _ref189 !== void 0 ? _ref189 : false
+  };
+}
+
+// ==================== 购物车 API 方法 ====================
+
+/**
+ * 获取购物车列表
+ * GET /api/v1/cart
+ */
+function fetchCartList() {
+  return _fetchCartList.apply(this, arguments);
+}
+
+/**
+ * 添加商品到购物车
+ * POST /api/v1/cart
+ */
+function _fetchCartList() {
+  _fetchCartList = (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_2__["default"])(/*#__PURE__*/(0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_3__["default"])().m(function _callee() {
+    var _ref452, _res$data$list, _res$data, _res$data2;
+    var params,
+      res,
+      list,
+      _args = arguments;
+    return (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_3__["default"])().w(function (_context) {
+      while (1) switch (_context.n) {
+        case 0:
+          params = _args.length > 0 && _args[0] !== undefined ? _args[0] : {};
+          _context.n = 1;
+          return (0,_api_common__WEBPACK_IMPORTED_MODULE_0__.apiGet)(cartApi.list, params);
+        case 1:
+          res = _context.v;
+          list = Array.isArray(res === null || res === void 0 ? void 0 : res.data) ? res.data : (_ref452 = (_res$data$list = res === null || res === void 0 || (_res$data = res.data) === null || _res$data === void 0 ? void 0 : _res$data.list) !== null && _res$data$list !== void 0 ? _res$data$list : res === null || res === void 0 || (_res$data2 = res.data) === null || _res$data2 === void 0 ? void 0 : _res$data2.items) !== null && _ref452 !== void 0 ? _ref452 : []; // 临时调试
+          if (list.length > 0) {
+            console.log('[fetchCartList] 后端原始第一条:', JSON.stringify(list[0], null, 2));
+          }
+          return _context.a(2, (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_4__["default"])((0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_4__["default"])({}, res), {}, {
+            data: list.map(transformCartItem)
+          }));
+      }
+    }, _callee);
+  }));
+  return _fetchCartList.apply(this, arguments);
+}
+function addToCartAPI(_x) {
+  return _addToCartAPI.apply(this, arguments);
+}
+
+/**
+ * 修改购物车项数量
+ * PUT /api/v1/cart/{id}
+ */
+function _addToCartAPI() {
+  _addToCartAPI = (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_2__["default"])(/*#__PURE__*/(0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_3__["default"])().m(function _callee2(payload) {
+    var body, res;
+    return (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_3__["default"])().w(function (_context2) {
+      while (1) switch (_context2.n) {
+        case 0:
+          body = {
+            productId: (0,_api_common__WEBPACK_IMPORTED_MODULE_0__.toNumericId)(payload.productId),
+            skuId: (0,_api_common__WEBPACK_IMPORTED_MODULE_0__.toNumericId)(payload.skuId),
+            quantity: payload.quantity
+          };
+          if (payload.storeId !== undefined && payload.storeId !== null) body.storeId = (0,_api_common__WEBPACK_IMPORTED_MODULE_0__.toNumericId)(payload.storeId);
+          if (payload.remark) body.remark = payload.remark;
+          _context2.n = 1;
+          return (0,_api_common__WEBPACK_IMPORTED_MODULE_0__.apiPost)(cartApi.add, body, {}, {}, false);
+        case 1:
+          res = _context2.v;
+          return _context2.a(2, res);
+      }
+    }, _callee2);
+  }));
+  return _addToCartAPI.apply(this, arguments);
+}
+function updateCartItem(_x2, _x3) {
+  return _updateCartItem.apply(this, arguments);
+}
+
+/**
+ * 删除单个购物车项
+ * DELETE /api/v1/cart/{id}
+ */
+function _updateCartItem() {
+  _updateCartItem = (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_2__["default"])(/*#__PURE__*/(0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_3__["default"])().m(function _callee3(id, payload) {
+    var numericId, body, res;
+    return (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_3__["default"])().w(function (_context3) {
+      while (1) switch (_context3.n) {
+        case 0:
+          numericId = (0,_api_common__WEBPACK_IMPORTED_MODULE_0__.toNumericId)(id);
+          if (numericId) {
+            _context3.n = 1;
+            break;
+          }
+          console.error('[updateCartItem] 无效的购物车ID:', id, '类型:', (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_typeof_js__WEBPACK_IMPORTED_MODULE_1__["default"])(id));
+          throw new Error('无效的购物车ID');
+        case 1:
+          body = {};
+          if (payload.quantity !== undefined) body.quantity = payload.quantity;
+          if (payload.selected !== undefined) body.selected = payload.selected;
+          _context3.n = 2;
+          return (0,_api_common__WEBPACK_IMPORTED_MODULE_0__.apiPut)(cartApi.update, body, {
+            id: numericId
+          });
+        case 2:
+          res = _context3.v;
+          return _context3.a(2, res);
+      }
+    }, _callee3);
+  }));
+  return _updateCartItem.apply(this, arguments);
+}
+function deleteCartItem(_x4) {
+  return _deleteCartItem.apply(this, arguments);
+}
+
+/**
+ * 批量删除购物车项
+ * POST /api/v1/cart/batch-delete
+ */
+function _deleteCartItem() {
+  _deleteCartItem = (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_2__["default"])(/*#__PURE__*/(0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_3__["default"])().m(function _callee4(id) {
+    var numericId, res;
+    return (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_3__["default"])().w(function (_context4) {
+      while (1) switch (_context4.n) {
+        case 0:
+          numericId = (0,_api_common__WEBPACK_IMPORTED_MODULE_0__.toNumericId)(id);
+          if (numericId) {
+            _context4.n = 1;
+            break;
+          }
+          console.error('[deleteCartItem] 无效的购物车ID:', id, '类型:', (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_typeof_js__WEBPACK_IMPORTED_MODULE_1__["default"])(id));
+          throw new Error('无效的购物车ID');
+        case 1:
+          _context4.n = 2;
+          return (0,_api_common__WEBPACK_IMPORTED_MODULE_0__.apiDelete)(cartApi.delete, {}, {
+            id: numericId
+          });
+        case 2:
+          res = _context4.v;
+          return _context4.a(2, res);
+      }
+    }, _callee4);
+  }));
+  return _deleteCartItem.apply(this, arguments);
+}
+function batchDeleteCartItem(_x5) {
+  return _batchDeleteCartItem.apply(this, arguments);
+}
+
+// ==================== 订单 API 方法 ====================
+
+/**
+ * 提交订单
+ * POST /api/v1/orders
+ * 后端契约: { cartIds: uint64[], storeId: uint64, userCouponId: uint64|null, remark: string }
+ */
+function _batchDeleteCartItem() {
+  _batchDeleteCartItem = (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_2__["default"])(/*#__PURE__*/(0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_3__["default"])().m(function _callee5(ids) {
+    var numericIds, res;
+    return (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_3__["default"])().w(function (_context5) {
+      while (1) switch (_context5.n) {
+        case 0:
+          numericIds = ids.map(_api_common__WEBPACK_IMPORTED_MODULE_0__.toNumericId).filter(Boolean);
+          if (!(numericIds.length === 0)) {
+            _context5.n = 1;
+            break;
+          }
+          throw new Error('无效的购物车ID');
+        case 1:
+          _context5.n = 2;
+          return (0,_api_common__WEBPACK_IMPORTED_MODULE_0__.apiPost)(cartApi.batchDelete, {
+            ids: numericIds
+          }, {}, {}, false);
+        case 2:
+          res = _context5.v;
+          return _context5.a(2, res);
+      }
+    }, _callee5);
+  }));
+  return _batchDeleteCartItem.apply(this, arguments);
+}
+function submitOrder(_x6) {
+  return _submitOrder.apply(this, arguments);
+}
+
+/**
+ * 获取订单列表
+ * GET /api/v1/orders
+ */
+function _submitOrder() {
+  _submitOrder = (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_2__["default"])(/*#__PURE__*/(0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_3__["default"])().m(function _callee6(payload) {
+    var requestBody, res;
+    return (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_3__["default"])().w(function (_context6) {
+      while (1) switch (_context6.n) {
+        case 0:
+          // 根据后端 Go 结构体构建请求
+          // cartIds: 购物车ID列表（从购物车结算时传递）
+          // storeId: 自提门店ID
+          // userCouponId: 用户优惠券ID（可选）
+          // remark: 订单备注
+          requestBody = {}; // 处理购物车 ID 列表
+          if (Array.isArray(payload.cartIds)) {
+            requestBody.cartIds = payload.cartIds.map(function (id) {
+              return (0,_api_common__WEBPACK_IMPORTED_MODULE_0__.toNumericId)(id);
+            });
+          } else if (Array.isArray(payload.items)) {
+            // 如果传递的是商品列表而非购物车 ID，从中提取 ID
+            requestBody.cartIds = payload.items.filter(function (item) {
+              return item.id;
+            }).map(function (item) {
+              return (0,_api_common__WEBPACK_IMPORTED_MODULE_0__.toNumericId)(item.id);
+            });
+          } else {
+            requestBody.cartIds = [];
+          }
+
+          // 处理门店 ID
+          requestBody.storeId = (0,_api_common__WEBPACK_IMPORTED_MODULE_0__.toNumericId)(payload.storeId);
+
+          // 处理优惠券 ID（可选）
+          if (payload.userCouponId !== undefined && payload.userCouponId !== null && payload.userCouponId !== 0) {
+            requestBody.userCouponId = (0,_api_common__WEBPACK_IMPORTED_MODULE_0__.toNumericId)(payload.userCouponId);
+          } else {
+            requestBody.userCouponId = null;
+          }
+
+          // 处理备注
+          requestBody.remark = payload.remark || '';
+          console.log('[SubmitOrder API] Sending payload:', JSON.stringify(requestBody));
+          _context6.n = 1;
+          return (0,_api_common__WEBPACK_IMPORTED_MODULE_0__.apiPost)(orderApi.submit, requestBody, {}, {}, false);
+        case 1:
+          res = _context6.v;
+          return _context6.a(2, res);
+      }
+    }, _callee6);
+  }));
+  return _submitOrder.apply(this, arguments);
+}
+function fetchOrderList() {
+  return _fetchOrderList.apply(this, arguments);
+}
+
+/**
+ * 获取订单详情
+ * GET /api/v1/orders/{id}
+ */
+function _fetchOrderList() {
+  _fetchOrderList = (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_2__["default"])(/*#__PURE__*/(0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_3__["default"])().m(function _callee7() {
+    var _ref453, _res$data$list2, _res$data3, _res$data4;
+    var params,
+      res,
+      list,
+      _args7 = arguments;
+    return (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_3__["default"])().w(function (_context7) {
+      while (1) switch (_context7.n) {
+        case 0:
+          params = _args7.length > 0 && _args7[0] !== undefined ? _args7[0] : {};
+          _context7.n = 1;
+          return (0,_api_common__WEBPACK_IMPORTED_MODULE_0__.apiGet)(orderApi.list, params);
+        case 1:
+          res = _context7.v;
+          list = Array.isArray(res === null || res === void 0 ? void 0 : res.data) ? res.data : (_ref453 = (_res$data$list2 = res === null || res === void 0 || (_res$data3 = res.data) === null || _res$data3 === void 0 ? void 0 : _res$data3.list) !== null && _res$data$list2 !== void 0 ? _res$data$list2 : res === null || res === void 0 || (_res$data4 = res.data) === null || _res$data4 === void 0 ? void 0 : _res$data4.items) !== null && _ref453 !== void 0 ? _ref453 : [];
+          return _context7.a(2, (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_4__["default"])((0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_4__["default"])({}, res), {}, {
+            data: list.map(transformOrderItem)
+          }));
+      }
+    }, _callee7);
+  }));
+  return _fetchOrderList.apply(this, arguments);
+}
+function fetchOrderDetail(_x7) {
+  return _fetchOrderDetail.apply(this, arguments);
+}
+
+/**
+ * 取消订单
+ * PUT /api/v1/orders/{id}/cancel
+ */
+function _fetchOrderDetail() {
+  _fetchOrderDetail = (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_2__["default"])(/*#__PURE__*/(0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_3__["default"])().m(function _callee8(id) {
+    var res;
+    return (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_3__["default"])().w(function (_context8) {
+      while (1) switch (_context8.n) {
+        case 0:
+          _context8.n = 1;
+          return (0,_api_common__WEBPACK_IMPORTED_MODULE_0__.apiGet)(orderApi.detail, {}, {
+            id: id
+          });
+        case 1:
+          res = _context8.v;
+          if (!(res !== null && res !== void 0 && res.data)) {
+            _context8.n = 2;
+            break;
+          }
+          return _context8.a(2, (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_4__["default"])((0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_4__["default"])({}, res), {}, {
+            data: transformOrderItem(res.data)
+          }));
+        case 2:
+          return _context8.a(2, res);
+      }
+    }, _callee8);
+  }));
+  return _fetchOrderDetail.apply(this, arguments);
+}
+function cancelOrder(_x8) {
+  return _cancelOrder.apply(this, arguments);
+}
+
+/**
+ * 发起支付
+ * POST /api/v1/orders/{id}/pay
+ * payload 支持：paymentMethod(wechat/alipay) 等参数
+ */
+function _cancelOrder() {
+  _cancelOrder = (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_2__["default"])(/*#__PURE__*/(0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_3__["default"])().m(function _callee9(id) {
+    var res;
+    return (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_3__["default"])().w(function (_context9) {
+      while (1) switch (_context9.n) {
+        case 0:
+          _context9.n = 1;
+          return (0,_api_common__WEBPACK_IMPORTED_MODULE_0__.apiPut)(orderApi.cancel, {}, {
+            id: id
+          });
+        case 1:
+          res = _context9.v;
+          return _context9.a(2, res);
+      }
+    }, _callee9);
+  }));
+  return _cancelOrder.apply(this, arguments);
+}
+function payOrder(_x9, _x0) {
+  return _payOrder.apply(this, arguments);
+}
+
+/**
+ * 支付回调（模拟微信异步通知）
+ * POST /api/v1/payment/callback
+ * payload 支持：orderId、orderNo、transactionId、paymentMethod、amount 等
+ */
+function _payOrder() {
+  _payOrder = (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_2__["default"])(/*#__PURE__*/(0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_3__["default"])().m(function _callee0(id, payload) {
+    var res;
+    return (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_3__["default"])().w(function (_context0) {
+      while (1) switch (_context0.n) {
+        case 0:
+          _context0.n = 1;
+          return (0,_api_common__WEBPACK_IMPORTED_MODULE_0__.apiPost)(orderApi.pay, payload || {}, {
+            id: id
+          }, {}, false);
+        case 1:
+          res = _context0.v;
+          return _context0.a(2, res);
+      }
+    }, _callee0);
+  }));
+  return _payOrder.apply(this, arguments);
+}
+function paymentCallback(_x1) {
+  return _paymentCallback.apply(this, arguments);
+}
+
+/**
+ * 规范化订单支付状态：兼容 snake_case / PascalCase / camelCase 字段名
+ */
+function _paymentCallback() {
+  _paymentCallback = (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_2__["default"])(/*#__PURE__*/(0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_3__["default"])().m(function _callee1(payload) {
+    var body, res;
+    return (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_3__["default"])().w(function (_context1) {
+      while (1) switch (_context1.n) {
+        case 0:
+          body = {
+            orderId: payload.orderId
+          };
+          if (payload.orderNo !== undefined) body.orderNo = payload.orderNo;
+          if (payload.transactionId !== undefined) body.transactionId = payload.transactionId;
+          if (payload.paymentMethod !== undefined) body.paymentMethod = payload.paymentMethod;
+          if (payload.amount !== undefined) body.amount = payload.amount;
+          _context1.n = 1;
+          return (0,_api_common__WEBPACK_IMPORTED_MODULE_0__.apiPost)(paymentApi.callback, body, {}, {}, false);
+        case 1:
+          res = _context1.v;
+          return _context1.a(2, res);
+      }
+    }, _callee1);
+  }));
+  return _paymentCallback.apply(this, arguments);
+}
+function normalizePaymentStatus(raw) {
+  var _ref193, _ref194, _ref195, _ref196, _raw$status2, _ref197, _ref198, _ref199, _raw$orderId, _ref200, _ref201, _raw$orderNo, _ref202, _ref203, _ref204, _ref205, _raw$paymentMethod, _ref206, _ref207, _ref208, _raw$transactionId, _ref209, _ref210, _ref211, _ref212, _raw$amount, _ref213, _ref214, _ref215, _ref216, _ref217, _raw$paidAt, _ref218, _ref219, _raw$message;
+  var status = (_ref193 = (_ref194 = (_ref195 = (_ref196 = (_raw$status2 = raw.status) !== null && _raw$status2 !== void 0 ? _raw$status2 : raw.Status) !== null && _ref196 !== void 0 ? _ref196 : raw.payStatus) !== null && _ref195 !== void 0 ? _ref195 : raw.pay_status) !== null && _ref194 !== void 0 ? _ref194 : raw.paymentStatus) !== null && _ref193 !== void 0 ? _ref193 : '';
+  var isPaid = status === 'paid' || status === 'success' || status === 'SUCCESS' || status === 1 || status === '1' || raw.isPaid === true || raw.IsPaid === true || raw.is_paid === true;
+  return {
+    orderId: (_ref197 = (_ref198 = (_ref199 = (_raw$orderId = raw.orderId) !== null && _raw$orderId !== void 0 ? _raw$orderId : raw.order_id) !== null && _ref199 !== void 0 ? _ref199 : raw.OrderId) !== null && _ref198 !== void 0 ? _ref198 : raw.OrderID) !== null && _ref197 !== void 0 ? _ref197 : '',
+    orderNo: (_ref200 = (_ref201 = (_raw$orderNo = raw.orderNo) !== null && _raw$orderNo !== void 0 ? _raw$orderNo : raw.order_no) !== null && _ref201 !== void 0 ? _ref201 : raw.OrderNo) !== null && _ref200 !== void 0 ? _ref200 : '',
+    status: status,
+    isPaid: isPaid,
+    paymentMethod: (_ref202 = (_ref203 = (_ref204 = (_ref205 = (_raw$paymentMethod = raw.paymentMethod) !== null && _raw$paymentMethod !== void 0 ? _raw$paymentMethod : raw.payment_method) !== null && _ref205 !== void 0 ? _ref205 : raw.PaymentMethod) !== null && _ref204 !== void 0 ? _ref204 : raw.payType) !== null && _ref203 !== void 0 ? _ref203 : raw.pay_type) !== null && _ref202 !== void 0 ? _ref202 : '',
+    transactionId: (_ref206 = (_ref207 = (_ref208 = (_raw$transactionId = raw.transactionId) !== null && _raw$transactionId !== void 0 ? _raw$transactionId : raw.transaction_id) !== null && _ref208 !== void 0 ? _ref208 : raw.TransactionId) !== null && _ref207 !== void 0 ? _ref207 : raw.TransactionID) !== null && _ref206 !== void 0 ? _ref206 : '',
+    amount: Number((_ref209 = (_ref210 = (_ref211 = (_ref212 = (_raw$amount = raw.amount) !== null && _raw$amount !== void 0 ? _raw$amount : raw.Amount) !== null && _ref212 !== void 0 ? _ref212 : raw.payAmount) !== null && _ref211 !== void 0 ? _ref211 : raw.pay_amount) !== null && _ref210 !== void 0 ? _ref210 : raw.PayAmount) !== null && _ref209 !== void 0 ? _ref209 : 0),
+    paidAt: (_ref213 = (_ref214 = (_ref215 = (_ref216 = (_ref217 = (_raw$paidAt = raw.paidAt) !== null && _raw$paidAt !== void 0 ? _raw$paidAt : raw.paid_at) !== null && _ref217 !== void 0 ? _ref217 : raw.PaidAt) !== null && _ref216 !== void 0 ? _ref216 : raw.payTime) !== null && _ref215 !== void 0 ? _ref215 : raw.pay_time) !== null && _ref214 !== void 0 ? _ref214 : raw.PayTime) !== null && _ref213 !== void 0 ? _ref213 : '',
+    message: (_ref218 = (_ref219 = (_raw$message = raw.message) !== null && _raw$message !== void 0 ? _raw$message : raw.Message) !== null && _ref219 !== void 0 ? _ref219 : raw.msg) !== null && _ref218 !== void 0 ? _ref218 : ''
+  };
+}
+
+/**
+ * 查询订单支付状态
+ * GET /api/v1/orders/{id}/payment
+ */
+function fetchOrderPaymentStatus(_x10) {
+  return _fetchOrderPaymentStatus.apply(this, arguments);
+}
+
+/**
+ * 确认取货/确认收货（待自提→已完成）
+ * PUT /api/v1/orders/{id}/confirm
+ */
+function _fetchOrderPaymentStatus() {
+  _fetchOrderPaymentStatus = (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_2__["default"])(/*#__PURE__*/(0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_3__["default"])().m(function _callee10(id) {
+    var res;
+    return (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_3__["default"])().w(function (_context10) {
+      while (1) switch (_context10.n) {
+        case 0:
+          _context10.n = 1;
+          return (0,_api_common__WEBPACK_IMPORTED_MODULE_0__.apiGet)(orderApi.paymentStatus, {}, {
+            id: id
+          });
+        case 1:
+          res = _context10.v;
+          if (!(res !== null && res !== void 0 && res.data)) {
+            _context10.n = 2;
+            break;
+          }
+          return _context10.a(2, (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_4__["default"])((0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_4__["default"])({}, res), {}, {
+            data: normalizePaymentStatus(res.data)
+          }));
+        case 2:
+          return _context10.a(2, res);
+      }
+    }, _callee10);
+  }));
+  return _fetchOrderPaymentStatus.apply(this, arguments);
+}
+function confirmOrder(_x11) {
+  return _confirmOrder.apply(this, arguments);
+}
+
+/**
+ * 确认发货/备货完成（待发货→待自提）
+ * POST /api/v1/orders/{id}/pickup
+ */
+function _confirmOrder() {
+  _confirmOrder = (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_2__["default"])(/*#__PURE__*/(0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_3__["default"])().m(function _callee11(id) {
+    var res;
+    return (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_3__["default"])().w(function (_context11) {
+      while (1) switch (_context11.n) {
+        case 0:
+          _context11.n = 1;
+          return (0,_api_common__WEBPACK_IMPORTED_MODULE_0__.apiPut)(orderApi.confirm, {}, {
+            id: id
+          });
+        case 1:
+          res = _context11.v;
+          return _context11.a(2, res);
+      }
+    }, _callee11);
+  }));
+  return _confirmOrder.apply(this, arguments);
+}
+function confirmPickupOrder(_x12) {
+  return _confirmPickupOrder.apply(this, arguments);
+}
+
+/**
+ * 申请退款
+ * POST /api/v1/orders/{id}/refund
+ */
+function _confirmPickupOrder() {
+  _confirmPickupOrder = (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_2__["default"])(/*#__PURE__*/(0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_3__["default"])().m(function _callee12(id) {
+    var res;
+    return (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_3__["default"])().w(function (_context12) {
+      while (1) switch (_context12.n) {
+        case 0:
+          _context12.n = 1;
+          return (0,_api_common__WEBPACK_IMPORTED_MODULE_0__.apiPost)(orderApi.confirmPickup, {}, {
+            id: id
+          }, {}, false);
+        case 1:
+          res = _context12.v;
+          return _context12.a(2, res);
+      }
+    }, _callee12);
+  }));
+  return _confirmPickupOrder.apply(this, arguments);
+}
+function refundOrder(_x13, _x14) {
+  return _refundOrder.apply(this, arguments);
+}
+
+// ==================== 订单评价 API ====================
+
+/**
+ * 评价数据规范化：兼容 snake_case / PascalCase / camelCase
+ */
+function _refundOrder() {
+  _refundOrder = (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_2__["default"])(/*#__PURE__*/(0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_3__["default"])().m(function _callee13(id, payload) {
+    var res;
+    return (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_3__["default"])().w(function (_context13) {
+      while (1) switch (_context13.n) {
+        case 0:
+          _context13.n = 1;
+          return (0,_api_common__WEBPACK_IMPORTED_MODULE_0__.apiPost)(orderApi.refund, payload || {}, {
+            id: id
+          }, {}, false);
+        case 1:
+          res = _context13.v;
+          return _context13.a(2, res);
+      }
+    }, _callee13);
+  }));
+  return _refundOrder.apply(this, arguments);
+}
+function normalizeReview(raw) {
+  var _ref220, _ref221, _ref222, _ref223, _raw$id, _ref224, _ref225, _ref226, _raw$orderId2, _ref227, _ref228, _ref229, _raw$productId, _ref230, _ref231, _ref232, _raw$productName3, _ref233, _ref234, _ref235, _raw$skuId, _ref236, _ref237, _ref238, _raw$skuName3, _ref239, _ref240, _ref241, _raw$rating, _ref242, _ref243, _raw$ratingType, _ref244, _ref245, _ref246, _ref247, _ref248, _raw$content, _ref249, _ref250, _ref251, _raw$anonymous, _ref252, _ref253, _ref254, _raw$createdAt2, _ref255, _ref256, _raw$userId, _ref257, _ref258, _ref259, _ref260, _raw$userName, _ref261, _ref262, _ref263, _ref264, _raw$userAvatar, _ref265, _ref266, _ref267, _raw$reply, _ref268, _ref269, _raw$replyAt;
+  return {
+    id: (_ref220 = (_ref221 = (_ref222 = (_ref223 = (_raw$id = raw.id) !== null && _raw$id !== void 0 ? _raw$id : raw.Id) !== null && _ref223 !== void 0 ? _ref223 : raw.reviewId) !== null && _ref222 !== void 0 ? _ref222 : raw.review_id) !== null && _ref221 !== void 0 ? _ref221 : raw.ID) !== null && _ref220 !== void 0 ? _ref220 : '',
+    orderId: (_ref224 = (_ref225 = (_ref226 = (_raw$orderId2 = raw.orderId) !== null && _raw$orderId2 !== void 0 ? _raw$orderId2 : raw.order_id) !== null && _ref226 !== void 0 ? _ref226 : raw.OrderId) !== null && _ref225 !== void 0 ? _ref225 : raw.OrderID) !== null && _ref224 !== void 0 ? _ref224 : '',
+    productId: (_ref227 = (_ref228 = (_ref229 = (_raw$productId = raw.productId) !== null && _raw$productId !== void 0 ? _raw$productId : raw.product_id) !== null && _ref229 !== void 0 ? _ref229 : raw.ProductId) !== null && _ref228 !== void 0 ? _ref228 : raw.ProductID) !== null && _ref227 !== void 0 ? _ref227 : '',
+    productName: (_ref230 = (_ref231 = (_ref232 = (_raw$productName3 = raw.productName) !== null && _raw$productName3 !== void 0 ? _raw$productName3 : raw.product_name) !== null && _ref232 !== void 0 ? _ref232 : raw.ProductName) !== null && _ref231 !== void 0 ? _ref231 : raw.name) !== null && _ref230 !== void 0 ? _ref230 : '',
+    skuId: (_ref233 = (_ref234 = (_ref235 = (_raw$skuId = raw.skuId) !== null && _raw$skuId !== void 0 ? _raw$skuId : raw.sku_id) !== null && _ref235 !== void 0 ? _ref235 : raw.SkuId) !== null && _ref234 !== void 0 ? _ref234 : raw.SkuID) !== null && _ref233 !== void 0 ? _ref233 : '',
+    skuName: (_ref236 = (_ref237 = (_ref238 = (_raw$skuName3 = raw.skuName) !== null && _raw$skuName3 !== void 0 ? _raw$skuName3 : raw.sku_name) !== null && _ref238 !== void 0 ? _ref238 : raw.SkuName) !== null && _ref237 !== void 0 ? _ref237 : raw.specName) !== null && _ref236 !== void 0 ? _ref236 : '',
+    rating: Number((_ref239 = (_ref240 = (_ref241 = (_raw$rating = raw.rating) !== null && _raw$rating !== void 0 ? _raw$rating : raw.Rating) !== null && _ref241 !== void 0 ? _ref241 : raw.score) !== null && _ref240 !== void 0 ? _ref240 : raw.Score) !== null && _ref239 !== void 0 ? _ref239 : 5),
+    ratingType: (_ref242 = (_ref243 = (_raw$ratingType = raw.ratingType) !== null && _raw$ratingType !== void 0 ? _raw$ratingType : raw.rating_type) !== null && _ref243 !== void 0 ? _ref243 : raw.RatingType) !== null && _ref242 !== void 0 ? _ref242 : raw.rating >= 4 ? 'good' : raw.rating <= 2 ? 'bad' : 'neutral',
+    content: (_ref244 = (_ref245 = (_ref246 = (_ref247 = (_ref248 = (_raw$content = raw.content) !== null && _raw$content !== void 0 ? _raw$content : raw.Content) !== null && _ref248 !== void 0 ? _ref248 : raw.reviewContent) !== null && _ref247 !== void 0 ? _ref247 : raw.review_content) !== null && _ref246 !== void 0 ? _ref246 : raw.comment) !== null && _ref245 !== void 0 ? _ref245 : raw.Comment) !== null && _ref244 !== void 0 ? _ref244 : '',
+    images: Array.isArray(raw.images) ? raw.images : Array.isArray(raw.Images) ? raw.Images : Array.isArray(raw.pics) ? raw.pics : Array.isArray(raw.imageList) ? raw.imageList : [],
+    anonymous: (_ref249 = (_ref250 = (_ref251 = (_raw$anonymous = raw.anonymous) !== null && _raw$anonymous !== void 0 ? _raw$anonymous : raw.Anonymous) !== null && _ref251 !== void 0 ? _ref251 : raw.isAnonymous) !== null && _ref250 !== void 0 ? _ref250 : raw.is_anonymous) !== null && _ref249 !== void 0 ? _ref249 : false,
+    createdAt: (_ref252 = (_ref253 = (_ref254 = (_raw$createdAt2 = raw.createdAt) !== null && _raw$createdAt2 !== void 0 ? _raw$createdAt2 : raw.created_at) !== null && _ref254 !== void 0 ? _ref254 : raw.CreateTime) !== null && _ref253 !== void 0 ? _ref253 : raw.createTime) !== null && _ref252 !== void 0 ? _ref252 : '',
+    userId: (_ref255 = (_ref256 = (_raw$userId = raw.userId) !== null && _raw$userId !== void 0 ? _raw$userId : raw.user_id) !== null && _ref256 !== void 0 ? _ref256 : raw.UserId) !== null && _ref255 !== void 0 ? _ref255 : '',
+    userName: (_ref257 = (_ref258 = (_ref259 = (_ref260 = (_raw$userName = raw.userName) !== null && _raw$userName !== void 0 ? _raw$userName : raw.user_name) !== null && _ref260 !== void 0 ? _ref260 : raw.UserName) !== null && _ref259 !== void 0 ? _ref259 : raw.nickname) !== null && _ref258 !== void 0 ? _ref258 : raw.NickName) !== null && _ref257 !== void 0 ? _ref257 : '',
+    userAvatar: (_ref261 = (_ref262 = (_ref263 = (_ref264 = (_raw$userAvatar = raw.userAvatar) !== null && _raw$userAvatar !== void 0 ? _raw$userAvatar : raw.user_avatar) !== null && _ref264 !== void 0 ? _ref264 : raw.UserAvatar) !== null && _ref263 !== void 0 ? _ref263 : raw.avatar) !== null && _ref262 !== void 0 ? _ref262 : raw.Avatar) !== null && _ref261 !== void 0 ? _ref261 : '',
+    reply: (_ref265 = (_ref266 = (_ref267 = (_raw$reply = raw.reply) !== null && _raw$reply !== void 0 ? _raw$reply : raw.Reply) !== null && _ref267 !== void 0 ? _ref267 : raw.replyContent) !== null && _ref266 !== void 0 ? _ref266 : raw.reply_content) !== null && _ref265 !== void 0 ? _ref265 : '',
+    replyAt: (_ref268 = (_ref269 = (_raw$replyAt = raw.replyAt) !== null && _raw$replyAt !== void 0 ? _raw$replyAt : raw.reply_at) !== null && _ref269 !== void 0 ? _ref269 : raw.ReplyAt) !== null && _ref268 !== void 0 ? _ref268 : ''
+  };
+}
+
+/**
+ * 提交订单评价
+ * POST /api/v1/orders/{id}/review
+ * payload 支持：rating(1-5)、content(评价内容)、images(图片URL数组)、anonymous(是否匿名)、items(多商品评价)
+ */
+function submitOrderReview(_x15, _x16) {
+  return _submitOrderReview.apply(this, arguments);
+}
+
+/**
+ * 获取订单评价列表
+ * GET /api/v1/orders/{id}/reviews
+ * 注意：该接口在后端未实现时返回 404，此处静默处理为空评价列表，
+ *      避免订单列表页兜底查询评价时在控制台刷屏报错。
+ */
+function _submitOrderReview() {
+  _submitOrderReview = (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_2__["default"])(/*#__PURE__*/(0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_3__["default"])().m(function _callee14(id, payload) {
+    var body, res;
+    return (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_3__["default"])().w(function (_context14) {
+      while (1) switch (_context14.n) {
+        case 0:
+          body = {};
+          if (payload.rating !== undefined) body.rating = payload.rating;
+          if (payload.ratingType !== undefined) body.ratingType = payload.ratingType;
+          if (payload.content !== undefined) body.content = payload.content;
+          if (Array.isArray(payload.images)) body.images = payload.images;
+          if (payload.anonymous !== undefined) body.anonymous = payload.anonymous;
+          if (Array.isArray(payload.items)) {
+            body.items = payload.items.map(function (item) {
+              return {
+                productId: (0,_api_common__WEBPACK_IMPORTED_MODULE_0__.toNumericId)(item.productId),
+                skuId: (0,_api_common__WEBPACK_IMPORTED_MODULE_0__.toNumericId)(item.skuId),
+                rating: item.rating,
+                content: item.content,
+                images: Array.isArray(item.images) ? item.images : []
+              };
+            });
+          }
+          _context14.n = 1;
+          return (0,_api_common__WEBPACK_IMPORTED_MODULE_0__.apiPost)(orderApi.review, body, {
+            id: (0,_api_common__WEBPACK_IMPORTED_MODULE_0__.toNumericId)(id)
+          }, {}, false);
+        case 1:
+          res = _context14.v;
+          return _context14.a(2, res);
+      }
+    }, _callee14);
+  }));
+  return _submitOrderReview.apply(this, arguments);
+}
+function fetchOrderReviews(_x17) {
+  return _fetchOrderReviews.apply(this, arguments);
+}
+
+// ==================== 退款 API ====================
+
+/**
+ * 退货原因数据规范化：兼容 snake_case / PascalCase / camelCase
+ */
+function _fetchOrderReviews() {
+  _fetchOrderReviews = (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_2__["default"])(/*#__PURE__*/(0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_3__["default"])().m(function _callee15(id) {
+    var _ref454, _res$data$list3, _res$data5, _res$data6, res, list, _t;
+    return (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_3__["default"])().w(function (_context15) {
+      while (1) switch (_context15.p = _context15.n) {
+        case 0:
+          _context15.p = 0;
+          _context15.n = 1;
+          return (0,_api_common__WEBPACK_IMPORTED_MODULE_0__.apiGet)(orderApi.reviewList, {}, {
+            id: id
+          }, true);
+        case 1:
+          res = _context15.v;
+          list = Array.isArray(res === null || res === void 0 ? void 0 : res.data) ? res.data : (_ref454 = (_res$data$list3 = res === null || res === void 0 || (_res$data5 = res.data) === null || _res$data5 === void 0 ? void 0 : _res$data5.list) !== null && _res$data$list3 !== void 0 ? _res$data$list3 : res === null || res === void 0 || (_res$data6 = res.data) === null || _res$data6 === void 0 ? void 0 : _res$data6.items) !== null && _ref454 !== void 0 ? _ref454 : [];
+          return _context15.a(2, (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_4__["default"])((0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_4__["default"])({}, res), {}, {
+            data: list.map(normalizeReview)
+          }));
+        case 2:
+          _context15.p = 2;
+          _t = _context15.v;
+          return _context15.a(2, {
+            code: 200,
+            data: []
+          });
+      }
+    }, _callee15, null, [[0, 2]]);
+  }));
+  return _fetchOrderReviews.apply(this, arguments);
+}
+function normalizeRefundReason(raw) {
+  var _ref270, _ref271, _ref272, _ref273, _ref274, _raw$id2, _ref275, _ref276, _ref277, _ref278, _ref279, _ref280, _ref281, _ref282, _ref283, _raw$name, _ref284, _ref285, _ref286, _ref287, _ref288, _raw$sort, _ref289, _ref290, _ref291, _ref292, _ref293, _raw$enabled, _ref294, _ref295, _ref296, _ref297, _ref298, _raw$description;
+  return {
+    id: (_ref270 = (_ref271 = (_ref272 = (_ref273 = (_ref274 = (_raw$id2 = raw.id) !== null && _raw$id2 !== void 0 ? _raw$id2 : raw.Id) !== null && _ref274 !== void 0 ? _ref274 : raw.reasonId) !== null && _ref273 !== void 0 ? _ref273 : raw.reason_id) !== null && _ref272 !== void 0 ? _ref272 : raw.ID) !== null && _ref271 !== void 0 ? _ref271 : raw.code) !== null && _ref270 !== void 0 ? _ref270 : '',
+    name: (_ref275 = (_ref276 = (_ref277 = (_ref278 = (_ref279 = (_ref280 = (_ref281 = (_ref282 = (_ref283 = (_raw$name = raw.name) !== null && _raw$name !== void 0 ? _raw$name : raw.Name) !== null && _ref283 !== void 0 ? _ref283 : raw.reasonName) !== null && _ref282 !== void 0 ? _ref282 : raw.reason_name) !== null && _ref281 !== void 0 ? _ref281 : raw.title) !== null && _ref280 !== void 0 ? _ref280 : raw.Title) !== null && _ref279 !== void 0 ? _ref279 : raw.label) !== null && _ref278 !== void 0 ? _ref278 : raw.Label) !== null && _ref277 !== void 0 ? _ref277 : raw.content) !== null && _ref276 !== void 0 ? _ref276 : raw.Content) !== null && _ref275 !== void 0 ? _ref275 : '',
+    sort: Number((_ref284 = (_ref285 = (_ref286 = (_ref287 = (_ref288 = (_raw$sort = raw.sort) !== null && _raw$sort !== void 0 ? _raw$sort : raw.Sort) !== null && _ref288 !== void 0 ? _ref288 : raw.order) !== null && _ref287 !== void 0 ? _ref287 : raw.Order) !== null && _ref286 !== void 0 ? _ref286 : raw.seq) !== null && _ref285 !== void 0 ? _ref285 : raw.Seq) !== null && _ref284 !== void 0 ? _ref284 : 0),
+    enabled: (_ref289 = (_ref290 = (_ref291 = (_ref292 = (_ref293 = (_raw$enabled = raw.enabled) !== null && _raw$enabled !== void 0 ? _raw$enabled : raw.Enabled) !== null && _ref293 !== void 0 ? _ref293 : raw.status) !== null && _ref292 !== void 0 ? _ref292 : raw.Status) !== null && _ref291 !== void 0 ? _ref291 : raw.active) !== null && _ref290 !== void 0 ? _ref290 : raw.Active) !== null && _ref289 !== void 0 ? _ref289 : true,
+    description: (_ref294 = (_ref295 = (_ref296 = (_ref297 = (_ref298 = (_raw$description = raw.description) !== null && _raw$description !== void 0 ? _raw$description : raw.Description) !== null && _ref298 !== void 0 ? _ref298 : raw.desc) !== null && _ref297 !== void 0 ? _ref297 : raw.Desc) !== null && _ref296 !== void 0 ? _ref296 : raw.remark) !== null && _ref295 !== void 0 ? _ref295 : raw.Remark) !== null && _ref294 !== void 0 ? _ref294 : ''
+  };
+}
+
+/**
+ * 退款数据规范化：兼容 snake_case / PascalCase / camelCase
+ */
+function normalizeRefund(raw) {
+  var _ref299, _ref300, _raw$status3, _ref301, _ref302, _ref303, _ref304, _raw$type, _ref305, _ref306, _ref307, _ref308, _raw$id3, _ref309, _ref310, _ref311, _ref312, _ref313, _ref314, _ref315, _raw$refundNo, _ref316, _ref317, _ref318, _ref319, _ref320, _ref321, _raw$orderId3, _ref322, _ref323, _ref324, _raw$orderNo2, _ref325, _ref326, _ref327, _raw$userId2, _ref328, _ref329, _ref330, _typeTextMap, _ref331, _ref332, _ref333, _ref334, _raw$statusText, _ref335, _ref336, _ref337, _raw$reason, _ref338, _ref339, _ref340, _raw$reasonId, _ref341, _ref342, _ref343, _ref344, _ref345, _ref346, _raw$amount2, _ref347, _ref348, _ref349, _ref350, _ref351, _raw$payAmount2, _ref352, _ref353, _raw$freightAmount2, _ref354, _ref355, _raw$couponAmount2, _ref356, _ref357, _ref358, _ref359, _ref360, _raw$quantity3, _ref361, _ref362, _ref363, _ref364, _ref365, _raw$description2, _ref366, _ref367, _ref368, _ref369, _ref370, _ref371, _ref372, _ref373, _raw$applyTime, _ref374, _ref375, _ref376, _ref377, _ref378, _raw$auditTime, _ref379, _ref380, _ref381, _ref382, _ref383, _raw$auditRemark, _ref384, _ref385, _ref386, _ref387, _ref388, _raw$refundTime, _ref389, _ref390, _ref391, _ref392, _ref393, _ref394, _ref395, _ref396, _raw$trackingNo, _ref397, _ref398, _ref399, _ref400, _ref401, _ref402, _ref403, _ref404, _raw$trackingCompany, _ref405, _ref406, _ref407, _ref408, _raw$receiverName, _ref409, _ref410, _ref411, _ref412, _ref413, _ref414, _raw$receiverPhone, _ref415, _ref416, _ref417, _ref418, _raw$receiverAddress;
+  var rawStatus = (_ref299 = (_ref300 = (_raw$status3 = raw.status) !== null && _raw$status3 !== void 0 ? _raw$status3 : raw.Status) !== null && _ref300 !== void 0 ? _ref300 : raw.refundStatus) !== null && _ref299 !== void 0 ? _ref299 : raw.refund_status;
+  var statusTextMap = {
+    'pending': '待审核',
+    'approved': '已通过',
+    'rejected': '已拒绝',
+    'completed': '已完成'
+  };
+  var typeTextMap = {
+    'refund_only': '仅退款',
+    'return_refund': '退货退款',
+    'only_refund': '仅退款',
+    'return_and_refund': '退货退款'
+  };
+  var status = rawStatus;
+  var statusCode = null;
+  if (typeof rawStatus === 'number') {
+    statusCode = rawStatus;
+    var numericMap = {
+      0: 'pending',
+      1: 'approved',
+      2: 'rejected',
+      3: 'completed'
+    };
+    status = numericMap[rawStatus] || 'pending';
+  }
+  var rawType = (_ref301 = (_ref302 = (_ref303 = (_ref304 = (_raw$type = raw.type) !== null && _raw$type !== void 0 ? _raw$type : raw.Type) !== null && _ref304 !== void 0 ? _ref304 : raw.refundType) !== null && _ref303 !== void 0 ? _ref303 : raw.refund_type) !== null && _ref302 !== void 0 ? _ref302 : raw.applyType) !== null && _ref301 !== void 0 ? _ref301 : raw.apply_type;
+  var type = rawType;
+  if (typeof rawType === 'number') {
+    var typeNumericMap = {
+      1: 'refund_only',
+      2: 'return_refund'
+    };
+    type = typeNumericMap[rawType] || 'refund_only';
+  }
+  var itemKeys = ['items', 'Items', 'refundItems', 'RefundItems', 'goodsList', 'GoodsList', 'orderItems', 'OrderItems', 'products', 'Products', 'goods', 'Goods', 'list', 'List', 'records', 'Records', 'data', 'Data'];
+  var rawItems = itemKeys.map(function (k) {
+    return raw[k];
+  }).find(Array.isArray) || [];
+  var items = rawItems.map(transformCartItem).map(function (item, index) {
+    // 如果 transformCartItem 没有解析出商品关键信息，尝试从原始元素兜底提取
+    if ((item.productName || item.image) && item.quantity) return item;
+    var fallback = extractFallbackProduct(rawItems[index]);
+    return fallback ? (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_4__["default"])({
+      id: item.id || ''
+    }, fallback) : item;
+  });
+
+  // 兜底：后端未返回商品项时，从退款记录自身的商品字段构建一条商品信息
+  if (!items || items.length === 0) {
+    var fallback = extractFallbackProduct(raw);
+    if (fallback) {
+      items = [fallback];
+    }
+  }
+  return {
+    id: (_ref305 = (_ref306 = (_ref307 = (_ref308 = (_raw$id3 = raw.id) !== null && _raw$id3 !== void 0 ? _raw$id3 : raw.Id) !== null && _ref308 !== void 0 ? _ref308 : raw.refundId) !== null && _ref307 !== void 0 ? _ref307 : raw.refund_id) !== null && _ref306 !== void 0 ? _ref306 : raw.ID) !== null && _ref305 !== void 0 ? _ref305 : '',
+    refundNo: (_ref309 = (_ref310 = (_ref311 = (_ref312 = (_ref313 = (_ref314 = (_ref315 = (_raw$refundNo = raw.refundNo) !== null && _raw$refundNo !== void 0 ? _raw$refundNo : raw.refund_no) !== null && _ref315 !== void 0 ? _ref315 : raw.RefundNo) !== null && _ref314 !== void 0 ? _ref314 : raw.RefundNO) !== null && _ref313 !== void 0 ? _ref313 : raw.sn) !== null && _ref312 !== void 0 ? _ref312 : raw.SN) !== null && _ref311 !== void 0 ? _ref311 : raw.code) !== null && _ref310 !== void 0 ? _ref310 : raw.Code) !== null && _ref309 !== void 0 ? _ref309 : '',
+    orderId: (_ref316 = (_ref317 = (_ref318 = (_ref319 = (_ref320 = (_ref321 = (_raw$orderId3 = raw.orderId) !== null && _raw$orderId3 !== void 0 ? _raw$orderId3 : raw.order_id) !== null && _ref321 !== void 0 ? _ref321 : raw.OrderId) !== null && _ref320 !== void 0 ? _ref320 : raw.OrderID) !== null && _ref319 !== void 0 ? _ref319 : raw.orderNo) !== null && _ref318 !== void 0 ? _ref318 : raw.order_no) !== null && _ref317 !== void 0 ? _ref317 : raw.OrderNo) !== null && _ref316 !== void 0 ? _ref316 : '',
+    orderNo: (_ref322 = (_ref323 = (_ref324 = (_raw$orderNo2 = raw.orderNo) !== null && _raw$orderNo2 !== void 0 ? _raw$orderNo2 : raw.order_no) !== null && _ref324 !== void 0 ? _ref324 : raw.OrderNo) !== null && _ref323 !== void 0 ? _ref323 : raw.OrderNO) !== null && _ref322 !== void 0 ? _ref322 : '',
+    userId: (_ref325 = (_ref326 = (_ref327 = (_raw$userId2 = raw.userId) !== null && _raw$userId2 !== void 0 ? _raw$userId2 : raw.user_id) !== null && _ref327 !== void 0 ? _ref327 : raw.UserId) !== null && _ref326 !== void 0 ? _ref326 : raw.UserID) !== null && _ref325 !== void 0 ? _ref325 : '',
+    type: type,
+    typeText: (_ref328 = (_ref329 = (_ref330 = (_typeTextMap = typeTextMap[type]) !== null && _typeTextMap !== void 0 ? _typeTextMap : raw.typeText) !== null && _ref330 !== void 0 ? _ref330 : raw.type_text) !== null && _ref329 !== void 0 ? _ref329 : raw.TypeText) !== null && _ref328 !== void 0 ? _ref328 : type === 'return_refund' ? '退货退款' : '仅退款',
+    status: status,
+    statusCode: statusCode,
+    statusText: (_ref331 = (_ref332 = (_ref333 = (_ref334 = (_raw$statusText = raw.statusText) !== null && _raw$statusText !== void 0 ? _raw$statusText : raw.status_text) !== null && _ref334 !== void 0 ? _ref334 : raw.StatusText) !== null && _ref333 !== void 0 ? _ref333 : statusTextMap[status]) !== null && _ref332 !== void 0 ? _ref332 : status) !== null && _ref331 !== void 0 ? _ref331 : '',
+    reason: (_ref335 = (_ref336 = (_ref337 = (_raw$reason = raw.reason) !== null && _raw$reason !== void 0 ? _raw$reason : raw.Reason) !== null && _ref337 !== void 0 ? _ref337 : raw.refundReason) !== null && _ref336 !== void 0 ? _ref336 : raw.refund_reason) !== null && _ref335 !== void 0 ? _ref335 : '',
+    reasonId: (_ref338 = (_ref339 = (_ref340 = (_raw$reasonId = raw.reasonId) !== null && _raw$reasonId !== void 0 ? _raw$reasonId : raw.reason_id) !== null && _ref340 !== void 0 ? _ref340 : raw.ReasonId) !== null && _ref339 !== void 0 ? _ref339 : raw.ReasonID) !== null && _ref338 !== void 0 ? _ref338 : '',
+    amount: Number((_ref341 = (_ref342 = (_ref343 = (_ref344 = (_ref345 = (_ref346 = (_raw$amount2 = raw.amount) !== null && _raw$amount2 !== void 0 ? _raw$amount2 : raw.Amount) !== null && _ref346 !== void 0 ? _ref346 : raw.refundAmount) !== null && _ref345 !== void 0 ? _ref345 : raw.refund_amount) !== null && _ref344 !== void 0 ? _ref344 : raw.totalAmount) !== null && _ref343 !== void 0 ? _ref343 : raw.total_amount) !== null && _ref342 !== void 0 ? _ref342 : raw.TotalAmount) !== null && _ref341 !== void 0 ? _ref341 : 0),
+    payAmount: Number((_ref347 = (_ref348 = (_ref349 = (_ref350 = (_ref351 = (_raw$payAmount2 = raw.payAmount) !== null && _raw$payAmount2 !== void 0 ? _raw$payAmount2 : raw.pay_amount) !== null && _ref351 !== void 0 ? _ref351 : raw.PayAmount) !== null && _ref350 !== void 0 ? _ref350 : raw.orderAmount) !== null && _ref349 !== void 0 ? _ref349 : raw.order_amount) !== null && _ref348 !== void 0 ? _ref348 : raw.OrderAmount) !== null && _ref347 !== void 0 ? _ref347 : 0),
+    freightAmount: Number((_ref352 = (_ref353 = (_raw$freightAmount2 = raw.freightAmount) !== null && _raw$freightAmount2 !== void 0 ? _raw$freightAmount2 : raw.freight_amount) !== null && _ref353 !== void 0 ? _ref353 : raw.FreightAmount) !== null && _ref352 !== void 0 ? _ref352 : 0),
+    couponAmount: Number((_ref354 = (_ref355 = (_raw$couponAmount2 = raw.couponAmount) !== null && _raw$couponAmount2 !== void 0 ? _raw$couponAmount2 : raw.coupon_amount) !== null && _ref355 !== void 0 ? _ref355 : raw.CouponAmount) !== null && _ref354 !== void 0 ? _ref354 : 0),
+    quantity: Number((_ref356 = (_ref357 = (_ref358 = (_ref359 = (_ref360 = (_raw$quantity3 = raw.quantity) !== null && _raw$quantity3 !== void 0 ? _raw$quantity3 : raw.Quantity) !== null && _ref360 !== void 0 ? _ref360 : raw.count) !== null && _ref359 !== void 0 ? _ref359 : raw.Count) !== null && _ref358 !== void 0 ? _ref358 : raw.num) !== null && _ref357 !== void 0 ? _ref357 : raw.Num) !== null && _ref356 !== void 0 ? _ref356 : 0),
+    description: (_ref361 = (_ref362 = (_ref363 = (_ref364 = (_ref365 = (_raw$description2 = raw.description) !== null && _raw$description2 !== void 0 ? _raw$description2 : raw.Description) !== null && _ref365 !== void 0 ? _ref365 : raw.remark) !== null && _ref364 !== void 0 ? _ref364 : raw.Remark) !== null && _ref363 !== void 0 ? _ref363 : raw.desc) !== null && _ref362 !== void 0 ? _ref362 : raw.Desc) !== null && _ref361 !== void 0 ? _ref361 : '',
+    images: Array.isArray(raw.images) ? raw.images : Array.isArray(raw.Images) ? raw.Images : Array.isArray(raw.pics) ? raw.pics : Array.isArray(raw.vouchers) ? raw.vouchers : Array.isArray(raw.imageList) ? raw.imageList : [],
+    items: items,
+    applyTime: (_ref366 = (_ref367 = (_ref368 = (_ref369 = (_ref370 = (_ref371 = (_ref372 = (_ref373 = (_raw$applyTime = raw.applyTime) !== null && _raw$applyTime !== void 0 ? _raw$applyTime : raw.apply_time) !== null && _ref373 !== void 0 ? _ref373 : raw.ApplyTime) !== null && _ref372 !== void 0 ? _ref372 : raw.createTime) !== null && _ref371 !== void 0 ? _ref371 : raw.create_time) !== null && _ref370 !== void 0 ? _ref370 : raw.CreateTime) !== null && _ref369 !== void 0 ? _ref369 : raw.createdAt) !== null && _ref368 !== void 0 ? _ref368 : raw.created_at) !== null && _ref367 !== void 0 ? _ref367 : raw.CreatedAt) !== null && _ref366 !== void 0 ? _ref366 : '',
+    auditTime: (_ref374 = (_ref375 = (_ref376 = (_ref377 = (_ref378 = (_raw$auditTime = raw.auditTime) !== null && _raw$auditTime !== void 0 ? _raw$auditTime : raw.audit_time) !== null && _ref378 !== void 0 ? _ref378 : raw.AuditTime) !== null && _ref377 !== void 0 ? _ref377 : raw.reviewTime) !== null && _ref376 !== void 0 ? _ref376 : raw.review_time) !== null && _ref375 !== void 0 ? _ref375 : raw.ReviewTime) !== null && _ref374 !== void 0 ? _ref374 : '',
+    auditRemark: (_ref379 = (_ref380 = (_ref381 = (_ref382 = (_ref383 = (_raw$auditRemark = raw.auditRemark) !== null && _raw$auditRemark !== void 0 ? _raw$auditRemark : raw.audit_remark) !== null && _ref383 !== void 0 ? _ref383 : raw.AuditRemark) !== null && _ref382 !== void 0 ? _ref382 : raw.rejectReason) !== null && _ref381 !== void 0 ? _ref381 : raw.reject_reason) !== null && _ref380 !== void 0 ? _ref380 : raw.RejectReason) !== null && _ref379 !== void 0 ? _ref379 : '',
+    refundTime: (_ref384 = (_ref385 = (_ref386 = (_ref387 = (_ref388 = (_raw$refundTime = raw.refundTime) !== null && _raw$refundTime !== void 0 ? _raw$refundTime : raw.refund_time) !== null && _ref388 !== void 0 ? _ref388 : raw.RefundTime) !== null && _ref387 !== void 0 ? _ref387 : raw.completeTime) !== null && _ref386 !== void 0 ? _ref386 : raw.complete_time) !== null && _ref385 !== void 0 ? _ref385 : raw.CompleteTime) !== null && _ref384 !== void 0 ? _ref384 : '',
+    trackingNo: (_ref389 = (_ref390 = (_ref391 = (_ref392 = (_ref393 = (_ref394 = (_ref395 = (_ref396 = (_raw$trackingNo = raw.trackingNo) !== null && _raw$trackingNo !== void 0 ? _raw$trackingNo : raw.tracking_no) !== null && _ref396 !== void 0 ? _ref396 : raw.TrackingNo) !== null && _ref395 !== void 0 ? _ref395 : raw.expressNo) !== null && _ref394 !== void 0 ? _ref394 : raw.express_no) !== null && _ref393 !== void 0 ? _ref393 : raw.ExpressNo) !== null && _ref392 !== void 0 ? _ref392 : raw.logisticsNo) !== null && _ref391 !== void 0 ? _ref391 : raw.logistics_no) !== null && _ref390 !== void 0 ? _ref390 : raw.LogisticsNo) !== null && _ref389 !== void 0 ? _ref389 : '',
+    trackingCompany: (_ref397 = (_ref398 = (_ref399 = (_ref400 = (_ref401 = (_ref402 = (_ref403 = (_ref404 = (_raw$trackingCompany = raw.trackingCompany) !== null && _raw$trackingCompany !== void 0 ? _raw$trackingCompany : raw.tracking_company) !== null && _ref404 !== void 0 ? _ref404 : raw.TrackingCompany) !== null && _ref403 !== void 0 ? _ref403 : raw.expressCompany) !== null && _ref402 !== void 0 ? _ref402 : raw.express_company) !== null && _ref401 !== void 0 ? _ref401 : raw.ExpressCompany) !== null && _ref400 !== void 0 ? _ref400 : raw.logisticsCompany) !== null && _ref399 !== void 0 ? _ref399 : raw.logistics_company) !== null && _ref398 !== void 0 ? _ref398 : raw.LogisticsCompany) !== null && _ref397 !== void 0 ? _ref397 : '',
+    receiverName: (_ref405 = (_ref406 = (_ref407 = (_ref408 = (_raw$receiverName = raw.receiverName) !== null && _raw$receiverName !== void 0 ? _raw$receiverName : raw.receiver_name) !== null && _ref408 !== void 0 ? _ref408 : raw.ReceiverName) !== null && _ref407 !== void 0 ? _ref407 : raw.consignee) !== null && _ref406 !== void 0 ? _ref406 : raw.Consignee) !== null && _ref405 !== void 0 ? _ref405 : '',
+    receiverPhone: (_ref409 = (_ref410 = (_ref411 = (_ref412 = (_ref413 = (_ref414 = (_raw$receiverPhone = raw.receiverPhone) !== null && _raw$receiverPhone !== void 0 ? _raw$receiverPhone : raw.receiver_phone) !== null && _ref414 !== void 0 ? _ref414 : raw.ReceiverPhone) !== null && _ref413 !== void 0 ? _ref413 : raw.mobile) !== null && _ref412 !== void 0 ? _ref412 : raw.Mobile) !== null && _ref411 !== void 0 ? _ref411 : raw.phone) !== null && _ref410 !== void 0 ? _ref410 : raw.Phone) !== null && _ref409 !== void 0 ? _ref409 : '',
+    receiverAddress: (_ref415 = (_ref416 = (_ref417 = (_ref418 = (_raw$receiverAddress = raw.receiverAddress) !== null && _raw$receiverAddress !== void 0 ? _raw$receiverAddress : raw.receiver_address) !== null && _ref418 !== void 0 ? _ref418 : raw.ReceiverAddress) !== null && _ref417 !== void 0 ? _ref417 : raw.address) !== null && _ref416 !== void 0 ? _ref416 : raw.Address) !== null && _ref415 !== void 0 ? _ref415 : ''
+  };
+}
+
+/**
+ * 获取退货原因模版列表
+ * GET /api/v1/refund-reasons
+ */
+function fetchRefundReasons() {
+  return _fetchRefundReasons.apply(this, arguments);
+}
+
+/**
+ * 获取退款列表
+ * GET /api/v1/refunds
+ */
+function _fetchRefundReasons() {
+  _fetchRefundReasons = (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_2__["default"])(/*#__PURE__*/(0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_3__["default"])().m(function _callee16() {
+    var _ref455, _ref456, _res$data$list4, _res$data7, _res$data8, _res$data9;
+    var params,
+      query,
+      res,
+      list,
+      _args16 = arguments;
+    return (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_3__["default"])().w(function (_context16) {
+      while (1) switch (_context16.n) {
+        case 0:
+          params = _args16.length > 0 && _args16[0] !== undefined ? _args16[0] : {};
+          query = {};
+          if (params.page !== undefined) query.page = params.page;
+          if (params.size !== undefined) query.size = params.size;
+          if (params.enabled !== undefined) query.enabled = params.enabled;
+          _context16.n = 1;
+          return (0,_api_common__WEBPACK_IMPORTED_MODULE_0__.apiGet)(refundApi.reasonList, query);
+        case 1:
+          res = _context16.v;
+          list = Array.isArray(res === null || res === void 0 ? void 0 : res.data) ? res.data : (_ref455 = (_ref456 = (_res$data$list4 = res === null || res === void 0 || (_res$data7 = res.data) === null || _res$data7 === void 0 ? void 0 : _res$data7.list) !== null && _res$data$list4 !== void 0 ? _res$data$list4 : res === null || res === void 0 || (_res$data8 = res.data) === null || _res$data8 === void 0 ? void 0 : _res$data8.items) !== null && _ref456 !== void 0 ? _ref456 : res === null || res === void 0 || (_res$data9 = res.data) === null || _res$data9 === void 0 ? void 0 : _res$data9.records) !== null && _ref455 !== void 0 ? _ref455 : [];
+          return _context16.a(2, (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_4__["default"])((0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_4__["default"])({}, res), {}, {
+            data: list.map(normalizeRefundReason)
+          }));
+      }
+    }, _callee16);
+  }));
+  return _fetchRefundReasons.apply(this, arguments);
+}
+function fetchRefundList() {
+  return _fetchRefundList.apply(this, arguments);
+}
+
+/**
+ * 申请退款
+ * POST /api/v1/refunds
+ * payload 支持：
+ *   - orderId: 订单ID (必填)
+ *   - type: 退款类型 refund_only/return_refund 或 1/2 (必填)
+ *   - reasonId: 退款原因ID
+ *   - reason: 退款原因说明
+ *   - amount: 退款金额 (必填)
+ *   - description: 退款说明
+ *   - images: 凭证图片URL数组
+ *   - items: 退款商品项 [{productId, skuId, quantity, price}]
+ *   - trackingNo: 退货物流单号
+ *   - trackingCompany: 退货物流公司
+ */
+function _fetchRefundList() {
+  _fetchRefundList = (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_2__["default"])(/*#__PURE__*/(0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_3__["default"])().m(function _callee17() {
+    var _ref457, _ref458, _res$data$list5, _res$data0, _res$data1, _res$data10;
+    var params,
+      query,
+      res,
+      list,
+      _args17 = arguments;
+    return (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_3__["default"])().w(function (_context17) {
+      while (1) switch (_context17.n) {
+        case 0:
+          params = _args17.length > 0 && _args17[0] !== undefined ? _args17[0] : {};
+          query = {};
+          if (params.status !== undefined) query.status = params.status;
+          if (params.type !== undefined) query.type = params.type;
+          if (params.orderId !== undefined) query.orderId = params.orderId;
+          if (params.page !== undefined) query.page = params.page;
+          if (params.size !== undefined) query.size = params.size;
+          _context17.n = 1;
+          return (0,_api_common__WEBPACK_IMPORTED_MODULE_0__.apiGet)(refundApi.list, query);
+        case 1:
+          res = _context17.v;
+          list = Array.isArray(res === null || res === void 0 ? void 0 : res.data) ? res.data : (_ref457 = (_ref458 = (_res$data$list5 = res === null || res === void 0 || (_res$data0 = res.data) === null || _res$data0 === void 0 ? void 0 : _res$data0.list) !== null && _res$data$list5 !== void 0 ? _res$data$list5 : res === null || res === void 0 || (_res$data1 = res.data) === null || _res$data1 === void 0 ? void 0 : _res$data1.items) !== null && _ref458 !== void 0 ? _ref458 : res === null || res === void 0 || (_res$data10 = res.data) === null || _res$data10 === void 0 ? void 0 : _res$data10.records) !== null && _ref457 !== void 0 ? _ref457 : [];
+          return _context17.a(2, (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_4__["default"])((0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_4__["default"])({}, res), {}, {
+            data: list.map(normalizeRefund)
+          }));
+      }
+    }, _callee17);
+  }));
+  return _fetchRefundList.apply(this, arguments);
+}
+function applyRefund(_x18) {
+  return _applyRefund.apply(this, arguments);
+}
+
+/**
+ * 获取退款详情
+ * GET /api/v1/refunds/{id}
+ */
+function _applyRefund() {
+  _applyRefund = (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_2__["default"])(/*#__PURE__*/(0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_3__["default"])().m(function _callee18(payload) {
+    var body, res;
+    return (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_3__["default"])().w(function (_context18) {
+      while (1) switch (_context18.n) {
+        case 0:
+          body = {
+            // 后端 Go 结构体要求：orderId uint64（必填）
+            orderId: (0,_api_common__WEBPACK_IMPORTED_MODULE_0__.toNumericId)(payload.orderId)
+          }; // 退款原因ID：后端字段名为 refundReasonId（uint64，必填）
+          if (payload.reasonId !== undefined && payload.reasonId !== null) {
+            body.refundReasonId = (0,_api_common__WEBPACK_IMPORTED_MODULE_0__.toNumericId)(payload.reasonId);
+          }
+          if (payload.description !== undefined) body.description = payload.description;
+          if (Array.isArray(payload.images)) body.images = payload.images;
+          _context18.n = 1;
+          return (0,_api_common__WEBPACK_IMPORTED_MODULE_0__.apiPost)(refundApi.apply, body, {}, {}, false);
+        case 1:
+          res = _context18.v;
+          return _context18.a(2, res);
+      }
+    }, _callee18);
+  }));
+  return _applyRefund.apply(this, arguments);
+}
+function fetchRefundDetail(_x19) {
+  return _fetchRefundDetail.apply(this, arguments);
+}
+
+// ==================== 收货地址 ====================
+
+/**
+ * 规范化收货地址字段（兼容 snake_case / PascalCase / camelCase）
+ */
+function _fetchRefundDetail() {
+  _fetchRefundDetail = (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_2__["default"])(/*#__PURE__*/(0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_3__["default"])().m(function _callee19(id) {
+    var res;
+    return (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_3__["default"])().w(function (_context19) {
+      while (1) switch (_context19.n) {
+        case 0:
+          _context19.n = 1;
+          return (0,_api_common__WEBPACK_IMPORTED_MODULE_0__.apiGet)(refundApi.detail, {}, {
+            id: id
+          });
+        case 1:
+          res = _context19.v;
+          if (!(res !== null && res !== void 0 && res.data)) {
+            _context19.n = 2;
+            break;
+          }
+          return _context19.a(2, (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_4__["default"])((0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_4__["default"])({}, res), {}, {
+            data: normalizeRefund(res.data)
+          }));
+        case 2:
+          return _context19.a(2, res);
+      }
+    }, _callee19);
+  }));
+  return _fetchRefundDetail.apply(this, arguments);
+}
+function normalizeAddress(raw) {
+  var _ref419, _ref420, _ref421, _raw$id4, _ref422, _ref423, _ref424, _ref425, _ref426, _raw$consignee, _ref427, _ref428, _ref429, _ref430, _ref431, _raw$phone, _ref432, _ref433, _ref434, _raw$province, _ref435, _ref436, _ref437, _raw$city, _ref438, _ref439, _ref440, _ref441, _ref442, _raw$district, _ref443, _ref444, _ref445, _ref446, _ref447, _raw$detail, _ref448, _ref449, _ref450, _ref451, _raw$isDefault;
+  if (!raw || (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_typeof_js__WEBPACK_IMPORTED_MODULE_1__["default"])(raw) !== 'object') return {};
+  return {
+    id: (_ref419 = (_ref420 = (_ref421 = (_raw$id4 = raw.id) !== null && _raw$id4 !== void 0 ? _raw$id4 : raw.ID) !== null && _ref421 !== void 0 ? _ref421 : raw.addressId) !== null && _ref420 !== void 0 ? _ref420 : raw.address_id) !== null && _ref419 !== void 0 ? _ref419 : '',
+    consignee: (_ref422 = (_ref423 = (_ref424 = (_ref425 = (_ref426 = (_raw$consignee = raw.consignee) !== null && _raw$consignee !== void 0 ? _raw$consignee : raw.Consignee) !== null && _ref426 !== void 0 ? _ref426 : raw.name) !== null && _ref425 !== void 0 ? _ref425 : raw.receiver) !== null && _ref424 !== void 0 ? _ref424 : raw.receiverName) !== null && _ref423 !== void 0 ? _ref423 : raw.receiver_name) !== null && _ref422 !== void 0 ? _ref422 : '',
+    phone: (_ref427 = (_ref428 = (_ref429 = (_ref430 = (_ref431 = (_raw$phone = raw.phone) !== null && _raw$phone !== void 0 ? _raw$phone : raw.Phone) !== null && _ref431 !== void 0 ? _ref431 : raw.mobile) !== null && _ref430 !== void 0 ? _ref430 : raw.tel) !== null && _ref429 !== void 0 ? _ref429 : raw.phoneNumber) !== null && _ref428 !== void 0 ? _ref428 : raw.phone_number) !== null && _ref427 !== void 0 ? _ref427 : '',
+    province: (_ref432 = (_ref433 = (_ref434 = (_raw$province = raw.province) !== null && _raw$province !== void 0 ? _raw$province : raw.Province) !== null && _ref434 !== void 0 ? _ref434 : raw.provinceName) !== null && _ref433 !== void 0 ? _ref433 : raw.province_name) !== null && _ref432 !== void 0 ? _ref432 : '',
+    city: (_ref435 = (_ref436 = (_ref437 = (_raw$city = raw.city) !== null && _raw$city !== void 0 ? _raw$city : raw.City) !== null && _ref437 !== void 0 ? _ref437 : raw.cityName) !== null && _ref436 !== void 0 ? _ref436 : raw.city_name) !== null && _ref435 !== void 0 ? _ref435 : '',
+    district: (_ref438 = (_ref439 = (_ref440 = (_ref441 = (_ref442 = (_raw$district = raw.district) !== null && _raw$district !== void 0 ? _raw$district : raw.District) !== null && _ref442 !== void 0 ? _ref442 : raw.area) !== null && _ref441 !== void 0 ? _ref441 : raw.Area) !== null && _ref440 !== void 0 ? _ref440 : raw.districtName) !== null && _ref439 !== void 0 ? _ref439 : raw.district_name) !== null && _ref438 !== void 0 ? _ref438 : '',
+    detail: (_ref443 = (_ref444 = (_ref445 = (_ref446 = (_ref447 = (_raw$detail = raw.detail) !== null && _raw$detail !== void 0 ? _raw$detail : raw.Detail) !== null && _ref447 !== void 0 ? _ref447 : raw.address) !== null && _ref446 !== void 0 ? _ref446 : raw.Address) !== null && _ref445 !== void 0 ? _ref445 : raw.addressDetail) !== null && _ref444 !== void 0 ? _ref444 : raw.address_detail) !== null && _ref443 !== void 0 ? _ref443 : '',
+    isDefault: (_ref448 = (_ref449 = (_ref450 = (_ref451 = (_raw$isDefault = raw.isDefault) !== null && _raw$isDefault !== void 0 ? _raw$isDefault : raw.is_default) !== null && _ref451 !== void 0 ? _ref451 : raw.IsDefault) !== null && _ref450 !== void 0 ? _ref450 : raw.default) !== null && _ref449 !== void 0 ? _ref449 : raw.Default) !== null && _ref448 !== void 0 ? _ref448 : false
+  };
+}
+
+/**
+ * 获取默认收货地址
+ */
+function fetchDefaultAddress() {
+  return _fetchDefaultAddress.apply(this, arguments);
+}
+
+/**
+ * 获取收货地址列表
+ */
+function _fetchDefaultAddress() {
+  _fetchDefaultAddress = (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_2__["default"])(/*#__PURE__*/(0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_3__["default"])().m(function _callee20() {
+    var res;
+    return (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_3__["default"])().w(function (_context20) {
+      while (1) switch (_context20.n) {
+        case 0:
+          _context20.n = 1;
+          return (0,_api_common__WEBPACK_IMPORTED_MODULE_0__.apiGet)(addressApi.default);
+        case 1:
+          res = _context20.v;
+          if (!(res !== null && res !== void 0 && res.data)) {
+            _context20.n = 2;
+            break;
+          }
+          return _context20.a(2, (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_4__["default"])((0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_4__["default"])({}, res), {}, {
+            data: normalizeAddress(res.data)
+          }));
+        case 2:
+          return _context20.a(2, res);
+      }
+    }, _callee20);
+  }));
+  return _fetchDefaultAddress.apply(this, arguments);
+}
+function fetchAddressList() {
+  return _fetchAddressList.apply(this, arguments);
+}
+function _fetchAddressList() {
+  _fetchAddressList = (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_2__["default"])(/*#__PURE__*/(0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_3__["default"])().m(function _callee21() {
+    var res;
+    return (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_3__["default"])().w(function (_context21) {
+      while (1) switch (_context21.n) {
+        case 0:
+          _context21.n = 1;
+          return (0,_api_common__WEBPACK_IMPORTED_MODULE_0__.apiGet)(addressApi.list);
+        case 1:
+          res = _context21.v;
+          if (!(res !== null && res !== void 0 && res.data && Array.isArray(res.data))) {
+            _context21.n = 2;
+            break;
+          }
+          return _context21.a(2, (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_4__["default"])((0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_4__["default"])({}, res), {}, {
+            data: res.data.map(normalizeAddress)
+          }));
+        case 2:
+          return _context21.a(2, res);
+      }
+    }, _callee21);
+  }));
+  return _fetchAddressList.apply(this, arguments);
+}
+
+/***/ }),
+
+/***/ "./src/api/common/index.ts":
+/*!*********************************!*\
+  !*** ./src/api/common/index.ts ***!
+  \*********************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   apiDelete: function() { return /* binding */ apiDelete; },
+/* harmony export */   apiGet: function() { return /* binding */ apiGet; },
+/* harmony export */   apiPost: function() { return /* binding */ apiPost; },
+/* harmony export */   apiPut: function() { return /* binding */ apiPut; },
+/* harmony export */   getAuthToken: function() { return /* binding */ getAuthToken; },
+/* harmony export */   toNumericId: function() { return /* binding */ toNumericId; },
+/* harmony export */   uploadImage: function() { return /* binding */ uploadImage; }
+/* harmony export */ });
+/* unused harmony export normalizeNumericFields */
+/* harmony import */ var D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./node_modules/@babel/runtime/helpers/esm/regenerator.js */ "./node_modules/@babel/runtime/helpers/esm/regenerator.js");
+/* harmony import */ var D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_typeof_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./node_modules/@babel/runtime/helpers/esm/typeof.js */ "./node_modules/@babel/runtime/helpers/esm/typeof.js");
+/* harmony import */ var D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./node_modules/@babel/runtime/helpers/esm/asyncToGenerator.js */ "./node_modules/@babel/runtime/helpers/esm/asyncToGenerator.js");
+/* harmony import */ var D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_createForOfIteratorHelper_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./node_modules/@babel/runtime/helpers/esm/createForOfIteratorHelper.js */ "./node_modules/@babel/runtime/helpers/esm/createForOfIteratorHelper.js");
+/* harmony import */ var D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./node_modules/@babel/runtime/helpers/esm/objectSpread2.js */ "./node_modules/@babel/runtime/helpers/esm/objectSpread2.js");
+/* harmony import */ var _tarojs_taro__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @tarojs/taro */ "./node_modules/@tarojs/taro/index.js");
+/* harmony import */ var _tarojs_taro__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_tarojs_taro__WEBPACK_IMPORTED_MODULE_0__);
+/* provided dependency */ var URLSearchParams = __webpack_require__(/*! @tarojs/runtime */ "./node_modules/@tarojs/runtime/dist/index.js")["URLSearchParams"];
+
+
+
+
+
+
+
+/**
+ * 将 ID 字段统一转换为数字类型
+ * 后端 Go 通常使用 uint64，要求 JSON 中的 ID 必须是数字而非字符串
+ */
+function toNumericId(value) {
+  if (value === undefined || value === null || value === '') return 0;
+  var num = Number(value);
+  return Number.isFinite(num) ? num : 0;
+}
+
+/**
+ * 批量转换 body 中指定字段为数字类型
+ */
+function normalizeNumericFields(body, fields) {
+  var result = (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_1__["default"])({}, body);
+  var _iterator = (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_createForOfIteratorHelper_js__WEBPACK_IMPORTED_MODULE_2__["default"])(fields),
+    _step;
+  try {
+    for (_iterator.s(); !(_step = _iterator.n()).done;) {
+      var field = _step.value;
+      if (field in result && result[field] !== undefined && result[field] !== null) {
+        result[field] = toNumericId(result[field]);
+      }
+    }
+  } catch (err) {
+    _iterator.e(err);
+  } finally {
+    _iterator.f();
+  }
+  return result;
+}
+function getAuthToken() {
+  try {
+    var _ref, _ref2, _parsed$token;
+    var stored = _tarojs_taro__WEBPACK_IMPORTED_MODULE_0___default().getStorageSync('lxg_user');
+    if (!stored) return '';
+    var parsed = typeof stored === 'string' ? JSON.parse(stored) : stored;
+    return (_ref = (_ref2 = (_parsed$token = parsed === null || parsed === void 0 ? void 0 : parsed.token) !== null && _parsed$token !== void 0 ? _parsed$token : parsed === null || parsed === void 0 ? void 0 : parsed.Token) !== null && _ref2 !== void 0 ? _ref2 : parsed === null || parsed === void 0 ? void 0 : parsed.accessToken) !== null && _ref !== void 0 ? _ref : '';
+  } catch (error) {
+    console.error('[getAuthToken] 读取登录态失败:', error);
+    return '';
+  }
+}
+function replaceUrlParams(url, params) {
+  var result = url;
+  Object.keys(params).forEach(function (key) {
+    result = result.replace(":".concat(key), String(params[key]));
+  });
+  return result;
+}
+
+// 将 HTTP 状态码转换为用户友好的提示（不暴露 URL、技术细节）
+function friendlyHttpError(statusCode) {
+  switch (statusCode) {
+    case 400:
+      return '请求参数有误';
+    case 401:
+      return '登录已失效，请重新登录';
+    case 403:
+      return '暂无权限执行此操作';
+    case 404:
+      return '接口暂未实现或已移除';
+    case 405:
+      return '请求方式不支持';
+    case 408:
+      return '请求超时，请稍后重试';
+    case 409:
+      return '操作冲突，请刷新后重试';
+    case 413:
+      return '提交数据过大';
+    case 429:
+      return '操作过于频繁，请稍后再试';
+    case 500:
+      return '服务异常，请稍后重试';
+    case 501:
+      return '服务暂未实现';
+    case 502:
+      return '服务网关异常';
+    case 503:
+      return '服务暂时不可用，请稍后重试';
+    case 504:
+      return '网关超时，请稍后重试';
+    default:
+      return statusCode >= 500 ? '服务异常，请稍后重试' : '请求失败，请稍后重试';
+  }
+}
+
+// 美化网络层错误（Taro.request 抛出的 request:fail xxx）
+function friendlyNetworkError(message, url) {
+  if (!message) return '网络异常，请稍后重试';
+  var lower = message.toLowerCase();
+  if (lower.includes('timeout') || lower.includes('请求超时')) return '请求超时，请检查网络后重试';
+  if (lower.includes('abort')) return '请求已取消';
+  if (lower.includes('invalid url') || lower.includes('600009')) return '请求地址异常';
+  if (lower.includes('not in domain list') || lower.includes('url not in domain')) return '请在后台配置合法域名';
+  if (lower.includes('network') || lower.includes('网络')) return '网络异常，请检查网络连接';
+  if (lower.includes('fail')) return '网络请求失败，请稍后重试';
+  return message;
+}
+
+// 判断是否为认证相关错误
+function isAuthError(message, statusCode, code) {
+  // 排除"解析失败"类错误：token解析失败是 token 格式/解析问题，不是认证失效
+  // 误判会导致清除登录态、弹窗跳转登录页，干扰微信登录等需要临时 token 的流程
+  if (message && /解析失败|parse\s*fail/i.test(message)) return false;
+  var authErrorKeywords = ['缺少认证信息', '未登录', '登录已失效', 'token expired', 'token is expired', 'token过期', 'token失效', 'token无效', '未授权', 'unauthorized', 'Unauthorized', '请先登录', '认证失败'];
+  if (statusCode === 401 || statusCode === 403) return true;
+  if (code === 401 || code === 403) return true;
+  return authErrorKeywords.some(function (keyword) {
+    return message.includes(keyword);
+  });
+}
+
+// 登录弹窗全局去重标志，避免同一页面多个接口并发时重复弹窗
+var isLoginModalShowing = false;
+
+// 处理认证错误
+function handleAuthError(message) {
+  var _currentPages;
+  // 如果当前已有登录弹窗显示中，直接忽略，避免重复弹窗
+  if (isLoginModalShowing) return;
+
+  // 检查当前是否有 token（区分"从未登录"和"登录失效"）
+  var hasToken = !!getAuthToken();
+  if (hasToken) {
+    // 有 token 但认证失败 = token 过期，清理登录态
+    try {
+      _tarojs_taro__WEBPACK_IMPORTED_MODULE_0___default().removeStorageSync('lxg_user');
+      _tarojs_taro__WEBPACK_IMPORTED_MODULE_0___default().removeStorageSync('userInfo');
+    } catch (_unused) {/* ignore */}
+  }
+
+  // 提示用户并跳转登录页（如果当前不在登录页）
+  var currentPages = _tarojs_taro__WEBPACK_IMPORTED_MODULE_0___default().getCurrentPages();
+  var currentRoute = ((_currentPages = currentPages[currentPages.length - 1]) === null || _currentPages === void 0 ? void 0 : _currentPages.route) || '';
+  var isLoginPage = currentRoute.includes('/pages/user/login/index') || currentRoute === 'pages/user/login/index';
+  if (isLoginPage) {
+    // 已在登录页，不跳转，避免循环或白屏
+    return;
+  }
+  isLoginModalShowing = true;
+  _tarojs_taro__WEBPACK_IMPORTED_MODULE_0___default().showModal({
+    title: hasToken ? '登录已失效' : '请先登录',
+    content: hasToken ? message || '请重新登录' : '此操作需要登录账号',
+    showCancel: false,
+    confirmText: '去登录',
+    success: function success() {
+      _tarojs_taro__WEBPACK_IMPORTED_MODULE_0___default().navigateTo({
+        url: '/pages/user/login/index'
+      });
+    },
+    complete: function complete() {
+      isLoginModalShowing = false;
+    }
+  });
+}
+function apiRequest(_x) {
+  return _apiRequest.apply(this, arguments);
+}
+function _apiRequest() {
+  _apiRequest = (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_3__["default"])(/*#__PURE__*/(0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_4__["default"])().m(function _callee(url) {
+    var options,
+      defaultHeaders,
+      token,
+      response,
+      _response$data,
+      _response$data2,
+      backendMsg,
+      errMsg,
+      err,
+      respData,
+      _backendMsg,
+      _err,
+      rawErrMsg,
+      errno,
+      _args = arguments,
+      _t;
+    return (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_4__["default"])().w(function (_context) {
+      while (1) switch (_context.p = _context.n) {
+        case 0:
+          options = _args.length > 1 && _args[1] !== undefined ? _args[1] : {};
+          defaultHeaders = {
+            'Content-Type': 'application/x-www-form-urlencoded'
+          };
+          token = getAuthToken();
+          if (token) {
+            defaultHeaders['Authorization'] = "Bearer ".concat(token);
+          }
+          _context.p = 1;
+          console.log('[API Request]', {
+            url: url,
+            method: options.method || 'GET',
+            data: options.data,
+            headers: (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_1__["default"])((0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_1__["default"])({}, defaultHeaders), options.headers || {})
+          });
+          _context.n = 2;
+          return _tarojs_taro__WEBPACK_IMPORTED_MODULE_0___default().request({
+            url: url,
+            method: options.method || 'GET',
+            data: options.data,
+            header: (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_1__["default"])((0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_1__["default"])({}, defaultHeaders), options.headers || {}),
+            timeout: 10000
+          });
+        case 2:
+          response = _context.v;
+          console.log('[API Response]', {
+            url: url,
+            statusCode: response.statusCode,
+            data: response.data
+          });
+          if (!(response.statusCode === 401)) {
+            _context.n = 3;
+            break;
+          }
+          handleAuthError('登录已失效，请重新登录');
+          throw new Error('登录已失效，请重新登录');
+        case 3:
+          if (!(response.statusCode < 200 || response.statusCode >= 300)) {
+            _context.n = 4;
+            break;
+          }
+          // 读取后端返回的 message 字段，方便定位错误
+          backendMsg = ((_response$data = response.data) === null || _response$data === void 0 ? void 0 : _response$data.message) || ((_response$data2 = response.data) === null || _response$data2 === void 0 ? void 0 : _response$data2.msg); // 控制台输出完整调试信息（含 URL、状态码、响应内容）
+          // silent=true 时（如订单评价兜底查询、商品 AI 评价摘要等可选数据）不打印，避免未实现接口刷屏
+          if (!options.silent) {
+            console.error('[API Error]', {
+              url: url,
+              statusCode: response.statusCode,
+              data: response.data
+            });
+          }
+          // 抛给用户的错误信息：优先用后端 message，否则用友好提示（不暴露 URL 等技术细节）
+          errMsg = backendMsg || friendlyHttpError(response.statusCode);
+          err = new Error(errMsg);
+          err.statusCode = response.statusCode;
+          err.response = response.data;
+          err.rawUrl = url;
+
+          // 如果是认证相关错误，处理登录失效
+          // 注意：silent=true 时（如商品详情页静默拉取 AI 评价摘要）不弹窗跳转登录页，
+          // 否则未登录用户浏览商品时会被 AI 接口的 401 弹窗打断
+          if (isAuthError(err.message, response.statusCode) && !options.silent) {
+            handleAuthError(err.message);
+          }
+          throw err;
+        case 4:
+          // 部分接口 HTTP 200 但业务 code 不为 200（如注册时手机号已存在）
+          respData = response.data;
+          if (!(respData && typeof respData.code === 'number' && respData.code !== 200)) {
+            _context.n = 5;
+            break;
+          }
+          _backendMsg = respData.message || respData.msg || '请求失败';
+          _err = new Error(_backendMsg);
+          _err.code = respData.code;
+          _err.response = respData;
+
+          // 如果是认证相关错误，处理登录失效
+          // silent=true 时（如商品 AI 评价摘要等可选数据）不弹窗跳转登录页
+          if (isAuthError(_err.message, undefined, respData.code) && !options.silent) {
+            handleAuthError(_err.message);
+          }
+          throw _err;
+        case 5:
+          return _context.a(2, response.data);
+        case 6:
+          _context.p = 6;
+          _t = _context.v;
+          // 处理 Taro.request 本身抛出的错误（如网络错误、CORS 错误等）
+          rawErrMsg = (_t === null || _t === void 0 ? void 0 : _t.errMsg) || (_t === null || _t === void 0 ? void 0 : _t.message) || String(_t);
+          errno = _t === null || _t === void 0 ? void 0 : _t.errno;
+          if (!options.silent) {
+            console.error('[API Network Error]', {
+              url: url,
+              rawErrMsg: rawErrMsg,
+              errno: errno,
+              error: _t
+            });
+          }
+          if (_t instanceof Error) {
+            // 如果错误消息包含认证相关关键词，也处理登录失效
+            // silent=true 时不弹窗（与上面业务/HTTP 错误处理保持一致）
+            if (isAuthError(_t.message) && !options.silent) {
+              handleAuthError(_t.message);
+            }
+            // 美化网络层错误信息（如 request:fail timeout、request:fail invalid url 等）
+            _t.message = friendlyNetworkError(_t.message, url);
+          }
+          throw _t;
+        case 7:
+          return _context.a(2);
+      }
+    }, _callee, null, [[1, 6]]);
+  }));
+  return _apiRequest.apply(this, arguments);
+}
+function apiGet(_x2) {
+  return _apiGet.apply(this, arguments);
+}
+function _apiGet() {
+  _apiGet = (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_3__["default"])(/*#__PURE__*/(0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_4__["default"])().m(function _callee2(url) {
+    var params,
+      pathParams,
+      silent,
+      err,
+      resolvedUrl,
+      searchParams,
+      fullUrl,
+      _args2 = arguments;
+    return (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_4__["default"])().w(function (_context2) {
+      while (1) switch (_context2.n) {
+        case 0:
+          params = _args2.length > 1 && _args2[1] !== undefined ? _args2[1] : {};
+          pathParams = _args2.length > 2 && _args2[2] !== undefined ? _args2[2] : {};
+          silent = _args2.length > 3 && _args2[3] !== undefined ? _args2[3] : false;
+          if (url) {
+            _context2.n = 1;
+            break;
+          }
+          err = new Error("[apiGet] \u8BF7\u6C42\u5730\u5740\u7F3A\u5931\uFF0C\u8BF7\u68C0\u67E5\u8C03\u7528\u65B9\u662F\u5426\u4F20\u5165\u4E86\u672A\u5B9A\u4E49\u7684 API URL");
+          console.error(err);
+          console.error('[apiGet] 调用栈:', new Error().stack);
+          throw err;
+        case 1:
+          resolvedUrl = replaceUrlParams(url, pathParams);
+          searchParams = new URLSearchParams(params);
+          fullUrl = resolvedUrl + (searchParams.toString() ? '?' + searchParams.toString() : '');
+          return _context2.a(2, apiRequest(fullUrl, {
+            method: 'GET',
+            silent: silent
+          }));
+      }
+    }, _callee2);
+  }));
+  return _apiGet.apply(this, arguments);
+}
+function apiPost(_x3) {
+  return _apiPost.apply(this, arguments);
+}
+function _apiPost() {
+  _apiPost = (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_3__["default"])(/*#__PURE__*/(0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_4__["default"])().m(function _callee3(url) {
+    var data,
+      pathParams,
+      queryParams,
+      useFormUrlEncoded,
+      silent,
+      customHeaders,
+      err,
+      resolvedUrl,
+      stringQueryParams,
+      searchParams,
+      fullUrl,
+      headers,
+      requestData,
+      _args3 = arguments;
+    return (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_4__["default"])().w(function (_context3) {
+      while (1) switch (_context3.n) {
+        case 0:
+          data = _args3.length > 1 && _args3[1] !== undefined ? _args3[1] : {};
+          pathParams = _args3.length > 2 && _args3[2] !== undefined ? _args3[2] : {};
+          queryParams = _args3.length > 3 && _args3[3] !== undefined ? _args3[3] : {};
+          useFormUrlEncoded = _args3.length > 4 && _args3[4] !== undefined ? _args3[4] : true;
+          silent = _args3.length > 5 && _args3[5] !== undefined ? _args3[5] : false;
+          customHeaders = _args3.length > 6 && _args3[6] !== undefined ? _args3[6] : {};
+          if (url) {
+            _context3.n = 1;
+            break;
+          }
+          err = new Error("[apiPost] \u8BF7\u6C42\u5730\u5740\u7F3A\u5931\uFF0C\u8BF7\u68C0\u67E5\u8C03\u7528\u65B9\u662F\u5426\u4F20\u5165\u4E86\u672A\u5B9A\u4E49\u7684 API URL");
+          console.error(err);
+          console.error('[apiPost] 调用栈:', new Error().stack);
+          throw err;
+        case 1:
+          resolvedUrl = replaceUrlParams(url, pathParams); // URLSearchParams 构造函数要求值为 string，将 number 转换为 string
+          stringQueryParams = {};
+          Object.keys(queryParams).forEach(function (key) {
+            stringQueryParams[key] = String(queryParams[key]);
+          });
+          searchParams = new URLSearchParams(stringQueryParams);
+          fullUrl = resolvedUrl + (searchParams.toString() ? '?' + searchParams.toString() : '');
+          headers = (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_1__["default"])({}, customHeaders);
+          requestData = data;
+          if (useFormUrlEncoded) {
+            headers['Content-Type'] = 'application/x-www-form-urlencoded';
+            requestData = new URLSearchParams(data).toString();
+          } else {
+            headers['Content-Type'] = 'application/json';
+            // 直接传对象，让 Taro.request 根据 Content-Type 自动序列化
+            // 手动 JSON.stringify 在小程序端可能被 Taro 二次处理导致格式异常
+            requestData = data;
+          }
+          return _context3.a(2, apiRequest(fullUrl, {
+            method: 'POST',
+            data: requestData,
+            headers: headers,
+            silent: silent
+          }));
+      }
+    }, _callee3);
+  }));
+  return _apiPost.apply(this, arguments);
+}
+function apiPut(_x4) {
+  return _apiPut.apply(this, arguments);
+}
+function _apiPut() {
+  _apiPut = (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_3__["default"])(/*#__PURE__*/(0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_4__["default"])().m(function _callee4(url) {
+    var data,
+      pathParams,
+      err,
+      resolvedUrl,
+      _args4 = arguments;
+    return (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_4__["default"])().w(function (_context4) {
+      while (1) switch (_context4.n) {
+        case 0:
+          data = _args4.length > 1 && _args4[1] !== undefined ? _args4[1] : {};
+          pathParams = _args4.length > 2 && _args4[2] !== undefined ? _args4[2] : {};
+          if (url) {
+            _context4.n = 1;
+            break;
+          }
+          err = new Error("[apiPut] \u8BF7\u6C42\u5730\u5740\u7F3A\u5931\uFF0C\u8BF7\u68C0\u67E5\u8C03\u7528\u65B9\u662F\u5426\u4F20\u5165\u4E86\u672A\u5B9A\u4E49\u7684 API URL");
+          console.error(err);
+          throw err;
+        case 1:
+          resolvedUrl = replaceUrlParams(url, pathParams);
+          return _context4.a(2, apiRequest(resolvedUrl, {
+            method: 'PUT',
+            data: data
+          }));
+      }
+    }, _callee4);
+  }));
+  return _apiPut.apply(this, arguments);
+}
+function apiDelete(_x5) {
+  return _apiDelete.apply(this, arguments);
+}
+
+// ==================== 文件上传 ====================
+
+/**
+ * 从上传接口响应中提取图片URL，兼容多种字段命名
+ */
+function _apiDelete() {
+  _apiDelete = (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_3__["default"])(/*#__PURE__*/(0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_4__["default"])().m(function _callee5(url) {
+    var data,
+      pathParams,
+      err,
+      resolvedUrl,
+      _args5 = arguments;
+    return (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_4__["default"])().w(function (_context5) {
+      while (1) switch (_context5.n) {
+        case 0:
+          data = _args5.length > 1 && _args5[1] !== undefined ? _args5[1] : {};
+          pathParams = _args5.length > 2 && _args5[2] !== undefined ? _args5[2] : {};
+          if (url) {
+            _context5.n = 1;
+            break;
+          }
+          err = new Error("[apiDelete] \u8BF7\u6C42\u5730\u5740\u7F3A\u5931\uFF0C\u8BF7\u68C0\u67E5\u8C03\u7528\u65B9\u662F\u5426\u4F20\u5165\u4E86\u672A\u5B9A\u4E49\u7684 API URL");
+          console.error(err);
+          throw err;
+        case 1:
+          resolvedUrl = replaceUrlParams(url, pathParams);
+          return _context5.a(2, apiRequest(resolvedUrl, {
+            method: 'DELETE',
+            data: data
+          }));
+      }
+    }, _callee5);
+  }));
+  return _apiDelete.apply(this, arguments);
+}
+function extractUploadUrl(respData) {
+  var _ref3, _respData$data;
+  if (!respData) return '';
+  // 兼容 { data: {...} } / { data: "url" } / 顶层直接含 url 等多种结构
+  var container = (_ref3 = (_respData$data = respData.data) !== null && _respData$data !== void 0 ? _respData$data : respData.result) !== null && _ref3 !== void 0 ? _ref3 : respData;
+  if (typeof container === 'string') return container;
+  if (!container || (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_typeof_js__WEBPACK_IMPORTED_MODULE_5__["default"])(container) !== 'object') return '';
+  var candidates = [container.url, container.URL, container.Url, container.imageUrl, container.image_url, container.ImageUrl, container.avatarUrl, container.avatar_url, container.AvatarUrl, container.filePath, container.file_url, container.FileUrl, container.fileUrl, container.path, container.Path, container.link, container.Link, container.src, container.Src];
+  for (var _i = 0, _candidates = candidates; _i < _candidates.length; _i++) {
+    var v = _candidates[_i];
+    if (typeof v === 'string' && v) return v;
+  }
+  // 兜底：递归查找第一个以 http 开头的字符串值
+  for (var _i2 = 0, _Object$keys = Object.keys(container); _i2 < _Object$keys.length; _i2++) {
+    var k = _Object$keys[_i2];
+    var _v = container[k];
+    if (typeof _v === 'string' && /^https?:\/\//i.test(_v)) return _v;
+  }
+  return '';
+}
+
+/**
+ * 上传前对图片进行压缩处理
+ * 小程序端：先用 getFileInfo 获取大小，超过阈值则调用 compressImage 压缩
+ * H5 端：chooseImage 已通过 sizeType:['compressed'] 处理，此处跳过
+ *
+ * @param filePath 原始临时文件路径
+ * @param maxSize  触发压缩的大小阈值（字节），默认 2MB
+ * @returns 压缩后的文件路径（无需压缩时返回原路径）
+ */
+function compressIfNeeded(_x6) {
+  return _compressIfNeeded.apply(this, arguments);
+}
+/**
+ * 从文件路径中提取扩展名，兜底返回 .jpg
+ */
+function _compressIfNeeded() {
+  _compressIfNeeded = (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_3__["default"])(/*#__PURE__*/(0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_4__["default"])().m(function _callee6(filePath) {
+    var maxSize,
+      _info$size,
+      info,
+      fileSize,
+      compressed,
+      _args6 = arguments,
+      _t2;
+    return (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_4__["default"])().w(function (_context6) {
+      while (1) switch (_context6.p = _context6.n) {
+        case 0:
+          maxSize = _args6.length > 1 && _args6[1] !== undefined ? _args6[1] : 1024 * 1024;
+          if (true) {
+            _context6.n = 1;
+            break;
+          }
+          return _context6.a(2, filePath);
+        case 1:
+          _context6.p = 1;
+          _context6.n = 2;
+          return _tarojs_taro__WEBPACK_IMPORTED_MODULE_0___default().getFileInfo({
+            filePath: filePath
+          });
+        case 2:
+          info = _context6.v;
+          fileSize = (_info$size = info === null || info === void 0 ? void 0 : info.size) !== null && _info$size !== void 0 ? _info$size : 0;
+          console.log('[Upload] 原始文件大小:', fileSize, 'bytes');
+          if (!(fileSize <= maxSize)) {
+            _context6.n = 3;
+            break;
+          }
+          return _context6.a(2, filePath);
+        case 3:
+          _context6.n = 4;
+          return _tarojs_taro__WEBPACK_IMPORTED_MODULE_0___default().compressImage({
+            src: filePath,
+            quality: 50
+          });
+        case 4:
+          compressed = _context6.v;
+          console.log('[Upload] 压缩后路径:', compressed.tempFilePath);
+          return _context6.a(2, compressed.tempFilePath);
+        case 5:
+          _context6.p = 5;
+          _t2 = _context6.v;
+          console.warn('[Upload] 获取文件信息或压缩失败，使用原文件:', _t2);
+          return _context6.a(2, filePath);
+      }
+    }, _callee6, null, [[1, 5]]);
+  }));
+  return _compressIfNeeded.apply(this, arguments);
+}
+function getFileExtension(filePath) {
+  var match = filePath.match(/\.(\w+)(?:\?|$)/);
+  var ext = match ? match[1].toLowerCase() : '';
+  if (['jpg', 'jpeg', 'png', 'gif', 'webp', 'bmp'].includes(ext)) {
+    return ext === 'jpeg' ? '.jpg' : ".".concat(ext);
+  }
+  // 压缩后的临时文件通常没有扩展名，compressImage 输出为 JPEG
+  return '.jpg';
+}
+
+/**
+ * 确保文件路径有图片扩展名
+ * 微信小程序 chooseImage/compressImage 返回的临时文件路径可能无扩展名（如 wxfile://tmp_xxx），
+ * 后端从文件名提取扩展名校验格式时会报"图片格式或大小不正确"。
+ * 通过 FileSystemManager.copyFile 复制到带扩展名的路径解决。
+ */
+function ensureFileExtension(_x7) {
+  return _ensureFileExtension.apply(this, arguments);
+}
+/**
+ * 上传图片
+ * 使用 Taro.uploadFile（multipart/form-data），Taro.request 不支持文件流
+ * 上传前会自动检查文件大小，超过 2MB 时压缩以避免后端"图片格式或大小不正确"错误
+ *
+ * @param url      上传接口地址，通常传 userApi.upload
+ * @param filePath chooseImage 返回的临时文件路径
+ * @param name     后端接收文件的表单字段名，默认 "file"
+ * @param formData 额外的表单字段
+ * @returns 上传后的图片URL字符串；失败抛出 Error
+ */
+function _ensureFileExtension() {
+  _ensureFileExtension = (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_3__["default"])(/*#__PURE__*/(0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_4__["default"])().m(function _callee7(filePath) {
+    var _env, ext, userDataPath, newPath, fs, _t3;
+    return (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_4__["default"])().w(function (_context7) {
+      while (1) switch (_context7.p = _context7.n) {
+        case 0:
+          if (!/\.(jpg|jpeg|png|gif|webp|bmp)$/i.test(filePath)) {
+            _context7.n = 1;
+            break;
+          }
+          return _context7.a(2, filePath);
+        case 1:
+          _context7.p = 1;
+          ext = getFileExtension(filePath);
+          userDataPath = (_env = (_tarojs_taro__WEBPACK_IMPORTED_MODULE_0___default().env)) === null || _env === void 0 ? void 0 : _env.USER_DATA_PATH;
+          if (userDataPath) {
+            _context7.n = 2;
+            break;
+          }
+          return _context7.a(2, filePath);
+        case 2:
+          newPath = "".concat(userDataPath, "/upload_").concat(Date.now()).concat(ext);
+          fs = _tarojs_taro__WEBPACK_IMPORTED_MODULE_0___default().getFileSystemManager();
+          _context7.n = 3;
+          return new Promise(function (resolve, reject) {
+            fs.copyFile({
+              srcPath: filePath,
+              destPath: newPath,
+              success: function success() {
+                return resolve();
+              },
+              fail: reject
+            });
+          });
+        case 3:
+          console.log('[Upload] 文件已复制到带扩展名的路径:', newPath);
+          return _context7.a(2, newPath);
+        case 4:
+          _context7.p = 4;
+          _t3 = _context7.v;
+          console.warn('[Upload] 复制文件失败，使用原路径:', _t3);
+          return _context7.a(2, filePath);
+      }
+    }, _callee7, null, [[1, 4]]);
+  }));
+  return _ensureFileExtension.apply(this, arguments);
+}
+function uploadImage(_x8, _x9) {
+  return _uploadImage.apply(this, arguments);
+}
+function _uploadImage() {
+  _uploadImage = (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_3__["default"])(/*#__PURE__*/(0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_4__["default"])().m(function _callee8(url, filePath) {
+    var _ref4, _ref5, _respData$code, _respData, _respData2, _respData3, _respData4;
+    var name,
+      formData,
+      token,
+      header,
+      uploadPath,
+      fileName,
+      res,
+      backendMsg,
+      parsed,
+      respData,
+      bizCode,
+      imgUrl,
+      _args8 = arguments,
+      _t4;
+    return (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_4__["default"])().w(function (_context8) {
+      while (1) switch (_context8.p = _context8.n) {
+        case 0:
+          name = _args8.length > 2 && _args8[2] !== undefined ? _args8[2] : 'file';
+          formData = _args8.length > 3 && _args8[3] !== undefined ? _args8[3] : {};
+          token = getAuthToken();
+          header = {};
+          if (token) header['Authorization'] = "Bearer ".concat(token);
+
+          // 上传前压缩，避免文件过大被后端拒绝
+          _context8.n = 1;
+          return compressIfNeeded(filePath);
+        case 1:
+          uploadPath = _context8.v;
+          _context8.n = 2;
+          return ensureFileExtension(uploadPath);
+        case 2:
+          uploadPath = _context8.v;
+          // 显式指定 fileName，确保后端能从 Content-Disposition 中识别文件扩展名
+          // 微信小程序临时文件路径常无扩展名（如 wxfile://tmp_xxx），导致后端校验格式失败
+          fileName = "upload".concat(getFileExtension(filePath));
+          console.log('[Upload Request]', {
+            url: url,
+            filePath: uploadPath,
+            fileName: fileName,
+            name: name,
+            formData: formData
+          });
+          _context8.n = 3;
+          return _tarojs_taro__WEBPACK_IMPORTED_MODULE_0___default().uploadFile({
+            url: url,
+            filePath: uploadPath,
+            name: name,
+            fileName: fileName,
+            formData: formData,
+            header: header,
+            timeout: 30000
+          });
+        case 3:
+          res = _context8.v;
+          console.log('[Upload Response]', {
+            statusCode: res.statusCode,
+            data: res.data
+          });
+          if (!(res.statusCode === 401)) {
+            _context8.n = 4;
+            break;
+          }
+          _tarojs_taro__WEBPACK_IMPORTED_MODULE_0___default().removeStorageSync('lxg_user');
+          _tarojs_taro__WEBPACK_IMPORTED_MODULE_0___default().navigateTo({
+            url: '/pages/user/login/index'
+          });
+          throw new Error('登录已失效，请重新登录');
+        case 4:
+          if (!(res.statusCode !== 200)) {
+            _context8.n = 5;
+            break;
+          }
+          backendMsg = '';
+          try {
+            parsed = typeof res.data === 'string' ? JSON.parse(res.data) : res.data;
+            backendMsg = (parsed === null || parsed === void 0 ? void 0 : parsed.message) || (parsed === null || parsed === void 0 ? void 0 : parsed.msg) || '';
+          } catch (_unused2) {/* ignore */}
+          throw new Error(backendMsg || "\u4E0A\u4F20\u5931\u8D25\uFF0CHTTP\u72B6\u6001: ".concat(res.statusCode));
+        case 5:
+          _context8.p = 5;
+          respData = typeof res.data === 'string' ? JSON.parse(res.data) : res.data;
+          _context8.n = 8;
+          break;
+        case 6:
+          _context8.p = 6;
+          _t4 = _context8.v;
+          if (!(typeof res.data === 'string' && /^https?:\/\//i.test(res.data.trim()))) {
+            _context8.n = 7;
+            break;
+          }
+          return _context8.a(2, res.data.trim());
+        case 7:
+          throw new Error('上传响应格式无法识别');
+        case 8:
+          // 业务 code 校验（兼容 code/Code/errcode/errno 等字段名）
+          bizCode = (_ref4 = (_ref5 = (_respData$code = (_respData = respData) === null || _respData === void 0 ? void 0 : _respData.code) !== null && _respData$code !== void 0 ? _respData$code : (_respData2 = respData) === null || _respData2 === void 0 ? void 0 : _respData2.Code) !== null && _ref5 !== void 0 ? _ref5 : (_respData3 = respData) === null || _respData3 === void 0 ? void 0 : _respData3.errcode) !== null && _ref4 !== void 0 ? _ref4 : (_respData4 = respData) === null || _respData4 === void 0 ? void 0 : _respData4.errno;
+          if (!(typeof bizCode === 'number' && bizCode !== 200 && bizCode !== 0)) {
+            _context8.n = 9;
+            break;
+          }
+          console.error('[Upload] 后端业务错误，完整响应:', respData);
+          throw new Error(respData.message || respData.msg || respData.Message || respData.errMsg || '上传失败');
+        case 9:
+          imgUrl = extractUploadUrl(respData);
+          if (imgUrl) {
+            _context8.n = 10;
+            break;
+          }
+          console.warn('[Upload] 未能从响应中提取到图片URL，原始响应:', respData);
+          throw new Error('上传成功但未获取到图片地址');
+        case 10:
+          return _context8.a(2, imgUrl);
+      }
+    }, _callee8, null, [[5, 6]]);
+  }));
+  return _uploadImage.apply(this, arguments);
+}
+
+
+/***/ }),
+
+/***/ "./src/api/home/index.ts":
+/*!*******************************!*\
+  !*** ./src/api/home/index.ts ***!
+  \*******************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   brandApi: function() { return /* binding */ brandApi; },
+/* harmony export */   categoryApi: function() { return /* binding */ categoryApi; },
+/* harmony export */   fetchReviewAiSummary: function() { return /* binding */ fetchReviewAiSummary; },
+/* harmony export */   fetchReviewList: function() { return /* binding */ fetchReviewList; },
+/* harmony export */   fetchReviewReplies: function() { return /* binding */ fetchReviewReplies; },
+/* harmony export */   fetchReviewStats: function() { return /* binding */ fetchReviewStats; },
+/* harmony export */   homeApi: function() { return /* binding */ homeApi; },
+/* harmony export */   likeReview: function() { return /* binding */ likeReview; },
+/* harmony export */   productApi: function() { return /* binding */ productApi; },
+/* harmony export */   replyToReview: function() { return /* binding */ replyToReview; }
+/* harmony export */ });
+/* unused harmony exports reviewApi, normalizeProductReview, normalizeReviewReply, normalizeReviewStats */
+/* harmony import */ var D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./node_modules/@babel/runtime/helpers/esm/regenerator.js */ "./node_modules/@babel/runtime/helpers/esm/regenerator.js");
+/* harmony import */ var D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./node_modules/@babel/runtime/helpers/esm/objectSpread2.js */ "./node_modules/@babel/runtime/helpers/esm/objectSpread2.js");
+/* harmony import */ var D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./node_modules/@babel/runtime/helpers/esm/asyncToGenerator.js */ "./node_modules/@babel/runtime/helpers/esm/asyncToGenerator.js");
+/* harmony import */ var _api_common__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @/api/common */ "./src/api/common/index.ts");
+
+
+
+// H5 端使用相对路径，通过 devServer proxy 转发，避免跨域
+var BACKEND_HOST = 'http://192.168.10.7:8089';
+var API_BASE_URL =  false ? 0 : "".concat(BACKEND_HOST, "/api/v1");
+
+var homeApi = {
+  banners: "".concat(API_BASE_URL, "/product/banner"),
+  // 获取所有推荐位商品 GET /api/v1/product/recommend
+  // 返回结构:{ code, message, data: [{ id, name, status, products: [完整商品] }] }
+  recommend: "".concat(API_BASE_URL, "/product/recommend"),
+  seckillActivities: "".concat(API_BASE_URL, "/home/seckill-activities"),
+  activities: "".concat(API_BASE_URL, "/seckill/activities"),
+  activityProducts: "".concat(API_BASE_URL, "/seckill/activities/:id/products"),
+  productDetail: "".concat(API_BASE_URL, "/seckill/activities/:id/products/:product_id")
+};
+var categoryApi = {
+  list: "".concat(API_BASE_URL, "/categories"),
+  products: "".concat(API_BASE_URL, "/categories/:id/products"),
+  stores: "".concat(API_BASE_URL, "/stores"),
+  storeDetail: "".concat(API_BASE_URL, "/stores/:id"),
+  categoryTree: "".concat(API_BASE_URL, "/get/categorytree"),
+  categoryOne: "".concat(API_BASE_URL, "/get/category/one"),
+  categorySecond: "".concat(API_BASE_URL, "/get/category/second")
+};
+var brandApi = {
+  list: "".concat(API_BASE_URL, "/brands"),
+  products: "".concat(API_BASE_URL, "/brands/:id/products"),
+  // 获取品牌树
+  brandTree: "".concat(API_BASE_URL, "/get/brandtree"),
+  // 获取指定品牌下的商品（分页）
+  brandProducts: "".concat(API_BASE_URL, "/get/brand/product")
+};
+var productApi = {
+  detail: "".concat(API_BASE_URL, "/product/detail"),
+  search: "".concat(API_BASE_URL, "/product/search")
+};
+var reviewApi = {
+  // 商品评论列表 GET /api/v1/review/list
+  list: "".concat(API_BASE_URL, "/review/list"),
+  // 获取商品评价统计 GET /api/v1/review/state
+  stats: "".concat(API_BASE_URL, "/review/state"),
+  // 获取商品AI评价摘要 GET /api/v1/review/ai
+  ai: "".concat(API_BASE_URL, "/review/ai"),
+  // 回复别人的评论 POST /api/v1/review/reply
+  reply: "".concat(API_BASE_URL, "/review/reply"),
+  // 获取指定评价的回复评价列表 GET /api/v1/review/reply/list
+  replyList: "".concat(API_BASE_URL, "/review/reply/list"),
+  // 点赞/取消点赞一个评价 POST /api/v1/review/like
+  like: "".concat(API_BASE_URL, "/review/like"),
+  // 旧字段保留兼容（商品详情页历史引用），指向新的 list
+  summary: "".concat(API_BASE_URL, "/review/ai")
+};
+
+// ==================== 评价数据规范化 ====================
+
+/**
+ * 规范化商品评价数据：兼容 snake_case / PascalCase / camelCase
+ */
+function normalizeProductReview(raw) {
+  var _ref, _ref2, _ref3, _ref4, _raw$id, _ref5, _ref6, _ref7, _raw$productId, _ref8, _ref9, _ref0, _raw$productName, _ref1, _ref10, _raw$skuId, _ref11, _ref12, _ref13, _ref14, _raw$skuName, _ref15, _ref16, _ref17, _raw$rating, _ref18, _ref19, _raw$ratingType, _ref20, _raw$rating2, _ref21, _raw$rating3, _ref22, _ref23, _ref24, _ref25, _ref26, _raw$content, _ref27, _ref28, _ref29, _ref30, _raw$anonymous, _ref31, _ref32, _ref33, _ref34, _raw$createdAt, _ref35, _ref36, _ref37, _raw$userId, _ref38, _ref39, _ref40, _ref41, _ref42, _raw$userName, _ref43, _ref44, _ref45, _ref46, _ref47, _ref48, _raw$userAvatar, _ref49, _ref50, _ref51, _ref52, _raw$specs, _ref53, _ref54, _ref55, _ref56, _ref57, _raw$likeCount, _ref58, _ref59, _ref60, _ref61, _raw$isLike, _ref62, _ref63, _ref64, _ref65, _raw$replyCount, _ref66, _raw$status;
+  return {
+    id: (_ref = (_ref2 = (_ref3 = (_ref4 = (_raw$id = raw.id) !== null && _raw$id !== void 0 ? _raw$id : raw.Id) !== null && _ref4 !== void 0 ? _ref4 : raw.reviewId) !== null && _ref3 !== void 0 ? _ref3 : raw.review_id) !== null && _ref2 !== void 0 ? _ref2 : raw.ID) !== null && _ref !== void 0 ? _ref : '',
+    productId: (_ref5 = (_ref6 = (_ref7 = (_raw$productId = raw.productId) !== null && _raw$productId !== void 0 ? _raw$productId : raw.product_id) !== null && _ref7 !== void 0 ? _ref7 : raw.ProductId) !== null && _ref6 !== void 0 ? _ref6 : raw.ProductID) !== null && _ref5 !== void 0 ? _ref5 : '',
+    productName: (_ref8 = (_ref9 = (_ref0 = (_raw$productName = raw.productName) !== null && _raw$productName !== void 0 ? _raw$productName : raw.product_name) !== null && _ref0 !== void 0 ? _ref0 : raw.ProductName) !== null && _ref9 !== void 0 ? _ref9 : raw.name) !== null && _ref8 !== void 0 ? _ref8 : '',
+    skuId: (_ref1 = (_ref10 = (_raw$skuId = raw.skuId) !== null && _raw$skuId !== void 0 ? _raw$skuId : raw.sku_id) !== null && _ref10 !== void 0 ? _ref10 : raw.SkuId) !== null && _ref1 !== void 0 ? _ref1 : '',
+    skuName: (_ref11 = (_ref12 = (_ref13 = (_ref14 = (_raw$skuName = raw.skuName) !== null && _raw$skuName !== void 0 ? _raw$skuName : raw.sku_name) !== null && _ref14 !== void 0 ? _ref14 : raw.SkuName) !== null && _ref13 !== void 0 ? _ref13 : raw.specs) !== null && _ref12 !== void 0 ? _ref12 : raw.spec) !== null && _ref11 !== void 0 ? _ref11 : '',
+    rating: Number((_ref15 = (_ref16 = (_ref17 = (_raw$rating = raw.rating) !== null && _raw$rating !== void 0 ? _raw$rating : raw.Rating) !== null && _ref17 !== void 0 ? _ref17 : raw.score) !== null && _ref16 !== void 0 ? _ref16 : raw.Score) !== null && _ref15 !== void 0 ? _ref15 : 5),
+    ratingType: (_ref18 = (_ref19 = (_raw$ratingType = raw.ratingType) !== null && _raw$ratingType !== void 0 ? _raw$ratingType : raw.rating_type) !== null && _ref19 !== void 0 ? _ref19 : raw.RatingType) !== null && _ref18 !== void 0 ? _ref18 : Number((_ref20 = (_raw$rating2 = raw.rating) !== null && _raw$rating2 !== void 0 ? _raw$rating2 : raw.Rating) !== null && _ref20 !== void 0 ? _ref20 : 5) >= 4 ? 'good' : Number((_ref21 = (_raw$rating3 = raw.rating) !== null && _raw$rating3 !== void 0 ? _raw$rating3 : raw.Rating) !== null && _ref21 !== void 0 ? _ref21 : 5) <= 2 ? 'bad' : 'neutral',
+    content: (_ref22 = (_ref23 = (_ref24 = (_ref25 = (_ref26 = (_raw$content = raw.content) !== null && _raw$content !== void 0 ? _raw$content : raw.Content) !== null && _ref26 !== void 0 ? _ref26 : raw.reviewContent) !== null && _ref25 !== void 0 ? _ref25 : raw.review_content) !== null && _ref24 !== void 0 ? _ref24 : raw.comment) !== null && _ref23 !== void 0 ? _ref23 : raw.Comment) !== null && _ref22 !== void 0 ? _ref22 : '',
+    images: Array.isArray(raw.images) ? raw.images : Array.isArray(raw.Images) ? raw.Images : Array.isArray(raw.pics) ? raw.pics : Array.isArray(raw.imageList) ? raw.imageList : [],
+    anonymous: (_ref27 = (_ref28 = (_ref29 = (_ref30 = (_raw$anonymous = raw.anonymous) !== null && _raw$anonymous !== void 0 ? _raw$anonymous : raw.Anonymous) !== null && _ref30 !== void 0 ? _ref30 : raw.isAnonymous) !== null && _ref29 !== void 0 ? _ref29 : raw.is_anonymous) !== null && _ref28 !== void 0 ? _ref28 : raw.isAnonymity) !== null && _ref27 !== void 0 ? _ref27 : false,
+    createdAt: (_ref31 = (_ref32 = (_ref33 = (_ref34 = (_raw$createdAt = raw.createdAt) !== null && _raw$createdAt !== void 0 ? _raw$createdAt : raw.created_at) !== null && _ref34 !== void 0 ? _ref34 : raw.CreateTime) !== null && _ref33 !== void 0 ? _ref33 : raw.createTime) !== null && _ref32 !== void 0 ? _ref32 : raw.CreateAt) !== null && _ref31 !== void 0 ? _ref31 : '',
+    userId: (_ref35 = (_ref36 = (_ref37 = (_raw$userId = raw.userId) !== null && _raw$userId !== void 0 ? _raw$userId : raw.user_id) !== null && _ref37 !== void 0 ? _ref37 : raw.UserId) !== null && _ref36 !== void 0 ? _ref36 : raw.userID) !== null && _ref35 !== void 0 ? _ref35 : '',
+    userName: (_ref38 = (_ref39 = (_ref40 = (_ref41 = (_ref42 = (_raw$userName = raw.userName) !== null && _raw$userName !== void 0 ? _raw$userName : raw.user_name) !== null && _ref42 !== void 0 ? _ref42 : raw.UserName) !== null && _ref41 !== void 0 ? _ref41 : raw.nickname) !== null && _ref40 !== void 0 ? _ref40 : raw.NickName) !== null && _ref39 !== void 0 ? _ref39 : raw.nickName) !== null && _ref38 !== void 0 ? _ref38 : '',
+    userAvatar: (_ref43 = (_ref44 = (_ref45 = (_ref46 = (_ref47 = (_ref48 = (_raw$userAvatar = raw.userAvatar) !== null && _raw$userAvatar !== void 0 ? _raw$userAvatar : raw.user_avatar) !== null && _ref48 !== void 0 ? _ref48 : raw.UserAvatar) !== null && _ref47 !== void 0 ? _ref47 : raw.avatar) !== null && _ref46 !== void 0 ? _ref46 : raw.Avatar) !== null && _ref45 !== void 0 ? _ref45 : raw.headImg) !== null && _ref44 !== void 0 ? _ref44 : raw.head_img) !== null && _ref43 !== void 0 ? _ref43 : '',
+    specs: (_ref49 = (_ref50 = (_ref51 = (_ref52 = (_raw$specs = raw.specs) !== null && _raw$specs !== void 0 ? _raw$specs : raw.spec) !== null && _ref52 !== void 0 ? _ref52 : raw.skuName) !== null && _ref51 !== void 0 ? _ref51 : raw.sku_name) !== null && _ref50 !== void 0 ? _ref50 : raw.SkuName) !== null && _ref49 !== void 0 ? _ref49 : '',
+    likeCount: Number((_ref53 = (_ref54 = (_ref55 = (_ref56 = (_ref57 = (_raw$likeCount = raw.likeCount) !== null && _raw$likeCount !== void 0 ? _raw$likeCount : raw.like_count) !== null && _ref57 !== void 0 ? _ref57 : raw.LikeCount) !== null && _ref56 !== void 0 ? _ref56 : raw.likes) !== null && _ref55 !== void 0 ? _ref55 : raw.Likes) !== null && _ref54 !== void 0 ? _ref54 : raw.likesCount) !== null && _ref53 !== void 0 ? _ref53 : 0),
+    isLike: (_ref58 = (_ref59 = (_ref60 = (_ref61 = (_raw$isLike = raw.isLike) !== null && _raw$isLike !== void 0 ? _raw$isLike : raw.is_like) !== null && _ref61 !== void 0 ? _ref61 : raw.IsLike) !== null && _ref60 !== void 0 ? _ref60 : raw.liked) !== null && _ref59 !== void 0 ? _ref59 : raw.Liked) !== null && _ref58 !== void 0 ? _ref58 : false,
+    replyCount: Number((_ref62 = (_ref63 = (_ref64 = (_ref65 = (_raw$replyCount = raw.replyCount) !== null && _raw$replyCount !== void 0 ? _raw$replyCount : raw.reply_count) !== null && _ref65 !== void 0 ? _ref65 : raw.ReplyCount) !== null && _ref64 !== void 0 ? _ref64 : raw.commentCount) !== null && _ref63 !== void 0 ? _ref63 : raw.comment_count) !== null && _ref62 !== void 0 ? _ref62 : 0),
+    status: (_ref66 = (_raw$status = raw.status) !== null && _raw$status !== void 0 ? _raw$status : raw.Status) !== null && _ref66 !== void 0 ? _ref66 : 'show'
+  };
+}
+
+/**
+ * 规范化评价回复数据：兼容 snake_case / PascalCase / camelCase
+ */
+function normalizeReviewReply(raw) {
+  var _ref67, _ref68, _ref69, _ref70, _ref71, _ref72, _raw$id2, _ref73, _ref74, _ref75, _ref76, _raw$reviewId, _ref77, _ref78, _ref79, _ref80, _raw$parentId, _ref81, _ref82, _ref83, _raw$userId2, _ref84, _ref85, _ref86, _ref87, _ref88, _raw$userName2, _ref89, _ref90, _ref91, _ref92, _raw$userAvatar2, _ref93, _ref94, _ref95, _ref96, _ref97, _raw$content2, _ref98, _ref99, _raw$likeCount2, _ref100, _ref101, _raw$isLike2, _ref102, _ref103, _ref104, _ref105, _ref106, _raw$createdAt2;
+  return {
+    id: (_ref67 = (_ref68 = (_ref69 = (_ref70 = (_ref71 = (_ref72 = (_raw$id2 = raw.id) !== null && _raw$id2 !== void 0 ? _raw$id2 : raw.Id) !== null && _ref72 !== void 0 ? _ref72 : raw.replyId) !== null && _ref71 !== void 0 ? _ref71 : raw.reply_id) !== null && _ref70 !== void 0 ? _ref70 : raw.commentId) !== null && _ref69 !== void 0 ? _ref69 : raw.comment_id) !== null && _ref68 !== void 0 ? _ref68 : raw.ID) !== null && _ref67 !== void 0 ? _ref67 : '',
+    reviewId: (_ref73 = (_ref74 = (_ref75 = (_ref76 = (_raw$reviewId = raw.reviewId) !== null && _raw$reviewId !== void 0 ? _raw$reviewId : raw.review_id) !== null && _ref76 !== void 0 ? _ref76 : raw.ReviewId) !== null && _ref75 !== void 0 ? _ref75 : raw.evaluationId) !== null && _ref74 !== void 0 ? _ref74 : raw.evaluation_id) !== null && _ref73 !== void 0 ? _ref73 : '',
+    parentId: (_ref77 = (_ref78 = (_ref79 = (_ref80 = (_raw$parentId = raw.parentId) !== null && _raw$parentId !== void 0 ? _raw$parentId : raw.parent_id) !== null && _ref80 !== void 0 ? _ref80 : raw.ParentId) !== null && _ref79 !== void 0 ? _ref79 : raw.pid) !== null && _ref78 !== void 0 ? _ref78 : raw.Pid) !== null && _ref77 !== void 0 ? _ref77 : '',
+    userId: (_ref81 = (_ref82 = (_ref83 = (_raw$userId2 = raw.userId) !== null && _raw$userId2 !== void 0 ? _raw$userId2 : raw.user_id) !== null && _ref83 !== void 0 ? _ref83 : raw.UserId) !== null && _ref82 !== void 0 ? _ref82 : raw.userID) !== null && _ref81 !== void 0 ? _ref81 : '',
+    userName: (_ref84 = (_ref85 = (_ref86 = (_ref87 = (_ref88 = (_raw$userName2 = raw.userName) !== null && _raw$userName2 !== void 0 ? _raw$userName2 : raw.user_name) !== null && _ref88 !== void 0 ? _ref88 : raw.UserName) !== null && _ref87 !== void 0 ? _ref87 : raw.nickname) !== null && _ref86 !== void 0 ? _ref86 : raw.NickName) !== null && _ref85 !== void 0 ? _ref85 : raw.nickName) !== null && _ref84 !== void 0 ? _ref84 : '',
+    userAvatar: (_ref89 = (_ref90 = (_ref91 = (_ref92 = (_raw$userAvatar2 = raw.userAvatar) !== null && _raw$userAvatar2 !== void 0 ? _raw$userAvatar2 : raw.user_avatar) !== null && _ref92 !== void 0 ? _ref92 : raw.UserAvatar) !== null && _ref91 !== void 0 ? _ref91 : raw.avatar) !== null && _ref90 !== void 0 ? _ref90 : raw.Avatar) !== null && _ref89 !== void 0 ? _ref89 : '',
+    content: (_ref93 = (_ref94 = (_ref95 = (_ref96 = (_ref97 = (_raw$content2 = raw.content) !== null && _raw$content2 !== void 0 ? _raw$content2 : raw.Content) !== null && _ref97 !== void 0 ? _ref97 : raw.replyContent) !== null && _ref96 !== void 0 ? _ref96 : raw.reply_content) !== null && _ref95 !== void 0 ? _ref95 : raw.comment) !== null && _ref94 !== void 0 ? _ref94 : raw.Comment) !== null && _ref93 !== void 0 ? _ref93 : '',
+    likeCount: Number((_ref98 = (_ref99 = (_raw$likeCount2 = raw.likeCount) !== null && _raw$likeCount2 !== void 0 ? _raw$likeCount2 : raw.like_count) !== null && _ref99 !== void 0 ? _ref99 : raw.LikeCount) !== null && _ref98 !== void 0 ? _ref98 : 0),
+    isLike: (_ref100 = (_ref101 = (_raw$isLike2 = raw.isLike) !== null && _raw$isLike2 !== void 0 ? _raw$isLike2 : raw.is_like) !== null && _ref101 !== void 0 ? _ref101 : raw.IsLike) !== null && _ref100 !== void 0 ? _ref100 : false,
+    createdAt: (_ref102 = (_ref103 = (_ref104 = (_ref105 = (_ref106 = (_raw$createdAt2 = raw.createdAt) !== null && _raw$createdAt2 !== void 0 ? _raw$createdAt2 : raw.created_at) !== null && _ref106 !== void 0 ? _ref106 : raw.CreateTime) !== null && _ref105 !== void 0 ? _ref105 : raw.createTime) !== null && _ref104 !== void 0 ? _ref104 : raw.replyTime) !== null && _ref103 !== void 0 ? _ref103 : raw.reply_time) !== null && _ref102 !== void 0 ? _ref102 : ''
+  };
+}
+
+/**
+ * 规范化评价统计数据：兼容 snake_case / PascalCase / camelCase
+ */
+function normalizeReviewStats(raw) {
+  var _ref107, _raw$data, _ref108, _ref109, _ref110, _ref111, _data$total, _ref112, _ref113, _ref114, _ref115, _data$goodCount, _ref116, _ref117, _ref118, _ref119, _data$neutralCount, _ref120, _ref121, _ref122, _ref123, _data$badCount, _ref124, _ref125, _ref126, _ref127, _data$imageCount, _ref128, _ref129, _ref130, _ref131, _ref132, _data$averageRating, _ref133, _ref134, _data$goodRate, _ref135, _data$distribution;
+  var data = (_ref107 = (_raw$data = raw === null || raw === void 0 ? void 0 : raw.data) !== null && _raw$data !== void 0 ? _raw$data : raw === null || raw === void 0 ? void 0 : raw.result) !== null && _ref107 !== void 0 ? _ref107 : raw;
+  var total = Number((_ref108 = (_ref109 = (_ref110 = (_ref111 = (_data$total = data === null || data === void 0 ? void 0 : data.total) !== null && _data$total !== void 0 ? _data$total : data === null || data === void 0 ? void 0 : data.Total) !== null && _ref111 !== void 0 ? _ref111 : data === null || data === void 0 ? void 0 : data.totalCount) !== null && _ref110 !== void 0 ? _ref110 : data === null || data === void 0 ? void 0 : data.total_count) !== null && _ref109 !== void 0 ? _ref109 : data === null || data === void 0 ? void 0 : data.count) !== null && _ref108 !== void 0 ? _ref108 : 0);
+  var goodCount = Number((_ref112 = (_ref113 = (_ref114 = (_ref115 = (_data$goodCount = data === null || data === void 0 ? void 0 : data.goodCount) !== null && _data$goodCount !== void 0 ? _data$goodCount : data === null || data === void 0 ? void 0 : data.good_count) !== null && _ref115 !== void 0 ? _ref115 : data === null || data === void 0 ? void 0 : data.GoodCount) !== null && _ref114 !== void 0 ? _ref114 : data === null || data === void 0 ? void 0 : data.positive) !== null && _ref113 !== void 0 ? _ref113 : data === null || data === void 0 ? void 0 : data.Positive) !== null && _ref112 !== void 0 ? _ref112 : 0);
+  var neutralCount = Number((_ref116 = (_ref117 = (_ref118 = (_ref119 = (_data$neutralCount = data === null || data === void 0 ? void 0 : data.neutralCount) !== null && _data$neutralCount !== void 0 ? _data$neutralCount : data === null || data === void 0 ? void 0 : data.neutral_count) !== null && _ref119 !== void 0 ? _ref119 : data === null || data === void 0 ? void 0 : data.NeutralCount) !== null && _ref118 !== void 0 ? _ref118 : data === null || data === void 0 ? void 0 : data.middle) !== null && _ref117 !== void 0 ? _ref117 : data === null || data === void 0 ? void 0 : data.Middle) !== null && _ref116 !== void 0 ? _ref116 : 0);
+  var badCount = Number((_ref120 = (_ref121 = (_ref122 = (_ref123 = (_data$badCount = data === null || data === void 0 ? void 0 : data.badCount) !== null && _data$badCount !== void 0 ? _data$badCount : data === null || data === void 0 ? void 0 : data.bad_count) !== null && _ref123 !== void 0 ? _ref123 : data === null || data === void 0 ? void 0 : data.BadCount) !== null && _ref122 !== void 0 ? _ref122 : data === null || data === void 0 ? void 0 : data.negative) !== null && _ref121 !== void 0 ? _ref121 : data === null || data === void 0 ? void 0 : data.Negative) !== null && _ref120 !== void 0 ? _ref120 : 0);
+  var imageCount = Number((_ref124 = (_ref125 = (_ref126 = (_ref127 = (_data$imageCount = data === null || data === void 0 ? void 0 : data.imageCount) !== null && _data$imageCount !== void 0 ? _data$imageCount : data === null || data === void 0 ? void 0 : data.image_count) !== null && _ref127 !== void 0 ? _ref127 : data === null || data === void 0 ? void 0 : data.ImageCount) !== null && _ref126 !== void 0 ? _ref126 : data === null || data === void 0 ? void 0 : data.hasImage) !== null && _ref125 !== void 0 ? _ref125 : data === null || data === void 0 ? void 0 : data.has_image) !== null && _ref124 !== void 0 ? _ref124 : 0);
+  var averageRating = Number((_ref128 = (_ref129 = (_ref130 = (_ref131 = (_ref132 = (_data$averageRating = data === null || data === void 0 ? void 0 : data.averageRating) !== null && _data$averageRating !== void 0 ? _data$averageRating : data === null || data === void 0 ? void 0 : data.average_rating) !== null && _ref132 !== void 0 ? _ref132 : data === null || data === void 0 ? void 0 : data.AverageRating) !== null && _ref131 !== void 0 ? _ref131 : data === null || data === void 0 ? void 0 : data.avgScore) !== null && _ref130 !== void 0 ? _ref130 : data === null || data === void 0 ? void 0 : data.avg_score) !== null && _ref129 !== void 0 ? _ref129 : data === null || data === void 0 ? void 0 : data.score) !== null && _ref128 !== void 0 ? _ref128 : 0);
+  var goodRate = (_ref133 = (_ref134 = (_data$goodRate = data === null || data === void 0 ? void 0 : data.goodRate) !== null && _data$goodRate !== void 0 ? _data$goodRate : data === null || data === void 0 ? void 0 : data.good_rate) !== null && _ref134 !== void 0 ? _ref134 : data === null || data === void 0 ? void 0 : data.GoodRate) !== null && _ref133 !== void 0 ? _ref133 : total > 0 ? Math.round(goodCount / total * 100) : 100;
+
+  // 评分分布
+  var distribution = (_ref135 = (_data$distribution = data === null || data === void 0 ? void 0 : data.distribution) !== null && _data$distribution !== void 0 ? _data$distribution : data === null || data === void 0 ? void 0 : data.Distribution) !== null && _ref135 !== void 0 ? _ref135 : {};
+  var dist = {};
+  [5, 4, 3, 2, 1].forEach(function (star) {
+    var _ref136, _ref137, _distribution$star;
+    dist[star] = Number((_ref136 = (_ref137 = (_distribution$star = distribution[star]) !== null && _distribution$star !== void 0 ? _distribution$star : distribution[String(star)]) !== null && _ref137 !== void 0 ? _ref137 : distribution["star".concat(star)]) !== null && _ref136 !== void 0 ? _ref136 : 0);
+  });
+  return {
+    total: total,
+    goodCount: goodCount,
+    neutralCount: neutralCount,
+    badCount: badCount,
+    imageCount: imageCount,
+    averageRating: averageRating,
+    goodRate: goodRate,
+    distribution: dist
+  };
+}
+
+// ==================== 评价 API 方法 ====================
+
+/**
+ * 获取商品评论列表
+ * GET /api/v1/review/list
+ */
+function fetchReviewList() {
+  return _fetchReviewList.apply(this, arguments);
+}
+
+/**
+ * 获取商品评价统计
+ * GET /api/v1/review/state
+ */
+function _fetchReviewList() {
+  _fetchReviewList = (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_1__["default"])(/*#__PURE__*/(0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_2__["default"])().m(function _callee() {
+    var _ref138, _ref139, _ref140, _res$data$list, _res$data, _res$data2, _res$data3, _res$data4;
+    var params,
+      query,
+      res,
+      list,
+      _args = arguments;
+    return (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_2__["default"])().w(function (_context) {
+      while (1) switch (_context.n) {
+        case 0:
+          params = _args.length > 0 && _args[0] !== undefined ? _args[0] : {};
+          query = {};
+          if (params.productId !== undefined && params.productId !== null && params.productId !== '') {
+            // 后端要求参数名为 id（与 product/detail 接口一致）
+            query.id = (0,_api_common__WEBPACK_IMPORTED_MODULE_0__.toNumericId)(params.productId);
+          }
+          if (params.page !== undefined) query.page = params.page;
+          if (params.size !== undefined) query.size = params.size;
+          if (params.type !== undefined) query.type = params.type;
+          if (params.ratingType !== undefined) query.ratingType = params.ratingType;
+          _context.n = 1;
+          return (0,_api_common__WEBPACK_IMPORTED_MODULE_0__.apiGet)(reviewApi.list, query, {}, false);
+        case 1:
+          res = _context.v;
+          list = Array.isArray(res === null || res === void 0 ? void 0 : res.data) ? res.data : (_ref138 = (_ref139 = (_ref140 = (_res$data$list = res === null || res === void 0 || (_res$data = res.data) === null || _res$data === void 0 ? void 0 : _res$data.list) !== null && _res$data$list !== void 0 ? _res$data$list : res === null || res === void 0 || (_res$data2 = res.data) === null || _res$data2 === void 0 ? void 0 : _res$data2.items) !== null && _ref140 !== void 0 ? _ref140 : res === null || res === void 0 || (_res$data3 = res.data) === null || _res$data3 === void 0 ? void 0 : _res$data3.records) !== null && _ref139 !== void 0 ? _ref139 : res === null || res === void 0 || (_res$data4 = res.data) === null || _res$data4 === void 0 ? void 0 : _res$data4.reviews) !== null && _ref138 !== void 0 ? _ref138 : [];
+          return _context.a(2, (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_3__["default"])((0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_3__["default"])({}, res), {}, {
+            data: list.map(normalizeProductReview)
+          }));
+      }
+    }, _callee);
+  }));
+  return _fetchReviewList.apply(this, arguments);
+}
+function fetchReviewStats(_x) {
+  return _fetchReviewStats.apply(this, arguments);
+}
+
+/**
+ * 获取商品AI评价摘要
+ * GET /api/v1/review/ai
+ * 注意：此接口需要登录认证。使用 silent=true，未登录或 token 失效时
+ * 不弹登录窗跳转，避免打断用户浏览商品；调用方自行 catch 错误即可。
+ */
+function _fetchReviewStats() {
+  _fetchReviewStats = (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_1__["default"])(/*#__PURE__*/(0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_2__["default"])().m(function _callee2(productId) {
+    var query, res;
+    return (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_2__["default"])().w(function (_context2) {
+      while (1) switch (_context2.n) {
+        case 0:
+          // 后端要求参数名为 id（与 product/detail 接口一致）
+          query = {
+            id: (0,_api_common__WEBPACK_IMPORTED_MODULE_0__.toNumericId)(productId)
+          }; // silent=true：未登录或 token 失效时不弹登录窗跳转，避免打断用户浏览商品
+          _context2.n = 1;
+          return (0,_api_common__WEBPACK_IMPORTED_MODULE_0__.apiGet)(reviewApi.stats, query, {}, true);
+        case 1:
+          res = _context2.v;
+          return _context2.a(2, (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_3__["default"])((0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_3__["default"])({}, res), {}, {
+            data: normalizeReviewStats(res)
+          }));
+      }
+    }, _callee2);
+  }));
+  return _fetchReviewStats.apply(this, arguments);
+}
+function fetchReviewAiSummary(_x2) {
+  return _fetchReviewAiSummary.apply(this, arguments);
+}
+
+/**
+ * 回复别人的评论
+ * POST /api/v1/review/reply
+ */
+function _fetchReviewAiSummary() {
+  _fetchReviewAiSummary = (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_1__["default"])(/*#__PURE__*/(0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_2__["default"])().m(function _callee3(productId) {
+    var _res$data5, _ref141, _ref142, _ref143, _data$content, _ref144, _ref145, _ref146, _ref147, _data$averageRating2, _ref148, _ref149, _ref150, _ref151, _data$totalCount;
+    var query, res, data, content, normalized;
+    return (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_2__["default"])().w(function (_context3) {
+      while (1) switch (_context3.n) {
+        case 0:
+          // 后端要求参数名为 id（与 product/detail 接口一致）
+          query = {
+            id: (0,_api_common__WEBPACK_IMPORTED_MODULE_0__.toNumericId)(productId)
+          };
+          _context3.n = 1;
+          return (0,_api_common__WEBPACK_IMPORTED_MODULE_0__.apiGet)(reviewApi.ai, query, {}, true);
+        case 1:
+          res = _context3.v;
+          // 后端返回结构：{ code, message, data: { product_id, content } }
+          // content 即 AI 总评文本
+          data = (_res$data5 = res === null || res === void 0 ? void 0 : res.data) !== null && _res$data5 !== void 0 ? _res$data5 : res;
+          content = String((_ref141 = (_ref142 = (_ref143 = (_data$content = data === null || data === void 0 ? void 0 : data.content) !== null && _data$content !== void 0 ? _data$content : data === null || data === void 0 ? void 0 : data.Content) !== null && _ref143 !== void 0 ? _ref143 : data === null || data === void 0 ? void 0 : data.overall) !== null && _ref142 !== void 0 ? _ref142 : data === null || data === void 0 ? void 0 : data.summary) !== null && _ref141 !== void 0 ? _ref141 : '').trim();
+          normalized = {
+            averageRating: Number((_ref144 = (_ref145 = (_ref146 = (_ref147 = (_data$averageRating2 = data === null || data === void 0 ? void 0 : data.averageRating) !== null && _data$averageRating2 !== void 0 ? _data$averageRating2 : data === null || data === void 0 ? void 0 : data.average_rating) !== null && _ref147 !== void 0 ? _ref147 : data === null || data === void 0 ? void 0 : data.AverageRating) !== null && _ref146 !== void 0 ? _ref146 : data === null || data === void 0 ? void 0 : data.rating) !== null && _ref145 !== void 0 ? _ref145 : data === null || data === void 0 ? void 0 : data.score) !== null && _ref144 !== void 0 ? _ref144 : 0),
+            totalCount: Number((_ref148 = (_ref149 = (_ref150 = (_ref151 = (_data$totalCount = data === null || data === void 0 ? void 0 : data.totalCount) !== null && _data$totalCount !== void 0 ? _data$totalCount : data === null || data === void 0 ? void 0 : data.total_count) !== null && _ref151 !== void 0 ? _ref151 : data === null || data === void 0 ? void 0 : data.TotalCount) !== null && _ref150 !== void 0 ? _ref150 : data === null || data === void 0 ? void 0 : data.total) !== null && _ref149 !== void 0 ? _ref149 : data === null || data === void 0 ? void 0 : data.reviewCount) !== null && _ref148 !== void 0 ? _ref148 : 0),
+            overall: content,
+            strengths: Array.isArray(data === null || data === void 0 ? void 0 : data.strengths) ? data.strengths : Array.isArray(data === null || data === void 0 ? void 0 : data.Strengths) ? data.Strengths : Array.isArray(data === null || data === void 0 ? void 0 : data.pros) ? data.pros : Array.isArray(data === null || data === void 0 ? void 0 : data.positives) ? data.positives : Array.isArray(data === null || data === void 0 ? void 0 : data.positive_points) ? data.positive_points : [],
+            weaknesses: Array.isArray(data === null || data === void 0 ? void 0 : data.weaknesses) ? data.weaknesses : Array.isArray(data === null || data === void 0 ? void 0 : data.Weaknesses) ? data.Weaknesses : Array.isArray(data === null || data === void 0 ? void 0 : data.cons) ? data.cons : Array.isArray(data === null || data === void 0 ? void 0 : data.negatives) ? data.negatives : Array.isArray(data === null || data === void 0 ? void 0 : data.negative_points) ? data.negative_points : [],
+            tags: Array.isArray(data === null || data === void 0 ? void 0 : data.tags) ? data.tags : Array.isArray(data === null || data === void 0 ? void 0 : data.Tags) ? data.Tags : Array.isArray(data === null || data === void 0 ? void 0 : data.keywords) ? data.keywords : []
+          };
+          if (!content) {
+            console.warn('[AI评价摘要] 后端返回 content 为空，可能该商品尚未生成 AI 摘要，productId:', productId);
+          }
+          return _context3.a(2, (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_3__["default"])((0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_3__["default"])({}, res), {}, {
+            data: normalized
+          }));
+      }
+    }, _callee3);
+  }));
+  return _fetchReviewAiSummary.apply(this, arguments);
+}
+function replyToReview(_x3) {
+  return _replyToReview.apply(this, arguments);
+}
+
+/**
+ * 获取指定评价的回复评价列表
+ * GET /api/v1/review/reply/list
+ */
+function _replyToReview() {
+  _replyToReview = (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_1__["default"])(/*#__PURE__*/(0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_2__["default"])().m(function _callee4(payload) {
+    var body, res;
+    return (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_2__["default"])().w(function (_context4) {
+      while (1) switch (_context4.n) {
+        case 0:
+          body = {
+            // 后端要求参数名为 id（与其他评价接口一致）
+            id: (0,_api_common__WEBPACK_IMPORTED_MODULE_0__.toNumericId)(payload.reviewId),
+            content: payload.content
+          };
+          if (payload.parentId !== undefined && payload.parentId !== null && payload.parentId !== '') {
+            body.parentId = (0,_api_common__WEBPACK_IMPORTED_MODULE_0__.toNumericId)(payload.parentId);
+          }
+          _context4.n = 1;
+          return (0,_api_common__WEBPACK_IMPORTED_MODULE_0__.apiPost)(reviewApi.reply, body, {}, {}, false);
+        case 1:
+          res = _context4.v;
+          return _context4.a(2, res);
+      }
+    }, _callee4);
+  }));
+  return _replyToReview.apply(this, arguments);
+}
+function fetchReviewReplies() {
+  return _fetchReviewReplies.apply(this, arguments);
+}
+
+/**
+ * 点赞/取消点赞一个评价
+ * POST /api/v1/review/like
+ * 后端要求参数名为 review_id（snake_case），且必须使用 JSON 格式
+ */
+function _fetchReviewReplies() {
+  _fetchReviewReplies = (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_1__["default"])(/*#__PURE__*/(0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_2__["default"])().m(function _callee5() {
+    var _ref152, _ref153, _ref154, _res$data$list2, _res$data6, _res$data7, _res$data8, _res$data9;
+    var params,
+      query,
+      res,
+      list,
+      _args5 = arguments;
+    return (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_2__["default"])().w(function (_context5) {
+      while (1) switch (_context5.n) {
+        case 0:
+          params = _args5.length > 0 && _args5[0] !== undefined ? _args5[0] : {};
+          // 后端要求参数名为 id（与其他评价接口一致）
+          query = {
+            id: (0,_api_common__WEBPACK_IMPORTED_MODULE_0__.toNumericId)(params.reviewId)
+          };
+          if (params.page !== undefined) query.page = params.page;
+          if (params.size !== undefined) query.size = params.size;
+          _context5.n = 1;
+          return (0,_api_common__WEBPACK_IMPORTED_MODULE_0__.apiGet)(reviewApi.replyList, query, {}, false);
+        case 1:
+          res = _context5.v;
+          list = Array.isArray(res === null || res === void 0 ? void 0 : res.data) ? res.data : (_ref152 = (_ref153 = (_ref154 = (_res$data$list2 = res === null || res === void 0 || (_res$data6 = res.data) === null || _res$data6 === void 0 ? void 0 : _res$data6.list) !== null && _res$data$list2 !== void 0 ? _res$data$list2 : res === null || res === void 0 || (_res$data7 = res.data) === null || _res$data7 === void 0 ? void 0 : _res$data7.items) !== null && _ref154 !== void 0 ? _ref154 : res === null || res === void 0 || (_res$data8 = res.data) === null || _res$data8 === void 0 ? void 0 : _res$data8.records) !== null && _ref153 !== void 0 ? _ref153 : res === null || res === void 0 || (_res$data9 = res.data) === null || _res$data9 === void 0 ? void 0 : _res$data9.replies) !== null && _ref152 !== void 0 ? _ref152 : [];
+          return _context5.a(2, (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_3__["default"])((0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_3__["default"])({}, res), {}, {
+            data: list.map(normalizeReviewReply)
+          }));
+      }
+    }, _callee5);
+  }));
+  return _fetchReviewReplies.apply(this, arguments);
+}
+function likeReview(_x4) {
+  return _likeReview.apply(this, arguments);
+}
+function _likeReview() {
+  _likeReview = (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_1__["default"])(/*#__PURE__*/(0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_2__["default"])().m(function _callee6(reviewId) {
+    var body, res;
+    return (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_2__["default"])().w(function (_context6) {
+      while (1) switch (_context6.n) {
+        case 0:
+          body = {
+            review_id: (0,_api_common__WEBPACK_IMPORTED_MODULE_0__.toNumericId)(reviewId)
+          }; // use JSON format (useFormUrlEncoded = false)
+          _context6.n = 1;
+          return (0,_api_common__WEBPACK_IMPORTED_MODULE_0__.apiPost)(reviewApi.like, body, {}, {}, false, false);
+        case 1:
+          res = _context6.v;
+          return _context6.a(2, res);
+      }
+    }, _callee6);
+  }));
+  return _likeReview.apply(this, arguments);
+}
+
+/***/ }),
+
+/***/ "./src/api/message/index.ts":
+/*!**********************************!*\
+  !*** ./src/api/message/index.ts ***!
+  \**********************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   WS_BASE_URL: function() { return /* binding */ WS_BASE_URL; },
+/* harmony export */   WS_DIRECT_URL: function() { return /* binding */ WS_DIRECT_URL; },
+/* harmony export */   chatApi: function() { return /* binding */ chatApi; },
+/* harmony export */   notificationApi: function() { return /* binding */ notificationApi; },
+/* harmony export */   serviceApi: function() { return /* binding */ serviceApi; }
+/* harmony export */ });
+// H5 端使用相对路径，通过 devServer proxy 转发，避免跨域
+var BACKEND_HOST = 'http://192.168.10.7:8089';
+var API_BASE_URL =  false ? 0 : "".concat(BACKEND_HOST, "/api/v1");
+
+// WebSocket 后端直连地址（用于 fallback 或非 H5 环境）
+var WS_BACKEND_HOST = 'ws://192.168.10.7:8089';
+
+/**
+ * WebSocket 基础 URL 构造：
+ * - H5 开发环境：使用相对路径（通过 devServer proxy ws:true 转发）
+ * - H5 生产环境：默认使用当前 host + /api/v1/chat/ws（由部署层 nginx 代理）
+ *   若代理不通，chatWS 会自动 fallback 到直连后端 WS_DIRECT_URL
+ * - 小程序环境：直连后端 WS 地址
+ */
+var WS_BASE_URL = function () {
+  if (false) { var protocol; }
+
+  // 小程序：直连后端
+  return "".concat(WS_BACKEND_HOST, "/api/v1/chat/ws");
+}();
+
+/**
+ * WebSocket 直连后端地址（fallback 用）
+ * 当代理方式连接失败时，chatWS 会自动切换到此地址
+ */
+var WS_DIRECT_URL = "".concat(WS_BACKEND_HOST, "/api/v1/chat/ws");
+
+// 客服会话相关 API（位于 /chat 命名空间下）
+var chatApi = {
+  // 发起客服会话 POST
+  createConversation: "".concat(API_BASE_URL, "/chat/conversations"),
+  // 获取会话列表 GET
+  conversations: "".concat(API_BASE_URL, "/chat/conversations"),
+  // 获取会话消息历史 GET
+  messages: "".concat(API_BASE_URL, "/chat/conversations/:id/messages"),
+  // 发送消息 POST（也走 WebSocket，HTTP 作为兜底）
+  sendMessage: "".concat(API_BASE_URL, "/chat/conversations/:id/messages"),
+  // 标记会话已读（用户） PUT
+  readConversation: "".concat(API_BASE_URL, "/chat/conversations/:id/read"),
+  // 转人工客服 PUT
+  transferHuman: "".concat(API_BASE_URL, "/chat/conversations/:id/transfer-human")
+};
+
+// 通知消息相关 API（保留原有路径）
+var notificationApi = {
+  list: "".concat(API_BASE_URL, "/notifications"),
+  unreadCount: "".concat(API_BASE_URL, "/notifications/unread-count"),
+  read: "".concat(API_BASE_URL, "/notifications/:id/read"),
+  readAll: "".concat(API_BASE_URL, "/notifications/read-all")
+};
+
+// 兼容旧引用（旧页面仍使用 serviceApi，指向 chat 命名空间）
+var serviceApi = chatApi;
+
+/***/ }),
+
+/***/ "./src/api/seckill/index.ts":
+/*!**********************************!*\
+  !*** ./src/api/seckill/index.ts ***!
+  \**********************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   createSeckillPurchase: function() { return /* binding */ createSeckillPurchase; },
+/* harmony export */   fetchProductSeckillActivity: function() { return /* binding */ fetchProductSeckillActivity; },
+/* harmony export */   fetchSeckillActivities: function() { return /* binding */ fetchSeckillActivities; },
+/* harmony export */   generateSeckillRequestNo: function() { return /* binding */ generateSeckillRequestNo; },
+/* harmony export */   pollSeckillPurchaseResult: function() { return /* binding */ pollSeckillPurchaseResult; }
+/* harmony export */ });
+/* unused harmony exports seckillApi, normalizeSeckillProduct, normalizeSeckillActivity, normalizeSeckillPurchase, fetchSeckillPurchaseResult */
+/* harmony import */ var D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./node_modules/@babel/runtime/helpers/esm/regenerator.js */ "./node_modules/@babel/runtime/helpers/esm/regenerator.js");
+/* harmony import */ var D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./node_modules/@babel/runtime/helpers/esm/objectSpread2.js */ "./node_modules/@babel/runtime/helpers/esm/objectSpread2.js");
+/* harmony import */ var D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./node_modules/@babel/runtime/helpers/esm/asyncToGenerator.js */ "./node_modules/@babel/runtime/helpers/esm/asyncToGenerator.js");
+/* harmony import */ var D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_typeof_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./node_modules/@babel/runtime/helpers/esm/typeof.js */ "./node_modules/@babel/runtime/helpers/esm/typeof.js");
+/* harmony import */ var _api_common__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @/api/common */ "./src/api/common/index.ts");
+
+
+
+
+// ============================================
+// 秒杀模块 API
+// 端点：
+//   GET  /api/v1/seckill/activities            活动列表
+//   GET  /api/v1/seckill/activities/products     指定商品活动
+//   POST /api/v1/seckill/purchases              购买秒杀商品
+//   GET  /api/v1/seckill/purchases              获取购买秒杀商品的结果
+// ============================================
+
+
+
+// H5 端使用相对路径，通过 devServer proxy 转发，避免跨域
+// 小程序端不受 CORS 限制，直接使用完整后端地址
+var BACKEND_HOST = 'http://192.168.10.7:8089';
+var API_BASE_URL =  false ? 0 : "".concat(BACKEND_HOST, "/api/v1");
+
+// ==================== URL 常量 ====================
+var seckillApi = {
+  // 秒杀活动列表 GET
+  activities: "".concat(API_BASE_URL, "/seckill/activities"),
+  // 指定商品活动 GET（query: productId / activityId）
+  activityProducts: "".concat(API_BASE_URL, "/seckill/activities/products"),
+  // 购买秒杀商品 POST / 获取购买结果 GET（共用同一路径）
+  purchases: "".concat(API_BASE_URL, "/seckill/purchases")
+};
+
+// ==================== 数据转换 ====================
+
+/**
+ * 秒杀商品数据规范化：兼容 snake_case / PascalCase / camelCase 字段名
+ */
+function normalizeSeckillProduct(raw) {
+  var _ref, _ref2, _ref3, _ref4, _ref5, _ref6, _raw$image, _ref7, _ref8, _raw$activityId, _ref9, _ref0, _ref1, _ref10, _ref11, _ref12, _ref13, _ref14, _ref15, _ref16, _raw$seckillPrice, _ref17, _ref18, _ref19, _ref20, _firstSku$seckill_pri, _ref29, _ref30, _ref31, _ref32, _ref33, _ref34, _ref35, _raw$originalPrice, _ref36, _firstSku$original_pr, _ref39, _ref40, _ref41, _ref42, _ref43, _ref44, _ref45, _ref46, _ref47, _ref48, _ref49, _ref50, _ref51, _raw$stock, _ref52, _ref53, _firstSku$remaining_s, _ref54, _ref55, _ref56, _ref57, _ref58, _ref59, _ref60, _raw$soldCount, _ref61, _ref62, _raw$soldPercent, _ref63, _ref64, _ref65, _ref66, _ref67, _raw$id, _ref68, _ref69, _ref70, _ref71, _ref72, _ref73, _raw$productId, _ref74, _ref75, _ref76, _ref77, _ref78, _ref79, _raw$productName, _ref80, _ref81, _ref82, _ref83, _ref84, _raw$limitCount, _ref85, _ref86, _ref87, _raw$skuId, _ref88, _ref89, _firstSku$sku_id, _ref90, _ref91, _ref92, _ref93, _raw$seckillSkuPriceI, _ref94, _ref95, _firstSku$seckill_sku, _ref96, _ref97, _ref98, _raw$activityId2;
+  if (!raw || (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_typeof_js__WEBPACK_IMPORTED_MODULE_1__["default"])(raw) !== 'object') {
+    return {
+      id: '',
+      productId: '',
+      productName: '',
+      image: '',
+      originalPrice: 0,
+      seckillPrice: 0,
+      stock: 0,
+      soldCount: 0,
+      soldPercent: 0,
+      limitCount: 1,
+      skuId: '',
+      seckillSkuPriceId: '',
+      activityId: '',
+      raw: null
+    };
+  }
+  // 处理图片：兼容单个 image 字段和 images 数组
+  var image = (_ref = (_ref2 = (_ref3 = (_ref4 = (_ref5 = (_ref6 = (_raw$image = raw.image) !== null && _raw$image !== void 0 ? _raw$image : raw.Image) !== null && _ref6 !== void 0 ? _ref6 : raw.imageUrl) !== null && _ref5 !== void 0 ? _ref5 : raw.image_url) !== null && _ref4 !== void 0 ? _ref4 : raw.ImageUrl) !== null && _ref3 !== void 0 ? _ref3 : raw.pic) !== null && _ref2 !== void 0 ? _ref2 : raw.Pic) !== null && _ref !== void 0 ? _ref : '';
+  if (!image && Array.isArray(raw.images) && raw.images.length > 0) {
+    image = raw.images[0];
+  }
+  if (!image && Array.isArray(raw.Images) && raw.Images.length > 0) {
+    image = raw.Images[0];
+  }
+
+  // 兼容 SKU 数组结构：从 skus[0] 读取价格和库存
+  var firstSku = Array.isArray(raw.skus) && raw.skus.length > 0 ? raw.skus[0] : null;
+
+  // 判断当前对象是否是活动内商品（活动内商品的 price 通常表示原价，不能作为秒杀价兜底）
+  var isActivityProduct = !!((_ref7 = (_ref8 = (_raw$activityId = raw.activityId) !== null && _raw$activityId !== void 0 ? _raw$activityId : raw.activity_id) !== null && _ref8 !== void 0 ? _ref8 : raw.ActivityId) !== null && _ref7 !== void 0 ? _ref7 : raw.activity);
+
+  // 提取秒杀价：优先使用明确的秒杀价字段
+  var seckillPrice = Number((_ref9 = (_ref0 = (_ref1 = (_ref10 = (_ref11 = (_ref12 = (_ref13 = (_ref14 = (_ref15 = (_ref16 = (_raw$seckillPrice = raw.seckillPrice) !== null && _raw$seckillPrice !== void 0 ? _raw$seckillPrice : raw.seckill_price) !== null && _ref16 !== void 0 ? _ref16 : raw.SeckillPrice) !== null && _ref15 !== void 0 ? _ref15 : raw.seckill_price_cents) !== null && _ref14 !== void 0 ? _ref14 : raw.price_seckill) !== null && _ref13 !== void 0 ? _ref13 : raw.activityPrice) !== null && _ref12 !== void 0 ? _ref12 : raw.activity_price) !== null && _ref11 !== void 0 ? _ref11 : raw.ActivityPrice) !== null && _ref10 !== void 0 ? _ref10 : raw.flashSalePrice) !== null && _ref1 !== void 0 ? _ref1 : raw.flash_sale_price) !== null && _ref0 !== void 0 ? _ref0 : raw.FlashSalePrice) !== null && _ref9 !== void 0 ? _ref9 : firstSku ? (_ref17 = (_ref18 = (_ref19 = (_ref20 = (_firstSku$seckill_pri = firstSku.seckill_price) !== null && _firstSku$seckill_pri !== void 0 ? _firstSku$seckill_pri : firstSku.seckillPrice) !== null && _ref20 !== void 0 ? _ref20 : firstSku.SeckillPrice) !== null && _ref19 !== void 0 ? _ref19 : firstSku.activityPrice) !== null && _ref18 !== void 0 ? _ref18 : firstSku.activity_price) !== null && _ref17 !== void 0 ? _ref17 : '' : '');
+
+  // 如果明确的秒杀价字段为空，再考虑 price 字段：
+  // - 单个商品对象（非活动内）的 price 一般就是秒杀价
+  // - 活动内商品的 price 通常表示原价，不应用作秒杀价
+  if (!seckillPrice && !isActivityProduct) {
+    var _ref21, _ref22, _ref23, _ref24, _ref25, _ref26, _ref27, _raw$price, _ref28, _firstSku$price;
+    seckillPrice = Number((_ref21 = (_ref22 = (_ref23 = (_ref24 = (_ref25 = (_ref26 = (_ref27 = (_raw$price = raw.price) !== null && _raw$price !== void 0 ? _raw$price : raw.Price) !== null && _ref27 !== void 0 ? _ref27 : raw.salePrice) !== null && _ref26 !== void 0 ? _ref26 : raw.sale_price) !== null && _ref25 !== void 0 ? _ref25 : raw.currentPrice) !== null && _ref24 !== void 0 ? _ref24 : raw.current_price) !== null && _ref23 !== void 0 ? _ref23 : raw.discountPrice) !== null && _ref22 !== void 0 ? _ref22 : raw.discount_price) !== null && _ref21 !== void 0 ? _ref21 : firstSku ? (_ref28 = (_firstSku$price = firstSku.price) !== null && _firstSku$price !== void 0 ? _firstSku$price : firstSku.Price) !== null && _ref28 !== void 0 ? _ref28 : '' : '');
+  }
+
+  // 原价提取：不要把秒杀价字段当作原价
+  var originalPrice = Number((_ref29 = (_ref30 = (_ref31 = (_ref32 = (_ref33 = (_ref34 = (_ref35 = (_raw$originalPrice = raw.originalPrice) !== null && _raw$originalPrice !== void 0 ? _raw$originalPrice : raw.original_price) !== null && _ref35 !== void 0 ? _ref35 : raw.OriginalPrice) !== null && _ref34 !== void 0 ? _ref34 : raw.marketPrice) !== null && _ref33 !== void 0 ? _ref33 : raw.market_price) !== null && _ref32 !== void 0 ? _ref32 : raw.MarketPrice) !== null && _ref31 !== void 0 ? _ref31 : raw.original_price_cents) !== null && _ref30 !== void 0 ? _ref30 : raw.price_original) !== null && _ref29 !== void 0 ? _ref29 : firstSku ? (_ref36 = (_firstSku$original_pr = firstSku.original_price) !== null && _firstSku$original_pr !== void 0 ? _firstSku$original_pr : firstSku.originalPrice) !== null && _ref36 !== void 0 ? _ref36 : '' : '');
+
+  // 活动内商品：如果 originalPrice 仍为空，price 字段一般表示原价，可作为兜底
+  if (!originalPrice && isActivityProduct) {
+    var _ref37, _raw$price2, _ref38, _firstSku$price2;
+    originalPrice = Number((_ref37 = (_raw$price2 = raw.price) !== null && _raw$price2 !== void 0 ? _raw$price2 : raw.Price) !== null && _ref37 !== void 0 ? _ref37 : firstSku ? (_ref38 = (_firstSku$price2 = firstSku.price) !== null && _firstSku$price2 !== void 0 ? _firstSku$price2 : firstSku.Price) !== null && _ref38 !== void 0 ? _ref38 : '' : 0);
+  }
+  var stock = Number((_ref39 = (_ref40 = (_ref41 = (_ref42 = (_ref43 = (_ref44 = (_ref45 = (_ref46 = (_ref47 = (_ref48 = (_ref49 = (_ref50 = (_ref51 = (_raw$stock = raw.stock) !== null && _raw$stock !== void 0 ? _raw$stock : raw.Stock) !== null && _ref51 !== void 0 ? _ref51 : raw.totalStock) !== null && _ref50 !== void 0 ? _ref50 : raw.total_stock) !== null && _ref49 !== void 0 ? _ref49 : raw.TotalStock) !== null && _ref48 !== void 0 ? _ref48 : raw.inventory) !== null && _ref47 !== void 0 ? _ref47 : raw.Inventory) !== null && _ref46 !== void 0 ? _ref46 : raw.availableStock) !== null && _ref45 !== void 0 ? _ref45 : raw.available_stock) !== null && _ref44 !== void 0 ? _ref44 : raw.remainingStock) !== null && _ref43 !== void 0 ? _ref43 : raw.remaining_stock) !== null && _ref42 !== void 0 ? _ref42 : raw.RemainingStock) !== null && _ref41 !== void 0 ? _ref41 : raw.seckillStock) !== null && _ref40 !== void 0 ? _ref40 : raw.seckill_stock) !== null && _ref39 !== void 0 ? _ref39 : firstSku ? (_ref52 = (_ref53 = (_firstSku$remaining_s = firstSku.remaining_stock) !== null && _firstSku$remaining_s !== void 0 ? _firstSku$remaining_s : firstSku.stock) !== null && _ref53 !== void 0 ? _ref53 : firstSku.remainingStock) !== null && _ref52 !== void 0 ? _ref52 : 0 : 0);
+  var soldCount = Number((_ref54 = (_ref55 = (_ref56 = (_ref57 = (_ref58 = (_ref59 = (_ref60 = (_raw$soldCount = raw.soldCount) !== null && _raw$soldCount !== void 0 ? _raw$soldCount : raw.sold_count) !== null && _ref60 !== void 0 ? _ref60 : raw.SoldCount) !== null && _ref59 !== void 0 ? _ref59 : raw.sold) !== null && _ref58 !== void 0 ? _ref58 : raw.Sold) !== null && _ref57 !== void 0 ? _ref57 : raw.sales) !== null && _ref56 !== void 0 ? _ref56 : raw.salesVolume) !== null && _ref55 !== void 0 ? _ref55 : raw.sales_volume) !== null && _ref54 !== void 0 ? _ref54 : 0);
+
+  // 已售百分比（后端没返回时本地计算）
+  var soldPercent = (_ref61 = (_ref62 = (_raw$soldPercent = raw.soldPercent) !== null && _raw$soldPercent !== void 0 ? _raw$soldPercent : raw.sold_percent) !== null && _ref62 !== void 0 ? _ref62 : raw.SoldPercent) !== null && _ref61 !== void 0 ? _ref61 : stock > 0 ? Math.round(soldCount / (stock + soldCount) * 100) : 0;
+  return {
+    id: (_ref63 = (_ref64 = (_ref65 = (_ref66 = (_ref67 = (_raw$id = raw.id) !== null && _raw$id !== void 0 ? _raw$id : raw.Id) !== null && _ref67 !== void 0 ? _ref67 : raw.ID) !== null && _ref66 !== void 0 ? _ref66 : raw.productId) !== null && _ref65 !== void 0 ? _ref65 : raw.product_id) !== null && _ref64 !== void 0 ? _ref64 : raw.ProductId) !== null && _ref63 !== void 0 ? _ref63 : '',
+    productId: (_ref68 = (_ref69 = (_ref70 = (_ref71 = (_ref72 = (_ref73 = (_raw$productId = raw.productId) !== null && _raw$productId !== void 0 ? _raw$productId : raw.product_id) !== null && _ref73 !== void 0 ? _ref73 : raw.ProductId) !== null && _ref72 !== void 0 ? _ref72 : raw.ProductID) !== null && _ref71 !== void 0 ? _ref71 : raw.pid) !== null && _ref70 !== void 0 ? _ref70 : raw.Pid) !== null && _ref69 !== void 0 ? _ref69 : raw.id) !== null && _ref68 !== void 0 ? _ref68 : '',
+    productName: (_ref74 = (_ref75 = (_ref76 = (_ref77 = (_ref78 = (_ref79 = (_raw$productName = raw.productName) !== null && _raw$productName !== void 0 ? _raw$productName : raw.product_name) !== null && _ref79 !== void 0 ? _ref79 : raw.ProductName) !== null && _ref78 !== void 0 ? _ref78 : raw.name) !== null && _ref77 !== void 0 ? _ref77 : raw.Name) !== null && _ref76 !== void 0 ? _ref76 : raw.title) !== null && _ref75 !== void 0 ? _ref75 : raw.Title) !== null && _ref74 !== void 0 ? _ref74 : '',
+    image: image,
+    originalPrice: originalPrice,
+    seckillPrice: seckillPrice,
+    stock: stock,
+    soldCount: soldCount,
+    soldPercent: soldPercent,
+    limitCount: Number((_ref80 = (_ref81 = (_ref82 = (_ref83 = (_ref84 = (_raw$limitCount = raw.limitCount) !== null && _raw$limitCount !== void 0 ? _raw$limitCount : raw.limit_count) !== null && _ref84 !== void 0 ? _ref84 : raw.LimitCount) !== null && _ref83 !== void 0 ? _ref83 : raw.buyLimit) !== null && _ref82 !== void 0 ? _ref82 : raw.buy_limit) !== null && _ref81 !== void 0 ? _ref81 : raw.BuyLimit) !== null && _ref80 !== void 0 ? _ref80 : 1),
+    skuId: (_ref85 = (_ref86 = (_ref87 = (_raw$skuId = raw.skuId) !== null && _raw$skuId !== void 0 ? _raw$skuId : raw.sku_id) !== null && _ref87 !== void 0 ? _ref87 : raw.SkuId) !== null && _ref86 !== void 0 ? _ref86 : raw.skuID) !== null && _ref85 !== void 0 ? _ref85 : firstSku ? (_ref88 = (_ref89 = (_firstSku$sku_id = firstSku.sku_id) !== null && _firstSku$sku_id !== void 0 ? _firstSku$sku_id : firstSku.skuId) !== null && _ref89 !== void 0 ? _ref89 : firstSku.id) !== null && _ref88 !== void 0 ? _ref88 : '' : '',
+    seckillSkuPriceId: (_ref90 = (_ref91 = (_ref92 = (_ref93 = (_raw$seckillSkuPriceI = raw.seckillSkuPriceId) !== null && _raw$seckillSkuPriceI !== void 0 ? _raw$seckillSkuPriceI : raw.seckill_sku_price_id) !== null && _ref93 !== void 0 ? _ref93 : raw.SeckillSKUPriceID) !== null && _ref92 !== void 0 ? _ref92 : raw.SeckillSkuPriceId) !== null && _ref91 !== void 0 ? _ref91 : raw.seckillSkuPriceID) !== null && _ref90 !== void 0 ? _ref90 : firstSku ? (_ref94 = (_ref95 = (_firstSku$seckill_sku = firstSku.seckill_sku_price_id) !== null && _firstSku$seckill_sku !== void 0 ? _firstSku$seckill_sku : firstSku.seckillSkuPriceId) !== null && _ref95 !== void 0 ? _ref95 : firstSku.SeckillSKUPriceID) !== null && _ref94 !== void 0 ? _ref94 : '' : '',
+    activityId: (_ref96 = (_ref97 = (_ref98 = (_raw$activityId2 = raw.activityId) !== null && _raw$activityId2 !== void 0 ? _raw$activityId2 : raw.activity_id) !== null && _ref98 !== void 0 ? _ref98 : raw.ActivityId) !== null && _ref97 !== void 0 ? _ref97 : raw.ActivityID) !== null && _ref96 !== void 0 ? _ref96 : '',
+    // 附加原始数据，供页面需要时使用
+    raw: raw
+  };
+}
+
+/**
+ * 秒杀活动数据规范化：兼容 snake_case / PascalCase / camelCase 字段名
+ */
+function normalizeSeckillActivity(raw) {
+  var _ref99, _ref100, _ref101, _ref102, _ref103, _ref104, _raw$id2, _ref105, _ref106, _ref107, _ref108, _ref109, _ref110, _raw$name, _ref111, _ref112, _ref113, _raw$status, _ref114, _ref115, _ref116, _ref117, _raw$startTime, _ref118, _ref119, _ref120, _ref121, _raw$endTime;
+  if (!raw || (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_typeof_js__WEBPACK_IMPORTED_MODULE_1__["default"])(raw) !== 'object') {
+    return {
+      id: '',
+      name: '限时秒杀',
+      status: 'active',
+      startTime: '',
+      endTime: '',
+      products: []
+    };
+  }
+  var products = Array.isArray(raw.products) ? raw.products : Array.isArray(raw.Products) ? raw.Products : Array.isArray(raw.items) ? raw.items : Array.isArray(raw.productList) ? raw.productList : [];
+  return {
+    id: (_ref99 = (_ref100 = (_ref101 = (_ref102 = (_ref103 = (_ref104 = (_raw$id2 = raw.id) !== null && _raw$id2 !== void 0 ? _raw$id2 : raw.Id) !== null && _ref104 !== void 0 ? _ref104 : raw.ID) !== null && _ref103 !== void 0 ? _ref103 : raw.activityId) !== null && _ref102 !== void 0 ? _ref102 : raw.activity_id) !== null && _ref101 !== void 0 ? _ref101 : raw.ActivityId) !== null && _ref100 !== void 0 ? _ref100 : raw.ActivityID) !== null && _ref99 !== void 0 ? _ref99 : '',
+    name: (_ref105 = (_ref106 = (_ref107 = (_ref108 = (_ref109 = (_ref110 = (_raw$name = raw.name) !== null && _raw$name !== void 0 ? _raw$name : raw.Name) !== null && _ref110 !== void 0 ? _ref110 : raw.title) !== null && _ref109 !== void 0 ? _ref109 : raw.Title) !== null && _ref108 !== void 0 ? _ref108 : raw.activityName) !== null && _ref107 !== void 0 ? _ref107 : raw.activity_name) !== null && _ref106 !== void 0 ? _ref106 : raw.ActivityName) !== null && _ref105 !== void 0 ? _ref105 : '限时秒杀',
+    status: (_ref111 = (_ref112 = (_ref113 = (_raw$status = raw.status) !== null && _raw$status !== void 0 ? _raw$status : raw.Status) !== null && _ref113 !== void 0 ? _ref113 : raw.activityStatus) !== null && _ref112 !== void 0 ? _ref112 : raw.activity_status) !== null && _ref111 !== void 0 ? _ref111 : 'active',
+    startTime: (_ref114 = (_ref115 = (_ref116 = (_ref117 = (_raw$startTime = raw.startTime) !== null && _raw$startTime !== void 0 ? _raw$startTime : raw.start_time) !== null && _ref117 !== void 0 ? _ref117 : raw.StartTime) !== null && _ref116 !== void 0 ? _ref116 : raw.beginTime) !== null && _ref115 !== void 0 ? _ref115 : raw.begin_time) !== null && _ref114 !== void 0 ? _ref114 : '',
+    endTime: (_ref118 = (_ref119 = (_ref120 = (_ref121 = (_raw$endTime = raw.endTime) !== null && _raw$endTime !== void 0 ? _raw$endTime : raw.end_time) !== null && _ref121 !== void 0 ? _ref121 : raw.EndTime) !== null && _ref120 !== void 0 ? _ref120 : raw.finishTime) !== null && _ref119 !== void 0 ? _ref119 : raw.finish_time) !== null && _ref118 !== void 0 ? _ref118 : '',
+    products: products.map(normalizeSeckillProduct)
+  };
+}
+
+/**
+ * 秒杀购买结果数据规范化：兼容 snake_case / PascalCase / camelCase 字段名
+ * 兼容后端返回中文状态文本（如"秒杀成功"）
+ */
+function normalizeSeckillPurchase(raw) {
+  var _ref122, _ref123, _ref124, _ref125, _raw$status2, _ref126, _ref127, _ref128, _ref129, _ref130, _ref131, _ref132, _raw$id3, _ref133, _ref134, _ref135, _ref136, _raw$purchaseId, _ref137, _ref138, _ref139, _raw$orderId, _ref140, _ref141, _ref142, _raw$orderNo, _ref143, _ref144, _ref145, _raw$activityId3, _ref146, _ref147, _ref148, _raw$productId2, _ref149, _ref150, _raw$skuId2, _ref151, _ref152, _ref153, _ref154, _raw$quantity, _ref155, _ref156, _ref157, _ref158, _raw$seckillPrice2, _ref159, _ref160, _ref161, _ref162, _ref163, _ref164, _raw$totalAmount, _ref165, _ref166, _ref167, _ref168, _raw$statusText, _ref169, _ref170, _ref171, _ref172, _ref173, _raw$message, _ref174, _ref175, _ref176, _ref177, _ref178, _raw$createdAt, _ref179, _ref180, _ref181, _ref182, _ref183, _raw$paidAt;
+  if (!raw || (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_typeof_js__WEBPACK_IMPORTED_MODULE_1__["default"])(raw) !== 'object') raw = {};
+  var rawStatus = (_ref122 = (_ref123 = (_ref124 = (_ref125 = (_raw$status2 = raw.status) !== null && _raw$status2 !== void 0 ? _raw$status2 : raw.Status) !== null && _ref125 !== void 0 ? _ref125 : raw.purchaseStatus) !== null && _ref124 !== void 0 ? _ref124 : raw.purchase_status) !== null && _ref123 !== void 0 ? _ref123 : raw.result) !== null && _ref122 !== void 0 ? _ref122 : raw.Result;
+  var status = rawStatus;
+  var statusCode = null;
+  if (typeof rawStatus === 'number') {
+    var _numericMap$rawStatus;
+    statusCode = rawStatus;
+    // 0:处理中 1:成功 2:失败 3:已取消
+    var numericMap = {
+      0: 'processing',
+      1: 'success',
+      2: 'failed',
+      3: 'cancelled'
+    };
+    status = (_numericMap$rawStatus = numericMap[rawStatus]) !== null && _numericMap$rawStatus !== void 0 ? _numericMap$rawStatus : 'processing';
+  }
+  // 兼容后端返回中文状态文本，映射回标准英文状态
+  var chineseStatusMap = {
+    '秒杀成功': 'success',
+    '秒杀失败': 'failed',
+    '处理中': 'processing',
+    '等待中': 'processing',
+    '排队中': 'processing',
+    '已取消': 'cancelled',
+    '售罄': 'out_of_stock',
+    '已售罄': 'out_of_stock'
+  };
+  if (typeof status === 'string' && chineseStatusMap[status]) {
+    status = chineseStatusMap[status];
+  }
+  var statusTextMap = {
+    'processing': '处理中',
+    'pending': '处理中',
+    'success': '成功',
+    'succeeded': '成功',
+    'paid': '成功',
+    'failed': '失败',
+    'cancelled': '已取消',
+    'canceled': '已取消',
+    'out_of_stock': '售罄',
+    'out-of-stock': '售罄',
+    'sold_out': '售罄'
+  };
+  return {
+    id: (_ref126 = (_ref127 = (_ref128 = (_ref129 = (_ref130 = (_ref131 = (_ref132 = (_raw$id3 = raw.id) !== null && _raw$id3 !== void 0 ? _raw$id3 : raw.Id) !== null && _ref132 !== void 0 ? _ref132 : raw.ID) !== null && _ref131 !== void 0 ? _ref131 : raw.purchaseId) !== null && _ref130 !== void 0 ? _ref130 : raw.purchase_id) !== null && _ref129 !== void 0 ? _ref129 : raw.PurchaseId) !== null && _ref128 !== void 0 ? _ref128 : raw.orderId) !== null && _ref127 !== void 0 ? _ref127 : raw.order_id) !== null && _ref126 !== void 0 ? _ref126 : '',
+    purchaseId: (_ref133 = (_ref134 = (_ref135 = (_ref136 = (_raw$purchaseId = raw.purchaseId) !== null && _raw$purchaseId !== void 0 ? _raw$purchaseId : raw.purchase_id) !== null && _ref136 !== void 0 ? _ref136 : raw.PurchaseId) !== null && _ref135 !== void 0 ? _ref135 : raw.id) !== null && _ref134 !== void 0 ? _ref134 : raw.Id) !== null && _ref133 !== void 0 ? _ref133 : '',
+    // orderId 只从真正的 orderId 字段提取（数据库主键 ID，用于 payOrder / fetchOrderDetail 路径参数）
+    orderId: (_ref137 = (_ref138 = (_ref139 = (_raw$orderId = raw.orderId) !== null && _raw$orderId !== void 0 ? _raw$orderId : raw.order_id) !== null && _ref139 !== void 0 ? _ref139 : raw.OrderId) !== null && _ref138 !== void 0 ? _ref138 : raw.OrderID) !== null && _ref137 !== void 0 ? _ref137 : '',
+    // orderNo 是订单编号（如 202608131520094434），不能用作路径参数 {id}
+    orderNo: (_ref140 = (_ref141 = (_ref142 = (_raw$orderNo = raw.orderNo) !== null && _raw$orderNo !== void 0 ? _raw$orderNo : raw.order_no) !== null && _ref142 !== void 0 ? _ref142 : raw.OrderNo) !== null && _ref141 !== void 0 ? _ref141 : raw.OrderNO) !== null && _ref140 !== void 0 ? _ref140 : '',
+    activityId: (_ref143 = (_ref144 = (_ref145 = (_raw$activityId3 = raw.activityId) !== null && _raw$activityId3 !== void 0 ? _raw$activityId3 : raw.activity_id) !== null && _ref145 !== void 0 ? _ref145 : raw.ActivityId) !== null && _ref144 !== void 0 ? _ref144 : raw.ActivityID) !== null && _ref143 !== void 0 ? _ref143 : '',
+    productId: (_ref146 = (_ref147 = (_ref148 = (_raw$productId2 = raw.productId) !== null && _raw$productId2 !== void 0 ? _raw$productId2 : raw.product_id) !== null && _ref148 !== void 0 ? _ref148 : raw.ProductId) !== null && _ref147 !== void 0 ? _ref147 : raw.ProductID) !== null && _ref146 !== void 0 ? _ref146 : '',
+    skuId: (_ref149 = (_ref150 = (_raw$skuId2 = raw.skuId) !== null && _raw$skuId2 !== void 0 ? _raw$skuId2 : raw.sku_id) !== null && _ref150 !== void 0 ? _ref150 : raw.SkuId) !== null && _ref149 !== void 0 ? _ref149 : '',
+    quantity: Number((_ref151 = (_ref152 = (_ref153 = (_ref154 = (_raw$quantity = raw.quantity) !== null && _raw$quantity !== void 0 ? _raw$quantity : raw.Quantity) !== null && _ref154 !== void 0 ? _ref154 : raw.count) !== null && _ref153 !== void 0 ? _ref153 : raw.Count) !== null && _ref152 !== void 0 ? _ref152 : raw.num) !== null && _ref151 !== void 0 ? _ref151 : 1),
+    seckillPrice: Number((_ref155 = (_ref156 = (_ref157 = (_ref158 = (_raw$seckillPrice2 = raw.seckillPrice) !== null && _raw$seckillPrice2 !== void 0 ? _raw$seckillPrice2 : raw.seckill_price) !== null && _ref158 !== void 0 ? _ref158 : raw.SeckillPrice) !== null && _ref157 !== void 0 ? _ref157 : raw.price) !== null && _ref156 !== void 0 ? _ref156 : raw.Price) !== null && _ref155 !== void 0 ? _ref155 : 0),
+    totalAmount: Number((_ref159 = (_ref160 = (_ref161 = (_ref162 = (_ref163 = (_ref164 = (_raw$totalAmount = raw.totalAmount) !== null && _raw$totalAmount !== void 0 ? _raw$totalAmount : raw.total_amount) !== null && _ref164 !== void 0 ? _ref164 : raw.TotalAmount) !== null && _ref163 !== void 0 ? _ref163 : raw.amount) !== null && _ref162 !== void 0 ? _ref162 : raw.Amount) !== null && _ref161 !== void 0 ? _ref161 : raw.payAmount) !== null && _ref160 !== void 0 ? _ref160 : raw.pay_amount) !== null && _ref159 !== void 0 ? _ref159 : 0),
+    status: status,
+    statusCode: statusCode,
+    statusText: (_ref165 = (_ref166 = (_ref167 = (_ref168 = (_raw$statusText = raw.statusText) !== null && _raw$statusText !== void 0 ? _raw$statusText : raw.status_text) !== null && _ref168 !== void 0 ? _ref168 : raw.StatusText) !== null && _ref167 !== void 0 ? _ref167 : statusTextMap[status]) !== null && _ref166 !== void 0 ? _ref166 : status) !== null && _ref165 !== void 0 ? _ref165 : '',
+    message: (_ref169 = (_ref170 = (_ref171 = (_ref172 = (_ref173 = (_raw$message = raw.message) !== null && _raw$message !== void 0 ? _raw$message : raw.Message) !== null && _ref173 !== void 0 ? _ref173 : raw.msg) !== null && _ref172 !== void 0 ? _ref172 : raw.Msg) !== null && _ref171 !== void 0 ? _ref171 : raw.remark) !== null && _ref170 !== void 0 ? _ref170 : raw.Remark) !== null && _ref169 !== void 0 ? _ref169 : '',
+    createdAt: (_ref174 = (_ref175 = (_ref176 = (_ref177 = (_ref178 = (_raw$createdAt = raw.createdAt) !== null && _raw$createdAt !== void 0 ? _raw$createdAt : raw.created_at) !== null && _ref178 !== void 0 ? _ref178 : raw.CreatedAt) !== null && _ref177 !== void 0 ? _ref177 : raw.createTime) !== null && _ref176 !== void 0 ? _ref176 : raw.create_time) !== null && _ref175 !== void 0 ? _ref175 : raw.CreateTime) !== null && _ref174 !== void 0 ? _ref174 : '',
+    paidAt: (_ref179 = (_ref180 = (_ref181 = (_ref182 = (_ref183 = (_raw$paidAt = raw.paidAt) !== null && _raw$paidAt !== void 0 ? _raw$paidAt : raw.paid_at) !== null && _ref183 !== void 0 ? _ref183 : raw.PaidAt) !== null && _ref182 !== void 0 ? _ref182 : raw.payTime) !== null && _ref181 !== void 0 ? _ref181 : raw.pay_time) !== null && _ref180 !== void 0 ? _ref180 : raw.PayTime) !== null && _ref179 !== void 0 ? _ref179 : ''
+  };
+}
+
+// ==================== API 方法 ====================
+
+/**
+ * 获取秒杀活动列表
+ * GET /api/v1/seckill/activities
+ * @param params 可选：status / page / size（page/size 默认 1/20）
+ */
+function fetchSeckillActivities() {
+  return _fetchSeckillActivities.apply(this, arguments);
+}
+
+/**
+ * 获取指定商品的秒杀活动
+ * GET /api/v1/seckill/activities/products
+ * @param params productId 商品ID（可选），activityId 活动ID（可选）
+ * 至少需要一个参数
+ */
+function _fetchSeckillActivities() {
+  _fetchSeckillActivities = (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_2__["default"])(/*#__PURE__*/(0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_3__["default"])().m(function _callee() {
+    var _params$page, _params$size;
+    var params,
+      query,
+      res,
+      list,
+      _ref184,
+      _ref185,
+      _ref186,
+      _res$data$list,
+      _args = arguments;
+    return (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_3__["default"])().w(function (_context) {
+      while (1) switch (_context.n) {
+        case 0:
+          params = _args.length > 0 && _args[0] !== undefined ? _args[0] : {};
+          query = {
+            page: (_params$page = params.page) !== null && _params$page !== void 0 ? _params$page : 1,
+            size: (_params$size = params.size) !== null && _params$size !== void 0 ? _params$size : 20
+          };
+          if (params.status !== undefined) query.status = params.status;
+          _context.n = 1;
+          return (0,_api_common__WEBPACK_IMPORTED_MODULE_0__.apiGet)(seckillApi.activities, query);
+        case 1:
+          res = _context.v;
+          // 兼容返回结构：可能是单个活动对象、活动数组、或 {list/records}
+          list = [];
+          if (Array.isArray(res === null || res === void 0 ? void 0 : res.data)) {
+            list = res.data;
+          } else if (res !== null && res !== void 0 && res.data && (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_typeof_js__WEBPACK_IMPORTED_MODULE_1__["default"])(res.data) === 'object') {
+            // 单个活动对象（含 products）
+            if (res.data.products || res.data.Products || res.data.items) {
+              list = [res.data];
+            } else {
+              list = (_ref184 = (_ref185 = (_ref186 = (_res$data$list = res.data.list) !== null && _res$data$list !== void 0 ? _res$data$list : res.data.items) !== null && _ref186 !== void 0 ? _ref186 : res.data.records) !== null && _ref185 !== void 0 ? _ref185 : res.data.activities) !== null && _ref184 !== void 0 ? _ref184 : [];
+              if (!Array.isArray(list)) list = [];
+            }
+          }
+          return _context.a(2, (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_4__["default"])((0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_4__["default"])({}, res), {}, {
+            data: list.map(normalizeSeckillActivity)
+          }));
+      }
+    }, _callee);
+  }));
+  return _fetchSeckillActivities.apply(this, arguments);
+}
+function fetchProductSeckillActivity(_x) {
+  return _fetchProductSeckillActivity.apply(this, arguments);
+}
+
+/**
+ * 生成秒杀请求唯一标识 request_no（前端随机字符串）
+ * 用于幂等性控制：同一 request_no 只能秒杀成功一次，避免重复扣减库存
+ */
+function _fetchProductSeckillActivity() {
+  _fetchProductSeckillActivity = (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_2__["default"])(/*#__PURE__*/(0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_3__["default"])().m(function _callee2(params) {
+    var query, res, data;
+    return (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_3__["default"])().w(function (_context2) {
+      while (1) switch (_context2.n) {
+        case 0:
+          query = {}; // 兼容 camelCase 和 snake_case 参数名
+          if (params.productId !== undefined && params.productId !== '' && params.productId !== null) {
+            query.productId = params.productId;
+            query.product_id = params.productId;
+          }
+          if (params.activityId !== undefined && params.activityId !== '' && params.activityId !== null) {
+            query.activityId = params.activityId;
+            query.activity_id = params.activityId;
+          }
+          _context2.n = 1;
+          return (0,_api_common__WEBPACK_IMPORTED_MODULE_0__.apiGet)(seckillApi.activityProducts, query);
+        case 1:
+          res = _context2.v;
+          if (!(res !== null && res !== void 0 && res.data)) {
+            _context2.n = 4;
+            break;
+          }
+          // 返回可能是单个商品活动对象或数组
+          data = res.data;
+          if (!Array.isArray(data)) {
+            _context2.n = 2;
+            break;
+          }
+          return _context2.a(2, (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_4__["default"])((0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_4__["default"])({}, res), {}, {
+            data: data.map(normalizeSeckillProduct)
+          }));
+        case 2:
+          if (!(data.products || data.Products)) {
+            _context2.n = 3;
+            break;
+          }
+          return _context2.a(2, (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_4__["default"])((0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_4__["default"])({}, res), {}, {
+            data: normalizeSeckillActivity(data)
+          }));
+        case 3:
+          return _context2.a(2, (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_4__["default"])((0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_4__["default"])({}, res), {}, {
+            data: normalizeSeckillProduct(data)
+          }));
+        case 4:
+          return _context2.a(2, res);
+      }
+    }, _callee2);
+  }));
+  return _fetchProductSeckillActivity.apply(this, arguments);
+}
+function generateSeckillRequestNo() {
+  var timestamp = Date.now().toString(36);
+  var random = Math.random().toString(36).substring(2, 10);
+  return "sk_".concat(timestamp, "_").concat(random);
+}
+
+/**
+ * 购买秒杀商品
+ * POST /api/v1/seckill/purchases
+ * 参数使用 snake_case：activity_id / seckill_sku_price_id / store_id / request_no / quantity
+ * 后端使用 JSON 绑定（useFormUrlEncoded: false），数字字段为 uint64
+ *
+ * 返回值说明：
+ *   - accepted: false 表示同步处理完成（data 中直接包含结果）
+ *   - accepted: true  表示后端返回 202 "等待秒杀结果"，需调用 fetchSeckillPurchaseResult 查询结果
+ */
+function createSeckillPurchase(_x2) {
+  return _createSeckillPurchase.apply(this, arguments);
+}
+
+/**
+ * 获取秒杀购买结果
+ * GET /api/v1/seckill/purchases
+ * @param params.requestNo 创建秒杀购买时前端生成的 request_no（用于关联查询结果）
+ *
+ * 注意：后端在秒杀成功时可能返回非200业务code或非2xx HTTP状态码，
+ * 但 message 为"秒杀成功"。apiRequest 会把它当作错误抛出，
+ * 此处需捕获并识别这种"成功的错误"，转为正常成功返回。
+ */
+function _createSeckillPurchase() {
+  _createSeckillPurchase = (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_2__["default"])(/*#__PURE__*/(0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_3__["default"])().m(function _callee3(payload) {
+    var body, res, code, statusCode, errMsg, respData, _respData$data, _rawData$status, rawData, normalized, _t;
+    return (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_3__["default"])().w(function (_context3) {
+      while (1) switch (_context3.p = _context3.n) {
+        case 0:
+          body = {
+            activity_id: (0,_api_common__WEBPACK_IMPORTED_MODULE_0__.toNumericId)(payload.activityId),
+            seckill_sku_price_id: (0,_api_common__WEBPACK_IMPORTED_MODULE_0__.toNumericId)(payload.seckillSkuPriceId),
+            store_id: (0,_api_common__WEBPACK_IMPORTED_MODULE_0__.toNumericId)(payload.storeId),
+            request_no: payload.requestNo,
+            quantity: payload.quantity
+          };
+          console.log('[秒杀购买] 请求体:', JSON.stringify(body));
+          _context3.p = 1;
+          _context3.n = 2;
+          return (0,_api_common__WEBPACK_IMPORTED_MODULE_0__.apiPost)(seckillApi.purchases, body, {}, {}, false, true);
+        case 2:
+          res = _context3.v;
+          if (!(res !== null && res !== void 0 && res.data)) {
+            _context3.n = 3;
+            break;
+          }
+          return _context3.a(2, (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_4__["default"])((0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_4__["default"])({}, res), {}, {
+            data: normalizeSeckillPurchase(res.data),
+            accepted: false
+          }));
+        case 3:
+          return _context3.a(2, (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_4__["default"])((0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_4__["default"])({}, res), {}, {
+            accepted: false
+          }));
+        case 4:
+          _context3.p = 4;
+          _t = _context3.v;
+          code = _t === null || _t === void 0 ? void 0 : _t.code;
+          statusCode = _t === null || _t === void 0 ? void 0 : _t.statusCode;
+          errMsg = String((_t === null || _t === void 0 ? void 0 : _t.message) || '');
+          respData = _t === null || _t === void 0 ? void 0 : _t.response; // 202 状态码（HTTP 202 或业务 code 202）：表示"等待秒杀结果"，需轮询查询
+          if (!(code === 202 || statusCode === 202)) {
+            _context3.n = 5;
+            break;
+          }
+          console.log('[秒杀购买] 返回202，等待秒杀结果，request_no:', payload.requestNo);
+          return _context3.a(2, {
+            code: 202,
+            message: '等待秒杀结果',
+            data: respData !== null && respData !== void 0 && respData.data ? normalizeSeckillPurchase(respData.data) : {},
+            accepted: true
+          });
+        case 5:
+          if (!(errMsg.includes('成功') || /succe/i.test(errMsg))) {
+            _context3.n = 6;
+            break;
+          }
+          rawData = respData && (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_typeof_js__WEBPACK_IMPORTED_MODULE_1__["default"])(respData) === 'object' ? (_respData$data = respData.data) !== null && _respData$data !== void 0 ? _respData$data : respData : {};
+          normalized = normalizeSeckillPurchase((0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_4__["default"])((0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_4__["default"])({}, rawData), {}, {
+            status: (_rawData$status = rawData.status) !== null && _rawData$status !== void 0 ? _rawData$status : 'success',
+            message: errMsg
+          }));
+          console.log('[秒杀购买] 识别到同步成功响应（被当作错误抛出），已转为成功返回:', normalized);
+          return _context3.a(2, {
+            code: 200,
+            message: errMsg,
+            data: normalized,
+            accepted: false
+          });
+        case 6:
+          throw _t;
+        case 7:
+          return _context3.a(2);
+      }
+    }, _callee3, null, [[1, 4]]);
+  }));
+  return _createSeckillPurchase.apply(this, arguments);
+}
+function fetchSeckillPurchaseResult(_x3) {
+  return _fetchSeckillPurchaseResult.apply(this, arguments);
+}
+
+/**
+ * 轮询获取秒杀购买结果（秒杀通常为异步扣减库存）
+ * @param requestNo 秒杀请求唯一标识（前端生成的 request_no）
+ * @param options.interval 轮询间隔(ms)，默认 1500
+ * @param options.timeout  超时时间(ms)，默认 15000
+ * @returns 最终购买结果（status 为 success/failed 等终态时返回）
+ */
+function _fetchSeckillPurchaseResult() {
+  _fetchSeckillPurchaseResult = (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_2__["default"])(/*#__PURE__*/(0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_3__["default"])().m(function _callee4(params) {
+    var query, res, data, errMsg, respData, _respData$data2, _rawData$status2, rawData, normalized, _t2;
+    return (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_3__["default"])().w(function (_context4) {
+      while (1) switch (_context4.p = _context4.n) {
+        case 0:
+          query = {
+            request_no: params.requestNo
+          };
+          _context4.p = 1;
+          _context4.n = 2;
+          return (0,_api_common__WEBPACK_IMPORTED_MODULE_0__.apiGet)(seckillApi.purchases, query, {}, true);
+        case 2:
+          res = _context4.v;
+          if (!(res !== null && res !== void 0 && res.data)) {
+            _context4.n = 4;
+            break;
+          }
+          data = res.data;
+          if (!Array.isArray(data)) {
+            _context4.n = 3;
+            break;
+          }
+          return _context4.a(2, (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_4__["default"])((0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_4__["default"])({}, res), {}, {
+            data: data.map(normalizeSeckillPurchase)
+          }));
+        case 3:
+          return _context4.a(2, (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_4__["default"])((0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_4__["default"])({}, res), {}, {
+            data: normalizeSeckillPurchase(data)
+          }));
+        case 4:
+          return _context4.a(2, res);
+        case 5:
+          _context4.p = 5;
+          _t2 = _context4.v;
+          errMsg = String((_t2 === null || _t2 === void 0 ? void 0 : _t2.message) || '');
+          respData = _t2 === null || _t2 === void 0 ? void 0 : _t2.response; // 后端秒杀成功时可能用非200 code + message="秒杀成功"返回，被 apiRequest 当作错误抛出
+          // 此处识别"成功"语义，转为正常成功返回，避免轮询中断
+          if (!(errMsg.includes('成功') || /succe/i.test(errMsg))) {
+            _context4.n = 6;
+            break;
+          }
+          rawData = respData && (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_typeof_js__WEBPACK_IMPORTED_MODULE_1__["default"])(respData) === 'object' ? (_respData$data2 = respData.data) !== null && _respData$data2 !== void 0 ? _respData$data2 : respData : {};
+          normalized = normalizeSeckillPurchase((0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_4__["default"])((0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_4__["default"])({}, rawData), {}, {
+            status: (_rawData$status2 = rawData.status) !== null && _rawData$status2 !== void 0 ? _rawData$status2 : 'success',
+            message: errMsg
+          }));
+          console.log('[秒杀结果] 识别到成功响应（被当作错误抛出），已转为成功返回:', normalized);
+          return _context4.a(2, {
+            code: 200,
+            message: errMsg,
+            data: normalized
+          });
+        case 6:
+          throw _t2;
+        case 7:
+          return _context4.a(2);
+      }
+    }, _callee4, null, [[1, 5]]);
+  }));
+  return _fetchSeckillPurchaseResult.apply(this, arguments);
+}
+function pollSeckillPurchaseResult(_x4) {
+  return _pollSeckillPurchaseResult.apply(this, arguments);
+}
+function _pollSeckillPurchaseResult() {
+  _pollSeckillPurchaseResult = (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_2__["default"])(/*#__PURE__*/(0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_3__["default"])().m(function _callee6(requestNo) {
+    var _options$interval, _options$timeout;
+    var options,
+      interval,
+      timeout,
+      startTime,
+      _args6 = arguments;
+    return (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_3__["default"])().w(function (_context6) {
+      while (1) switch (_context6.n) {
+        case 0:
+          options = _args6.length > 1 && _args6[1] !== undefined ? _args6[1] : {};
+          interval = (_options$interval = options.interval) !== null && _options$interval !== void 0 ? _options$interval : 1500;
+          timeout = (_options$timeout = options.timeout) !== null && _options$timeout !== void 0 ? _options$timeout : 15000;
+          startTime = Date.now();
+          return _context6.a(2, new Promise(function (resolve, reject) {
+            var _poll = /*#__PURE__*/function () {
+              var _ref187 = (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_2__["default"])(/*#__PURE__*/(0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_3__["default"])().m(function _callee5() {
+                var _res$data, _result$status, res, result, status, isTerminal, errMsg, _t3;
+                return (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_3__["default"])().w(function (_context5) {
+                  while (1) switch (_context5.p = _context5.n) {
+                    case 0:
+                      if (!(Date.now() - startTime > timeout)) {
+                        _context5.n = 1;
+                        break;
+                      }
+                      reject(new Error('秒杀结果查询超时，请稍后在订单中查看'));
+                      return _context5.a(2);
+                    case 1:
+                      _context5.p = 1;
+                      _context5.n = 2;
+                      return fetchSeckillPurchaseResult({
+                        requestNo: requestNo
+                      });
+                    case 2:
+                      res = _context5.v;
+                      result = (_res$data = res === null || res === void 0 ? void 0 : res.data) !== null && _res$data !== void 0 ? _res$data : {};
+                      status = String((_result$status = result.status) !== null && _result$status !== void 0 ? _result$status : ''); // 终态：成功 / 失败 / 取消 / 售罄
+                      isTerminal = ['success', 'succeeded', 'paid', 'failed', 'cancelled', 'canceled', 'out_of_stock', 'out-of-stock', 'sold_out'].includes(status);
+                      if (isTerminal) {
+                        resolve(result);
+                      } else {
+                        setTimeout(_poll, interval);
+                      }
+                      _context5.n = 4;
+                      break;
+                    case 3:
+                      _context5.p = 3;
+                      _t3 = _context5.v;
+                      errMsg = String((_t3 === null || _t3 === void 0 ? void 0 : _t3.message) || ''); // "秒杀请求不存在"可能是竞态条件（GET比POST处理更快到达后端），重试而非直接失败
+                      if (errMsg.includes('不存在') || errMsg.includes('not found') || /not\s*exist/i.test(errMsg)) {
+                        console.warn('[秒杀轮询] 请求暂未找到，稍后重试:', errMsg);
+                        setTimeout(_poll, interval);
+                      } else {
+                        reject(_t3);
+                      }
+                    case 4:
+                      return _context5.a(2);
+                  }
+                }, _callee5, null, [[1, 3]]);
+              }));
+              return function poll() {
+                return _ref187.apply(this, arguments);
+              };
+            }();
+            _poll();
+          }));
+      }
+    }, _callee6);
+  }));
+  return _pollSeckillPurchaseResult.apply(this, arguments);
+}
+
+/***/ }),
+
+/***/ "./src/api/user/index.ts":
+/*!*******************************!*\
+  !*** ./src/api/user/index.ts ***!
+  \*******************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   authApi: function() { return /* binding */ authApi; },
+/* harmony export */   claimCoupon: function() { return /* binding */ claimCoupon; },
+/* harmony export */   fetchAvailableCoupons: function() { return /* binding */ fetchAvailableCoupons; },
+/* harmony export */   fetchMyCoupons: function() { return /* binding */ fetchMyCoupons; },
+/* harmony export */   userApi: function() { return /* binding */ userApi; }
+/* harmony export */ });
+/* unused harmony exports couponApi, normalizeCoupon */
+/* harmony import */ var D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./node_modules/@babel/runtime/helpers/esm/regenerator.js */ "./node_modules/@babel/runtime/helpers/esm/regenerator.js");
+/* harmony import */ var D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./node_modules/@babel/runtime/helpers/esm/asyncToGenerator.js */ "./node_modules/@babel/runtime/helpers/esm/asyncToGenerator.js");
+/* harmony import */ var D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./node_modules/@babel/runtime/helpers/esm/objectSpread2.js */ "./node_modules/@babel/runtime/helpers/esm/objectSpread2.js");
+/* harmony import */ var D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_typeof_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./node_modules/@babel/runtime/helpers/esm/typeof.js */ "./node_modules/@babel/runtime/helpers/esm/typeof.js");
+/* harmony import */ var _api_common__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @/api/common */ "./src/api/common/index.ts");
+
+
+
+
+// H5 端使用相对路径，通过 devServer proxy 转发，避免跨域
+// 小程序端不受 CORS 限制，直接使用完整后端地址
+
+var BACKEND_HOST = 'http://192.168.10.7:8089';
+var API_BASE_URL =  false ? 0 : "".concat(BACKEND_HOST, "/api/v1");
+var authApi = {
+  register: "".concat(API_BASE_URL, "/auth/register"),
+  // 注册接口
+  registerSendCode: "".concat(API_BASE_URL, "/auth/registerofsendcode"),
+  // 发送验证码
+  login: "".concat(API_BASE_URL, "/auth/login"),
+  // 登录接口
+  wechatLogin: "".concat(API_BASE_URL, "/auth/weixinlogin"),
+  // 微信登录接口
+  wechatPhone: "".concat(API_BASE_URL, "/auth/weixinphone"),
+  // 获取微信手机号接口
+  setPassword: "".concat(API_BASE_URL, "/auth/setpassword"),
+  // 设置密码（微信登录绑定手机号后）
+  // 重置密码 1：发送验证码 POST /api/v1/auth/resetpassword/sendcode，JSON { phone }
+  resetPasswordSendCode: "".concat(API_BASE_URL, "/auth/resetpassword/sendcode"),
+  // 重置密码 2：校验验证码并设置新密码 POST /api/v1/auth/resetpassword/reset，JSON { phone, code, password }
+  resetPassword: "".concat(API_BASE_URL, "/auth/resetpassword/reset")
+};
+var userApi = {
+  profile: "".concat(API_BASE_URL, "/user/profile"),
+  // GET 获取用户信息 / POST 修改用户信息
+  updateProfile: "".concat(API_BASE_URL, "/user/profile"),
+  // POST 修改用户信息（显式别名）
+  upload: "".concat(API_BASE_URL, "/user/upload") // POST 上传图片（multipart/form-data）
+};
+var couponApi = {
+  available: "".concat(API_BASE_URL, "/coupons/available"),
+  // GET 可领取优惠券列表
+  mine: "".concat(API_BASE_URL, "/coupons/mine"),
+  // GET 我的优惠券列表
+  claim: "".concat(API_BASE_URL, "/coupons/:id/claim") // POST 领取优惠券
+};
+
+// ==================== 优惠券数据规范化 ====================
+
+/**
+ * 安全的数值转换：处理后端可能返回的字符串、null、带单位等情况
+ */
+function toNumber(val) {
+  if (val === null || val === undefined || val === '') return 0;
+  if (typeof val === 'number') return val;
+  if (typeof val === 'string') {
+    // 移除可能的货币符号、逗号、空格等
+    var cleaned = val.replace(/[^\d.\-]/g, '');
+    var num = parseFloat(cleaned);
+    return isNaN(num) ? 0 : num;
+  }
+  return 0;
+}
+
+/**
+ * 规范化优惠券数据：兼容 snake_case / PascalCase / camelCase 字段名
+ * 兼容字段：
+ *  - id: id / ID / couponId / coupon_id / CouponId
+ *  - name: name / Name / couponName / coupon_name / CouponName / title / Title
+ *  - type: type / Type / couponType / coupon_type / CouponType (cash|discount|满减|折扣)
+ *  - value: value / Value / amount / Amount / denomination / faceValue / face_value
+ *  - minAmount: minAmount / min_amount / MinAmount / minConsume / min_consume / threshold
+ *  - scope: scope / Scope / useScope / use_scope / applicableScope
+ *  - scopeText: scopeText / scope_text / ScopeText / applicableText / description / desc
+ *  - categoryId: categoryId / category_id / CategoryId
+ *  - productId: productId / product_id / ProductId
+ *  - startTime: startTime / start_time / StartTime / beginTime / begin_time / validFrom
+ *  - endTime: endTime / end_time / EndTime / expireTime / expire_time / validUntil
+ *  - totalCount: totalCount / total_count / TotalCount / total / Total / totalNum
+ *  - remainCount: remainCount / remain_count / RemainCount / remaining / left / leftCount
+ *  - status: status / Status / state / State / couponStatus (available|used|expired|unclaimed)
+ */
+function normalizeCoupon(raw) {
+  var _ref, _ref2, _ref3, _ref4, _data$type, _ref5, _ref6, _ref7, _ref8, _data$status, _ref9, _ref0, _ref1, _ref10, _ref11, _ref12, _ref13, _ref14, _ref15, _ref16, _ref17, _ref18, _ref19, _ref20, _ref21, _ref22, _ref23, _ref24, _ref25, _ref26, _ref27, _ref28, _ref29, _ref30, _ref31, _ref32, _ref33, _ref34, _ref35, _ref36, _ref37, _ref38, _ref39, _data$value, _ref40, _ref41, _ref42, _ref43, _ref44, _ref45, _ref46, _ref47, _ref48, _ref49, _ref50, _ref51, _ref52, _ref53, _ref54, _ref55, _ref56, _ref57, _ref58, _ref59, _ref60, _data$minAmount, _ref61, _ref62, _ref63, _ref64, _ref65, _ref66, _ref67, _ref68, _ref69, _ref70, _ref71, _ref72, _ref73, _ref74, _ref75, _ref76, _ref77, _ref78, _data$name, _ref79, _ref80, _ref81, _ref82, _ref83, _ref84, _ref85, _ref86, _ref87, _ref88, _ref89, _ref90, _ref91, _ref92, _ref93, _ref94, _ref95, _ref96, _ref97, _ref98, _ref99, _ref100, _data$scopeText, _ref101, _ref102, _ref103, _ref104, _ref105, _ref106, _ref107, _ref108, _ref109, _ref110, _ref111, _ref112, _data$startTime, _ref113, _ref114, _ref115, _ref116, _ref117, _ref118, _ref119, _ref120, _ref121, _ref122, _ref123, _ref124, _data$endTime, _ref125, _ref126, _ref127, _ref128, _ref129, _ref130, _ref131, _data$scope, _ref132, _ref133, _ref134, _ref135, _ref136, _ref137, _ref138, _ref139, _ref140, _ref141, _data$totalCount, _ref142, _ref143, _ref144, _ref145, _ref146, _ref147, _ref148, _ref149, _ref150, _data$remainCount, _ref151, _ref152, _ref153, _ref154, _ref155, _data$id, _ref156, _ref157, _ref158, _data$categoryId, _ref159, _ref160, _ref161, _data$productId;
+  if (!raw || (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_typeof_js__WEBPACK_IMPORTED_MODULE_1__["default"])(raw) !== 'object') return {};
+
+  // 如果数据被嵌套在 coupon/data/info/item 等字段中，先展开
+  var data = raw;
+  var nestedKeys = ['coupon', 'couponInfo', 'coupon_info', 'data', 'info', 'item', 'detail'];
+  for (var _i = 0, _nestedKeys = nestedKeys; _i < _nestedKeys.length; _i++) {
+    var k = _nestedKeys[_i];
+    if (raw[k] && (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_typeof_js__WEBPACK_IMPORTED_MODULE_1__["default"])(raw[k]) === 'object' && !Array.isArray(raw[k])) {
+      // coupon 类嵌套对象即使只有1个字段也合并（后端常将门槛字段嵌套在 coupon 内）
+      // 其他通用嵌套键要求至少2个字段以避免误合并
+      var isCouponKey = k === 'coupon' || k === 'couponInfo' || k === 'coupon_info';
+      var minKeys = isCouponKey ? 1 : 2;
+      if (Object.keys(raw[k]).length >= minKeys) {
+        data = (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_2__["default"])((0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_2__["default"])({}, raw), raw[k]);
+        break;
+      }
+    }
+  }
+
+  // 类型字段标准化：兼容中文与英文
+  var rawType = (_ref = (_ref2 = (_ref3 = (_ref4 = (_data$type = data.type) !== null && _data$type !== void 0 ? _data$type : data.Type) !== null && _ref4 !== void 0 ? _ref4 : data.couponType) !== null && _ref3 !== void 0 ? _ref3 : data.coupon_type) !== null && _ref2 !== void 0 ? _ref2 : data.CouponType) !== null && _ref !== void 0 ? _ref : 'cash';
+  var normalizedType = 'cash';
+  if (typeof rawType === 'string') {
+    if (rawType === 'discount' || rawType === '折扣' || rawType === 'discountRate') {
+      normalizedType = 'discount';
+    } else {
+      normalizedType = 'cash';
+    }
+  }
+
+  // 状态字段标准化：兼容中英文与多种命名
+  var rawStatus = (_ref5 = (_ref6 = (_ref7 = (_ref8 = (_data$status = data.status) !== null && _data$status !== void 0 ? _data$status : data.Status) !== null && _ref8 !== void 0 ? _ref8 : data.state) !== null && _ref7 !== void 0 ? _ref7 : data.State) !== null && _ref6 !== void 0 ? _ref6 : data.couponStatus) !== null && _ref5 !== void 0 ? _ref5 : 'available';
+  var normalizedStatus = 'available';
+  if (typeof rawStatus === 'string') {
+    var s = rawStatus.toLowerCase();
+    if (s === 'expired' || s === '已过期' || s === '2') {
+      normalizedStatus = 'expired';
+    } else if (s === 'used' || s === '已使用' || s === '1') {
+      normalizedStatus = 'used';
+    } else if (s === 'unclaimed' || s === '未领取' || s === 'not_claimed' || s === '3') {
+      normalizedStatus = 'unclaimed';
+    } else {
+      normalizedStatus = 'available';
+    }
+  } else if (typeof rawStatus === 'number') {
+    // 后端可能返回数字状态：0=可用 1=已使用 2=已过期 3=未领取
+    normalizedStatus = rawStatus === 1 ? 'used' : rawStatus === 2 ? 'expired' : rawStatus === 3 ? 'unclaimed' : 'available';
+  }
+
+  // 优惠券面额：兼容各种后端命名
+  var couponValue = (_ref9 = (_ref0 = (_ref1 = (_ref10 = (_ref11 = (_ref12 = (_ref13 = (_ref14 = (_ref15 = (_ref16 = (_ref17 = (_ref18 = (_ref19 = (_ref20 = (_ref21 = (_ref22 = (_ref23 = (_ref24 = (_ref25 = (_ref26 = (_ref27 = (_ref28 = (_ref29 = (_ref30 = (_ref31 = (_ref32 = (_ref33 = (_ref34 = (_ref35 = (_ref36 = (_ref37 = (_ref38 = (_ref39 = (_data$value = data.value) !== null && _data$value !== void 0 ? _data$value : data.Value) !== null && _ref39 !== void 0 ? _ref39 : data.couponValue) !== null && _ref38 !== void 0 ? _ref38 : data.coupon_value) !== null && _ref37 !== void 0 ? _ref37 : data.amount) !== null && _ref36 !== void 0 ? _ref36 : data.Amount) !== null && _ref35 !== void 0 ? _ref35 : data.reduceAmount) !== null && _ref34 !== void 0 ? _ref34 : data.reduce_amount) !== null && _ref33 !== void 0 ? _ref33 : data.discountAmount) !== null && _ref32 !== void 0 ? _ref32 : data.discount_amount) !== null && _ref31 !== void 0 ? _ref31 : data.discountValue) !== null && _ref30 !== void 0 ? _ref30 : data.discount_value) !== null && _ref29 !== void 0 ? _ref29 : data.parValue) !== null && _ref28 !== void 0 ? _ref28 : data.par_value) !== null && _ref27 !== void 0 ? _ref27 : data.offAmount) !== null && _ref26 !== void 0 ? _ref26 : data.off_amount) !== null && _ref25 !== void 0 ? _ref25 : data.minusAmount) !== null && _ref24 !== void 0 ? _ref24 : data.minus_amount) !== null && _ref23 !== void 0 ? _ref23 : data.denomination) !== null && _ref22 !== void 0 ? _ref22 : data.faceValue) !== null && _ref21 !== void 0 ? _ref21 : data.face_value) !== null && _ref20 !== void 0 ? _ref20 : data.price) !== null && _ref19 !== void 0 ? _ref19 : data.Price) !== null && _ref18 !== void 0 ? _ref18 : data.reducedAmount) !== null && _ref17 !== void 0 ? _ref17 : data.reduced_amount) !== null && _ref16 !== void 0 ? _ref16 : data.cashAmount) !== null && _ref15 !== void 0 ? _ref15 : data.cash_amount) !== null && _ref14 !== void 0 ? _ref14 : data.couponAmount) !== null && _ref13 !== void 0 ? _ref13 : data.coupon_amount) !== null && _ref12 !== void 0 ? _ref12 : data.promotionAmount) !== null && _ref11 !== void 0 ? _ref11 : data.promotion_amount) !== null && _ref10 !== void 0 ? _ref10 : data.discountRate) !== null && _ref1 !== void 0 ? _ref1 : data.discount_rate) !== null && _ref0 !== void 0 ? _ref0 : data.discount) !== null && _ref9 !== void 0 ? _ref9 : 0;
+
+  // 使用门槛金额
+  var couponMinAmount = (_ref40 = (_ref41 = (_ref42 = (_ref43 = (_ref44 = (_ref45 = (_ref46 = (_ref47 = (_ref48 = (_ref49 = (_ref50 = (_ref51 = (_ref52 = (_ref53 = (_ref54 = (_ref55 = (_ref56 = (_ref57 = (_ref58 = (_ref59 = (_ref60 = (_data$minAmount = data.minAmount) !== null && _data$minAmount !== void 0 ? _data$minAmount : data.min_amount) !== null && _ref60 !== void 0 ? _ref60 : data.MinAmount) !== null && _ref59 !== void 0 ? _ref59 : data.conditionAmount) !== null && _ref58 !== void 0 ? _ref58 : data.condition_amount) !== null && _ref57 !== void 0 ? _ref57 : data.minOrderAmount) !== null && _ref56 !== void 0 ? _ref56 : data.min_order_amount) !== null && _ref55 !== void 0 ? _ref55 : data.thresholdAmount) !== null && _ref54 !== void 0 ? _ref54 : data.threshold_amount) !== null && _ref53 !== void 0 ? _ref53 : data.consumeAmount) !== null && _ref52 !== void 0 ? _ref52 : data.consume_amount) !== null && _ref51 !== void 0 ? _ref51 : data.minConsume) !== null && _ref50 !== void 0 ? _ref50 : data.min_consume) !== null && _ref49 !== void 0 ? _ref49 : data.threshold) !== null && _ref48 !== void 0 ? _ref48 : data.fullAmount) !== null && _ref47 !== void 0 ? _ref47 : data.full_amount) !== null && _ref46 !== void 0 ? _ref46 : data.needAmount) !== null && _ref45 !== void 0 ? _ref45 : data.need_amount) !== null && _ref44 !== void 0 ? _ref44 : data.consumeThreshold) !== null && _ref43 !== void 0 ? _ref43 : data.consume_threshold) !== null && _ref42 !== void 0 ? _ref42 : data.orderMinAmount) !== null && _ref41 !== void 0 ? _ref41 : data.order_min_amount) !== null && _ref40 !== void 0 ? _ref40 : 0;
+
+  // 优惠券名称
+  var couponName = (_ref61 = (_ref62 = (_ref63 = (_ref64 = (_ref65 = (_ref66 = (_ref67 = (_ref68 = (_ref69 = (_ref70 = (_ref71 = (_ref72 = (_ref73 = (_ref74 = (_ref75 = (_ref76 = (_ref77 = (_ref78 = (_data$name = data.name) !== null && _data$name !== void 0 ? _data$name : data.Name) !== null && _ref78 !== void 0 ? _ref78 : data.couponName) !== null && _ref77 !== void 0 ? _ref77 : data.coupon_name) !== null && _ref76 !== void 0 ? _ref76 : data.CouponName) !== null && _ref75 !== void 0 ? _ref75 : data.couponTitle) !== null && _ref74 !== void 0 ? _ref74 : data.coupon_title) !== null && _ref73 !== void 0 ? _ref73 : data.title) !== null && _ref72 !== void 0 ? _ref72 : data.Title) !== null && _ref71 !== void 0 ? _ref71 : data.subject) !== null && _ref70 !== void 0 ? _ref70 : data.Subject) !== null && _ref69 !== void 0 ? _ref69 : data.couponTitle) !== null && _ref68 !== void 0 ? _ref68 : data.coupon_title) !== null && _ref67 !== void 0 ? _ref67 : data.promotionName) !== null && _ref66 !== void 0 ? _ref66 : data.promotion_name) !== null && _ref65 !== void 0 ? _ref65 : data.activityName) !== null && _ref64 !== void 0 ? _ref64 : data.activity_name) !== null && _ref63 !== void 0 ? _ref63 : data.couponDesc) !== null && _ref62 !== void 0 ? _ref62 : data.coupon_desc) !== null && _ref61 !== void 0 ? _ref61 : '';
+
+  // 适用范围文字描述
+  var couponScopeText = (_ref79 = (_ref80 = (_ref81 = (_ref82 = (_ref83 = (_ref84 = (_ref85 = (_ref86 = (_ref87 = (_ref88 = (_ref89 = (_ref90 = (_ref91 = (_ref92 = (_ref93 = (_ref94 = (_ref95 = (_ref96 = (_ref97 = (_ref98 = (_ref99 = (_ref100 = (_data$scopeText = data.scopeText) !== null && _data$scopeText !== void 0 ? _data$scopeText : data.scope_text) !== null && _ref100 !== void 0 ? _ref100 : data.ScopeText) !== null && _ref99 !== void 0 ? _ref99 : data.applicableText) !== null && _ref98 !== void 0 ? _ref98 : data.applicable_text) !== null && _ref97 !== void 0 ? _ref97 : data.description) !== null && _ref96 !== void 0 ? _ref96 : data.desc) !== null && _ref95 !== void 0 ? _ref95 : data.Description) !== null && _ref94 !== void 0 ? _ref94 : data.Desc) !== null && _ref93 !== void 0 ? _ref93 : data.useDesc) !== null && _ref92 !== void 0 ? _ref92 : data.use_desc) !== null && _ref91 !== void 0 ? _ref91 : data.conditionDesc) !== null && _ref90 !== void 0 ? _ref90 : data.condition_desc) !== null && _ref89 !== void 0 ? _ref89 : data.scopeDesc) !== null && _ref88 !== void 0 ? _ref88 : data.scope_desc) !== null && _ref87 !== void 0 ? _ref87 : data.useRange) !== null && _ref86 !== void 0 ? _ref86 : data.use_range) !== null && _ref85 !== void 0 ? _ref85 : data.applicableRange) !== null && _ref84 !== void 0 ? _ref84 : data.applicable_range) !== null && _ref83 !== void 0 ? _ref83 : data.rangeDesc) !== null && _ref82 !== void 0 ? _ref82 : data.range_desc) !== null && _ref81 !== void 0 ? _ref81 : data.useNotice) !== null && _ref80 !== void 0 ? _ref80 : data.use_notice) !== null && _ref79 !== void 0 ? _ref79 : '全场通用';
+
+  // 开始时间
+  var couponStartTime = (_ref101 = (_ref102 = (_ref103 = (_ref104 = (_ref105 = (_ref106 = (_ref107 = (_ref108 = (_ref109 = (_ref110 = (_ref111 = (_ref112 = (_data$startTime = data.startTime) !== null && _data$startTime !== void 0 ? _data$startTime : data.start_time) !== null && _ref112 !== void 0 ? _ref112 : data.StartTime) !== null && _ref111 !== void 0 ? _ref111 : data.beginTime) !== null && _ref110 !== void 0 ? _ref110 : data.begin_time) !== null && _ref109 !== void 0 ? _ref109 : data.validFrom) !== null && _ref108 !== void 0 ? _ref108 : data.valid_from) !== null && _ref107 !== void 0 ? _ref107 : data.startDate) !== null && _ref106 !== void 0 ? _ref106 : data.start_date) !== null && _ref105 !== void 0 ? _ref105 : data.validStart) !== null && _ref104 !== void 0 ? _ref104 : data.valid_start) !== null && _ref103 !== void 0 ? _ref103 : data.beginDate) !== null && _ref102 !== void 0 ? _ref102 : data.begin_date) !== null && _ref101 !== void 0 ? _ref101 : '';
+
+  // 结束时间
+  var couponEndTime = (_ref113 = (_ref114 = (_ref115 = (_ref116 = (_ref117 = (_ref118 = (_ref119 = (_ref120 = (_ref121 = (_ref122 = (_ref123 = (_ref124 = (_data$endTime = data.endTime) !== null && _data$endTime !== void 0 ? _data$endTime : data.end_time) !== null && _ref124 !== void 0 ? _ref124 : data.EndTime) !== null && _ref123 !== void 0 ? _ref123 : data.expireTime) !== null && _ref122 !== void 0 ? _ref122 : data.expire_time) !== null && _ref121 !== void 0 ? _ref121 : data.validUntil) !== null && _ref120 !== void 0 ? _ref120 : data.valid_until) !== null && _ref119 !== void 0 ? _ref119 : data.endDate) !== null && _ref118 !== void 0 ? _ref118 : data.end_date) !== null && _ref117 !== void 0 ? _ref117 : data.validEnd) !== null && _ref116 !== void 0 ? _ref116 : data.valid_end) !== null && _ref115 !== void 0 ? _ref115 : data.finishDate) !== null && _ref114 !== void 0 ? _ref114 : data.finish_date) !== null && _ref113 !== void 0 ? _ref113 : '';
+
+  // 适用范围类型
+  var couponScope = (_ref125 = (_ref126 = (_ref127 = (_ref128 = (_ref129 = (_ref130 = (_ref131 = (_data$scope = data.scope) !== null && _data$scope !== void 0 ? _data$scope : data.Scope) !== null && _ref131 !== void 0 ? _ref131 : data.useScope) !== null && _ref130 !== void 0 ? _ref130 : data.use_scope) !== null && _ref129 !== void 0 ? _ref129 : data.applicableScope) !== null && _ref128 !== void 0 ? _ref128 : data.applicable_scope) !== null && _ref127 !== void 0 ? _ref127 : data.range) !== null && _ref126 !== void 0 ? _ref126 : data.Range) !== null && _ref125 !== void 0 ? _ref125 : 'all';
+
+  // 库存/总数
+  var couponTotalCount = (_ref132 = (_ref133 = (_ref134 = (_ref135 = (_ref136 = (_ref137 = (_ref138 = (_ref139 = (_ref140 = (_ref141 = (_data$totalCount = data.totalCount) !== null && _data$totalCount !== void 0 ? _data$totalCount : data.total_count) !== null && _ref141 !== void 0 ? _ref141 : data.TotalCount) !== null && _ref140 !== void 0 ? _ref140 : data.total) !== null && _ref139 !== void 0 ? _ref139 : data.Total) !== null && _ref138 !== void 0 ? _ref138 : data.totalNum) !== null && _ref137 !== void 0 ? _ref137 : data.total_num) !== null && _ref136 !== void 0 ? _ref136 : data.count) !== null && _ref135 !== void 0 ? _ref135 : data.Count) !== null && _ref134 !== void 0 ? _ref134 : data.stock) !== null && _ref133 !== void 0 ? _ref133 : data.Stock) !== null && _ref132 !== void 0 ? _ref132 : 0;
+
+  // 剩余数量
+  var couponRemainCount = (_ref142 = (_ref143 = (_ref144 = (_ref145 = (_ref146 = (_ref147 = (_ref148 = (_ref149 = (_ref150 = (_data$remainCount = data.remainCount) !== null && _data$remainCount !== void 0 ? _data$remainCount : data.remain_count) !== null && _ref150 !== void 0 ? _ref150 : data.RemainCount) !== null && _ref149 !== void 0 ? _ref149 : data.remaining) !== null && _ref148 !== void 0 ? _ref148 : data.Remaining) !== null && _ref147 !== void 0 ? _ref147 : data.left) !== null && _ref146 !== void 0 ? _ref146 : data.leftCount) !== null && _ref145 !== void 0 ? _ref145 : data.left_count) !== null && _ref144 !== void 0 ? _ref144 : data.stockLeft) !== null && _ref143 !== void 0 ? _ref143 : data.stock_left) !== null && _ref142 !== void 0 ? _ref142 : 0;
+  var result = {
+    id: (_ref151 = (_ref152 = (_ref153 = (_ref154 = (_ref155 = (_data$id = data.id) !== null && _data$id !== void 0 ? _data$id : data.Id) !== null && _ref155 !== void 0 ? _ref155 : data.couponId) !== null && _ref154 !== void 0 ? _ref154 : data.coupon_id) !== null && _ref153 !== void 0 ? _ref153 : data.CouponId) !== null && _ref152 !== void 0 ? _ref152 : data.ID) !== null && _ref151 !== void 0 ? _ref151 : '',
+    name: couponName,
+    type: normalizedType,
+    value: toNumber(couponValue),
+    minAmount: toNumber(couponMinAmount),
+    scope: couponScope,
+    scopeText: couponScopeText,
+    categoryId: (_ref156 = (_ref157 = (_ref158 = (_data$categoryId = data.categoryId) !== null && _data$categoryId !== void 0 ? _data$categoryId : data.category_id) !== null && _ref158 !== void 0 ? _ref158 : data.CategoryId) !== null && _ref157 !== void 0 ? _ref157 : data.categoryCode) !== null && _ref156 !== void 0 ? _ref156 : null,
+    productId: (_ref159 = (_ref160 = (_ref161 = (_data$productId = data.productId) !== null && _data$productId !== void 0 ? _data$productId : data.product_id) !== null && _ref161 !== void 0 ? _ref161 : data.ProductId) !== null && _ref160 !== void 0 ? _ref160 : data.productCode) !== null && _ref159 !== void 0 ? _ref159 : null,
+    startTime: couponStartTime,
+    endTime: couponEndTime,
+    totalCount: toNumber(couponTotalCount),
+    remainCount: toNumber(couponRemainCount),
+    status: normalizedStatus,
+    _raw: data
+  };
+
+  // 调试日志：方便排查后端字段名
+  if (true) {
+    var missingFields = [];
+    if (!result.value) missingFields.push("value(rawValue=".concat(couponValue, ")"));
+    // 0 是合法值（无门槛券），用 toNumber 统一比较以兼容字符串 "0.00"
+    if (!result.minAmount && toNumber(couponMinAmount) !== 0) missingFields.push("minAmount(raw=".concat(couponMinAmount, ")"));
+    if (!result.name) missingFields.push('name');
+    if (missingFields.length > 0) {
+      console.warn('[normalizeCoupon] 字段可能未正确匹配:', missingFields.join(', '), '原始数据:', data);
+    }
+  }
+  return result;
+}
+
+// ==================== 优惠券 API 方法 ====================
+
+/**
+ * 从后端响应中提取优惠券列表，兼容多种数据结构
+ */
+function extractCouponList(res) {
+  var _res$data, _d$data, _d$data2, _d$data3, _d$list, _d$items;
+  if (!res) return [];
+  var d = (_res$data = res.data) !== null && _res$data !== void 0 ? _res$data : res;
+
+  // 可能的列表路径
+  var candidates = [d,
+  // res.data 直接是数组
+  d.list,
+  // res.data.list
+  d.items,
+  // res.data.items
+  d.coupons,
+  // res.data.coupons
+  d.data, // res.data.data
+  (_d$data = d.data) === null || _d$data === void 0 ? void 0 : _d$data.list, // res.data.data.list
+  (_d$data2 = d.data) === null || _d$data2 === void 0 ? void 0 : _d$data2.items, // res.data.data.items
+  (_d$data3 = d.data) === null || _d$data3 === void 0 ? void 0 : _d$data3.coupons,
+  // res.data.data.coupons
+  d.result,
+  // res.data.result
+  d.records,
+  // res.data.records
+  d.rows, // res.data.rows
+  (_d$list = d.list) === null || _d$list === void 0 ? void 0 : _d$list.data, // res.data.list.data (分页嵌套)
+  (_d$items = d.items) === null || _d$items === void 0 ? void 0 : _d$items.data // res.data.items.data
+  ];
+  for (var _i2 = 0, _candidates = candidates; _i2 < _candidates.length; _i2++) {
+    var c = _candidates[_i2];
+    if (Array.isArray(c) && c.length > 0) {
+      return c;
+    }
+  }
+
+  // 兜底：遍历 d 的所有值，找到第一个数组
+  if (d && (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_typeof_js__WEBPACK_IMPORTED_MODULE_1__["default"])(d) === 'object') {
+    for (var _i3 = 0, _Object$keys = Object.keys(d); _i3 < _Object$keys.length; _i3++) {
+      var key = _Object$keys[_i3];
+      if (Array.isArray(d[key]) && d[key].length > 0) {
+        return d[key];
+      }
+    }
+  }
+  console.warn('[coupon] 未能提取到优惠券列表，原始响应:', res);
+  return [];
+}
+
+/**
+ * 获取可领取优惠券列表
+ * GET /api/v1/coupons/available
+ */
+function fetchAvailableCoupons() {
+  return _fetchAvailableCoupons.apply(this, arguments);
+}
+
+/**
+ * 获取我的优惠券列表
+ * GET /api/v1/coupons/mine
+ * @param params.status 可选状态过滤：available|used|expired
+ */
+function _fetchAvailableCoupons() {
+  _fetchAvailableCoupons = (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_3__["default"])(/*#__PURE__*/(0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_4__["default"])().m(function _callee() {
+    var params,
+      res,
+      list,
+      _args = arguments;
+    return (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_4__["default"])().w(function (_context) {
+      while (1) switch (_context.n) {
+        case 0:
+          params = _args.length > 0 && _args[0] !== undefined ? _args[0] : {};
+          _context.n = 1;
+          return (0,_api_common__WEBPACK_IMPORTED_MODULE_0__.apiGet)(couponApi.available, params);
+        case 1:
+          res = _context.v;
+          list = extractCouponList(res);
+          return _context.a(2, (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_2__["default"])((0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_2__["default"])({}, res), {}, {
+            data: list.map(normalizeCoupon)
+          }));
+      }
+    }, _callee);
+  }));
+  return _fetchAvailableCoupons.apply(this, arguments);
+}
+function fetchMyCoupons() {
+  return _fetchMyCoupons.apply(this, arguments);
+}
+
+/**
+ * 领取优惠券
+ * POST /api/v1/coupons/{id}/claim
+ */
+function _fetchMyCoupons() {
+  _fetchMyCoupons = (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_3__["default"])(/*#__PURE__*/(0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_4__["default"])().m(function _callee2() {
+    var params,
+      res,
+      list,
+      _args2 = arguments;
+    return (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_4__["default"])().w(function (_context2) {
+      while (1) switch (_context2.n) {
+        case 0:
+          params = _args2.length > 0 && _args2[0] !== undefined ? _args2[0] : {};
+          _context2.n = 1;
+          return (0,_api_common__WEBPACK_IMPORTED_MODULE_0__.apiGet)(couponApi.mine, params);
+        case 1:
+          res = _context2.v;
+          list = extractCouponList(res);
+          return _context2.a(2, (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_2__["default"])((0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_2__["default"])({}, res), {}, {
+            data: list.map(normalizeCoupon)
+          }));
+      }
+    }, _callee2);
+  }));
+  return _fetchMyCoupons.apply(this, arguments);
+}
+function claimCoupon(_x) {
+  return _claimCoupon.apply(this, arguments);
+}
+function _claimCoupon() {
+  _claimCoupon = (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_3__["default"])(/*#__PURE__*/(0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_4__["default"])().m(function _callee3(id) {
+    var res;
+    return (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_4__["default"])().w(function (_context3) {
+      while (1) switch (_context3.n) {
+        case 0:
+          _context3.n = 1;
+          return (0,_api_common__WEBPACK_IMPORTED_MODULE_0__.apiPost)(couponApi.claim, {}, {
+            id: id
+          });
+        case 1:
+          res = _context3.v;
+          return _context3.a(2, res);
+      }
+    }, _callee3);
+  }));
+  return _claimCoupon.apply(this, arguments);
+}
+
+/***/ }),
+
+/***/ "./src/api/user/normalize.ts":
+/*!***********************************!*\
+  !*** ./src/api/user/normalize.ts ***!
+  \***********************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   normalizeUserProfile: function() { return /* binding */ normalizeUserProfile; }
+/* harmony export */ });
+/* harmony import */ var D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_typeof_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./node_modules/@babel/runtime/helpers/esm/typeof.js */ "./node_modules/@babel/runtime/helpers/esm/typeof.js");
+/* harmony import */ var D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_createForOfIteratorHelper_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./node_modules/@babel/runtime/helpers/esm/createForOfIteratorHelper.js */ "./node_modules/@babel/runtime/helpers/esm/createForOfIteratorHelper.js");
+
+
+// ============================================
+// 用户信息字段规范化
+// 兼容后端可能返回的 snake_case / PascalCase / camelCase 字段
+// ============================================
+
+/**
+ * 从原始后端响应中提取字符串值，兼容多种字段命名风格
+ */
+function pickStr(obj, keys) {
+  var _iterator = (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_createForOfIteratorHelper_js__WEBPACK_IMPORTED_MODULE_0__["default"])(keys),
+    _step;
+  try {
+    for (_iterator.s(); !(_step = _iterator.n()).done;) {
+      var k = _step.value;
+      var v = obj[k];
+      if (v !== undefined && v !== null && v !== '') return String(v);
+    }
+  } catch (err) {
+    _iterator.e(err);
+  } finally {
+    _iterator.f();
+  }
+  return '';
+}
+
+/**
+ * 规范化用户信息接口返回数据
+ * 兼容 id/ID/userId/UserId, nickname/NickName/nick_name 等字段
+ */
+function normalizeUserProfile(raw) {
+  var _raw$data;
+  if (!raw || (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_typeof_js__WEBPACK_IMPORTED_MODULE_1__["default"])(raw) !== 'object') {
+    return {
+      id: '',
+      nickname: '',
+      avatar: '',
+      phone: '',
+      accountName: '',
+      gender: '保密',
+      birthday: '请填写您的生日',
+      registerDate: '',
+      email: ''
+    };
+  }
+
+  // 后端返回可能包裹在 data 字段内
+  var data = (_raw$data = raw.data) !== null && _raw$data !== void 0 ? _raw$data : raw;
+  return {
+    id: pickStr(data, ['id', 'ID', 'userId', 'UserId', 'user_id', 'uid', 'Uid']),
+    nickname: pickStr(data, ['nickname', 'NickName', 'nick_name', 'name', 'Name', 'userName', 'UserName', 'user_name']),
+    avatar: pickStr(data, ['avatar', 'Avatar', 'avatarUrl', 'AvatarUrl', 'avatar_url', 'headImg', 'head_img', 'HeadImg']),
+    phone: pickStr(data, ['phone', 'Phone', 'mobile', 'Mobile', 'phoneNum', 'phone_num', 'PhoneNumber', 'phoneNumber']),
+    accountName: pickStr(data, ['accountName', 'AccountName', 'account_name', 'account', 'Account', 'loginName', 'login_name']),
+    gender: pickStr(data, ['gender', 'Gender', 'sex', 'Sex']) || '保密',
+    birthday: pickStr(data, ['birthday', 'Birthday', 'birth', 'Birth', 'birthDate', 'birth_date']) || '请填写您的生日',
+    registerDate: pickStr(data, ['registerDate', 'RegisterDate', 'register_date', 'created_at', 'createdAt', 'CreatedAt', 'createTime', 'create_time']),
+    email: pickStr(data, ['email', 'Email', 'eMail', 'mail', 'Mail'])
+  };
+}
+
+/***/ }),
+
+/***/ "./src/data/common/stores.ts":
+/*!***********************************!*\
+  !*** ./src/data/common/stores.ts ***!
+  \***********************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   normalizeStore: function() { return /* binding */ normalizeStore; },
+/* harmony export */   normalizeStoreList: function() { return /* binding */ normalizeStoreList; }
+/* harmony export */ });
+/* harmony import */ var D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_typeof_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./node_modules/@babel/runtime/helpers/esm/typeof.js */ "./node_modules/@babel/runtime/helpers/esm/typeof.js");
+
+// 门店数据
+
+// 兼容后端多种字段命名（snake_case / camelCase / PascalCase）
+// 将后端返回的原始门店对象统一转换为前端 Store 结构
+function normalizeStore(raw) {
+  if (!raw || (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_typeof_js__WEBPACK_IMPORTED_MODULE_0__["default"])(raw) !== 'object') {
+    return null;
+  }
+  var pickStr = function pickStr() {
+    for (var _len = arguments.length, keys = new Array(_len), _key = 0; _key < _len; _key++) {
+      keys[_key] = arguments[_key];
+    }
+    for (var _i = 0, _keys = keys; _i < _keys.length; _i++) {
+      var k = _keys[_i];
+      var v = raw[k];
+      if (v !== undefined && v !== null && v !== '') return String(v);
+    }
+    return '';
+  };
+  var pickNum = function pickNum() {
+    for (var _len2 = arguments.length, keys = new Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
+      keys[_key2] = arguments[_key2];
+    }
+    for (var _i2 = 0, _keys2 = keys; _i2 < _keys2.length; _i2++) {
+      var k = _keys2[_i2];
+      var v = raw[k];
+      if (v !== undefined && v !== null && v !== '') {
+        var n = Number(v);
+        if (!isNaN(n)) return n;
+      }
+    }
+    return 0;
+  };
+  var pickArr = function pickArr() {
+    for (var _len3 = arguments.length, keys = new Array(_len3), _key3 = 0; _key3 < _len3; _key3++) {
+      keys[_key3] = arguments[_key3];
+    }
+    for (var _i3 = 0, _keys3 = keys; _i3 < _keys3.length; _i3++) {
+      var k = _keys3[_i3];
+      var v = raw[k];
+      if (Array.isArray(v)) return v.map(function (x) {
+        return String(x);
+      });
+      if (typeof v === 'string' && v) {
+        // 兼容后端以逗号分隔的字符串
+        return v.split(/[,，|]/).map(function (s) {
+          return s.trim();
+        }).filter(Boolean);
+      }
+    }
+    return [];
+  };
+  var id = pickStr('id', 'ID', 'storeId', 'store_id', 'shopId', 'shop_id');
+  var name = pickStr('name', 'Name', 'storeName', 'store_name', 'shopName', 'shop_name', 'title');
+  var address = pickStr('address', 'Address', 'storeAddress', 'store_address', 'addr', 'location');
+  var phone = pickStr('phone', 'Phone', 'tel', 'telephone', 'mobile', 'contactPhone', 'contact_phone', 'contact');
+  var hours = pickStr('hours', 'Hours', 'businessHours', 'business_hours', 'openHours', 'open_hours', 'workTime', 'work_time', '营业时间');
+  var image = pickStr('image', 'Image', 'logo', 'avatar', 'cover', 'coverImage', 'cover_image', 'pic', 'picture', 'img');
+  var description = pickStr('description', 'desc', 'intro', 'remark', 'Description', 'Description', 'introduction');
+  var status = pickStr('status', 'Status', 'storeStatus', 'store_status', 'state');
+  var distance = pickNum('distance', 'Distance', 'dist');
+  var lat = pickNum('lat', 'latitude', 'Latitude', 'Lat');
+  var lng = pickNum('lng', 'lon', 'lng', 'longitude', 'Longitude', 'Lng', 'Lon');
+  var service = pickArr('service', 'services', 'Service', 'Services', 'serviceList', 'service_list', 'tags', 'features', 'supportServices');
+  return {
+    id: id || "store-".concat(Date.now()),
+    name: name || '未知门店',
+    address: address,
+    phone: phone,
+    hours: hours,
+    distance: distance,
+    lat: lat,
+    lng: lng,
+    service: service,
+    image: image,
+    description: description,
+    businessHours: hours,
+    status: status
+  };
+}
+
+// 批量归一化门店列表，兼容后端返回的多种包裹结构
+function normalizeStoreList(res) {
+  if (!res) return [];
+  var list = [];
+  if (Array.isArray(res)) {
+    list = res;
+  } else if (Array.isArray(res.data)) {
+    list = res.data;
+  } else if (res.data && Array.isArray(res.data.list)) {
+    list = res.data.list;
+  } else if (res.data && Array.isArray(res.data.items)) {
+    list = res.data.items;
+  } else if (res.data && Array.isArray(res.data.stores)) {
+    list = res.data.stores;
+  } else if (Array.isArray(res.list)) {
+    list = res.list;
+  } else if (Array.isArray(res.items)) {
+    list = res.items;
+  } else if (Array.isArray(res.stores)) {
+    list = res.stores;
+  }
+  return list.map(normalizeStore).filter(Boolean);
+}
+
+/***/ }),
+
+/***/ "./src/store/AppContext.tsx":
+/*!**********************************!*\
+  !*** ./src/store/AppContext.tsx ***!
+  \**********************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   AppProvider: function() { return /* binding */ AppProvider; },
+/* harmony export */   useAppContext: function() { return /* binding */ useAppContext; }
+/* harmony export */ });
+/* harmony import */ var D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_toConsumableArray_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./node_modules/@babel/runtime/helpers/esm/toConsumableArray.js */ "./node_modules/@babel/runtime/helpers/esm/toConsumableArray.js");
+/* harmony import */ var D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./node_modules/@babel/runtime/helpers/esm/objectSpread2.js */ "./node_modules/@babel/runtime/helpers/esm/objectSpread2.js");
+/* harmony import */ var D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_slicedToArray_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./node_modules/@babel/runtime/helpers/esm/slicedToArray.js */ "./node_modules/@babel/runtime/helpers/esm/slicedToArray.js");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _tarojs_taro__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @tarojs/taro */ "./node_modules/@tarojs/taro/index.js");
+/* harmony import */ var _tarojs_taro__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_tarojs_taro__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/cjs/react-jsx-runtime.production.min.js");
+
+
+
+// ============================================
+// 全局状态管理（使用React Context）
+// ============================================
+
+
+
+
+// 用户信息类型
+
+// 购物车项类型
+
+// 初始化用户信息
+var defaultUserInfo = {
+  id: '',
+  nickname: '',
+  avatar: '',
+  phone: '',
+  accountName: '',
+  gender: '保密',
+  birthday: '请填写您的生日',
+  registerDate: '',
+  email: '',
+  isLoggedIn: false
+};
+
+// 初始化购物车
+var defaultCart = [];
+
+// 创建Context
+
+var AppContext = /*#__PURE__*/(0,react__WEBPACK_IMPORTED_MODULE_0__.createContext)(undefined);
+
+// Provider组件
+var AppProvider = function AppProvider(_ref) {
+  var children = _ref.children;
+  var _useState = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(defaultUserInfo),
+    _useState2 = (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_slicedToArray_js__WEBPACK_IMPORTED_MODULE_3__["default"])(_useState, 2),
+    userInfo = _useState2[0],
+    setUserInfoState = _useState2[1];
+  var _useState3 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(defaultCart),
+    _useState4 = (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_slicedToArray_js__WEBPACK_IMPORTED_MODULE_3__["default"])(_useState3, 2),
+    cartItems = _useState4[0],
+    setCartItemsState = _useState4[1];
+  var _useState5 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(null),
+    _useState6 = (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_slicedToArray_js__WEBPACK_IMPORTED_MODULE_3__["default"])(_useState5, 2),
+    currentStore = _useState6[0],
+    setCurrentStoreState = _useState6[1];
+
+  // 从本地存储加载数据
+  (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(function () {
+    try {
+      var savedUserInfo = _tarojs_taro__WEBPACK_IMPORTED_MODULE_1___default().getStorageSync('userInfo');
+      if (savedUserInfo) {
+        setUserInfoState(savedUserInfo);
+      }
+      var savedCart = _tarojs_taro__WEBPACK_IMPORTED_MODULE_1___default().getStorageSync('cartItems');
+      if (savedCart) {
+        setCartItemsState(savedCart);
+      }
+      var savedStore = _tarojs_taro__WEBPACK_IMPORTED_MODULE_1___default().getStorageSync('currentStore');
+      if (savedStore) {
+        setCurrentStoreState(savedStore);
+      }
+    } catch (error) {
+      console.error('Failed to load data from storage:', error);
+    }
+  }, []);
+
+  // 保存用户信息到本地存储
+  var setUserInfo = (0,react__WEBPACK_IMPORTED_MODULE_0__.useCallback)(function (user) {
+    setUserInfoState(user);
+    try {
+      _tarojs_taro__WEBPACK_IMPORTED_MODULE_1___default().setStorageSync('userInfo', user);
+    } catch (error) {
+      console.error('Failed to save userInfo:', error);
+    }
+  }, []);
+
+  // 保存购物车到本地存储
+  var setCartItems = (0,react__WEBPACK_IMPORTED_MODULE_0__.useCallback)(function (items) {
+    setCartItemsState(items);
+    try {
+      _tarojs_taro__WEBPACK_IMPORTED_MODULE_1___default().setStorageSync('cartItems', items);
+    } catch (error) {
+      console.error('Failed to save cartItems:', error);
+    }
+  }, []);
+
+  // 添加到购物车
+  var addToCart = (0,react__WEBPACK_IMPORTED_MODULE_0__.useCallback)(function (item) {
+    setCartItemsState(function (prevItems) {
+      var existingItem = prevItems.find(function (cartItem) {
+        return cartItem.productId === item.productId && cartItem.skuId === item.skuId;
+      });
+      var updatedItems;
+      if (existingItem) {
+        // 如果已存在，增加数量
+        updatedItems = prevItems.map(function (cartItem) {
+          return cartItem.id === existingItem.id ? (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_4__["default"])((0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_4__["default"])({}, cartItem), {}, {
+            quantity: cartItem.quantity + item.quantity
+          }) : cartItem;
+        });
+      } else {
+        // 如果不存在，添加新项
+        var newItem = (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_4__["default"])((0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_4__["default"])({}, item), {}, {
+          id: "cart-".concat(Date.now()),
+          selected: true
+        });
+        updatedItems = [].concat((0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_toConsumableArray_js__WEBPACK_IMPORTED_MODULE_5__["default"])(prevItems), [newItem]);
+      }
+
+      // 保存到本地存储
+      try {
+        _tarojs_taro__WEBPACK_IMPORTED_MODULE_1___default().setStorageSync('cartItems', updatedItems);
+      } catch (error) {
+        console.error('Failed to save cartItems:', error);
+      }
+      return updatedItems;
+    });
+    _tarojs_taro__WEBPACK_IMPORTED_MODULE_1___default().showToast({
+      title: '已加入购物车',
+      icon: 'success'
+    });
+  }, []);
+
+  // 从购物车移除
+  var removeFromCart = (0,react__WEBPACK_IMPORTED_MODULE_0__.useCallback)(function (id) {
+    setCartItemsState(function (prevItems) {
+      var updatedItems = prevItems.filter(function (item) {
+        return item.id !== id;
+      });
+      try {
+        _tarojs_taro__WEBPACK_IMPORTED_MODULE_1___default().setStorageSync('cartItems', updatedItems);
+      } catch (error) {
+        console.error('Failed to save cartItems:', error);
+      }
+      return updatedItems;
+    });
+  }, []);
+
+  // 更新购物车数量
+  var updateCartQuantity = (0,react__WEBPACK_IMPORTED_MODULE_0__.useCallback)(function (id, quantity) {
+    if (quantity <= 0) {
+      removeFromCart(id);
+      return;
+    }
+    setCartItemsState(function (prevItems) {
+      var updatedItems = prevItems.map(function (item) {
+        return item.id === id ? (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_4__["default"])((0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_4__["default"])({}, item), {}, {
+          quantity: quantity
+        }) : item;
+      });
+      try {
+        _tarojs_taro__WEBPACK_IMPORTED_MODULE_1___default().setStorageSync('cartItems', updatedItems);
+      } catch (error) {
+        console.error('Failed to save cartItems:', error);
+      }
+      return updatedItems;
+    });
+  }, [removeFromCart]);
+
+  // 切换购物车项选中状态
+  var toggleCartItem = (0,react__WEBPACK_IMPORTED_MODULE_0__.useCallback)(function (id) {
+    setCartItemsState(function (prevItems) {
+      var updatedItems = prevItems.map(function (item) {
+        return item.id === id ? (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_4__["default"])((0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_4__["default"])({}, item), {}, {
+          selected: !item.selected
+        }) : item;
+      });
+      try {
+        _tarojs_taro__WEBPACK_IMPORTED_MODULE_1___default().setStorageSync('cartItems', updatedItems);
+      } catch (error) {
+        console.error('Failed to save cartItems:', error);
+      }
+      return updatedItems;
+    });
+  }, []);
+
+  // 全选/取消全选
+  var selectAllCartItems = (0,react__WEBPACK_IMPORTED_MODULE_0__.useCallback)(function (selected) {
+    setCartItemsState(function (prevItems) {
+      var updatedItems = prevItems.map(function (item) {
+        return (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_4__["default"])((0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_4__["default"])({}, item), {}, {
+          selected: selected
+        });
+      });
+      try {
+        _tarojs_taro__WEBPACK_IMPORTED_MODULE_1___default().setStorageSync('cartItems', updatedItems);
+      } catch (error) {
+        console.error('Failed to save cartItems:', error);
+      }
+      return updatedItems;
+    });
+  }, []);
+
+  // 清空购物车
+  var clearCart = (0,react__WEBPACK_IMPORTED_MODULE_0__.useCallback)(function () {
+    setCartItemsState([]);
+    try {
+      _tarojs_taro__WEBPACK_IMPORTED_MODULE_1___default().setStorageSync('cartItems', []);
+    } catch (error) {
+      console.error('Failed to clear cartItems:', error);
+    }
+  }, []);
+
+  // 使用 useMemo 缓存购物车总计计算结果
+  var cartTotal = (0,react__WEBPACK_IMPORTED_MODULE_0__.useMemo)(function () {
+    var selectedItems = cartItems.filter(function (item) {
+      return item.selected;
+    });
+    var totalAmount = selectedItems.reduce(function (sum, item) {
+      return sum + item.price * item.quantity;
+    }, 0);
+    var totalCount = cartItems.reduce(function (sum, item) {
+      return sum + item.quantity;
+    }, 0);
+    var selectedCount = selectedItems.reduce(function (sum, item) {
+      return sum + item.quantity;
+    }, 0);
+    return {
+      totalAmount: totalAmount,
+      totalCount: totalCount,
+      selectedCount: selectedCount
+    };
+  }, [cartItems]);
+
+  // 使用 useCallback 缓存 getCartTotal 函数
+  var getCartTotal = (0,react__WEBPACK_IMPORTED_MODULE_0__.useCallback)(function () {
+    return cartTotal;
+  }, [cartTotal]);
+
+  // 设置当前门店
+  var setCurrentStore = (0,react__WEBPACK_IMPORTED_MODULE_0__.useCallback)(function (store) {
+    setCurrentStoreState(store);
+    try {
+      _tarojs_taro__WEBPACK_IMPORTED_MODULE_1___default().setStorageSync('currentStore', store);
+    } catch (error) {
+      console.error('Failed to save currentStore:', error);
+    }
+  }, []);
+
+  // 使用 useMemo 缓存 context value，避免每次渲染都创建新对象
+  var contextValue = (0,react__WEBPACK_IMPORTED_MODULE_0__.useMemo)(function () {
+    return {
+      userInfo: userInfo,
+      setUserInfo: setUserInfo,
+      cartItems: cartItems,
+      setCartItems: setCartItems,
+      addToCart: addToCart,
+      removeFromCart: removeFromCart,
+      updateCartQuantity: updateCartQuantity,
+      toggleCartItem: toggleCartItem,
+      selectAllCartItems: selectAllCartItems,
+      clearCart: clearCart,
+      getCartTotal: getCartTotal,
+      currentStore: currentStore,
+      setCurrentStore: setCurrentStore
+    };
+  }, [userInfo, setUserInfo, cartItems, setCartItems, addToCart, removeFromCart, updateCartQuantity, toggleCartItem, selectAllCartItems, clearCart, getCartTotal, currentStore, setCurrentStore]);
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(AppContext.Provider, {
+    value: contextValue,
+    children: children
+  });
+};
+
+// 使用Context的Hook
+var useAppContext = function useAppContext() {
+  var context = (0,react__WEBPACK_IMPORTED_MODULE_0__.useContext)(AppContext);
+  if (!context) {
+    throw new Error('useAppContext must be used within AppProvider');
+  }
+  return context;
+};
+/* unused harmony default export */ var __WEBPACK_DEFAULT_EXPORT__ = (AppContext);
+
+/***/ }),
+
+/***/ "./src/store/useChatStore.ts":
+/*!***********************************!*\
+  !*** ./src/store/useChatStore.ts ***!
+  \***********************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+/* unused harmony export useChatStore */
+/* harmony import */ var D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_defineProperty_js__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./node_modules/@babel/runtime/helpers/esm/defineProperty.js */ "./node_modules/@babel/runtime/helpers/esm/defineProperty.js");
+/* harmony import */ var D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_toConsumableArray_js__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./node_modules/@babel/runtime/helpers/esm/toConsumableArray.js */ "./node_modules/@babel/runtime/helpers/esm/toConsumableArray.js");
+/* harmony import */ var D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./node_modules/@babel/runtime/helpers/esm/regenerator.js */ "./node_modules/@babel/runtime/helpers/esm/regenerator.js");
+/* harmony import */ var D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./node_modules/@babel/runtime/helpers/esm/asyncToGenerator.js */ "./node_modules/@babel/runtime/helpers/esm/asyncToGenerator.js");
+/* harmony import */ var D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_typeof_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./node_modules/@babel/runtime/helpers/esm/typeof.js */ "./node_modules/@babel/runtime/helpers/esm/typeof.js");
+/* harmony import */ var D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./node_modules/@babel/runtime/helpers/esm/objectSpread2.js */ "./node_modules/@babel/runtime/helpers/esm/objectSpread2.js");
+/* harmony import */ var zustand__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! zustand */ "./node_modules/zustand/esm/index.mjs");
+/* harmony import */ var _tarojs_taro__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @tarojs/taro */ "./node_modules/@tarojs/taro/index.js");
+/* harmony import */ var _tarojs_taro__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_tarojs_taro__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _api_common__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @/api/common */ "./src/api/common/index.ts");
+/* harmony import */ var _api_message__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @/api/message */ "./src/api/message/index.ts");
+/* harmony import */ var _utils_chatWS__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @/utils/chatWS */ "./src/utils/chatWS.ts");
+
+
+
+
+
+
+// ============================================
+// 客服会话 Store（Zustand）
+// 统一管理：会话列表、当前会话、消息历史、未读数
+// ============================================
+
+
+
+
+
+
+
+// ---------- 类型定义 ----------
+
+// ---------- 工具函数 ----------
+function formatTime(ts) {
+  if (!ts) return '';
+  var d = typeof ts === 'number' ? new Date(ts) : new Date(ts);
+  if (isNaN(d.getTime())) return String(ts);
+  var pad = function pad(n) {
+    return String(n).padStart(2, '0');
+  };
+  return "".concat(pad(d.getHours()), ":").concat(pad(d.getMinutes()));
+}
+function normalizeConversation(raw) {
+  var _ref, _ref2, _ref3, _ref4, _ref5, _raw$id, _ref6, _ref7, _ref8, _raw$title, _ref9, _ref0, _raw$unreadCount, _ref1, _ref10, _ref11, _ref12, _raw$lastMessage, _ref13, _ref14, _ref15, _ref16, _ref17, _ref18, _raw$lastTime;
+  return (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_4__["default"])((0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_4__["default"])({}, raw || {}), {}, {
+    id: String((_ref = (_ref2 = (_ref3 = (_ref4 = (_ref5 = (_raw$id = raw.id) !== null && _raw$id !== void 0 ? _raw$id : raw.ID) !== null && _ref5 !== void 0 ? _ref5 : raw.Id) !== null && _ref4 !== void 0 ? _ref4 : raw.conversationId) !== null && _ref3 !== void 0 ? _ref3 : raw.ConversationId) !== null && _ref2 !== void 0 ? _ref2 : raw.conv_id) !== null && _ref !== void 0 ? _ref : ''),
+    title: (_ref6 = (_ref7 = (_ref8 = (_raw$title = raw.title) !== null && _raw$title !== void 0 ? _raw$title : raw.Title) !== null && _ref8 !== void 0 ? _ref8 : raw.name) !== null && _ref7 !== void 0 ? _ref7 : raw.Name) !== null && _ref6 !== void 0 ? _ref6 : '乐享购官方客服',
+    unreadCount: Number((_ref9 = (_ref0 = (_raw$unreadCount = raw.unreadCount) !== null && _raw$unreadCount !== void 0 ? _raw$unreadCount : raw.UnreadCount) !== null && _ref0 !== void 0 ? _ref0 : raw.unread_count) !== null && _ref9 !== void 0 ? _ref9 : 0),
+    status: raw.status === 'closed' || raw.Status === 0 || raw.Status === 'closed' ? 'closed' : 'ongoing',
+    lastMessage: (_ref1 = (_ref10 = (_ref11 = (_ref12 = (_raw$lastMessage = raw.lastMessage) !== null && _raw$lastMessage !== void 0 ? _raw$lastMessage : raw.LastMessage) !== null && _ref12 !== void 0 ? _ref12 : raw.content) !== null && _ref11 !== void 0 ? _ref11 : raw.Content) !== null && _ref10 !== void 0 ? _ref10 : raw.last_message) !== null && _ref1 !== void 0 ? _ref1 : '',
+    lastTime: (_ref13 = (_ref14 = (_ref15 = (_ref16 = (_ref17 = (_ref18 = (_raw$lastTime = raw.lastTime) !== null && _raw$lastTime !== void 0 ? _raw$lastTime : raw.LastTime) !== null && _ref18 !== void 0 ? _ref18 : raw.time) !== null && _ref17 !== void 0 ? _ref17 : raw.UpdatedAt) !== null && _ref16 !== void 0 ? _ref16 : raw.updatedAt) !== null && _ref15 !== void 0 ? _ref15 : raw.createdAt) !== null && _ref14 !== void 0 ? _ref14 : raw.CreatedAt) !== null && _ref13 !== void 0 ? _ref13 : ''
+  });
+}
+
+// ---------- 当前用户信息获取 ----------
+// 优先读取 userInfo（登录后保存的完整用户信息，包含 id），然后读取 lxg_user，兼容多种 ID 字段名
+function _getCurrentUserId() {
+  try {
+    var raw = null;
+    var source = '';
+
+    // 1. 优先读取 userInfo（登录后保存的完整用户信息，包含 id）
+    try {
+      var _JSON$stringify;
+      var userInfo = _tarojs_taro__WEBPACK_IMPORTED_MODULE_0___default().getStorageSync('userInfo');
+      console.log('[ChatStore] _getCurrentUserId: userInfo 原始值:', (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_typeof_js__WEBPACK_IMPORTED_MODULE_5__["default"])(userInfo), (_JSON$stringify = JSON.stringify(userInfo)) === null || _JSON$stringify === void 0 ? void 0 : _JSON$stringify.slice(0, 200));
+      if (userInfo) {
+        raw = typeof userInfo === 'string' ? JSON.parse(userInfo) : userInfo;
+        source = 'userInfo';
+      }
+    } catch (e) {
+      console.error('[ChatStore] _getCurrentUserId: 读取 userInfo 失败:', e);
+    }
+
+    // 2. 回退读取 lxg_user（部分场景下 userInfo 不存在）
+    if (!raw) {
+      try {
+        var _JSON$stringify2;
+        var lxgUser = _tarojs_taro__WEBPACK_IMPORTED_MODULE_0___default().getStorageSync('lxg_user');
+        console.log('[ChatStore] _getCurrentUserId: lxg_user 原始值:', (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_typeof_js__WEBPACK_IMPORTED_MODULE_5__["default"])(lxgUser), (_JSON$stringify2 = JSON.stringify(lxgUser)) === null || _JSON$stringify2 === void 0 ? void 0 : _JSON$stringify2.slice(0, 200));
+        if (lxgUser) {
+          var _ref19, _parsed$user, _JSON$stringify3;
+          var parsed = typeof lxgUser === 'string' ? JSON.parse(lxgUser) : lxgUser;
+          // lxg_user 结构: { token, user }，但 user 里可能没有 id
+          raw = (_ref19 = (_parsed$user = parsed === null || parsed === void 0 ? void 0 : parsed.user) !== null && _parsed$user !== void 0 ? _parsed$user : parsed) !== null && _ref19 !== void 0 ? _ref19 : null;
+          source = 'lxg_user';
+          console.log('[ChatStore] _getCurrentUserId: lxg_user 解析后 user:', (_JSON$stringify3 = JSON.stringify(parsed === null || parsed === void 0 ? void 0 : parsed.user)) === null || _JSON$stringify3 === void 0 ? void 0 : _JSON$stringify3.slice(0, 200));
+        }
+      } catch (e) {
+        console.error('[ChatStore] _getCurrentUserId: 读取 lxg_user 失败:', e);
+      }
+    }
+
+    // 3. H5 环境再尝试 localStorage
+    if (!raw && typeof localStorage !== 'undefined') {
+      try {
+        var _userInfo = localStorage.getItem('userInfo');
+        if (_userInfo) {
+          raw = JSON.parse(_userInfo);
+          source = 'localStorage.userInfo';
+        }
+        if (!raw) {
+          var _lxgUser = localStorage.getItem('lxg_user');
+          if (_lxgUser) {
+            var _ref20, _parsed$user2;
+            var _parsed = JSON.parse(_lxgUser);
+            raw = (_ref20 = (_parsed$user2 = _parsed === null || _parsed === void 0 ? void 0 : _parsed.user) !== null && _parsed$user2 !== void 0 ? _parsed$user2 : _parsed) !== null && _ref20 !== void 0 ? _ref20 : null;
+            source = 'localStorage.lxg_user';
+          }
+        }
+      } catch (_unused) {}
+    }
+    if (raw) {
+      var _ref21, _ref22, _ref23, _ref24, _ref25, _ref26, _ref27, _ref28, _ref29, _ref30, _ref31, _ref32, _ref33, _raw$id2;
+      var id = (_ref21 = (_ref22 = (_ref23 = (_ref24 = (_ref25 = (_ref26 = (_ref27 = (_ref28 = (_ref29 = (_ref30 = (_ref31 = (_ref32 = (_ref33 = (_raw$id2 = raw.id) !== null && _raw$id2 !== void 0 ? _raw$id2 : raw.ID) !== null && _ref33 !== void 0 ? _ref33 : raw.Id) !== null && _ref32 !== void 0 ? _ref32 : raw.userId) !== null && _ref31 !== void 0 ? _ref31 : raw.UserId) !== null && _ref30 !== void 0 ? _ref30 : raw.user_id) !== null && _ref29 !== void 0 ? _ref29 : raw.User_id) !== null && _ref28 !== void 0 ? _ref28 : raw.uid) !== null && _ref27 !== void 0 ? _ref27 : raw.Uid) !== null && _ref26 !== void 0 ? _ref26 : raw.userID) !== null && _ref25 !== void 0 ? _ref25 : raw.sub) !== null && _ref24 !== void 0 ? _ref24 : raw.openid) !== null && _ref23 !== void 0 ? _ref23 : raw.OpenId) !== null && _ref22 !== void 0 ? _ref22 : raw.open_id) !== null && _ref21 !== void 0 ? _ref21 : '';
+      console.log('[ChatStore] _getCurrentUserId: 提取结果', {
+        source: source,
+        id: id,
+        rawKeys: Object.keys(raw)
+      });
+      return id !== undefined && id !== null && id !== '' ? String(id) : null;
+    }
+    console.warn('[ChatStore] _getCurrentUserId: 未找到任何用户信息');
+  } catch (err) {
+    console.error('[ChatStore] _getCurrentUserId 失败:', err);
+  }
+  return null;
+}
+
+// 客服/服务端发送者的识别关键词
+var SERVICE_SENDER_KEYWORDS = ['service', 'agent', 'admin', 'cs', 'customer_service', 'customer-service', 'customerService', 'staff', 'operator', 'kefu', '客服', '客服小乐', '小乐', 'ai客服', 'robot', 'bot', 'assistant', 'support'];
+var SERVICE_NAME_KEYWORDS = ['客服', '小乐', 'AI客服', '客服小乐', '乐享购', '官方客服'];
+// 用户发送者的识别关键词（用于反向排除）
+var USER_SENDER_KEYWORDS = ['user', 'customer', 'client', 'buyer', 'member', 'visitor', 'guest', '用户', '客户'];
+function _isServiceSender(raw) {
+  var _ref42, _ref43, _ref44, _ref45, _raw$sender, _ref46, _ref47, _ref48, _raw$senderName, _ref49, _ref50, _ref51, _raw$senderAvatar, _ref52, _ref53, _raw$userType;
+  var currentUserId = _getCurrentUserId();
+
+  // ===== 策略1：基于用户ID比较（最可靠）=====
+  // 检查消息的发送者ID是否与当前用户ID匹配 → 匹配则是用户
+  if (currentUserId) {
+    var _ref34, _ref35, _ref36, _ref37, _ref38, _ref39, _ref40, _ref41, _raw$senderId;
+    var msgSenderId = String((_ref34 = (_ref35 = (_ref36 = (_ref37 = (_ref38 = (_ref39 = (_ref40 = (_ref41 = (_raw$senderId = raw.senderId) !== null && _raw$senderId !== void 0 ? _raw$senderId : raw.SenderId) !== null && _ref41 !== void 0 ? _ref41 : raw.sender_id) !== null && _ref40 !== void 0 ? _ref40 : raw.userId) !== null && _ref39 !== void 0 ? _ref39 : raw.user_id) !== null && _ref38 !== void 0 ? _ref38 : raw.UserId) !== null && _ref37 !== void 0 ? _ref37 : raw.createdBy) !== null && _ref36 !== void 0 ? _ref36 : raw.created_by) !== null && _ref35 !== void 0 ? _ref35 : raw.CreatedBy) !== null && _ref34 !== void 0 ? _ref34 : '').trim();
+    if (msgSenderId && msgSenderId === currentUserId) {
+      console.log('[ChatStore] _isServiceSender: 通过用户ID匹配为用户消息', {
+        msgSenderId: msgSenderId,
+        currentUserId: currentUserId
+      });
+      return false;
+    }
+    // 如果消息有 senderId 但不匹配当前用户 → 可能是客服
+    if (msgSenderId && msgSenderId !== currentUserId) {
+      console.log('[ChatStore] _isServiceSender: senderId 不匹配当前用户，判定为客服消息', {
+        msgSenderId: msgSenderId,
+        currentUserId: currentUserId
+      });
+      return true;
+    }
+  }
+
+  // ===== 策略2：检查 sender 字段关键词 =====
+  var senderRaw = String((_ref42 = (_ref43 = (_ref44 = (_ref45 = (_raw$sender = raw.sender) !== null && _raw$sender !== void 0 ? _raw$sender : raw.Sender) !== null && _ref45 !== void 0 ? _ref45 : raw.senderType) !== null && _ref44 !== void 0 ? _ref44 : raw.role) !== null && _ref43 !== void 0 ? _ref43 : raw.sender_role) !== null && _ref42 !== void 0 ? _ref42 : '').toLowerCase().trim();
+
+  // 先检查是否明确为用户关键词
+  if (senderRaw && USER_SENDER_KEYWORDS.some(function (kw) {
+    return senderRaw === kw || senderRaw.includes(kw);
+  })) {
+    return false;
+  }
+
+  // 再检查是否明确为客服关键词
+  if (senderRaw && SERVICE_SENDER_KEYWORDS.some(function (kw) {
+    return senderRaw === kw || senderRaw.includes(kw);
+  })) {
+    return true;
+  }
+
+  // sender 字段为纯数字枚举：常见 0=用户, 1=客服, 2=系统/管理员
+  if (senderRaw !== '' && /^\d+$/.test(senderRaw)) {
+    var numSender = Number(senderRaw);
+    if (numSender === 0) return false; // 用户
+    if (numSender === 1 || numSender === 2 || numSender === 3 || numSender === 9) return true; // 客服/系统
+  }
+
+  // ===== 策略3：检查 senderName 名称关键词 =====
+  var nameRaw = String((_ref46 = (_ref47 = (_ref48 = (_raw$senderName = raw.senderName) !== null && _raw$senderName !== void 0 ? _raw$senderName : raw.SenderName) !== null && _ref48 !== void 0 ? _ref48 : raw.sender_name) !== null && _ref47 !== void 0 ? _ref47 : raw.name) !== null && _ref46 !== void 0 ? _ref46 : '').toLowerCase().trim();
+  if (nameRaw) {
+    if (SERVICE_NAME_KEYWORDS.some(function (kw) {
+      return nameRaw.includes(kw.toLowerCase());
+    })) {
+      return true;
+    }
+    if (USER_SENDER_KEYWORDS.some(function (kw) {
+      return nameRaw.includes(kw);
+    })) {
+      return false;
+    }
+  }
+
+  // ===== 策略4：检查头像 URL 关键词 =====
+  var avatarRaw = String((_ref49 = (_ref50 = (_ref51 = (_raw$senderAvatar = raw.senderAvatar) !== null && _raw$senderAvatar !== void 0 ? _raw$senderAvatar : raw.SenderAvatar) !== null && _ref51 !== void 0 ? _ref51 : raw.sender_avatar) !== null && _ref50 !== void 0 ? _ref50 : raw.avatar) !== null && _ref49 !== void 0 ? _ref49 : '').toLowerCase();
+  if (avatarRaw && SERVICE_SENDER_KEYWORDS.some(function (kw) {
+    return avatarRaw.includes(kw);
+  })) {
+    return true;
+  }
+
+  // ===== 策略5：检查 userType / UserType 数值枚举 =====
+  // 后端可能用 0=用户, 1=客服 等数字枚举
+  var userType = (_ref52 = (_ref53 = (_raw$userType = raw.userType) !== null && _raw$userType !== void 0 ? _raw$userType : raw.UserType) !== null && _ref53 !== void 0 ? _ref53 : raw.user_type) !== null && _ref52 !== void 0 ? _ref52 : raw.sender_type;
+  if (userType !== undefined && userType !== null) {
+    var numType = Number(userType);
+    if (!isNaN(numType)) {
+      // 常见枚举：0=用户, 1=客服/管理员
+      if (numType === 0 || numType === 2) return false; // 用户
+      if (numType === 1 || numType === 3 || numType === 9) return true; // 客服
+    }
+  }
+
+  // 无法确定时，默认当作用户（user），并打印警告
+  console.warn('[ChatStore] _isServiceSender: 无法确定 sender 类型，默认当作 user', {
+    senderRaw: senderRaw,
+    nameRaw: nameRaw,
+    userType: userType,
+    rawKeys: Object.keys(raw || {}),
+    raw: raw
+  });
+  return false;
+}
+function normalizeMessage(raw, conversationId) {
+  var _ref54, _ref55, _ref56, _ref57, _ref58, _raw$timestamp, _ref59, _ref60, _ref61, _ref62, _ref63, _raw$id3, _ref64, _ref65, _raw$conversationId, _raw$type, _raw$type2, _ref66, _ref67, _ref68, _raw$content, _ref69, _ref70, _ref71, _raw$senderId2, _ref72, _raw$senderName2, _ref73, _ref74, _raw$senderAvatar2, _raw$status, _raw$status2, _ref75, _raw$extra;
+  var isServiceSender = _isServiceSender(raw);
+  var sender = isServiceSender ? 'service' : 'user';
+  var ts = (_ref54 = (_ref55 = (_ref56 = (_ref57 = (_ref58 = (_raw$timestamp = raw.timestamp) !== null && _raw$timestamp !== void 0 ? _raw$timestamp : raw.Timestamp) !== null && _ref58 !== void 0 ? _ref58 : raw.createTime) !== null && _ref57 !== void 0 ? _ref57 : raw.CreateTime) !== null && _ref56 !== void 0 ? _ref56 : raw.created_at) !== null && _ref55 !== void 0 ? _ref55 : raw.createdAt) !== null && _ref54 !== void 0 ? _ref54 : Date.now();
+  return {
+    id: String((_ref59 = (_ref60 = (_ref61 = (_ref62 = (_ref63 = (_raw$id3 = raw.id) !== null && _raw$id3 !== void 0 ? _raw$id3 : raw.ID) !== null && _ref63 !== void 0 ? _ref63 : raw.Id) !== null && _ref62 !== void 0 ? _ref62 : raw.messageId) !== null && _ref61 !== void 0 ? _ref61 : raw.MessageId) !== null && _ref60 !== void 0 ? _ref60 : raw.msg_id) !== null && _ref59 !== void 0 ? _ref59 : "m-".concat(Math.random().toString(36).slice(2, 10))),
+    conversationId: conversationId || String((_ref64 = (_ref65 = (_raw$conversationId = raw.conversationId) !== null && _raw$conversationId !== void 0 ? _raw$conversationId : raw.ConversationId) !== null && _ref65 !== void 0 ? _ref65 : raw.conv_id) !== null && _ref64 !== void 0 ? _ref64 : ''),
+    type: ['text', 'image', 'order', 'product', 'system'].includes((_raw$type = raw.type) !== null && _raw$type !== void 0 ? _raw$type : raw.Type) ? (_raw$type2 = raw.type) !== null && _raw$type2 !== void 0 ? _raw$type2 : raw.Type : 'text',
+    content: String((_ref66 = (_ref67 = (_ref68 = (_raw$content = raw.content) !== null && _raw$content !== void 0 ? _raw$content : raw.Content) !== null && _ref68 !== void 0 ? _ref68 : raw.message) !== null && _ref67 !== void 0 ? _ref67 : raw.text) !== null && _ref66 !== void 0 ? _ref66 : ''),
+    sender: sender,
+    senderId: (_ref69 = (_ref70 = (_ref71 = (_raw$senderId2 = raw.senderId) !== null && _raw$senderId2 !== void 0 ? _raw$senderId2 : raw.SenderId) !== null && _ref71 !== void 0 ? _ref71 : raw.sender_id) !== null && _ref70 !== void 0 ? _ref70 : raw.userId) !== null && _ref69 !== void 0 ? _ref69 : raw.user_id,
+    senderName: (_ref72 = (_raw$senderName2 = raw.senderName) !== null && _raw$senderName2 !== void 0 ? _raw$senderName2 : raw.SenderName) !== null && _ref72 !== void 0 ? _ref72 : raw.sender_name,
+    senderAvatar: (_ref73 = (_ref74 = (_raw$senderAvatar2 = raw.senderAvatar) !== null && _raw$senderAvatar2 !== void 0 ? _raw$senderAvatar2 : raw.SenderAvatar) !== null && _ref74 !== void 0 ? _ref74 : raw.sender_avatar) !== null && _ref73 !== void 0 ? _ref73 : raw.avatar,
+    createTime: typeof ts === 'number' ? formatTime(ts) : String(ts),
+    timestamp: typeof ts === 'number' ? ts : new Date(ts).getTime(),
+    status: ['sending', 'sent', 'failed', 'read'].includes((_raw$status = raw.status) !== null && _raw$status !== void 0 ? _raw$status : raw.Status) ? (_raw$status2 = raw.status) !== null && _raw$status2 !== void 0 ? _raw$status2 : raw.Status : 'sent',
+    extra: (_ref75 = (_raw$extra = raw.extra) !== null && _raw$extra !== void 0 ? _raw$extra : raw.payload) !== null && _ref75 !== void 0 ? _ref75 : undefined
+  };
+}
+
+// ---------- Store 创建 ----------
+var useChatStore = (0,zustand__WEBPACK_IMPORTED_MODULE_6__.create)(function (set, get) {
+  return {
+    // ============ state ============
+    wsStatus: 'idle',
+    wsConnected: false,
+    conversations: [],
+    conversationsLoading: false,
+    conversationsLoaded: false,
+    currentConversationId: null,
+    currentConversation: null,
+    messagesMap: {},
+    messagesLoadingMap: {},
+    messagesLoadedMap: {},
+    messageCursorMap: {},
+    _wsUnsubscribers: [],
+    _subscribed: false,
+    // ============ actions ============
+
+    /**
+     * 初始化：绑定 WS 订阅，但不自动连接（由页面触发）
+     */
+    init: function init() {
+      var state = get();
+      if (state._subscribed) return;
+      var unsub1 = _utils_chatWS__WEBPACK_IMPORTED_MODULE_3__["default"].onMessage(function (msg) {
+        return _handleWSMessage(msg);
+      });
+      var unsub2 = _utils_chatWS__WEBPACK_IMPORTED_MODULE_3__["default"].onStatusChange(function (s) {
+        set({
+          wsStatus: s,
+          wsConnected: s === 'open'
+        });
+        // 连接成功时可刷新一次列表
+        if (s === 'open') {
+          get().fetchConversations(true).catch(function () {});
+        }
+      });
+      set({
+        _wsUnsubscribers: [unsub1, unsub2],
+        _subscribed: true
+      });
+    },
+    dispose: function dispose() {
+      var state = get();
+      state._wsUnsubscribers.forEach(function (fn) {
+        return fn();
+      });
+      _utils_chatWS__WEBPACK_IMPORTED_MODULE_3__["default"].disconnect();
+      set({
+        _wsUnsubscribers: [],
+        _subscribed: false,
+        wsStatus: 'idle',
+        wsConnected: false
+      });
+    },
+    connectWS: function connectWS() {
+      return _utils_chatWS__WEBPACK_IMPORTED_MODULE_3__["default"].connect();
+    },
+    disconnectWS: function disconnectWS() {
+      return _utils_chatWS__WEBPACK_IMPORTED_MODULE_3__["default"].disconnect();
+    },
+    // =============== 会话列表 ===============
+    fetchConversations: function fetchConversations() {
+      var _arguments = arguments;
+      return (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_7__["default"])(/*#__PURE__*/(0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_8__["default"])().m(function _callee() {
+        var forceRefresh, state, _ref76, _ref77, _res$data, _data$list, _list$find, res, data, list, curId, curConv, _t;
+        return (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_8__["default"])().w(function (_context) {
+          while (1) switch (_context.p = _context.n) {
+            case 0:
+              forceRefresh = _arguments.length > 0 && _arguments[0] !== undefined ? _arguments[0] : false;
+              state = get();
+              if (!(!forceRefresh && state.conversationsLoaded && !state.conversationsLoading)) {
+                _context.n = 1;
+                break;
+              }
+              return _context.a(2, state.conversations);
+            case 1:
+              set({
+                conversationsLoading: true
+              });
+              _context.p = 2;
+              _context.n = 3;
+              return (0,_api_common__WEBPACK_IMPORTED_MODULE_1__.apiGet)(_api_message__WEBPACK_IMPORTED_MODULE_2__.chatApi.conversations);
+            case 3:
+              res = _context.v;
+              data = (_ref76 = (_ref77 = (_res$data = res === null || res === void 0 ? void 0 : res.data) !== null && _res$data !== void 0 ? _res$data : res === null || res === void 0 ? void 0 : res.result) !== null && _ref77 !== void 0 ? _ref77 : res) !== null && _ref76 !== void 0 ? _ref76 : [];
+              list = (Array.isArray(data) ? data : (_data$list = data === null || data === void 0 ? void 0 : data.list) !== null && _data$list !== void 0 ? _data$list : []).map(normalizeConversation); // 按更新时间倒序
+              list.sort(function (a, b) {
+                var at = new Date(a.lastTime || a.updatedAt || 0).getTime();
+                var bt = new Date(b.lastTime || b.updatedAt || 0).getTime();
+                return bt - at;
+              });
+              // 如果当前有会话，同步更新 currentConversation
+              curId = state.currentConversationId;
+              curConv = curId ? (_list$find = list.find(function (c) {
+                return c.id === curId;
+              })) !== null && _list$find !== void 0 ? _list$find : null : null;
+              set({
+                conversations: list,
+                conversationsLoaded: true,
+                currentConversation: curConv !== null && curConv !== void 0 ? curConv : state.currentConversation
+              });
+              return _context.a(2, list);
+            case 4:
+              _context.p = 4;
+              _t = _context.v;
+              console.error('[ChatStore] fetchConversations 失败:', _t);
+              _tarojs_taro__WEBPACK_IMPORTED_MODULE_0___default().showToast({
+                title: _t.message || '加载会话失败',
+                icon: 'none'
+              });
+              return _context.a(2, state.conversations);
+            case 5:
+              _context.p = 5;
+              set({
+                conversationsLoading: false
+              });
+              return _context.f(5);
+            case 6:
+              return _context.a(2);
+          }
+        }, _callee, null, [[2, 4, 5, 6]]);
+      }))();
+    },
+    createConversation: function createConversation() {
+      var _arguments2 = arguments;
+      return (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_7__["default"])(/*#__PURE__*/(0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_8__["default"])().m(function _callee2() {
+        var payload, _res$data2, res, data, conv, _t2;
+        return (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_8__["default"])().w(function (_context2) {
+          while (1) switch (_context2.p = _context2.n) {
+            case 0:
+              payload = _arguments2.length > 0 && _arguments2[0] !== undefined ? _arguments2[0] : {};
+              _context2.p = 1;
+              _context2.n = 2;
+              return (0,_api_common__WEBPACK_IMPORTED_MODULE_1__.apiPost)(_api_message__WEBPACK_IMPORTED_MODULE_2__.chatApi.createConversation, payload, {}, {}, false);
+            case 2:
+              res = _context2.v;
+              data = (_res$data2 = res === null || res === void 0 ? void 0 : res.data) !== null && _res$data2 !== void 0 ? _res$data2 : res;
+              conv = normalizeConversation(data);
+              if (conv.id) {
+                _context2.n = 3;
+                break;
+              }
+              console.warn('[ChatStore] createConversation 返回无 ID:', data);
+              return _context2.a(2, null);
+            case 3:
+              // 插入列表头部
+              set(function (s) {
+                var exists = s.conversations.some(function (c) {
+                  return c.id === conv.id;
+                });
+                return {
+                  conversations: exists ? s.conversations.map(function (c) {
+                    return c.id === conv.id ? (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_4__["default"])((0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_4__["default"])({}, c), conv) : c;
+                  }) : [conv].concat((0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_toConsumableArray_js__WEBPACK_IMPORTED_MODULE_9__["default"])(s.conversations))
+                };
+              });
+              return _context2.a(2, conv);
+            case 4:
+              _context2.p = 4;
+              _t2 = _context2.v;
+              console.error('[ChatStore] createConversation 失败:', _t2);
+              _tarojs_taro__WEBPACK_IMPORTED_MODULE_0___default().showToast({
+                title: _t2.message || '发起会话失败',
+                icon: 'none'
+              });
+              return _context2.a(2, null);
+          }
+        }, _callee2, null, [[1, 4]]);
+      }))();
+    },
+    markConversationRead: function markConversationRead(conversationId) {
+      return (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_7__["default"])(/*#__PURE__*/(0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_8__["default"])().m(function _callee3() {
+        var res, _t3;
+        return (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_8__["default"])().w(function (_context3) {
+          while (1) switch (_context3.p = _context3.n) {
+            case 0:
+              if (conversationId) {
+                _context3.n = 1;
+                break;
+              }
+              console.warn('[ChatStore] markConversationRead: conversationId 为空，跳过');
+              return _context3.a(2);
+            case 1:
+              _context3.p = 1;
+              console.log('[ChatStore] markConversationRead 开始, id:', conversationId);
+              // 后端"标记已读"接口为 PUT 方法，路径 /chat/conversations/:id/read
+              _context3.n = 2;
+              return (0,_api_common__WEBPACK_IMPORTED_MODULE_1__.apiPut)(_api_message__WEBPACK_IMPORTED_MODULE_2__.chatApi.readConversation, {}, {
+                id: conversationId
+              });
+            case 2:
+              res = _context3.v;
+              console.log('[ChatStore] markConversationRead 成功, 后端返回:', res);
+              // 乐观更新本地
+              set(function (s) {
+                var _s$currentConversatio;
+                return {
+                  conversations: s.conversations.map(function (c) {
+                    return c.id === conversationId ? (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_4__["default"])((0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_4__["default"])({}, c), {}, {
+                      unreadCount: 0
+                    }) : c;
+                  }),
+                  currentConversation: ((_s$currentConversatio = s.currentConversation) === null || _s$currentConversatio === void 0 ? void 0 : _s$currentConversatio.id) === conversationId ? (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_4__["default"])((0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_4__["default"])({}, s.currentConversation), {}, {
+                    unreadCount: 0
+                  }) : s.currentConversation
+                };
+              });
+              _context3.n = 4;
+              break;
+            case 3:
+              _context3.p = 3;
+              _t3 = _context3.v;
+              console.error('[ChatStore] markConversationRead 失败:', _t3);
+            case 4:
+              return _context3.a(2);
+          }
+        }, _callee3, null, [[1, 3]]);
+      }))();
+    },
+    /**
+     * 转人工客服
+     * 后端接口: PUT /chat/conversations/:id/transfer-human
+     * 成功返回 true，失败返回 false
+     */
+    transferToHuman: function transferToHuman(conversationId) {
+      return (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_7__["default"])(/*#__PURE__*/(0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_8__["default"])().m(function _callee4() {
+        var res, _t4;
+        return (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_8__["default"])().w(function (_context4) {
+          while (1) switch (_context4.p = _context4.n) {
+            case 0:
+              if (conversationId) {
+                _context4.n = 1;
+                break;
+              }
+              return _context4.a(2, false);
+            case 1:
+              _context4.p = 1;
+              _context4.n = 2;
+              return (0,_api_common__WEBPACK_IMPORTED_MODULE_1__.apiPut)(_api_message__WEBPACK_IMPORTED_MODULE_2__.chatApi.transferHuman, {}, {
+                id: conversationId
+              });
+            case 2:
+              res = _context4.v;
+              console.log('[ChatStore] transferToHuman 成功:', res);
+              // 刷新会话列表，获取最新的客服分配信息
+              get().fetchConversations(true).catch(function () {});
+              // 刷新当前会话消息，可能后端会推送一条系统消息（如"已为您转接人工客服"）
+              get().fetchMessages(conversationId, true).catch(function () {});
+              return _context4.a(2, true);
+            case 3:
+              _context4.p = 3;
+              _t4 = _context4.v;
+              console.error('[ChatStore] transferToHuman 失败:', _t4);
+              _tarojs_taro__WEBPACK_IMPORTED_MODULE_0___default().showToast({
+                title: (_t4 === null || _t4 === void 0 ? void 0 : _t4.message) || '转人工失败',
+                icon: 'none'
+              });
+              return _context4.a(2, false);
+          }
+        }, _callee4, null, [[1, 3]]);
+      }))();
+    },
+    getConversation: function getConversation(id) {
+      return get().conversations.find(function (c) {
+        return c.id === id;
+      });
+    },
+    // =============== 当前会话 ===============
+    setCurrentConversation: function setCurrentConversation(id) {
+      return (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_7__["default"])(/*#__PURE__*/(0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_8__["default"])().m(function _callee5() {
+        var _get$conversations$fi, conv;
+        return (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_8__["default"])().w(function (_context5) {
+          while (1) switch (_context5.n) {
+            case 0:
+              set({
+                currentConversationId: id
+              });
+              if (!id) {
+                _context5.n = 2;
+                break;
+              }
+              conv = (_get$conversations$fi = get().conversations.find(function (c) {
+                return c.id === id;
+              })) !== null && _get$conversations$fi !== void 0 ? _get$conversations$fi : null;
+              set({
+                currentConversation: conv
+              });
+              // 尝试预加载消息
+              _context5.n = 1;
+              return get().fetchMessages(id, false);
+            case 1:
+              _context5.n = 3;
+              break;
+            case 2:
+              set({
+                currentConversation: null
+              });
+            case 3:
+              return _context5.a(2);
+          }
+        }, _callee5);
+      }))();
+    },
+    enterConversation: function enterConversation(id) {
+      return (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_7__["default"])(/*#__PURE__*/(0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_8__["default"])().m(function _callee6() {
+        return (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_8__["default"])().w(function (_context6) {
+          while (1) switch (_context6.n) {
+            case 0:
+              _context6.n = 1;
+              return get().setCurrentConversation(id);
+            case 1:
+              _context6.n = 2;
+              return get().markConversationRead(id);
+            case 2:
+              // 确保 WS 连接
+              if (!get().wsConnected) _utils_chatWS__WEBPACK_IMPORTED_MODULE_3__["default"].connect();
+            case 3:
+              return _context6.a(2);
+          }
+        }, _callee6);
+      }))();
+    },
+    leaveConversation: function leaveConversation() {
+      get().setCurrentConversation(null);
+    },
+    // =============== 消息 ===============
+    fetchMessages: function fetchMessages(conversationId) {
+      var _arguments3 = arguments;
+      return (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_7__["default"])(/*#__PURE__*/(0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_8__["default"])().m(function _callee7() {
+        var forceRefresh, state, key, _state$messagesMap$ke, historyResult, _state$messagesMap$ke3, _t5;
+        return (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_8__["default"])().w(function (_context7) {
+          while (1) switch (_context7.p = _context7.n) {
+            case 0:
+              forceRefresh = _arguments3.length > 1 && _arguments3[1] !== undefined ? _arguments3[1] : false;
+              if (conversationId) {
+                _context7.n = 1;
+                break;
+              }
+              return _context7.a(2, []);
+            case 1:
+              state = get();
+              key = conversationId;
+              if (!(!forceRefresh && state.messagesLoadedMap[key] && !state.messagesLoadingMap[key])) {
+                _context7.n = 2;
+                break;
+              }
+              return _context7.a(2, (_state$messagesMap$ke = state.messagesMap[key]) !== null && _state$messagesMap$ke !== void 0 ? _state$messagesMap$ke : []);
+            case 2:
+              set(function (s) {
+                return {
+                  messagesLoadingMap: (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_4__["default"])((0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_4__["default"])({}, s.messagesLoadingMap), {}, (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_defineProperty_js__WEBPACK_IMPORTED_MODULE_10__["default"])({}, key, true))
+                };
+              });
+
+              // 后端无 HTTP 消息历史接口，通过 WebSocket 请求历史消息
+              _context7.p = 3;
+              if (!get().wsConnected) {
+                console.log('[ChatStore] fetchMessages: WS 未连接，先建立连接');
+                _utils_chatWS__WEBPACK_IMPORTED_MODULE_3__["default"].connect();
+              }
+
+              // 通过 WS 请求历史消息
+              _context7.n = 4;
+              return new Promise(function (resolve) {
+                var resolved = false;
+                var unsubListener = null;
+                var cleanup = function cleanup() {
+                  if (unsubListener) {
+                    unsubListener();
+                    unsubListener = null;
+                  }
+                };
+                var timeoutId = setTimeout(function () {
+                  if (!resolved) {
+                    var _state$messagesMap$ke2;
+                    resolved = true;
+                    cleanup();
+                    console.log('[ChatStore] fetchMessages: WS 历史消息请求超时，返回已有消息');
+                    resolve((_state$messagesMap$ke2 = state.messagesMap[key]) !== null && _state$messagesMap$ke2 !== void 0 ? _state$messagesMap$ke2 : []);
+                  }
+                }, 3000);
+
+                // 监听后端回推的历史消息
+                unsubListener = _utils_chatWS__WEBPACK_IMPORTED_MODULE_3__["default"].onMessage(function (inbound) {
+                  if (resolved) return;
+                  var type = inbound.type,
+                    data = inbound.data;
+                  if (type === 'messages/history' || String(type) === 'message/history' || String(type) === 'history') {
+                    var _ref78, _ref79, _data$list2;
+                    resolved = true;
+                    clearTimeout(timeoutId);
+                    cleanup();
+                    var rawList = Array.isArray(data) ? data : (_ref78 = (_ref79 = (_data$list2 = data === null || data === void 0 ? void 0 : data.list) !== null && _data$list2 !== void 0 ? _data$list2 : data === null || data === void 0 ? void 0 : data.records) !== null && _ref79 !== void 0 ? _ref79 : data === null || data === void 0 ? void 0 : data.messages) !== null && _ref78 !== void 0 ? _ref78 : [];
+                    var list = rawList.map(function (raw) {
+                      return normalizeMessage(raw, conversationId);
+                    }).sort(function (a, b) {
+                      var _a$timestamp, _b$timestamp;
+                      return ((_a$timestamp = a.timestamp) !== null && _a$timestamp !== void 0 ? _a$timestamp : 0) - ((_b$timestamp = b.timestamp) !== null && _b$timestamp !== void 0 ? _b$timestamp : 0);
+                    });
+                    set(function (s) {
+                      return {
+                        messagesMap: (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_4__["default"])((0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_4__["default"])({}, s.messagesMap), {}, (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_defineProperty_js__WEBPACK_IMPORTED_MODULE_10__["default"])({}, key, list)),
+                        messagesLoadedMap: (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_4__["default"])((0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_4__["default"])({}, s.messagesLoadedMap), {}, (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_defineProperty_js__WEBPACK_IMPORTED_MODULE_10__["default"])({}, key, true))
+                      };
+                    });
+                    resolve(list);
+                  }
+                });
+
+                // 发送历史消息请求（conversationId 统一为字符串格式）
+                var convIdStr = String(conversationId);
+                _utils_chatWS__WEBPACK_IMPORTED_MODULE_3__["default"].send({
+                  type: 'messages/history',
+                  data: {
+                    conversationId: convIdStr,
+                    conversation_id: convIdStr,
+                    conv_id: convIdStr
+                  },
+                  id: "history-".concat(Date.now())
+                });
+              });
+            case 4:
+              historyResult = _context7.v;
+              return _context7.a(2, historyResult);
+            case 5:
+              _context7.p = 5;
+              _t5 = _context7.v;
+              console.error('[ChatStore] fetchMessages 失败:', _t5);
+              return _context7.a(2, (_state$messagesMap$ke3 = state.messagesMap[key]) !== null && _state$messagesMap$ke3 !== void 0 ? _state$messagesMap$ke3 : []);
+            case 6:
+              _context7.p = 6;
+              set(function (s) {
+                return {
+                  messagesLoadingMap: (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_4__["default"])((0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_4__["default"])({}, s.messagesLoadingMap), {}, (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_defineProperty_js__WEBPACK_IMPORTED_MODULE_10__["default"])({}, key, false))
+                };
+              });
+              return _context7.f(6);
+            case 7:
+              return _context7.a(2);
+          }
+        }, _callee7, null, [[3, 5, 6, 7]]);
+      }))();
+    },
+    sendMessage: function sendMessage(conversationId, payload) {
+      return (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_7__["default"])(/*#__PURE__*/(0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_8__["default"])().m(function _callee8() {
+        var _payload$content, _messageTypeMap$paylo;
+        var tempId, optimisticMsg, currentUserId, convIdStr, senderIdStr, messageTypeMap, wsMsg, sent;
+        return (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_8__["default"])().w(function (_context8) {
+          while (1) switch (_context8.n) {
+            case 0:
+              if (!(!conversationId || !((_payload$content = payload.content) !== null && _payload$content !== void 0 && _payload$content.trim()))) {
+                _context8.n = 1;
+                break;
+              }
+              return _context8.a(2, null);
+            case 1:
+              // 1. 构造本地乐观消息（sending 状态）
+              tempId = "tmp-".concat(Date.now(), "-").concat(Math.random().toString(36).slice(2, 8));
+              optimisticMsg = {
+                id: tempId,
+                conversationId: conversationId,
+                type: payload.type,
+                content: payload.content,
+                sender: 'user',
+                createTime: formatTime(Date.now()),
+                timestamp: Date.now(),
+                status: 'sending',
+                extra: payload.extra
+              };
+              get().addMessage(optimisticMsg);
+
+              // 2. 确保 WS 已连接（后端仅支持通过 WebSocket 发送消息并持久化，无 HTTP POST 接口）
+              if (!get().wsConnected) {
+                console.log('[ChatStore] sendMessage: WS 未连接，正在建立连接...');
+                _utils_chatWS__WEBPACK_IMPORTED_MODULE_3__["default"].connect();
+              }
+
+              // 3. 通过 WebSocket 发送消息（后端 WS 处理器负责持久化到数据库 + 广播）
+              //    后端要求格式: { type: "chat", data: { conversationId: <string>, senderId: <string>, content: <string>, messageType: <number> } }
+              //    注意：conversationId 和 senderId 必须是字符串格式（带引号），不能是数字，也不能是空字符串
+              currentUserId = _getCurrentUserId();
+              convIdStr = String(conversationId).trim();
+              senderIdStr = String(currentUserId !== null && currentUserId !== void 0 ? currentUserId : '').trim();
+              if (!(!convIdStr || !senderIdStr)) {
+                _context8.n = 2;
+                break;
+              }
+              console.error('[ChatStore] sendMessage: conversationId 或 senderId 为空，拒绝发送', {
+                conversationId: conversationId,
+                convIdStr: convIdStr,
+                currentUserId: currentUserId,
+                senderIdStr: senderIdStr
+              });
+              _tarojs_taro__WEBPACK_IMPORTED_MODULE_0___default().showToast({
+                title: '会话信息不完整，请重新登录后重试',
+                icon: 'none'
+              });
+              get().updateMessage(conversationId, tempId, {
+                status: 'failed'
+              });
+              return _context8.a(2, null);
+            case 2:
+              // 消息类型映射：1=文本消息 2=图片消息 3=订单消息 4=商品消息 0=系统消息
+              messageTypeMap = {
+                text: 1,
+                image: 2,
+                order: 3,
+                product: 4,
+                system: 0
+              };
+              wsMsg = {
+                type: 'chat',
+                data: {
+                  conversationId: convIdStr,
+                  senderId: senderIdStr,
+                  content: payload.content,
+                  messageType: (_messageTypeMap$paylo = messageTypeMap[payload.type]) !== null && _messageTypeMap$paylo !== void 0 ? _messageTypeMap$paylo : 1
+                },
+                id: tempId
+              };
+              console.log('[ChatStore] sendMessage: 通过 WebSocket 发送', {
+                wsStatus: get().wsStatus,
+                wsConnected: get().wsConnected,
+                msg: wsMsg
+              });
+              sent = _utils_chatWS__WEBPACK_IMPORTED_MODULE_3__["default"].send(wsMsg);
+              if (!sent) {
+                console.warn('[ChatStore] sendMessage: WS 未就绪，消息已入队，将在连接后自动 flush');
+              }
+
+              // 4. 等待后端通过 WS 回推 message/new 确认（后端持久化后会广播该消息）
+              //    超时 3s 后乐观标记为 sent（后端无 HTTP 消息接口，WS 是唯一通道）
+              return _context8.a(2, new Promise(function (resolve) {
+                var resolved = false;
+                var unsubListener = null;
+                var cleanup = function cleanup() {
+                  if (unsubListener) {
+                    unsubListener();
+                    unsubListener = null;
+                  }
+                };
+                var timeoutId = setTimeout(function () {
+                  if (!resolved) {
+                    resolved = true;
+                    cleanup();
+                    var cur = get().getMessages(conversationId).find(function (m) {
+                      return m.id === tempId;
+                    });
+                    if (cur && cur.status === 'sending') {
+                      // 超时仍未收到回推，乐观标记为 sent（消息已在 WS 发送队列中）
+                      get().updateMessage(conversationId, tempId, {
+                        status: 'sent'
+                      });
+                      console.warn('[ChatStore] sendMessage: 等待 WS 回推超时，乐观标记为 sent');
+                    }
+                    resolve(cur !== null && cur !== void 0 ? cur : null);
+                  }
+                }, 3000);
+
+                // 监听 WS 入站消息，捕捉后端回推的同内容消息（确认持久化成功）
+                unsubListener = _utils_chatWS__WEBPACK_IMPORTED_MODULE_3__["default"].onMessage(function (inbound) {
+                  if (resolved) return;
+                  var type = inbound.type,
+                    data = inbound.data;
+
+                  // 后端广播了新消息（type 可能是 "chat" 或 "message/new"，都视为新消息）
+                  if ((type === 'chat' || type === 'message/new') && data) {
+                    var _ref80, _ref81, _data$conversationId, _ref82, _ref83, _ref84, _data$content;
+                    var inConvId = String((_ref80 = (_ref81 = (_data$conversationId = data.conversationId) !== null && _data$conversationId !== void 0 ? _data$conversationId : data.conv_id) !== null && _ref81 !== void 0 ? _ref81 : data.ConversationId) !== null && _ref80 !== void 0 ? _ref80 : '');
+                    var isUserSender = !_isServiceSender(data);
+                    var inContent = String((_ref82 = (_ref83 = (_ref84 = (_data$content = data.content) !== null && _data$content !== void 0 ? _data$content : data.Content) !== null && _ref84 !== void 0 ? _ref84 : data.message) !== null && _ref83 !== void 0 ? _ref83 : data.text) !== null && _ref82 !== void 0 ? _ref82 : '');
+                    if (inConvId === conversationId && isUserSender && inContent === optimisticMsg.content) {
+                      var _ref85, _ref86, _ref87, _ref88, _ref89, _data$id;
+                      // 回推消息 ID 与临时 ID 不同：用服务端消息替换本地乐观消息
+                      var serverMsgId = String((_ref85 = (_ref86 = (_ref87 = (_ref88 = (_ref89 = (_data$id = data.id) !== null && _data$id !== void 0 ? _data$id : data.ID) !== null && _ref89 !== void 0 ? _ref89 : data.Id) !== null && _ref88 !== void 0 ? _ref88 : data.messageId) !== null && _ref87 !== void 0 ? _ref87 : data.MessageId) !== null && _ref86 !== void 0 ? _ref86 : data.msg_id) !== null && _ref85 !== void 0 ? _ref85 : '');
+                      if (serverMsgId && serverMsgId !== tempId) {
+                        set(function (s) {
+                          var _s$messagesMap$conver;
+                          return {
+                            messagesMap: (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_4__["default"])((0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_4__["default"])({}, s.messagesMap), {}, (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_defineProperty_js__WEBPACK_IMPORTED_MODULE_10__["default"])({}, conversationId, ((_s$messagesMap$conver = s.messagesMap[conversationId]) !== null && _s$messagesMap$conver !== void 0 ? _s$messagesMap$conver : []).filter(function (m) {
+                              return m.id !== tempId;
+                            })))
+                          };
+                        });
+                      }
+                      resolved = true;
+                      clearTimeout(timeoutId);
+                      cleanup();
+                      var normalized = normalizeMessage(data, conversationId);
+                      // 若未被替换，则只更新状态
+                      var existing = get().getMessages(conversationId).find(function (m) {
+                        return m.id === tempId;
+                      });
+                      if (existing) {
+                        get().updateMessage(conversationId, tempId, {
+                          status: 'sent'
+                        });
+                        resolve(existing);
+                      } else {
+                        resolve(normalized);
+                      }
+                    }
+                  }
+                });
+              }));
+          }
+        }, _callee8);
+      }))();
+    },
+    addMessage: function addMessage(msg) {
+      var key = msg.conversationId;
+      set(function (s) {
+        var _s$messagesMap$key;
+        var prev = (_s$messagesMap$key = s.messagesMap[key]) !== null && _s$messagesMap$key !== void 0 ? _s$messagesMap$key : [];
+        // 去重（按 id）
+        if (prev.some(function (m) {
+          return m.id === msg.id;
+        })) {
+          return {};
+        }
+        var list = [].concat((0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_toConsumableArray_js__WEBPACK_IMPORTED_MODULE_9__["default"])(prev), [msg]).sort(function (a, b) {
+          var _a$timestamp2, _b$timestamp2;
+          return ((_a$timestamp2 = a.timestamp) !== null && _a$timestamp2 !== void 0 ? _a$timestamp2 : 0) - ((_b$timestamp2 = b.timestamp) !== null && _b$timestamp2 !== void 0 ? _b$timestamp2 : 0);
+        });
+        return {
+          messagesMap: (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_4__["default"])((0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_4__["default"])({}, s.messagesMap), {}, (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_defineProperty_js__WEBPACK_IMPORTED_MODULE_10__["default"])({}, key, list))
+        };
+      });
+      // 更新会话 lastMessage / lastTime / 未读
+      var curConvId = get().currentConversationId;
+      var isInCurrentView = curConvId === key;
+      set(function (s) {
+        return {
+          conversations: s.conversations.map(function (c) {
+            if (c.id !== key) return c;
+            return (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_4__["default"])((0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_4__["default"])({}, c), {}, {
+              lastMessage: msg.content,
+              lastTime: msg.createTime,
+              unreadCount: isInCurrentView ? 0 : msg.sender !== 'user' ? c.unreadCount + 1 : c.unreadCount
+            });
+          })
+        };
+      });
+    },
+    updateMessage: function updateMessage(conversationId, msgId, patch) {
+      set(function (s) {
+        var _s$messagesMap$conver2;
+        var list = (_s$messagesMap$conver2 = s.messagesMap[conversationId]) !== null && _s$messagesMap$conver2 !== void 0 ? _s$messagesMap$conver2 : [];
+        return {
+          messagesMap: (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_4__["default"])((0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_4__["default"])({}, s.messagesMap), {}, (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_defineProperty_js__WEBPACK_IMPORTED_MODULE_10__["default"])({}, conversationId, list.map(function (m) {
+            return m.id === msgId ? (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_4__["default"])((0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_4__["default"])({}, m), patch) : m;
+          })))
+        };
+      });
+    },
+    // _sendViaHttp 已移除：后端未注册 POST /chat/conversations/:id/messages 路由（返回 404）
+    // 消息发送仅通过 WebSocket（type: 'message/send'），由后端 WS 处理器负责持久化 + 广播
+    getMessages: function getMessages(conversationId) {
+      var _get$messagesMap$conv;
+      return (_get$messagesMap$conv = get().messagesMap[conversationId]) !== null && _get$messagesMap$conv !== void 0 ? _get$messagesMap$conv : [];
+    },
+    // =============== 未读 ===============
+    getTotalUnread: function getTotalUnread() {
+      return get().conversations.reduce(function (sum, c) {
+        return sum + (c.unreadCount || 0);
+      }, 0);
+    },
+    clearAllUnread: function clearAllUnread() {
+      set(function (s) {
+        return {
+          conversations: s.conversations.map(function (c) {
+            return (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_4__["default"])((0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_4__["default"])({}, c), {}, {
+              unreadCount: 0
+            });
+          }),
+          currentConversation: s.currentConversation ? (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_4__["default"])((0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_4__["default"])({}, s.currentConversation), {}, {
+            unreadCount: 0
+          }) : null
+        };
+      });
+    },
+    // =============== 重置 ===============
+    reset: function reset() {
+      _utils_chatWS__WEBPACK_IMPORTED_MODULE_3__["default"].disconnect();
+      var unsubs = get()._wsUnsubscribers;
+      unsubs.forEach(function (fn) {
+        return fn();
+      });
+      set({
+        wsStatus: 'idle',
+        wsConnected: false,
+        conversations: [],
+        conversationsLoading: false,
+        conversationsLoaded: false,
+        currentConversationId: null,
+        currentConversation: null,
+        messagesMap: {},
+        messagesLoadingMap: {},
+        messagesLoadedMap: {},
+        messageCursorMap: {},
+        _wsUnsubscribers: [],
+        _subscribed: false
+      });
+    }
+  };
+});
+
+// ============ 内部：WS 消息分发 ============
+function _handleWSMessage(msg) {
+  var store = useChatStore.getState();
+  var type = msg.type,
+    data = msg.data;
+  switch (type) {
+    case 'chat':
+    case 'message/new':
+      {
+        var _ref90, _ref91, _ref92, _data$conversationId2, _ref93, _ref94, _ref95, _ref96, _ref97, _data$sender, _ref98, _ref99, _ref100, _data$senderName, _chatMsg$content;
+        if (!data) return;
+        var conversationId = String((_ref90 = (_ref91 = (_ref92 = (_data$conversationId2 = data.conversationId) !== null && _data$conversationId2 !== void 0 ? _data$conversationId2 : data.conv_id) !== null && _ref92 !== void 0 ? _ref92 : data.ConversationId) !== null && _ref91 !== void 0 ? _ref91 : store.currentConversationId) !== null && _ref90 !== void 0 ? _ref90 : '');
+
+        // 调试日志：打印 WS 推送的消息结构
+        console.log('[ChatStore] WS 收到消息(type=' + type + ') 原始数据:', {
+          dataKeys: Object.keys(data || {}),
+          sender: (_ref93 = (_ref94 = (_ref95 = (_ref96 = (_ref97 = (_data$sender = data.sender) !== null && _data$sender !== void 0 ? _data$sender : data.Sender) !== null && _ref97 !== void 0 ? _ref97 : data.senderType) !== null && _ref96 !== void 0 ? _ref96 : data.role) !== null && _ref95 !== void 0 ? _ref95 : data.sender_role) !== null && _ref94 !== void 0 ? _ref94 : data.userType) !== null && _ref93 !== void 0 ? _ref93 : '(无)',
+          senderName: (_ref98 = (_ref99 = (_ref100 = (_data$senderName = data.senderName) !== null && _data$senderName !== void 0 ? _data$senderName : data.SenderName) !== null && _ref100 !== void 0 ? _ref100 : data.sender_name) !== null && _ref99 !== void 0 ? _ref99 : data.name) !== null && _ref98 !== void 0 ? _ref98 : '(无)',
+          raw: JSON.stringify(data).slice(0, 300)
+        });
+        var chatMsg = normalizeMessage(data, conversationId);
+        console.log('[ChatStore] WS 收到消息 标准化后:', {
+          id: chatMsg.id,
+          sender: chatMsg.sender,
+          content: (_chatMsg$content = chatMsg.content) === null || _chatMsg$content === void 0 ? void 0 : _chatMsg$content.slice(0, 30)
+        });
+        store.addMessage(chatMsg);
+        // 如果不在当前会话 → 刷新未读（addMessage 内部已处理）
+        break;
+      }
+    case 'message/read':
+      {
+        var _ref101, _data$conversationId3;
+        // 对方已读 → 更新消息状态
+        var _conversationId = String((_ref101 = (_data$conversationId3 = data === null || data === void 0 ? void 0 : data.conversationId) !== null && _data$conversationId3 !== void 0 ? _data$conversationId3 : store.currentConversationId) !== null && _ref101 !== void 0 ? _ref101 : '');
+        var msgIds = Array.isArray(data === null || data === void 0 ? void 0 : data.messageIds) ? data.messageIds.map(String) : data !== null && data !== void 0 && data.messageId ? [String(data.messageId)] : [];
+        if (_conversationId && msgIds.length) {
+          msgIds.forEach(function (mid) {
+            return store.updateMessage(_conversationId, mid, {
+              status: 'read'
+            });
+          });
+        } else if (_conversationId) {
+          // 全量标记该会话的 user 消息为 read
+          var msgs = store.getMessages(_conversationId);
+          msgs.forEach(function (m) {
+            if (m.sender === 'user') store.updateMessage(_conversationId, m.id, {
+              status: 'read'
+            });
+          });
+        }
+        break;
+      }
+    case 'conversation/update':
+      {
+        if (data) {
+          var conv = normalizeConversation(data);
+          useChatStore.setState(function (s) {
+            var _s$currentConversatio2;
+            return {
+              conversations: s.conversations.some(function (c) {
+                return c.id === conv.id;
+              }) ? s.conversations.map(function (c) {
+                return c.id === conv.id ? (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_4__["default"])((0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_4__["default"])({}, c), conv) : c;
+              }) : [conv].concat((0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_toConsumableArray_js__WEBPACK_IMPORTED_MODULE_9__["default"])(s.conversations)),
+              currentConversation: ((_s$currentConversatio2 = s.currentConversation) === null || _s$currentConversatio2 === void 0 ? void 0 : _s$currentConversatio2.id) === conv.id ? (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_4__["default"])((0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_4__["default"])({}, s.currentConversation), conv) : s.currentConversation
+            };
+          });
+        }
+        break;
+      }
+    case 'conversation/read':
+      {
+        var _ref102, _data$conversationId4;
+        var convId = String((_ref102 = (_data$conversationId4 = data === null || data === void 0 ? void 0 : data.conversationId) !== null && _data$conversationId4 !== void 0 ? _data$conversationId4 : data === null || data === void 0 ? void 0 : data.id) !== null && _ref102 !== void 0 ? _ref102 : '');
+        if (convId) store.markConversationRead(convId).catch(function () {});
+        break;
+      }
+    case 'system':
+    case 'error':
+      {
+        console.log("[ChatStore] WS ".concat(type, ":"), data);
+        break;
+      }
+    default:
+      console.debug('[ChatStore] 未处理 WS 消息类型:', type, data);
+  }
+}
+/* harmony default export */ __webpack_exports__["default"] = (useChatStore);
+
+/***/ }),
+
+/***/ "./src/utils/categoryIcons.ts":
+/*!************************************!*\
+  !*** ./src/utils/categoryIcons.ts ***!
+  \************************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   getCategoryIcon: function() { return /* binding */ getCategoryIcon; }
+/* harmony export */ });
+/* harmony import */ var _icons_category_coffee_svg__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @/icons/category/coffee.svg */ "./src/icons/category/coffee.svg");
+/* harmony import */ var _icons_category_phone_svg__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @/icons/category/phone.svg */ "./src/icons/category/phone.svg");
+/* harmony import */ var _icons_category_smartphone_svg__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @/icons/category/smartphone.svg */ "./src/icons/category/smartphone.svg");
+/* harmony import */ var _icons_category_accessory_svg__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @/icons/category/accessory.svg */ "./src/icons/category/accessory.svg");
+/* harmony import */ var _icons_category_runningshoe_svg__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @/icons/category/runningshoe.svg */ "./src/icons/category/runningshoe.svg");
+/* harmony import */ var _icons_category_nutsnack_svg__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @/icons/category/nutsnack.svg */ "./src/icons/category/nutsnack.svg");
+/* harmony import */ var _icons_category_sneaker_svg__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @/icons/category/sneaker.svg */ "./src/icons/category/sneaker.svg");
+/* harmony import */ var _icons_category_food_svg__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! @/icons/category/food.svg */ "./src/icons/category/food.svg");
+
+
+
+
+
+
+
+
+var categoryIconMap = [{
+  keywords: ['奶茶', '咖啡', '茶', 'coffee', 'drink'],
+  icon: _icons_category_coffee_svg__WEBPACK_IMPORTED_MODULE_0__
+}, {
+  keywords: ['智能手机', 'smartphone'],
+  icon: _icons_category_smartphone_svg__WEBPACK_IMPORTED_MODULE_2__
+}, {
+  keywords: ['手机配件', '配件', 'accessory'],
+  icon: _icons_category_accessory_svg__WEBPACK_IMPORTED_MODULE_3__
+}, {
+  keywords: ['手机', '数码', '电子', 'phone', 'digital', 'mobile'],
+  icon: _icons_category_phone_svg__WEBPACK_IMPORTED_MODULE_1__
+}, {
+  keywords: ['跑步鞋', '跑鞋', 'runningshoe', 'running'],
+  icon: _icons_category_runningshoe_svg__WEBPACK_IMPORTED_MODULE_4__
+}, {
+  keywords: ['坚果', '零食', 'nut', 'snack', 'nutsnack'],
+  icon: _icons_category_nutsnack_svg__WEBPACK_IMPORTED_MODULE_5__
+}, {
+  keywords: ['运动', '鞋', '服', 'sport', 'sneaker', 'shoe', '跑步'],
+  icon: _icons_category_sneaker_svg__WEBPACK_IMPORTED_MODULE_6__
+}, {
+  keywords: ['食品', '生鲜', '超市', 'food', 'fresh', 'grocery'],
+  icon: _icons_category_food_svg__WEBPACK_IMPORTED_MODULE_7__
+}];
+function getCategoryIcon(categoryName, fallbackIcon) {
+  if (!categoryName) return fallbackIcon || '';
+  var nameLower = categoryName.toLowerCase();
+  var matched = categoryIconMap.find(function (item) {
+    return item.keywords.some(function (kw) {
+      return nameLower.includes(kw.toLowerCase());
+    });
+  });
+  return matched ? matched.icon : fallbackIcon || _icons_category_phone_svg__WEBPACK_IMPORTED_MODULE_1__;
+}
+
+/***/ }),
+
+/***/ "./src/utils/chatWS.ts":
+/*!*****************************!*\
+  !*** ./src/utils/chatWS.ts ***!
+  \*****************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+/* unused harmony export chatWS */
+/* harmony import */ var D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./node_modules/@babel/runtime/helpers/esm/objectSpread2.js */ "./node_modules/@babel/runtime/helpers/esm/objectSpread2.js");
+/* harmony import */ var D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_classCallCheck_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./node_modules/@babel/runtime/helpers/esm/classCallCheck.js */ "./node_modules/@babel/runtime/helpers/esm/classCallCheck.js");
+/* harmony import */ var D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_createClass_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./node_modules/@babel/runtime/helpers/esm/createClass.js */ "./node_modules/@babel/runtime/helpers/esm/createClass.js");
+/* harmony import */ var D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_defineProperty_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./node_modules/@babel/runtime/helpers/esm/defineProperty.js */ "./node_modules/@babel/runtime/helpers/esm/defineProperty.js");
+/* harmony import */ var _tarojs_taro__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @tarojs/taro */ "./node_modules/@tarojs/taro/index.js");
+/* harmony import */ var _tarojs_taro__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_tarojs_taro__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _api_message__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @/api/message */ "./src/api/message/index.ts");
+/* harmony import */ var _api_common__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @/api/common */ "./src/api/common/index.ts");
+/* provided dependency */ var window = __webpack_require__(/*! @tarojs/runtime */ "./node_modules/@tarojs/runtime/dist/index.js")["window"];
+
+
+
+
+var _ChatWebSocketManager;
+// ============================================
+// 客服 WebSocket 管理服务
+// 遵循 Persistent Connection Systems 设计规范：
+//   - 首条消息鉴权（兼容 URL token + 消息体 token 两种后端协议）
+//   - 心跳 + 空闲超时
+//   - 指数退避+抖动 重连
+//   - 发送队列 + 缓冲区上限
+//   - 消息序列号 gap 检测
+// ============================================
+
+
+
+
+
+// -------------- 常量配置 --------------
+var HEARTBEAT_INTERVAL = 30000; // 心跳间隔 30s
+var HEARTBEAT_IDLE_TIMEOUT = 90000; // 空闲超时 90s（3 次 ping 未收到 pong）
+var MAX_RECONNECT_DELAY = 30000; // 最大重连间隔 30s
+var BASE_RECONNECT_DELAY = 1000; // 初始重连间隔 1s
+var RECONNECT_JITTER = 0.2; // 抖动 ±20%（避免惊群）
+var MAX_RECONNECT_ATTEMPTS = 10; // 最大重连次数（超限需手动触发）
+var SEND_QUEUE_LIMIT = 200; // 发送队列上限（未连接时暂存）
+var MSG_BUFFER_LIMIT = 1000; // 入站消息缓冲上限（慢消费者保护）
+var SEQUENCE_GAP_THRESHOLD = 1; // 序列号 gap 阈值
+
+// -------------- 类型定义 --------------
+// -------------- WebSocket 管理器（单例）--------------
+var ChatWebSocketManager = /*#__PURE__*/function () {
+  function ChatWebSocketManager() {
+    (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_classCallCheck_js__WEBPACK_IMPORTED_MODULE_3__["default"])(this, ChatWebSocketManager);
+    (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_defineProperty_js__WEBPACK_IMPORTED_MODULE_4__["default"])(this, "_ws", null);
+    (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_defineProperty_js__WEBPACK_IMPORTED_MODULE_4__["default"])(this, "_status", 'idle');
+    (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_defineProperty_js__WEBPACK_IMPORTED_MODULE_4__["default"])(this, "_listeners", new Set());
+    (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_defineProperty_js__WEBPACK_IMPORTED_MODULE_4__["default"])(this, "_statusListeners", new Set());
+    (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_defineProperty_js__WEBPACK_IMPORTED_MODULE_4__["default"])(this, "_heartbeatTimer", null);
+    (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_defineProperty_js__WEBPACK_IMPORTED_MODULE_4__["default"])(this, "_idleTimer", null);
+    (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_defineProperty_js__WEBPACK_IMPORTED_MODULE_4__["default"])(this, "_reconnectTimer", null);
+    (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_defineProperty_js__WEBPACK_IMPORTED_MODULE_4__["default"])(this, "_reconnectAttempts", 0);
+    (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_defineProperty_js__WEBPACK_IMPORTED_MODULE_4__["default"])(this, "_shouldReconnect", true);
+    (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_defineProperty_js__WEBPACK_IMPORTED_MODULE_4__["default"])(this, "_manualClose", false);
+    (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_defineProperty_js__WEBPACK_IMPORTED_MODULE_4__["default"])(this, "_authSent", false);
+    // 是否已发送鉴权消息
+    (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_defineProperty_js__WEBPACK_IMPORTED_MODULE_4__["default"])(this, "_authTimer", null);
+    (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_defineProperty_js__WEBPACK_IMPORTED_MODULE_4__["default"])(this, "_useDirectFallback", false);
+    // 是否使用直连后端 fallback
+    (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_defineProperty_js__WEBPACK_IMPORTED_MODULE_4__["default"])(this, "_fallbackTried", false);
+    // 是否已尝试过 fallback（只尝试一次）
+    (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_defineProperty_js__WEBPACK_IMPORTED_MODULE_4__["default"])(this, "_sendQueue", []);
+    (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_defineProperty_js__WEBPACK_IMPORTED_MODULE_4__["default"])(this, "_lastServerSeq", null);
+    (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_defineProperty_js__WEBPACK_IMPORTED_MODULE_4__["default"])(this, "_msgBuffer", []);
+    // ============== 内部：连接 ==============
+    (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_defineProperty_js__WEBPACK_IMPORTED_MODULE_4__["default"])(this, "_connectTimeoutTimer", null);
+  }
+
+  // ============== 公共 API ==============
+  return (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_createClass_js__WEBPACK_IMPORTED_MODULE_5__["default"])(ChatWebSocketManager, [{
+    key: "_isH5",
+    get:
+    // 跨平台环境判断
+    function get() {
+      return "weapp" === 'h5';
+    }
+  }, {
+    key: "status",
+    get: function get() {
+      return this._status;
+    }
+
+    /**
+     * 建立连接（幂等）
+     */
+  }, {
+    key: "connect",
+    value: function connect() {
+      if (this._status === 'open' || this._status === 'connecting') {
+        console.debug('[ChatWS] 已有连接/正在连接，跳过');
+        return;
+      }
+      this._manualClose = false;
+      this._shouldReconnect = true;
+      // 用户手动触发时重置 fallback 状态，优先尝试代理连接
+      if (this._fallbackTried) {
+        this._useDirectFallback = false;
+        this._fallbackTried = false;
+        this._reconnectAttempts = 0;
+      }
+      this._doConnect();
+    }
+
+    /**
+     * 主动关闭（不自动重连）
+     */
+  }, {
+    key: "disconnect",
+    value: function disconnect() {
+      this._manualClose = true;
+      this._shouldReconnect = false;
+      this._clearReconnectTimer();
+      this._clearAuthTimer();
+      this._doClose(1000, 'Client closing');
+    }
+
+    /**
+     * 发送消息（若未连接则入队，连接后 flush）
+     */
+  }, {
+    key: "send",
+    value: function send(msg) {
+      var _msg$id;
+      var envelope = (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_6__["default"])((0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_6__["default"])({}, msg), {}, {
+        id: (_msg$id = msg.id) !== null && _msg$id !== void 0 ? _msg$id : "c-".concat(Date.now(), "-").concat(Math.random().toString(36).slice(2, 8))
+      });
+      if (this._status === 'open' && this._authSent) {
+        return this._doSend(envelope);
+      }
+
+      // 未连接或未完成鉴权 → 入队
+      if (this._sendQueue.length >= SEND_QUEUE_LIMIT) {
+        console.warn('[ChatWS] 发送队列已满，丢弃最早消息');
+        this._sendQueue.shift();
+      }
+      this._sendQueue.push(envelope);
+      console.debug('[ChatWS] 消息入队，队列长度=', this._sendQueue.length);
+
+      // 尝试主动建立连接
+      if (this._status === 'idle' || this._status === 'closed') {
+        this.connect();
+      }
+      return false;
+    }
+
+    /**
+     * 订阅入站消息
+     */
+  }, {
+    key: "onMessage",
+    value: function onMessage(listener) {
+      var _this = this;
+      this._listeners.add(listener);
+      return function () {
+        return _this._listeners.delete(listener);
+      };
+    }
+
+    /**
+     * 订阅连接状态
+     */
+  }, {
+    key: "onStatusChange",
+    value: function onStatusChange(listener) {
+      var _this2 = this;
+      this._statusListeners.add(listener);
+      return function () {
+        return _this2._statusListeners.delete(listener);
+      };
+    }
+
+    /**
+     * 重置重连计数（用户手动触发重连时调用）
+     */
+  }, {
+    key: "resetReconnect",
+    value: function resetReconnect() {
+      this._reconnectAttempts = 0;
+    }
+  }, {
+    key: "_doConnect",
+    value: function _doConnect() {
+      var _this3 = this;
+      // 如果已有连接正在进行中，不重复连接
+      if (this._status === 'connecting') {
+        console.debug('[ChatWS] 已有连接正在进行中，跳过');
+        return;
+      }
+      this._setStatus('connecting');
+      this._clearHeartbeat();
+      this._authSent = false;
+      var token = (0,_api_common__WEBPACK_IMPORTED_MODULE_2__.getAuthToken)();
+
+      // 构建 URL：URL 查询参数携带 token（解决后端握手阶段鉴权问题）
+      var baseUrl;
+      if (this._isH5) {
+        if (this._useDirectFallback) {
+          baseUrl = _api_message__WEBPACK_IMPORTED_MODULE_1__.WS_DIRECT_URL;
+          console.log('[ChatWS] H5 连接（直连后端 fallback）:', baseUrl);
+        } else {
+          baseUrl = _api_message__WEBPACK_IMPORTED_MODULE_1__.WS_BASE_URL;
+          console.log('[ChatWS] H5 连接（走代理）:', baseUrl);
+        }
+      } else {
+        baseUrl = _api_message__WEBPACK_IMPORTED_MODULE_1__.WS_BASE_URL;
+        console.log('[ChatWS] 小程序连接（直连）:', baseUrl);
+      }
+
+      // 在 URL 上拼接 token 查询参数
+      var url = token ? "".concat(baseUrl).concat(baseUrl.includes('?') ? '&' : '?', "token=").concat(encodeURIComponent(token)) : baseUrl;
+      if (!token) {
+        console.warn('[ChatWS] 无 token，后端可能拒绝握手');
+      }
+      try {
+        // 销毁旧实例，防止残留连接
+        if (this._ws) {
+          try {
+            if (this._isH5) {
+              this._ws.onopen = null;
+              this._ws.onmessage = null;
+              this._ws.onerror = null;
+              this._ws.onclose = null;
+              if (this._ws.readyState === WebSocket.OPEN || this._ws.readyState === WebSocket.CONNECTING) {
+                this._ws.close(4001, 'Reconnecting');
+              }
+            }
+          } catch (_unused) {}
+          this._ws = null;
+        }
+
+        // 连接超时保护：5秒内未连接成功则视为超时
+        if (this._connectTimeoutTimer) clearTimeout(this._connectTimeoutTimer);
+        this._connectTimeoutTimer = setTimeout(function () {
+          if (_this3._status === 'connecting') {
+            console.warn('[ChatWS] 连接超时（5秒），强制关闭并重连');
+            if (_this3._ws) {
+              // SocketTask 已存在，走正常关闭流程（会触发 onClose → 重连）
+              _this3._doClose(4000, 'Connection timeout');
+            } else {
+              // Promise 尚未 resolve，无 SocketTask 可关闭，直接重连
+              _this3._setStatus('closed');
+              _this3._tryFallbackOrReconnect();
+            }
+          }
+        }, 5000);
+        if (this._isH5 && typeof WebSocket !== 'undefined') {
+          this._ws = new WebSocket(url);
+          this._bindH5Events(this._ws, token);
+        } else {
+          // Taro 4.x: connectSocket 返回 Promise<SocketTask>，需通过 .then() 获取 SocketTask 实例
+          this._ws = null; // 标记为 null，等待 Promise resolve
+          _tarojs_taro__WEBPACK_IMPORTED_MODULE_0___default().connectSocket({
+            url: url,
+            protocols: [],
+            complete: function complete() {}
+          }).then(function (task) {
+            // Promise resolve 时检查是否已被取消（用户 disconnect 或超时关闭）
+            if (_this3._status !== 'connecting') {
+              console.log('[ChatWS] SocketTask 已 resolve 但连接状态已变更:', _this3._status, '，关闭残留 task');
+              try {
+                task.close({
+                  code: 4001,
+                  reason: 'Cancelled',
+                  complete: function complete() {}
+                });
+              } catch (_unused2) {}
+              return;
+            }
+            _this3._ws = task;
+            _this3._bindMiniEvents(task, token);
+          }).catch(function (err) {
+            console.error('[ChatWS] connectSocket Promise rejected:', err);
+            if (_this3._status === 'connecting') {
+              _this3._setStatus('closed');
+              _this3._tryFallbackOrReconnect();
+            }
+          });
+        }
+      } catch (err) {
+        console.error('[ChatWS] 创建连接异常:', err);
+        this._setStatus('closed');
+        this._tryFallbackOrReconnect();
+      }
+    }
+  }, {
+    key: "_bindH5Events",
+    value: function _bindH5Events(ws, token) {
+      var _this4 = this;
+      ws.onopen = function () {
+        return _this4._onOpen(token);
+      };
+      ws.onmessage = function (ev) {
+        return _this4._onMessage(ev.data);
+      };
+      ws.onerror = function (ev) {
+        var wsAny = ws;
+        console.error('[ChatWS] H5 WebSocket error:', {
+          event: ev,
+          readyState: wsAny.readyState,
+          url: wsAny.url,
+          // 诊断信息
+          diagnostic: _this4._diagnoseError(wsAny, token)
+        });
+        // 握手失败后立即发送一次诊断探测（带/不带 Origin 的 HTTP 对比），
+        // 帮助定位是否为后端 Origin 中间件 403 拒握手
+        _this4._probeOriginPolicy(wsAny.url);
+      };
+      ws.onclose = function (ev) {
+        console.log("[ChatWS] H5 \u5173\u95ED code=".concat(ev.code, " reason=").concat(ev.reason, " wasClean=").concat(ev.wasClean));
+        _this4._onClose();
+      };
+    }
+  }, {
+    key: "_bindMiniEvents",
+    value: function _bindMiniEvents(task, token) {
+      var _this5 = this;
+      task.onOpen(function () {
+        return _this5._onOpen(token);
+      });
+      task.onMessage(function (res) {
+        var _data;
+        return _this5._onMessage((_data = res.data) !== null && _data !== void 0 ? _data : res);
+      });
+      task.onError(function (err) {
+        return console.error('[ChatWS] 小程序 WebSocket error:', err);
+      });
+      task.onClose(function (res) {
+        console.log("[ChatWS] \u5C0F\u7A0B\u5E8F WebSocket \u5173\u95ED code=".concat(res === null || res === void 0 ? void 0 : res.code, " reason=").concat(res === null || res === void 0 ? void 0 : res.reason));
+        _this5._onClose();
+      });
+    }
+  }, {
+    key: "_onOpen",
+    value: function _onOpen(token) {
+      console.log('[ChatWS] WebSocket 握手成功（URL token 鉴权通过）');
+      // 清除连接超时定时器
+      if (this._connectTimeoutTimer) {
+        clearTimeout(this._connectTimeoutTimer);
+        this._connectTimeoutTimer = null;
+      }
+      this._setStatus('open');
+      this._reconnectAttempts = 0;
+
+      // URL 已携带 token，握手成功即视为鉴权通过
+      // 直接设置 _authSent = true，不发 auth 消息（避免后端不认 auth 类型而断开连接）
+      this._authSent = true;
+      this._startHeartbeat();
+      this._flushSendQueue();
+      console.log('[ChatWS] 鉴权通过（URL token），开始心跳并 flush 发送队列');
+    }
+
+    /**
+     * 发送鉴权消息（首条消息方式）
+     * 部分后端 WebSocket 不支持 URL query token，需在 open 后立即发送鉴权消息
+     */
+  }, {
+    key: "_sendAuthMessage",
+    value: function _sendAuthMessage(token) {
+      var _this6 = this;
+      if (!this._ws || this._status !== 'open') return;
+      var authMsg = {
+        type: 'auth',
+        data: {
+          token: token
+        }
+      };
+      try {
+        var payload = JSON.stringify(authMsg);
+        if (this._isH5) {
+          this._ws.send(payload);
+        } else {
+          this._ws.send({
+            data: payload,
+            complete: function complete() {}
+          });
+        }
+        this._authSent = true;
+        console.log('[ChatWS] 鉴权消息已发送');
+
+        // 鉴权超时保护：5 秒内未收到 auth_ack 则视为鉴权失败
+        this._clearAuthTimer();
+        this._authTimer = setTimeout(function () {
+          if (!_this6._authSent && _this6._status === 'open') {
+            console.warn('[ChatWS] 鉴权超时，关闭连接');
+            _this6._doClose(4001, 'Auth timeout');
+          }
+        }, 5000);
+
+        // 启动心跳并 flush 发送队列
+        this._startHeartbeat();
+        this._flushSendQueue();
+      } catch (err) {
+        console.error('[ChatWS] 鉴权消息发送失败:', err);
+        this._authSent = false;
+        // 鉴权失败仍尝试继续连接
+        this._startHeartbeat();
+        this._flushSendQueue();
+      }
+    }
+  }, {
+    key: "_clearAuthTimer",
+    value: function _clearAuthTimer() {
+      if (this._authTimer) {
+        clearTimeout(this._authTimer);
+        this._authTimer = null;
+      }
+    }
+  }, {
+    key: "_onClose",
+    value: function _onClose() {
+      // 清除连接超时定时器
+      if (this._connectTimeoutTimer) {
+        clearTimeout(this._connectTimeoutTimer);
+        this._connectTimeoutTimer = null;
+      }
+      this._clearHeartbeat();
+      this._clearAuthTimer();
+      this._authSent = false;
+      this._setStatus('closed');
+      this._ws = null;
+      if (this._shouldReconnect && !this._manualClose) {
+        this._tryFallbackOrReconnect();
+      }
+    }
+
+    /**
+     * 尝试 fallback 到直连后端（仅 H5 环境的第一次失败），否则走常规重连
+     */
+  }, {
+    key: "_tryFallbackOrReconnect",
+    value: function _tryFallbackOrReconnect() {
+      if (this._isH5 && !this._useDirectFallback && !this._fallbackTried) {
+        // 第一次失败：尝试直连后端 fallback
+        this._fallbackTried = true;
+        this._useDirectFallback = true;
+        console.warn('[ChatWS] 代理连接失败，尝试直连后端 fallback...');
+        this._reconnectAttempts = 0; // 重置重连计数
+        this._scheduleReconnect(500); // 快速重连
+      } else {
+        this._scheduleReconnect();
+      }
+    }
+  }, {
+    key: "_doClose",
+    value: function _doClose(code, reason) {
+      if (!this._ws) {
+        this._setStatus('closed');
+        return;
+      }
+      if (this._status === 'closed' || this._status === 'closing') return;
+      this._setStatus('closing');
+      try {
+        if (this._isH5) {
+          this._ws.close(code, reason);
+        } else {
+          this._ws.close({
+            code: code,
+            reason: reason,
+            complete: function complete() {}
+          });
+        }
+      } catch (err) {
+        console.warn('[ChatWS] 关闭异常:', err);
+      }
+    }
+
+    // ============== 内部：发送 ==============
+  }, {
+    key: "_doSend",
+    value: function _doSend(msg) {
+      if (!this._ws || this._status !== 'open' || !this._authSent) {
+        console.warn('[ChatWS] _doSend 拒绝: ws=', !!this._ws, 'status=', this._status, 'authSent=', this._authSent);
+        return false;
+      }
+      try {
+        var payload = JSON.stringify(msg);
+        console.log('[ChatWS] _doSend 发送:', payload);
+        if (this._isH5) {
+          this._ws.send(payload);
+        } else {
+          this._ws.send({
+            data: payload,
+            fail: function fail(err) {
+              return console.error('[ChatWS] 小程序 send 失败:', err);
+            },
+            complete: function complete() {}
+          });
+        }
+        return true;
+      } catch (err) {
+        console.error('[ChatWS] 发送失败，重新入队:', err);
+        if (this._sendQueue.length < SEND_QUEUE_LIMIT) {
+          this._sendQueue.unshift(msg);
+        }
+        return false;
+      }
+    }
+  }, {
+    key: "_flushSendQueue",
+    value: function _flushSendQueue() {
+      if (this._sendQueue.length === 0) return;
+      console.debug("[ChatWS] Flush \u53D1\u9001\u961F\u5217: ".concat(this._sendQueue.length, " \u6761"));
+      while (this._sendQueue.length > 0 && this._status === 'open' && this._authSent) {
+        var _msg = this._sendQueue.shift();
+        if (!this._doSend(_msg)) {
+          this._sendQueue.unshift(_msg);
+          break;
+        }
+      }
+    }
+
+    // ============== 内部：入站消息处理 ==============
+  }, {
+    key: "_onMessage",
+    value: function _onMessage(raw) {
+      var parsed;
+      try {
+        parsed = typeof raw === 'string' ? JSON.parse(raw) : raw;
+      } catch (err) {
+        console.warn('[ChatWS] 非 JSON 消息，忽略:', raw);
+        return;
+      }
+
+      // 鉴权确认
+      if (parsed.type === 'auth_ack') {
+        this._authSent = true;
+        this._clearAuthTimer();
+        console.log('[ChatWS] 鉴权成功', parsed.data);
+        return;
+      }
+
+      // 心跳响应
+      if (parsed.type === 'pong') {
+        this._resetIdleTimer();
+        return;
+      }
+      if (parsed.type === 'ping') {
+        this.send({
+          type: 'pong'
+        });
+        return;
+      }
+
+      // 序列号 gap 检测
+      if (typeof parsed.seq === 'number' && this._lastServerSeq !== null) {
+        var gap = parsed.seq - this._lastServerSeq - 1;
+        if (gap >= SEQUENCE_GAP_THRESHOLD) {
+          console.warn("[ChatWS] \u26A0\uFE0F \u68C0\u6D4B\u5230\u6D88\u606F gap! last=".concat(this._lastServerSeq, ", cur=").concat(parsed.seq, ", gap=").concat(gap));
+        }
+      }
+      if (typeof parsed.seq === 'number') {
+        this._lastServerSeq = parsed.seq;
+      }
+
+      // 缓冲区（慢消费者保护）
+      this._msgBuffer.push(parsed);
+      if (this._msgBuffer.length > MSG_BUFFER_LIMIT) {
+        var dropped = this._msgBuffer.length - MSG_BUFFER_LIMIT;
+        console.warn("[ChatWS] \uD83E\uDDEF \u5165\u7AD9\u7F13\u51B2\u6EA2\u51FA\uFF0C\u4E22\u5F03 ".concat(dropped, " \u6761\u65E7\u6D88\u606F"));
+        this._msgBuffer.splice(0, dropped);
+      }
+
+      // 重置空闲计时
+      this._resetIdleTimer();
+
+      // 广播给监听者
+      this._listeners.forEach(function (fn) {
+        try {
+          fn(parsed);
+        } catch (e) {
+          console.error('[ChatWS] listener error:', e);
+        }
+      });
+    }
+
+    // ============== 内部：心跳 & 空闲 ==============
+  }, {
+    key: "_startHeartbeat",
+    value: function _startHeartbeat() {
+      var _this7 = this;
+      this._clearHeartbeat();
+      this._heartbeatTimer = setInterval(function () {
+        if (_this7._status === 'open' && _this7._authSent) {
+          _this7.send({
+            type: 'ping'
+          });
+        }
+      }, HEARTBEAT_INTERVAL);
+      this._resetIdleTimer();
+    }
+  }, {
+    key: "_clearHeartbeat",
+    value: function _clearHeartbeat() {
+      if (this._heartbeatTimer) {
+        clearInterval(this._heartbeatTimer);
+        this._heartbeatTimer = null;
+      }
+      if (this._idleTimer) {
+        clearTimeout(this._idleTimer);
+        this._idleTimer = null;
+      }
+    }
+  }, {
+    key: "_resetIdleTimer",
+    value: function _resetIdleTimer() {
+      var _this8 = this;
+      if (this._idleTimer) clearTimeout(this._idleTimer);
+      this._idleTimer = setTimeout(function () {
+        console.warn('[ChatWS] 心跳超时，关闭连接并重连');
+        _this8._doClose(4000, 'Idle timeout');
+      }, HEARTBEAT_IDLE_TIMEOUT);
+    }
+
+    // ============== 内部：重连（指数退避 + 抖动）==============
+  }, {
+    key: "_scheduleReconnect",
+    value: function _scheduleReconnect(initialDelay) {
+      var _this9 = this;
+      this._clearReconnectTimer();
+      if (!this._shouldReconnect) return;
+
+      // 超过最大重连次数则停止，等待用户手动触发
+      if (this._reconnectAttempts >= MAX_RECONNECT_ATTEMPTS) {
+        console.warn("[ChatWS] \u5DF2\u8FBE\u6700\u5927\u91CD\u8FDE\u6B21\u6570 (".concat(MAX_RECONNECT_ATTEMPTS, ")\uFF0C\u505C\u6B62\u81EA\u52A8\u91CD\u8FDE\uFF0C\u8BF7\u624B\u52A8\u89E6\u53D1"));
+        this._setStatus('closed');
+        return;
+      }
+      this._reconnectAttempts += 1;
+
+      // 支持外部指定初始延迟（用于 fallback 快速重连）
+      if (initialDelay !== undefined && this._reconnectAttempts === 1) {
+        console.log("[ChatWS] \uD83D\uDD04 fallback \u91CD\u8FDE\uFF0C".concat(initialDelay, "ms \u540E..."));
+        this._reconnectTimer = setTimeout(function () {
+          if (_this9._shouldReconnect) _this9._doConnect();
+        }, initialDelay);
+        return;
+      }
+      var baseDelay = Math.min(BASE_RECONNECT_DELAY * Math.pow(2, this._reconnectAttempts - 1), MAX_RECONNECT_DELAY);
+      var jitter = baseDelay * RECONNECT_JITTER * (Math.random() * 2 - 1);
+      var delay = Math.round(baseDelay + jitter);
+      console.log("[ChatWS] \uD83D\uDD04 \u8BA1\u5212\u7B2C ".concat(this._reconnectAttempts, "/").concat(MAX_RECONNECT_ATTEMPTS, " \u6B21\u91CD\u8FDE\uFF0C").concat(delay, "ms \u540E..."));
+      this._reconnectTimer = setTimeout(function () {
+        if (_this9._shouldReconnect) _this9._doConnect();
+      }, delay);
+    }
+  }, {
+    key: "_clearReconnectTimer",
+    value: function _clearReconnectTimer() {
+      if (this._reconnectTimer) {
+        clearTimeout(this._reconnectTimer);
+        this._reconnectTimer = null;
+      }
+    }
+
+    // ============== 内部：诊断工具 ==============
+  }, {
+    key: "_diagnoseError",
+    value: function _diagnoseError(ws, token) {
+      var parts = [];
+      parts.push("readyState=".concat(ws.readyState));
+      parts.push("url=".concat(ws.url || 'N/A'));
+      if (!ws.url) {
+        parts.push('⚠️ WebSocket 未设置 URL');
+      } else if (ws.url.startsWith('ws://localhost') || ws.url.startsWith('ws://127.0.0.1')) {
+        parts.push('⚠️ 直连 localhost/127.0.0.1，若后端不在本机将无法连接');
+      }
+      if (!token) {
+        parts.push('⚠️ 无 token，可能因未登录被后端拒绝');
+      }
+      parts.push("\u4EE3\u7406\u914D\u7F6E: config/dev.ts \u4E2D /api \u4EE3\u7406 ws:true + onProxyReqWs \u5DF2\u5265\u79BB Origin/Referer");
+      parts.push("\u82E5\u76F4\u8FDE\u540E\u7AEF: \u540E\u7AEF Origin \u4E2D\u95F4\u4EF6\u5FC5\u987B\u653E\u884C WebSocket \u63E1\u624B\uFF0C\u5426\u5219\u6D4F\u89C8\u5668\u5F3A\u5236 Origin \u2192 403");
+      parts.push("\u63E1\u624B\u9274\u6743: \u9996\u6761\u6D88\u606F {type:\"auth\",data:{token}} \u65B9\u6848\u5DF2\u542F\u7528");
+      return parts.join(' | ');
+    }
+
+    /**
+     * 主动探测后端 Origin 策略（WS 握手失败时触发一次，辅助诊断）
+     * 带 Origin 与不带 Origin 的 HTTP GET 对比：
+     *   - 403 (带) + 200 (不带)  → Origin 中间件黑名单拒绝，需后端放行 WebSocket 握手
+     *   - 200 (带) + 200 (不带)  → Origin 校验正常，排查 WS 路由/Upgrade 处理
+     */
+  }, {
+    key: "_probeOriginPolicy",
+    value: function _probeOriginPolicy(target) {
+      if (!target) return;
+      var path = target.replace(/^wss?:\/\//, '').replace(/^[^/]+/, '') || '/';
+      var baseOrigin = typeof window !== 'undefined' ? window.location.origin : '';
+      var run = function run(withOrigin, tag) {
+        var headers = {};
+        if (withOrigin) headers['Origin'] = baseOrigin;
+        fetch(path, {
+          method: 'GET',
+          headers: headers,
+          mode: 'no-cors',
+          cache: 'no-store'
+        }).then(function () {
+          return console.info("[ChatWS] probe ".concat(tag, " OK (mode=no-cors)"));
+        }).catch(function (err) {
+          return console.info("[ChatWS] probe ".concat(tag, " err:"), err);
+        });
+      };
+      console.groupCollapsed('[ChatWS] Origin 策略探测');
+      console.info('目标路径:', path);
+      run(true, 'with-Origin');
+      run(false, 'no-Origin');
+      console.groupEnd();
+    }
+
+    // ============== 内部：状态广播 ==============
+  }, {
+    key: "_setStatus",
+    value: function _setStatus(s) {
+      if (this._status === s) return;
+      this._status = s;
+      console.debug("[ChatWS] \u72B6\u6001\u53D8\u5316 \u2192 ".concat(s));
+      this._statusListeners.forEach(function (fn) {
+        try {
+          fn(s);
+        } catch (e) {
+          console.error('[ChatWS] status listener error:', e);
+        }
+      });
+    }
+  }], [{
+    key: "getInstance",
+    value: function getInstance() {
+      if (!ChatWebSocketManager._instance) {
+        ChatWebSocketManager._instance = new ChatWebSocketManager();
+      }
+      return ChatWebSocketManager._instance;
+    }
+  }]);
+}();
+_ChatWebSocketManager = ChatWebSocketManager;
+(0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_defineProperty_js__WEBPACK_IMPORTED_MODULE_4__["default"])(ChatWebSocketManager, "_instance", null);
+var chatWS = ChatWebSocketManager.getInstance();
+/* harmony default export */ __webpack_exports__["default"] = (chatWS);
+
+/***/ }),
+
+/***/ "./src/utils/image.ts":
+/*!****************************!*\
+  !*** ./src/utils/image.ts ***!
+  \****************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   getBrandIcon: function() { return /* binding */ getBrandIcon; },
+/* harmony export */   getImageUrl: function() { return /* binding */ getImageUrl; },
+/* harmony export */   isValidImageUrl: function() { return /* binding */ isValidImageUrl; },
+/* harmony export */   lazyImgProps: function() { return /* binding */ lazyImgProps; },
+/* harmony export */   normalizeProductImages: function() { return /* binding */ normalizeProductImages; },
+/* harmony export */   normalizeProductListImages: function() { return /* binding */ normalizeProductListImages; }
+/* harmony export */ });
+/* unused harmony exports getImageUrls, isValidBrandLogo */
+/* harmony import */ var D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_slicedToArray_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./node_modules/@babel/runtime/helpers/esm/slicedToArray.js */ "./node_modules/@babel/runtime/helpers/esm/slicedToArray.js");
+/* harmony import */ var D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_typeof_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./node_modules/@babel/runtime/helpers/esm/typeof.js */ "./node_modules/@babel/runtime/helpers/esm/typeof.js");
+/* harmony import */ var D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./node_modules/@babel/runtime/helpers/esm/objectSpread2.js */ "./node_modules/@babel/runtime/helpers/esm/objectSpread2.js");
+/* provided dependency */ var URL = __webpack_require__(/*! @tarojs/runtime */ "./node_modules/@tarojs/runtime/dist/index.js")["URL"];
+
+
+
+/**
+ * 图片URL处理工具
+ * 处理后端返回的图片URL，过滤掉无效的占位符域名
+ */
+
+// 默认占位图
+var DEFAULT_PLACEHOLDER = 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?placeholder';
+
+// 需要过滤的占位符域名（精确匹配主机名）
+// 注意：后端使用 img.example.com 作为图片服务器，不可过滤
+var PLACEHOLDER_DOMAINS = ['placeholder.com', 'test.com', 'demo.com', 'example.com', 'example.cn', 'xxx.com', 'xxx.cn', 'xxx.yyy', 'xxx', 'yyy', 'demo.example.com', 'test.example.com'];
+
+/**
+ * 从 URL 中提取主机名
+ */
+function extractHostname(url) {
+  try {
+    return new URL(url).hostname.toLowerCase();
+  } catch (_unused) {
+    return '';
+  }
+}
+
+/**
+ * 检查URL是否是有效的图片URL
+ */
+function isValidImageUrl(url) {
+  if (!url || typeof url !== 'string') return false;
+  if (url.startsWith('data:')) return true;
+  if (url.startsWith('/')) return true;
+
+  // 精确匹配主机名，避免 img.example.com 被 example.com 误过滤
+  var hostname = extractHostname(url);
+  if (!hostname) return true; // 无法解析的 URL 默认放行
+  return !PLACEHOLDER_DOMAINS.some(function (domain) {
+    return hostname === domain || hostname.endsWith('.' + domain);
+  });
+}
+
+/**
+ * 获取有效的图片URL，过滤占位符
+ */
+function getImageUrl(url) {
+  if (!url) return DEFAULT_PLACEHOLDER;
+  if (isValidImageUrl(url)) return url;
+  return DEFAULT_PLACEHOLDER;
+}
+
+/**
+ * 批量处理图片URL数组
+ */
+function getImageUrls(urls) {
+  if (!urls || !Array.isArray(urls)) return [];
+  return urls.map(function (url) {
+    return getImageUrl(url);
+  });
+}
+
+/**
+ * 规范化单个 SKU 数据
+ * 兼容 snake_case、camelCase、PascalCase 字段命名
+ */
+function normalizeSku(sku) {
+  var _ref, _ref2, _ref3, _ref4, _ref5, _ref6, _sku$specs, _ref7, _ref8, _ref9, _ref0, _sku$id, _ref1, _ref10, _ref11, _sku$price, _ref12, _ref13, _ref14, _ref15, _ref16, _sku$stock, _ref17, _ref18, _ref19, _ref20, _ref21, _ref22, _sku$name;
+  if (!sku) return sku;
+  var result = (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_0__["default"])({}, sku);
+
+  // 规格字段兼容：spec_values / SpecValues / specValue / specs / Specs / spec
+  var specs = (_ref = (_ref2 = (_ref3 = (_ref4 = (_ref5 = (_ref6 = (_sku$specs = sku.specs) !== null && _sku$specs !== void 0 ? _sku$specs : sku.spec_values) !== null && _ref6 !== void 0 ? _ref6 : sku.SpecValues) !== null && _ref5 !== void 0 ? _ref5 : sku.specValue) !== null && _ref4 !== void 0 ? _ref4 : sku.SpecValue) !== null && _ref3 !== void 0 ? _ref3 : sku.Specs) !== null && _ref2 !== void 0 ? _ref2 : sku.spec) !== null && _ref !== void 0 ? _ref : {};
+  result.specs = specs;
+
+  // ID 兼容：id / ID / skuId / SkuId / sku_id
+  result.id = String((_ref7 = (_ref8 = (_ref9 = (_ref0 = (_sku$id = sku.id) !== null && _sku$id !== void 0 ? _sku$id : sku.ID) !== null && _ref0 !== void 0 ? _ref0 : sku.skuId) !== null && _ref9 !== void 0 ? _ref9 : sku.SkuId) !== null && _ref8 !== void 0 ? _ref8 : sku.sku_id) !== null && _ref7 !== void 0 ? _ref7 : '');
+
+  // 价格兼容：price / Price / skuPrice / SkuPrice
+  result.price = Number((_ref1 = (_ref10 = (_ref11 = (_sku$price = sku.price) !== null && _sku$price !== void 0 ? _sku$price : sku.Price) !== null && _ref11 !== void 0 ? _ref11 : sku.skuPrice) !== null && _ref10 !== void 0 ? _ref10 : sku.SkuPrice) !== null && _ref1 !== void 0 ? _ref1 : 0);
+
+  // 库存兼容：stock / Stock / skuStock / SkuStock / inventory / Inventory
+  result.stock = Number((_ref12 = (_ref13 = (_ref14 = (_ref15 = (_ref16 = (_sku$stock = sku.stock) !== null && _sku$stock !== void 0 ? _sku$stock : sku.Stock) !== null && _ref16 !== void 0 ? _ref16 : sku.skuStock) !== null && _ref15 !== void 0 ? _ref15 : sku.SkuStock) !== null && _ref14 !== void 0 ? _ref14 : sku.inventory) !== null && _ref13 !== void 0 ? _ref13 : sku.Inventory) !== null && _ref12 !== void 0 ? _ref12 : 0);
+
+  // 图片兼容：image / Image / skuImage / SkuImage / sku_image
+  result.image = sku.image ? getImageUrl(sku.image) : sku.Image ? getImageUrl(sku.Image) : sku.skuImage ? getImageUrl(sku.skuImage) : sku.SkuImage ? getImageUrl(sku.SkuImage) : sku.sku_image ? getImageUrl(sku.sku_image) : '';
+
+  // SKU 名称兼容：name / Name / skuName / SkuName / sku_name / title / Title
+  var name = (_ref17 = (_ref18 = (_ref19 = (_ref20 = (_ref21 = (_ref22 = (_sku$name = sku.name) !== null && _sku$name !== void 0 ? _sku$name : sku.Name) !== null && _ref22 !== void 0 ? _ref22 : sku.skuName) !== null && _ref21 !== void 0 ? _ref21 : sku.SkuName) !== null && _ref20 !== void 0 ? _ref20 : sku.sku_name) !== null && _ref19 !== void 0 ? _ref19 : sku.title) !== null && _ref18 !== void 0 ? _ref18 : sku.Title) !== null && _ref17 !== void 0 ? _ref17 : '';
+  // 如果没有 name，从规格值拼接（格式：颜色 值 存储容量 值）
+  if (!name && result.specs && (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_typeof_js__WEBPACK_IMPORTED_MODULE_1__["default"])(result.specs) === 'object') {
+    name = Object.entries(result.specs).map(function (_ref23) {
+      var _ref24 = (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_slicedToArray_js__WEBPACK_IMPORTED_MODULE_2__["default"])(_ref23, 2),
+        v = _ref24[1];
+      return v;
+    }).filter(Boolean).join(' ');
+  }
+  // 再兜底用 skuCode
+  if (!name) {
+    var _ref25, _ref26, _sku$skuCode;
+    name = (_ref25 = (_ref26 = (_sku$skuCode = sku.skuCode) !== null && _sku$skuCode !== void 0 ? _sku$skuCode : sku.SkuCode) !== null && _ref26 !== void 0 ? _ref26 : sku.sku_code) !== null && _ref25 !== void 0 ? _ref25 : '';
+  }
+  result.name = name;
+  return result;
+}
+
+/**
+ * 规范化商品图片数据
+ * 处理后端返回的商品图片，确保所有图片都是有效的URL
+ * 同时规范化 SKU 字段（spec_values → specs，补全 name 等）
+ * 以及品牌、分类、价格、库存等字段命名兼容
+ */
+function normalizeProductImages(product) {
+  var _ref27, _ref28, _ref29, _ref30, _ref31, _normalized$brandId, _normalized$brand, _normalized$brand2, _ref32, _ref33, _ref34, _ref35, _normalized$brandName, _normalized$brand3, _normalized$brand4, _ref36, _ref37, _ref38, _ref39, _ref40, _normalized$categoryI, _normalized$category, _normalized$category2, _ref41, _ref42, _ref43, _ref44, _normalized$categoryN, _normalized$category3, _normalized$category4, _ref45, _ref46, _ref47, _ref48, _normalized$price, _ref56, _ref57, _ref58, _ref59, _ref60, _ref61, _normalized$stock, _ref62, _ref63, _ref64, _ref65, _ref66, _ref67, _normalized$sales, _ref68, _ref69, _ref70, _ref71, _normalized$skus, _ref72, _ref73, _ref74, _ref75, _ref76, _ref77, _ref78, _ref79, _ref80, _ref81, _ref82, _ref83, _ref84, _ref85, _ref86, _ref87, _ref88, _ref89, _ref90, _ref91, _ref92, _ref93, _ref94, _ref95, _normalized$descripti, _ref96, _ref97, _ref98, _normalized$tags;
+  if (!product) return product;
+  var normalized = (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_0__["default"])({}, product);
+
+  // ====== 图片字段处理 ======
+  // 处理images数组
+  if (normalized.images && Array.isArray(normalized.images)) {
+    normalized.images = normalized.images.map(function (url) {
+      return getImageUrl(url);
+    });
+  }
+  // 兼容 Images / imageList / ImageList / images_list
+  else if (normalized.Images && Array.isArray(normalized.Images)) {
+    normalized.images = normalized.Images.map(function (url) {
+      return getImageUrl(url);
+    });
+  } else if (normalized.imageList && Array.isArray(normalized.imageList)) {
+    normalized.images = normalized.imageList.map(function (url) {
+      return getImageUrl(url);
+    });
+  } else if (normalized.ImageList && Array.isArray(normalized.ImageList)) {
+    normalized.images = normalized.ImageList.map(function (url) {
+      return getImageUrl(url);
+    });
+  } else if (normalized.images_list && Array.isArray(normalized.images_list)) {
+    normalized.images = normalized.images_list.map(function (url) {
+      return getImageUrl(url);
+    });
+  }
+
+  // 处理单图字段
+  if (normalized.image) {
+    normalized.image = getImageUrl(normalized.image);
+  } else if (normalized.Image) {
+    normalized.image = getImageUrl(normalized.Image);
+  }
+
+  // ====== 品牌字段处理 ======
+  // brandId：brand_id / BrandId / brand.ID / brand.id / brandId
+  normalized.brandId = String((_ref27 = (_ref28 = (_ref29 = (_ref30 = (_ref31 = (_normalized$brandId = normalized.brandId) !== null && _normalized$brandId !== void 0 ? _normalized$brandId : normalized.BrandId) !== null && _ref31 !== void 0 ? _ref31 : normalized.brand_id) !== null && _ref30 !== void 0 ? _ref30 : normalized.brand_id) !== null && _ref29 !== void 0 ? _ref29 : (_normalized$brand = normalized.brand) === null || _normalized$brand === void 0 ? void 0 : _normalized$brand.ID) !== null && _ref28 !== void 0 ? _ref28 : (_normalized$brand2 = normalized.brand) === null || _normalized$brand2 === void 0 ? void 0 : _normalized$brand2.id) !== null && _ref27 !== void 0 ? _ref27 : '');
+  // brandName：brand_name / BrandName / brand.name / brand.Name / brandName
+  normalized.brandName = (_ref32 = (_ref33 = (_ref34 = (_ref35 = (_normalized$brandName = normalized.brandName) !== null && _normalized$brandName !== void 0 ? _normalized$brandName : normalized.BrandName) !== null && _ref35 !== void 0 ? _ref35 : normalized.brand_name) !== null && _ref34 !== void 0 ? _ref34 : (_normalized$brand3 = normalized.brand) === null || _normalized$brand3 === void 0 ? void 0 : _normalized$brand3.name) !== null && _ref33 !== void 0 ? _ref33 : (_normalized$brand4 = normalized.brand) === null || _normalized$brand4 === void 0 ? void 0 : _normalized$brand4.Name) !== null && _ref32 !== void 0 ? _ref32 : '';
+
+  // ====== 分类字段处理 ======
+  // categoryId：category_id / CategoryId / category.ID / category.id / categoryId
+  normalized.categoryId = String((_ref36 = (_ref37 = (_ref38 = (_ref39 = (_ref40 = (_normalized$categoryI = normalized.categoryId) !== null && _normalized$categoryI !== void 0 ? _normalized$categoryI : normalized.CategoryId) !== null && _ref40 !== void 0 ? _ref40 : normalized.category_id) !== null && _ref39 !== void 0 ? _ref39 : normalized.category_id) !== null && _ref38 !== void 0 ? _ref38 : (_normalized$category = normalized.category) === null || _normalized$category === void 0 ? void 0 : _normalized$category.ID) !== null && _ref37 !== void 0 ? _ref37 : (_normalized$category2 = normalized.category) === null || _normalized$category2 === void 0 ? void 0 : _normalized$category2.id) !== null && _ref36 !== void 0 ? _ref36 : '');
+  // categoryName：category_name / CategoryName / category.name / category.Name / categoryName
+  normalized.categoryName = (_ref41 = (_ref42 = (_ref43 = (_ref44 = (_normalized$categoryN = normalized.categoryName) !== null && _normalized$categoryN !== void 0 ? _normalized$categoryN : normalized.CategoryName) !== null && _ref44 !== void 0 ? _ref44 : normalized.category_name) !== null && _ref43 !== void 0 ? _ref43 : (_normalized$category3 = normalized.category) === null || _normalized$category3 === void 0 ? void 0 : _normalized$category3.name) !== null && _ref42 !== void 0 ? _ref42 : (_normalized$category4 = normalized.category) === null || _normalized$category4 === void 0 ? void 0 : _normalized$category4.Name) !== null && _ref41 !== void 0 ? _ref41 : '';
+
+  // ====== 价格字段处理 ======
+  normalized.price = Number((_ref45 = (_ref46 = (_ref47 = (_ref48 = (_normalized$price = normalized.price) !== null && _normalized$price !== void 0 ? _normalized$price : normalized.Price) !== null && _ref48 !== void 0 ? _ref48 : normalized.salePrice) !== null && _ref47 !== void 0 ? _ref47 : normalized.SalePrice) !== null && _ref46 !== void 0 ? _ref46 : normalized.sale_price) !== null && _ref45 !== void 0 ? _ref45 : 0);
+  // originalPrice：original_price / OriginalPrice / marketPrice / MarketPrice / market_price
+  if (normalized.originalPrice === undefined || normalized.originalPrice === null) {
+    var _ref49, _ref50, _ref51, _ref52, _ref53, _ref54, _ref55, _normalized$originalP;
+    normalized.originalPrice = Number((_ref49 = (_ref50 = (_ref51 = (_ref52 = (_ref53 = (_ref54 = (_ref55 = (_normalized$originalP = normalized.originalPrice) !== null && _normalized$originalP !== void 0 ? _normalized$originalP : normalized.OriginalPrice) !== null && _ref55 !== void 0 ? _ref55 : normalized.original_price) !== null && _ref54 !== void 0 ? _ref54 : normalized.original_price) !== null && _ref53 !== void 0 ? _ref53 : normalized.marketPrice) !== null && _ref52 !== void 0 ? _ref52 : normalized.MarketPrice) !== null && _ref51 !== void 0 ? _ref51 : normalized.market_price) !== null && _ref50 !== void 0 ? _ref50 : normalized.price) !== null && _ref49 !== void 0 ? _ref49 : 0);
+  }
+
+  // ====== 库存 & 销量 ======
+  normalized.stock = Number((_ref56 = (_ref57 = (_ref58 = (_ref59 = (_ref60 = (_ref61 = (_normalized$stock = normalized.stock) !== null && _normalized$stock !== void 0 ? _normalized$stock : normalized.Stock) !== null && _ref61 !== void 0 ? _ref61 : normalized.totalStock) !== null && _ref60 !== void 0 ? _ref60 : normalized.TotalStock) !== null && _ref59 !== void 0 ? _ref59 : normalized.total_stock) !== null && _ref58 !== void 0 ? _ref58 : normalized.inventory) !== null && _ref57 !== void 0 ? _ref57 : normalized.Inventory) !== null && _ref56 !== void 0 ? _ref56 : 0);
+  normalized.sales = Number((_ref62 = (_ref63 = (_ref64 = (_ref65 = (_ref66 = (_ref67 = (_normalized$sales = normalized.sales) !== null && _normalized$sales !== void 0 ? _normalized$sales : normalized.Sales) !== null && _ref67 !== void 0 ? _ref67 : normalized.soldCount) !== null && _ref66 !== void 0 ? _ref66 : normalized.SoldCount) !== null && _ref65 !== void 0 ? _ref65 : normalized.sold_count) !== null && _ref64 !== void 0 ? _ref64 : normalized.sold) !== null && _ref63 !== void 0 ? _ref63 : normalized.Sold) !== null && _ref62 !== void 0 ? _ref62 : 0);
+
+  // ====== SKU 处理 ======
+  var skuList = (_ref68 = (_ref69 = (_ref70 = (_ref71 = (_normalized$skus = normalized.skus) !== null && _normalized$skus !== void 0 ? _normalized$skus : normalized.Skus) !== null && _ref71 !== void 0 ? _ref71 : normalized.SKUs) !== null && _ref70 !== void 0 ? _ref70 : normalized.skuList) !== null && _ref69 !== void 0 ? _ref69 : normalized.SkuList) !== null && _ref68 !== void 0 ? _ref68 : normalized.sku_list;
+  if (skuList && Array.isArray(skuList)) {
+    normalized.skus = skuList.map(function (sku) {
+      return normalizeSku(sku);
+    });
+  }
+  // 确保即使后端没返回 skus，也有一个空数组避免渲染报错
+  if (!normalized.skus || !Array.isArray(normalized.skus)) {
+    normalized.skus = [];
+  }
+
+  // ====== 商品详情描述字段处理 ======
+  // 兼容后端多种详情字段命名（HTML 富文本）
+  normalized.description = (_ref72 = (_ref73 = (_ref74 = (_ref75 = (_ref76 = (_ref77 = (_ref78 = (_ref79 = (_ref80 = (_ref81 = (_ref82 = (_ref83 = (_ref84 = (_ref85 = (_ref86 = (_ref87 = (_ref88 = (_ref89 = (_ref90 = (_ref91 = (_ref92 = (_ref93 = (_ref94 = (_ref95 = (_normalized$descripti = normalized.description) !== null && _normalized$descripti !== void 0 ? _normalized$descripti : normalized.Description) !== null && _ref95 !== void 0 ? _ref95 : normalized.detail) !== null && _ref94 !== void 0 ? _ref94 : normalized.Detail) !== null && _ref93 !== void 0 ? _ref93 : normalized.details) !== null && _ref92 !== void 0 ? _ref92 : normalized.Details) !== null && _ref91 !== void 0 ? _ref91 : normalized.content) !== null && _ref90 !== void 0 ? _ref90 : normalized.Content) !== null && _ref89 !== void 0 ? _ref89 : normalized.introduce) !== null && _ref88 !== void 0 ? _ref88 : normalized.Introduce) !== null && _ref87 !== void 0 ? _ref87 : normalized.introduction) !== null && _ref86 !== void 0 ? _ref86 : normalized.Introduction) !== null && _ref85 !== void 0 ? _ref85 : normalized.productDescription) !== null && _ref84 !== void 0 ? _ref84 : normalized.ProductDescription) !== null && _ref83 !== void 0 ? _ref83 : normalized.product_description) !== null && _ref82 !== void 0 ? _ref82 : normalized.product_desc) !== null && _ref81 !== void 0 ? _ref81 : normalized.desc) !== null && _ref80 !== void 0 ? _ref80 : normalized.Desc) !== null && _ref79 !== void 0 ? _ref79 : normalized.body) !== null && _ref78 !== void 0 ? _ref78 : normalized.Body) !== null && _ref77 !== void 0 ? _ref77 : normalized.richText) !== null && _ref76 !== void 0 ? _ref76 : normalized.RichText) !== null && _ref75 !== void 0 ? _ref75 : normalized.rich_text) !== null && _ref74 !== void 0 ? _ref74 : normalized.html) !== null && _ref73 !== void 0 ? _ref73 : normalized.Html) !== null && _ref72 !== void 0 ? _ref72 : '';
+
+  // ====== 标签字段处理 ======
+  // 兼容 tags / Tags / tagList，确保返回数组
+  var tags = (_ref96 = (_ref97 = (_ref98 = (_normalized$tags = normalized.tags) !== null && _normalized$tags !== void 0 ? _normalized$tags : normalized.Tags) !== null && _ref98 !== void 0 ? _ref98 : normalized.tagList) !== null && _ref97 !== void 0 ? _ref97 : normalized.TagList) !== null && _ref96 !== void 0 ? _ref96 : [];
+  if (typeof tags === 'string') {
+    try {
+      var parsed = JSON.parse(tags);
+      tags = Array.isArray(parsed) ? parsed : [tags];
+    } catch (_unused2) {
+      tags = tags ? [tags] : [];
+    }
+  }
+  normalized.tags = Array.isArray(tags) ? tags : [];
+  return normalized;
+}
+
+/**
+ * 批量规范化商品列表的图片
+ */
+function normalizeProductListImages(products) {
+  if (!products || !Array.isArray(products)) return [];
+  return products.map(function (product) {
+    return normalizeProductImages(product);
+  });
+}
+
+/**
+ * 根据平台返回不同的图片懒加载属性
+ * H5端使用原生loading='lazy'，小程序端使用lazyLoad
+ */
+function lazyImgProps() {
+  if (false) {}
+  return {
+    lazyLoad: true
+  };
+}
+
+/**
+ * 品牌ID → 本地SVG图标映射
+ * 后端返回的 img.example.com 域名无法解析，因此用本地图标替代
+ */
+var BRAND_ICON_MAP = {
+  '30': 'huawei',
+  '31': 'xiaomi',
+  '32': 'apple',
+  '33': 'nike',
+  '34': 'squirrel',
+  '35': 'rice'
+};
+
+/**
+ * 品牌名 → 本地SVG图标映射（兜底）
+ */
+var BRAND_NAME_ICON_MAP = {
+  '华为': 'huawei',
+  '小米': 'xiaomi',
+  '苹果': 'apple',
+  'nike': 'nike',
+  'Nike': 'nike',
+  'NIKE': 'nike',
+  '三只松鼠': 'squirrel',
+  '大米': 'rice'
+};
+
+// 动态引入品牌 SVG
+var BRAND_SVG_MODULES = {
+  huawei: __webpack_require__(/*! @/icons/brands/huawei.svg */ "./src/icons/brands/huawei.svg"),
+  xiaomi: __webpack_require__(/*! @/icons/brands/xiaomi.svg */ "./src/icons/brands/xiaomi.svg"),
+  apple: __webpack_require__(/*! @/icons/brands/apple.svg */ "./src/icons/brands/apple.svg"),
+  nike: __webpack_require__(/*! @/icons/brands/nike.svg */ "./src/icons/brands/nike.svg"),
+  squirrel: __webpack_require__(/*! @/icons/brands/squirrel.svg */ "./src/icons/brands/squirrel.svg"),
+  rice: __webpack_require__(/*! @/icons/brands/rice.svg */ "./src/icons/brands/rice.svg")
+};
+
+/**
+ * 检查品牌 logo 是否为有效的网络图片（非 example.com 占位符）
+ */
+function isValidBrandLogo(url) {
+  if (!url || typeof url !== 'string') return false;
+  if (url.startsWith('data:')) return true;
+  var hostname = extractHostname(url);
+  if (!hostname) return false;
+  // 过滤掉 example.com 系列占位域名
+  var isPlaceholder = hostname === 'example.com' || hostname.endsWith('.example.com') || hostname === 'example.cn' || hostname.endsWith('.example.cn') || hostname === 'placeholder.com' || hostname.endsWith('.placeholder.com') || hostname === 'xxx.com' || hostname.endsWith('.xxx.com') || hostname === 'xxx.cn' || hostname.endsWith('.xxx.cn') || hostname === 'xxx.yyy' || hostname.endsWith('.xxx.yyy') || hostname === 'test.com' || hostname.endsWith('.test.com') || hostname === 'demo.com' || hostname.endsWith('.demo.com');
+  return !isPlaceholder;
+}
+
+/**
+ * 根据品牌数据获取品牌图标
+ * 优先使用 API 返回的有效 logo，其次使用本地 SVG 映射，最后用默认品牌图标
+ */
+function getBrandIcon(brand) {
+  if (!brand) return BRAND_SVG_MODULES.huawei;
+  var logo = brand.logo || brand.image;
+  if (isValidBrandLogo(logo)) {
+    return logo;
+  }
+  var id = brand.id !== undefined ? String(brand.id) : '';
+  var name = brand.name || '';
+
+  // 优先 ID 匹配
+  var iconKeyById = id ? BRAND_ICON_MAP[id] : null;
+  if (iconKeyById && BRAND_SVG_MODULES[iconKeyById]) {
+    return BRAND_SVG_MODULES[iconKeyById];
+  }
+
+  // 兜底名称匹配
+  var iconKeyByName = name ? BRAND_NAME_ICON_MAP[name] : null;
+  if (iconKeyByName && BRAND_SVG_MODULES[iconKeyByName]) {
+    return BRAND_SVG_MODULES[iconKeyByName];
+  }
+
+  // 最终兜底：默认商店图标
+  return __webpack_require__(/*! @/icons/brand-store.svg */ "./src/icons/brand-store.svg");
+}
+
+/***/ }),
+
+/***/ "./src/utils/time.ts":
+/*!***************************!*\
+  !*** ./src/utils/time.ts ***!
+  \***************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   formatDateTime: function() { return /* binding */ formatDateTime; },
+/* harmony export */   formatTime: function() { return /* binding */ formatTime; }
+/* harmony export */ });
+// 统一时间格式化工具
+
+/**
+ * 格式化日期时间：xxxx年xx月xx日 xx时xx分
+ * 今年以内省略年份：xx月xx日 xx时xx分
+ */
+function formatDateTime(time) {
+  if (!time) return '';
+  var date = new Date(time);
+  if (isNaN(date.getTime())) return String(time);
+  var now = new Date();
+  var year = date.getFullYear();
+  var month = (date.getMonth() + 1).toString().padStart(2, '0');
+  var day = date.getDate().toString().padStart(2, '0');
+  var hours = date.getHours().toString().padStart(2, '0');
+  var minutes = date.getMinutes().toString().padStart(2, '0');
+  if (year === now.getFullYear()) {
+    return "".concat(month, "\u6708").concat(day, "\u65E5 ").concat(hours, "\u65F6").concat(minutes, "\u5206");
+  }
+  return "".concat(year, "\u5E74").concat(month, "\u6708").concat(day, "\u65E5 ").concat(hours, "\u65F6").concat(minutes, "\u5206");
+}
+
+/**
+ * 格式化时间：xx时xx分
+ */
+function formatTime(time) {
+  if (!time) return '';
+  var date = new Date(time);
+  if (isNaN(date.getTime())) return String(time);
+  var hours = date.getHours().toString().padStart(2, '0');
+  var minutes = date.getMinutes().toString().padStart(2, '0');
+  return "".concat(hours, "\u65F6").concat(minutes, "\u5206");
+}
+
+/***/ }),
+
+/***/ "./src/utils/wechatPay.ts":
+/*!********************************!*\
+  !*** ./src/utils/wechatPay.ts ***!
+  \********************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   executeWechatPayment: function() { return /* binding */ executeWechatPayment; }
+/* harmony export */ });
+/* unused harmony exports normalizePayParams, requestWechatPayment, pollPaymentStatus */
+/* harmony import */ var D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./node_modules/@babel/runtime/helpers/esm/regenerator.js */ "./node_modules/@babel/runtime/helpers/esm/regenerator.js");
+/* harmony import */ var D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./node_modules/@babel/runtime/helpers/esm/asyncToGenerator.js */ "./node_modules/@babel/runtime/helpers/esm/asyncToGenerator.js");
+/* harmony import */ var D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_typeof_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./node_modules/@babel/runtime/helpers/esm/typeof.js */ "./node_modules/@babel/runtime/helpers/esm/typeof.js");
+/* harmony import */ var _tarojs_taro__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @tarojs/taro */ "./node_modules/@tarojs/taro/index.js");
+/* harmony import */ var _tarojs_taro__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_tarojs_taro__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _api_cart__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @/api/cart */ "./src/api/cart/index.ts");
+/* provided dependency */ var navigator = __webpack_require__(/*! @tarojs/runtime */ "./node_modules/@tarojs/runtime/dist/index.js")["navigator"];
+/* provided dependency */ var window = __webpack_require__(/*! @tarojs/runtime */ "./node_modules/@tarojs/runtime/dist/index.js")["window"];
+/* provided dependency */ var document = __webpack_require__(/*! @tarojs/runtime */ "./node_modules/@tarojs/runtime/dist/index.js")["document"];
+
+
+
+
+
+
+/**
+ * 微信支付工具模块
+ *
+ * 支持两端：
+ *  - 小程序（WEAPP）：调用 Taro.requestPayment 拉起微信支付（JSAPI）
+ *  - H5：
+ *    - 微信内置浏览器：通过 WeixinJSBridge.invoke('getBrandWCPayRequest') 拉起支付
+ *    - 普通浏览器：通过 mweb_url 跳转微信 H5 支付
+ *
+ * 后端 POST /api/v1/orders/:id/pay 返回的支付参数（标准微信 JSAPI 6 字段）：
+ *   { timeStamp, nonceStr, package, signType, paySign, [prepayId] }
+ * H5 支付可能额外返回：{ mwebUrl }
+ */
+
+// 微信支付参数（后端返回）
+
+// 从后端 payOrder 响应中规范化支付参数（兼容多种字段命名）
+function normalizePayParams(raw) {
+  var _raw$data, _ref, _ref2, _ref3, _data$timeStamp, _ref4, _ref5, _ref6, _data$nonceStr, _ref7, _ref8, _ref9, _data$package, _ref0, _ref1, _data$signType, _ref10, _ref11, _ref12, _data$paySign, _ref13, _ref14, _ref15, _ref16, _data$mwebUrl, _ref17, _ref18, _data$prepayId, _ref19, _ref20, _data$orderNo, _ref21, _data$amount, _ref22, _data$transactionId;
+  if (!raw || (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_typeof_js__WEBPACK_IMPORTED_MODULE_2__["default"])(raw) !== 'object') return null;
+  var data = (_raw$data = raw.data) !== null && _raw$data !== void 0 ? _raw$data : raw;
+
+  // 兼容 PascalCase / snake_case / camelCase
+  var timeStamp = (_ref = (_ref2 = (_ref3 = (_data$timeStamp = data.timeStamp) !== null && _data$timeStamp !== void 0 ? _data$timeStamp : data.time_stamp) !== null && _ref3 !== void 0 ? _ref3 : data.TimeStamp) !== null && _ref2 !== void 0 ? _ref2 : data.timestamp) !== null && _ref !== void 0 ? _ref : '';
+  var nonceStr = (_ref4 = (_ref5 = (_ref6 = (_data$nonceStr = data.nonceStr) !== null && _data$nonceStr !== void 0 ? _data$nonceStr : data.nonce_str) !== null && _ref6 !== void 0 ? _ref6 : data.NonceStr) !== null && _ref5 !== void 0 ? _ref5 : data.noncestr) !== null && _ref4 !== void 0 ? _ref4 : '';
+  var pkg = (_ref7 = (_ref8 = (_ref9 = (_data$package = data.package) !== null && _data$package !== void 0 ? _data$package : data.Package) !== null && _ref9 !== void 0 ? _ref9 : data.packageStr) !== null && _ref8 !== void 0 ? _ref8 : data.package_str) !== null && _ref7 !== void 0 ? _ref7 : '';
+  var signType = (_ref0 = (_ref1 = (_data$signType = data.signType) !== null && _data$signType !== void 0 ? _data$signType : data.sign_type) !== null && _ref1 !== void 0 ? _ref1 : data.SignType) !== null && _ref0 !== void 0 ? _ref0 : 'MD5';
+  var paySign = (_ref10 = (_ref11 = (_ref12 = (_data$paySign = data.paySign) !== null && _data$paySign !== void 0 ? _data$paySign : data.pay_sign) !== null && _ref12 !== void 0 ? _ref12 : data.PaySign) !== null && _ref11 !== void 0 ? _ref11 : data.signature) !== null && _ref10 !== void 0 ? _ref10 : '';
+
+  // H5 支付跳转链接
+  var mwebUrl = (_ref13 = (_ref14 = (_ref15 = (_ref16 = (_data$mwebUrl = data.mwebUrl) !== null && _data$mwebUrl !== void 0 ? _data$mwebUrl : data.mweb_url) !== null && _ref16 !== void 0 ? _ref16 : data.MwebUrl) !== null && _ref15 !== void 0 ? _ref15 : data.h5_url) !== null && _ref14 !== void 0 ? _ref14 : data.h5Url) !== null && _ref13 !== void 0 ? _ref13 : '';
+  var params = {
+    timeStamp: String(timeStamp),
+    nonceStr: String(nonceStr),
+    package: String(pkg),
+    signType: String(signType),
+    paySign: String(paySign),
+    mwebUrl: mwebUrl ? String(mwebUrl) : undefined,
+    prepayId: (_ref17 = (_ref18 = (_data$prepayId = data.prepayId) !== null && _data$prepayId !== void 0 ? _data$prepayId : data.prepay_id) !== null && _ref18 !== void 0 ? _ref18 : data.PrepayId) !== null && _ref17 !== void 0 ? _ref17 : '',
+    orderNo: (_ref19 = (_ref20 = (_data$orderNo = data.orderNo) !== null && _data$orderNo !== void 0 ? _data$orderNo : data.order_no) !== null && _ref20 !== void 0 ? _ref20 : data.OrderNo) !== null && _ref19 !== void 0 ? _ref19 : '',
+    amount: Number((_ref21 = (_data$amount = data.amount) !== null && _data$amount !== void 0 ? _data$amount : data.Amount) !== null && _ref21 !== void 0 ? _ref21 : 0),
+    transactionId: (_ref22 = (_data$transactionId = data.transactionId) !== null && _data$transactionId !== void 0 ? _data$transactionId : data.transaction_id) !== null && _ref22 !== void 0 ? _ref22 : ''
+  };
+
+  // 至少要有 JSAPI 支付的核心 5 字段，或 H5 的 mwebUrl
+  var hasJsapiFields = params.timeStamp && params.nonceStr && params.package && params.paySign;
+  if (!hasJsapiFields && !params.mwebUrl) {
+    console.error('[微信支付] 后端返回的支付参数不完整:', data);
+    return null;
+  }
+  return params;
+}
+
+// 判断当前 H5 是否运行在微信浏览器中
+function isInWechatBrowser() {
+  if (true) return false;
+  var ua = typeof navigator !== 'undefined' && navigator.userAgent || '';
+  return /micromessenger/i.test(ua);
+}
+
+/**
+ * 小程序端：调用 Taro.requestPayment 拉起微信支付
+ */
+function requestPaymentInWeapp(params) {
+  return new Promise(function (resolve, reject) {
+    _tarojs_taro__WEBPACK_IMPORTED_MODULE_0___default().requestPayment({
+      timeStamp: params.timeStamp,
+      nonceStr: params.nonceStr,
+      package: params.package,
+      signType: params.signType,
+      paySign: params.paySign,
+      success: function success() {
+        return resolve();
+      },
+      fail: function fail(err) {
+        // 用户取消支付：errMsg = "requestPayment:fail user cancel"
+        var errMsg = (err === null || err === void 0 ? void 0 : err.errMsg) || (err === null || err === void 0 ? void 0 : err.message) || '';
+        if (/user\s*cancel/i.test(errMsg) || errMsg.includes('cancel')) {
+          reject(new Error('取消支付'));
+        } else {
+          console.error('[微信支付] requestPayment 失败:', err);
+          reject(new Error(errMsg || '微信支付失败'));
+        }
+      }
+    });
+  });
+}
+
+/**
+ * H5 微信浏览器内：通过 WeixinJSBridge 拉起 JSAPI 支付
+ */
+function requestPaymentInWeixinH5(params) {
+  return new Promise(function (resolve, reject) {
+    if (typeof window.WeixinJSBridge === 'undefined') {
+      reject(new Error('微信支付环境未就绪，请在微信中打开'));
+      return;
+    }
+    var onBridgeReady = function onBridgeReady() {
+      window.WeixinJSBridge.invoke('getBrandWCPayRequest', {
+        timeStamp: params.timeStamp,
+        nonceStr: params.nonceStr,
+        package: params.package,
+        signType: params.signType,
+        paySign: params.paySign
+      }, function (res) {
+        var errMsg = (res === null || res === void 0 ? void 0 : res.err_msg) || '';
+        if (errMsg.includes('get_brand_wcpay_request:ok')) {
+          resolve();
+        } else if (errMsg.includes('cancel')) {
+          reject(new Error('取消支付'));
+        } else {
+          console.error('[微信支付] H5 JSAPI 支付失败:', res);
+          reject(new Error('微信支付失败'));
+        }
+      });
+    };
+    if (window.WeixinJSBridge) {
+      onBridgeReady();
+    } else {
+      // 监听 WeixinJSBridgeReady 事件
+      document.addEventListener('WeixinJSBridgeReady', onBridgeReady, false);
+      // 超时保护
+      setTimeout(function () {
+        return reject(new Error('微信支付环境初始化超时'));
+      }, 5000);
+    }
+  });
+}
+
+/**
+ * H5 普通浏览器：跳转微信 H5 支付（mweb_url）
+ * 支付完成后微信会跳回 redirect_url
+ */
+function requestPaymentInNormalH5(params) {
+  if (!params.mwebUrl) {
+    return Promise.reject(new Error('当前环境不支持微信支付，请在微信中打开'));
+  }
+  // 拼接 redirect_url（支付完成后跳回当前页）
+  var redirectUrl = encodeURIComponent(window.location.href);
+  var finalUrl = params.mwebUrl + (params.mwebUrl.includes('?') ? '&' : '?') + "redirect_url=".concat(redirectUrl);
+  // 跳转到微信支付页
+  window.location.href = finalUrl;
+  // 跳转后此 Promise 不会 resolve，支付结果由页面再次加载时的轮询确认
+  return new Promise(function () {/* 永不 resolve，页面会跳转 */});
+}
+
+/**
+ * 发起微信支付（自动适配环境）
+ *
+ * @param params 从后端获取的支付参数
+ * @returns Promise，resolve 表示支付成功，reject 表示取消或失败
+ */
+function requestWechatPayment(_x) {
+  return _requestWechatPayment.apply(this, arguments);
+}
+
+/**
+ * 轮询订单支付状态
+ *
+ * 微信支付回调有延迟，支付成功后立即查询可能状态未更新，
+ * 因此需要轮询几次确认最终状态。
+ *
+ * @param orderId 订单ID
+ * @param options.maxAttempts 最大轮询次数，默认 5 次
+ * @param options.interval 轮询间隔毫秒，默认 1500ms
+ * @returns 规范化后的支付状态，isPaid 为 true 表示支付成功
+ */
+function _requestWechatPayment() {
+  _requestWechatPayment = (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_3__["default"])(/*#__PURE__*/(0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_4__["default"])().m(function _callee(params) {
+    var env;
+    return (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_4__["default"])().w(function (_context) {
+      while (1) switch (_context.n) {
+        case 0:
+          env = "weapp";
+          if (!(env === 'weapp' || env === 'alipay' || env === 'tt' || env === 'qq' || env === 'swan')) {
+            _context.n = 1;
+            break;
+          }
+          return _context.a(2, requestPaymentInWeapp(params));
+        case 1:
+          if (!(env === 'h5')) {
+            _context.n = 3;
+            break;
+          }
+          if (!isInWechatBrowser()) {
+            _context.n = 2;
+            break;
+          }
+          return _context.a(2, requestPaymentInWeixinH5(params));
+        case 2:
+          return _context.a(2, requestPaymentInNormalH5(params));
+        case 3:
+          throw new Error('当前环境暂不支持微信支付');
+        case 4:
+          return _context.a(2);
+      }
+    }, _callee);
+  }));
+  return _requestWechatPayment.apply(this, arguments);
+}
+function pollPaymentStatus(_x2) {
+  return _pollPaymentStatus.apply(this, arguments);
+}
+
+/**
+ * 完整的微信支付流程封装
+ *
+ * 流程：
+ * 1. 调用 payOrder 获取支付参数
+ * 2. 拉起微信支付（requestPayment）
+ * 3. 支付成功后轮询确认支付状态
+ *
+ * @param payRes payOrder 的返回值（已 await）
+ * @param orderId 订单ID（用于轮询）
+ * @param options 轮询选项
+ * @returns 支付状态，isPaid 为 true 表示支付成功
+ */
+function _pollPaymentStatus() {
+  _pollPaymentStatus = (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_3__["default"])(/*#__PURE__*/(0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_4__["default"])().m(function _callee2(orderId) {
+    var _options$maxAttempts, _options$interval;
+    var options,
+      maxAttempts,
+      interval,
+      lastStatus,
+      attempt,
+      _lastStatus,
+      res,
+      _args2 = arguments,
+      _t;
+    return (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_4__["default"])().w(function (_context2) {
+      while (1) switch (_context2.p = _context2.n) {
+        case 0:
+          options = _args2.length > 1 && _args2[1] !== undefined ? _args2[1] : {};
+          maxAttempts = (_options$maxAttempts = options.maxAttempts) !== null && _options$maxAttempts !== void 0 ? _options$maxAttempts : 5;
+          interval = (_options$interval = options.interval) !== null && _options$interval !== void 0 ? _options$interval : 1500;
+          lastStatus = null;
+          attempt = 1;
+        case 1:
+          if (!(attempt <= maxAttempts)) {
+            _context2.n = 8;
+            break;
+          }
+          _context2.p = 2;
+          _context2.n = 3;
+          return (0,_api_cart__WEBPACK_IMPORTED_MODULE_1__.fetchOrderPaymentStatus)(orderId);
+        case 3:
+          res = _context2.v;
+          lastStatus = res === null || res === void 0 ? void 0 : res.data;
+          if (!((_lastStatus = lastStatus) !== null && _lastStatus !== void 0 && _lastStatus.isPaid)) {
+            _context2.n = 4;
+            break;
+          }
+          return _context2.a(2, lastStatus);
+        case 4:
+          _context2.n = 6;
+          break;
+        case 5:
+          _context2.p = 5;
+          _t = _context2.v;
+          console.warn("[\u5FAE\u4FE1\u652F\u4ED8] \u7B2C ".concat(attempt, " \u6B21\u67E5\u8BE2\u652F\u4ED8\u72B6\u6001\u5931\u8D25:"), _t);
+        case 6:
+          if (!(attempt < maxAttempts)) {
+            _context2.n = 7;
+            break;
+          }
+          _context2.n = 7;
+          return new Promise(function (resolve) {
+            return setTimeout(resolve, interval);
+          });
+        case 7:
+          attempt++;
+          _context2.n = 1;
+          break;
+        case 8:
+          // 轮询结束仍未确认，返回最后一次状态
+          console.warn("[\u5FAE\u4FE1\u652F\u4ED8] \u8F6E\u8BE2 ".concat(maxAttempts, " \u6B21\u540E\u4ECD\u672A\u786E\u8BA4\u652F\u4ED8\u6210\u529F\uFF0C\u6700\u540E\u72B6\u6001:"), lastStatus);
+          return _context2.a(2, lastStatus);
+      }
+    }, _callee2, null, [[2, 5]]);
+  }));
+  return _pollPaymentStatus.apply(this, arguments);
+}
+function executeWechatPayment(_x3, _x4) {
+  return _executeWechatPayment.apply(this, arguments);
+}
+function _executeWechatPayment() {
+  _executeWechatPayment = (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_3__["default"])(/*#__PURE__*/(0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_4__["default"])().m(function _callee3(payRes, orderId) {
+    var options,
+      payParams,
+      status,
+      _args3 = arguments;
+    return (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_4__["default"])().w(function (_context3) {
+      while (1) switch (_context3.n) {
+        case 0:
+          options = _args3.length > 2 && _args3[2] !== undefined ? _args3[2] : {};
+          // 1. 规范化支付参数
+          payParams = normalizePayParams(payRes);
+          if (payParams) {
+            _context3.n = 1;
+            break;
+          }
+          throw new Error('获取支付参数失败，请重试');
+        case 1:
+          console.log('[微信支付] 支付参数:', {
+            hasTimeStamp: !!payParams.timeStamp,
+            hasNonceStr: !!payParams.nonceStr,
+            hasPackage: !!payParams.package,
+            signType: payParams.signType,
+            hasPaySign: !!payParams.paySign,
+            hasMwebUrl: !!payParams.mwebUrl
+          });
+
+          // 2. 拉起微信支付
+          _context3.n = 2;
+          return requestWechatPayment(payParams);
+        case 2:
+          _context3.n = 3;
+          return pollPaymentStatus(orderId, options);
+        case 3:
+          status = _context3.v;
+          return _context3.a(2, status);
+      }
+    }, _callee3);
+  }));
+  return _executeWechatPayment.apply(this, arguments);
+}
+
+/***/ }),
+
+/***/ "./src/icons/brand-store.svg":
+/*!***********************************!*\
+  !*** ./src/icons/brand-store.svg ***!
+  \***********************************/
+/***/ (function(module) {
+
+module.exports = "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMzMzIiBzdHJva2Utd2lkdGg9IjEuNSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIj48cGF0aCBkPSJNNiAyTDMgNnYxNGEyIDIgMCAwMDIgMmgxNGEyIDIgMCAwMDItMlY2bC0zLTR6Ii8+PGxpbmUgeDE9IjMiIHkxPSI2IiB4Mj0iMjEiIHkyPSI2Ii8+PHBhdGggZD0iTTE2IDEwYTQgNCAwIDAxLTggMCIvPjwvc3ZnPg==";
+
+/***/ }),
+
+/***/ "./src/icons/brands/apple.svg":
+/*!************************************!*\
+  !*** ./src/icons/brands/apple.svg ***!
+  \************************************/
+/***/ (function(module) {
+
+module.exports = "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDI0IDEwMjQiIHdpZHRoPSIyMDAiIGhlaWdodD0iMjAwIj48ZyB0cmFuc2Zvcm09InRyYW5zbGF0ZSg1MTIsIDUxMikgc2NhbGUoMC43OCkgdHJhbnNsYXRlKC01MTEuOTg2NywgLTUxMikiPjxwYXRoIGQ9Ik03OTEuNDg4IDU0NC4wOTVjLTEuMjgtMTI5LjY5NSAxMDUuNzYtMTkxLjg3MSAxMTAuNTI4LTE5NC45NzUtNjAuMTYtODguMDMyLTE1My44NTYtMTAwLjA2NC0xODcuMjMyLTEwMS40NzItNzkuNzQ0LTguMDY0LTE1NS41ODQgNDYuOTQ0LTE5Ni4wNjQgNDYuOTQ0LTQwLjM1MiAwLTEwMi44MTYtNDUuNzYtMTY4Ljk2LTQ0LjU0NC04Ni45MTIgMS4yOC0xNjcuMDcyIDUwLjUyOC0yMTEuODA4IDEyOC4zODQtOTAuMzA0IDE1Ni43MDMtMjMuMTM2IDM4OC44MzEgNjQuODk2IDUxNS45MzUgNDMuMDA4IDYyLjIwOCA5NC4zMDQgMTMyLjA2NCAxNjEuNjMyIDEyOS41NjggNjQuODMyLTIuNTkyIDg5LjM3Ni00MS45NTIgMTY3Ljc0NC00MS45NTJzMTAwLjQxNiA0MS45NTIgMTY5LjA1NiA0MC42NzJjNjkuNzYtMS4zMTIgMTEzLjk4NC02My4zOTIgMTU2LjcwNC0xMjUuNzkyIDQ5LjM3Ni03Mi4xNiA2OS43MjgtMTQyLjA0OCA3MC45MTItMTQ1LjYzMi0xLjUzNi0wLjcwNC0xMzYuMDY0LTUyLjIyNC0xMzcuNDA4LTIwNy4xMzZ6TTY2Mi41NiAxNjMuNTJDNjk4LjMwNCAxMjAuMTYgNzIyLjQzMiA2MCA3MTUuODQgMGMtNTEuNDg4IDIuMTEyLTExMy44ODggMzQuMzA0LTE1MC44MTYgNzcuNTM2LTMzLjE1MiAzOC4zNjgtNjIuMTQ0IDk5LjYxNi01NC4zNjggMTU4LjQzMiA1Ny40NzIgNC40OCAxMTYuMTI4LTI5LjIxNiAxNTEuOTA0LTcyLjQ0OHoiIGZpbGw9IiMwMDAiLz48L2c+PC9zdmc+Cg==";
+
+/***/ }),
+
+/***/ "./src/icons/brands/huawei.svg":
+/*!*************************************!*\
+  !*** ./src/icons/brands/huawei.svg ***!
+  \*************************************/
+/***/ (function(module) {
+
+module.exports = "data:image/svg+xml;base64,PHN2ZyB0PSIxNzg1NDg5NDgzNjAwIiBjbGFzcz0iaWNvbiIgdmlld0JveD0iMCAwIDEwMjQgMTAyNCIgdmVyc2lvbj0iMS4xIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHAtaWQ9IjY5MTEiPjxnIHRyYW5zZm9ybT0idHJhbnNsYXRlKDUxMiwgNTEyKSBzY2FsZSgwLjc5MjIpIHRyYW5zbGF0ZSgtNTEzLjE2NDEsIC00NjkuOTI1KSI+PHBhdGggZD0iTTQxMi4wOCA3NTMuODdRMjk3IDg1NS4wNiAyMjAuMTQgODU1LjEzdC0xMTcuMjctOTUuMDdsMzA5LjIxLTYuMjR6IG0yMDIuMTYgMGwzMDkuMjEgNi4xOVE4ODMgODU1LjEzIDgwNi4xOCA4NTUuMTNUNjE0LjI0IDc1My44MnpNMTUuOTEgNDg5LjFxMTc4IDk1IDIyOC40OSAxMjUuMzR0MTcxLjg5IDEwOC44OHEtMTkzLjEgMTItMjUyLjc1IDAuMzJjLTQ1LjQ5LTguODktODAuOS0yOC4yOS0xMTEuMjItNTguNjZRLTguMjIgNjA0LjQ0IDE1LjkxIDQ4OS4xeiBtOTk0LjUgMFExMDM0LjU2IDYwNC40MSA5NzQgNjY1Yy0zMC4zMSAzMC4zNy02NS43MiA0OS43Ny0xMTEuMjIgNTguNjZxLTU5LjY0IDExLjctMjUyLjctMC4zMiAxMjEuMjctNzguNTUgMTcxLjg1LTEwOC44OHQyMjguNDgtMTI1LjM2ek0xNjEuNDggMjI4LjI3cTkzLjA4IDEyMy4zNiAxMjcuNDEgMTc1Ljk0dDE1NSAyODMuMzhRMjA1Ljg4IDU4MC41NSAxMTMgNDc1Yy00NC40OS01MC41NC00NC40OS0xMzMuNDYgNi0yMDQuMjNxMTEtMTUuNCA0Mi40Ny00Mi40N3ogbTcwMy4zMSAwcTMxLjUxIDI3LjEgNDIuNDcgNDIuNDdjNTAuNTQgNzAuNzcgNTAuNTQgMTUzLjY1IDYuMDYgMjA0LjI2cS05Mi44OCAxMDUuNi0zMzEgMjEyLjYyIDEyMC42Ni0yMzAuOCAxNTUtMjgzLjQzdDEyNy40Ny0xNzUuOTJ6TTQ0MC42IDg0LjcycTQ2LjUxIDEzNy41MiA1Mi41NiAxOTQuMVQ0ODMuMDcgNjU5UTI4MC44MSAzNjcuODMgMjgwLjgxIDIzNi4zOVQ0NDAuNiA4NC43MnogbTE0NS4yMSAwUTc0NS41NSAxMDUgNzQ1LjU1IDIzNi4zOVQ1NDMuMzQgNjU5cS0xNi4xNy0zMjMuNTUtMTAuMDktMzgwLjE2dDUyLjU2LTE5NC4xeiIgZmlsbD0iI0ZFMDAwMCIgcC1pZD0iNjkxMiIgZGF0YS1zcG0tYW5jaG9yLWlkPSJhMzEzeC5zZWFyY2hfaW5kZXguMC5pMC4xNjZmM2E4MWVWQlRhaSIgY2xhc3M9IiI+PC9wYXRoPjwvZz48L3N2Zz4=";
+
+/***/ }),
+
+/***/ "./src/icons/brands/nike.svg":
+/*!***********************************!*\
+  !*** ./src/icons/brands/nike.svg ***!
+  \***********************************/
+/***/ (function(module) {
+
+module.exports = "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDI0IDEwMjQiIHdpZHRoPSIyMDAiIGhlaWdodD0iMjAwIj48ZyB0cmFuc2Zvcm09InRyYW5zbGF0ZSg1MTIsIDUxMikgc2NhbGUoMC44NzM4KSB0cmFuc2xhdGUoLTUxMS42NjY5LCAtNTIzLjMwNjYpIj48cGF0aCBkPSJNMTY4LjI5NDQgMzcwLjM0NjY2N2MtMjEuMDM5Nzg3IDkxLjAyMzM2LTIxLjAzOTc4NyAxNDUuNjM2NjkzIDAgMTYzLjg0IDMxLjU2MzA5MyAyNy4zMDY2NjcgNzkuMzQ5NzYgMjAuNDggMTUyLjU3NiAwIDQ4LjgxNDA4LTEzLjY1MzMzMyAyNjQuNzY1NDQtNzEuMTA5OTczIDY0Ny44NTA2NjctMTcyLjM3MzMzNC00MTcuMTA5MzMzIDE4NS40NTY2NC02NTEuODM0MDI3IDI4Ni43Mi03MDQuMTcwNjY3IDMwMy43ODY2NjctNzguNTA2NjY3IDI1LjYtMTMzLjk4Njk4NyAyNS42LTE3NS42MjYyNCAwLTQxLjY0MjY2Ny0yNS42LTQ0LjM3MzMzMy0xMDIuNC0xMy42NTMzMzMtMTYwLjQyNjY2NyAyMC40OC0zOC42ODMzMDcgNTEuNDg2NzItODMuNjI2NjY3IDkzLjAyMzU3My0xMzQuODI2NjY2eiIgZmlsbD0iIzAwMCIvPjwvZz48L3N2Zz4K";
+
+/***/ }),
+
+/***/ "./src/icons/brands/rice.svg":
+/*!***********************************!*\
+  !*** ./src/icons/brands/rice.svg ***!
+  \***********************************/
+/***/ (function(module) {
+
+module.exports = "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMjggMTI4IiBmaWxsPSJub25lIj4KICA8ZyB0cmFuc2Zvcm09InRyYW5zbGF0ZSg2NCwgNjQpIHNjYWxlKDAuODMyKSB0cmFuc2xhdGUoLTY0LCAtNjQpIj4KICA8Y2lyY2xlIGN4PSI2NCIgY3k9IjY0IiByPSI2MCIgc3Ryb2tlPSIjRThEOEIwIiBzdHJva2Utd2lkdGg9IjIiIGZpbGw9IiNmZmYiLz4KICA8cGF0aCBkPSJNNjQgMzIgTDcwIDU2IEw5NiA1MCBMNzYgNjYgTDk2IDc4IEw3MCA3NCBMNjQgOTYgTDU4IDc0IEwzMiA3OCBMNTIgNjYgTDMyIDUwIEw1OCA1NiBaIiBzdHJva2U9IiNENEEwMTciIHN0cm9rZS13aWR0aD0iMiIgZmlsbD0iI0ZGRDcwMCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPgogIDxlbGxpcHNlIGN4PSI2NCIgY3k9IjY0IiByeD0iMTQiIHJ5PSIxNCIgc3Ryb2tlPSIjRjVGNURDIiBzdHJva2Utd2lkdGg9IjEuNSIgZmlsbD0iI0ZGRkFDRCIvPgogIDxjaXJjbGUgY3g9IjU4IiBjeT0iNjAiIHI9IjEuNSIgZmlsbD0iIzhCNDUxMyIvPgogIDxjaXJjbGUgY3g9IjcwIiBjeT0iNjAiIHI9IjEuNSIgZmlsbD0iIzhCNDUxMyIvPgogIDxwYXRoIGQ9Ik01OCA2OCBMNjQgNzIgTDcwIDY4IiBzdHJva2U9IiM4QjQ1MTMiIHN0cm9rZS13aWR0aD0iMS4yIiBmaWxsPSJub25lIiBzdHJva2UtbGluZWNhcD0icm91bmQiLz4KICA8L2c+Cjwvc3ZnPg==";
+
+/***/ }),
+
+/***/ "./src/icons/brands/squirrel.svg":
+/*!***************************************!*\
+  !*** ./src/icons/brands/squirrel.svg ***!
+  \***************************************/
+/***/ (function(module) {
+
+module.exports = "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxNzEwIDEwMjQiIHdpZHRoPSIyMDAiIGhlaWdodD0iMjAwIj48ZyB0cmFuc2Zvcm09InRyYW5zbGF0ZSg4NTUsIDUxMikgc2NhbGUoMC43OCkgdHJhbnNsYXRlKC04NTQuODIzNywgLTUxMikiPjxwYXRoIGQ9Ik0wIDg2NC4yNjgxNWwyLjY5NTg5NiAxLjM0Nzk0OWE4MjIuMDIzNjgyIDgyMi4wMjM2ODIgMCAwIDAgMzIxLjQ4NTYyMiA2Mi42Nzk1ODZBODA1Ljg0ODMwNSA4MDUuODQ4MzA1IDAgMCAwIDc0MS4zNzE0NTQgODIyLjcwNjQxN2M3LjE4OTA1NyA1LjM5MTc5MiAxNC4zNzgxMTMgMTAuNzgzNTg1IDIyLjQ2NTgwMSAxNS43MjYwNjJsLTU4LjE4NjQyNiAxODEuOTcyOTkzLTEuMTIzMjkgMy41OTQ1MjhoNDg3Ljk1NzIxMnYtMi42OTU4OTZhODMuNTcyNzgyIDgzLjU3Mjc4MiAwIDAgMC0yLjQ3MTIzOS0xOS43Njk5MDZoMjEzLjIwMDQ1OHYtMi42OTU4OTZhODMuMTIzNDY2IDgzLjEyMzQ2NiAwIDAgMC04My4xMjM0NjYtODMuMTIzNDY2aC0xNDkuODQ2ODk3bDkuODg0OTUzLTE3Ljc0Nzk4M2ExODkuMTYyMDUgMTg5LjE2MjA1IDAgMCAwIDExNC4zNTA5My0xNjYuMjQ2OTMyIDg5Ljg2MzIwNyA4OS44NjMyMDcgMCAwIDAgNS4zOTE3OTItNy40MTM3MTVsNzguMTgwOTktMTIxLjk4OTMwMyA2Ny4zOTc0MDUtOS4yMTA5NzggNTAuMDk4NzM4IDExLjY4MjIxNyA2My44MDI4NzYtMjYuNTA5NjQ2di00Ny4xNzgxODRsOC4zMTIzNDctMS4xMjMyOSA0OS44NzQwNzkgMTEuNDU3NTU5IDY0LjAyNzUzNS0yNi4yODQ5ODh2LTEwMi42Njg3MTNsLTY0LjcwMTUwOS0xMy4yNTQ4MjMtNzUuNzA5NzUxIDMxLjAwMjgwNi00OC45NzU0NDgtNi4yOTA0MjUgNDkuNDI0NzY0LTc3LjA1NzY5OWg0MC4yMTM3ODVsNTAuNzcyNzEyLTYyLjQ1NDkyOSAxOS4wOTU5MzEgMzAuMTA0MTc0IDQyLjQ2MDM2NS04Ljk4NjMyVjIxMi45ODQ1NjFMMTcwOS42NDc1MDQgMTc5LjczNTE3NVYxMjEuMzI0MDlsLTEzNS45MTgxLTYxLjEwNjk4LTIwLjY2ODUzNy0yMi40NjU4MDJhMTIyLjIxMzk2MSAxMjIuMjEzOTYxIDAgMCAwLTYwLjY1NzY2NS0zMi4zNTA3NTRBMzI1LjMwNDgwOCAzMjUuMzA0ODA4IDAgMCAwIDE0MzMuMDkzNDg2IDAuMDA4NzYyYTMwNy4zMzIxNjYgMzA3LjMzMjE2NiAwIDAgMC05NS4yNTQ5OTkgMTQuMzc4MTEzbC0yMi40NjU4MDItOS4yMTA5NzloLTQ2LjcyODg2N3YyLjQ3MTIzOEExODkuODM2MDI0IDE4OS44MzYwMjQgMCAwIDAgMTI2Ny4wNzEyMTIgNDQuOTQwMzY1bC0xMjkuODUyMzMzIDQ0LjkzMTYwMy0yMjcuODAzMjI5IDM1Ljk0NTI4M2EzODYuNjM2NDQ2IDM4Ni42MzY0NDYgMCAwIDAtMjE4LjU5MjI1IDExNi4xNDgxOTQgMzkxLjU3ODkyMiAzOTEuNTc4OTIyIDAgMCAwLTUwLjk5NzM3IDQ2OS4zMTA1OTYgOTk3LjQ4MTU5MiA5OTcuNDgxNTkyIDAgMCAwLTE5MC41MDk5OTctMTguNjQ2NjE1Yy0xNjEuMDc5Nzk4IDAtMzEwLjcwMjAzNyA0MS41NjE3MzMtNDIxLjIzMzc4MSAxMTcuMjcxNDg0eiIgZmlsbD0iIzlBNkE0NCIvPjwvZz48L3N2Zz4K";
+
+/***/ }),
+
+/***/ "./src/icons/brands/xiaomi.svg":
+/*!*************************************!*\
+  !*** ./src/icons/brands/xiaomi.svg ***!
+  \*************************************/
+/***/ (function(module) {
+
+module.exports = "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDI0IDEwMjQiPjxnIHRyYW5zZm9ybT0idHJhbnNsYXRlKDUxMiwgNTEyKSBzY2FsZSgwLjg5ODYpIHRyYW5zbGF0ZSgtNTEwLjAyOTIsIC01MTEuODMwMikiPjxwYXRoIGQ9Ik03MDYuOTc1NjQ3IDc5NC4zOTE1NzlWMzg5LjQyMjI0NGMwLTkyLjAxNDY3LTc0LjU3MDM2OS0xNjYuNjE4ODA4LTE2Ni41NzQ4MDctMTY2LjYxODgwOUg3Mi4xNDkyMjdjLTMuNjEwMjI0IDAtNi41MzU4NTcgMi45MDkyNi02LjUzNTg1NyA2LjQ4MjY0NXY1NjUuMTAxNDA1YzAgMy41NzMzODUgMi45MjQ2MDkgNi40NjkzNDIgNi41MzU4NTcgNi40NjkzNDJoMTI1LjA3NDYyM2MzLjYxMTI0OCAwIDYuNTMxNzYzLTIuOTExMzA2IDYuNTMxNzY0LTYuNTA1MTU3VjM1MC44MTM5MjRjMC0zLjYwMTAxNSAyLjkyNDYwOS02LjUyMjU1NCA2LjUzNTg1Ni02LjUyMjU1NGgyNjguOTYyNzMyYzUwLjUwNzMyNCAwIDkxLjQ2NjE3OCA0MC45Mzk0MTEgOTEuNDY2MTc4IDkxLjQ1Mjg3NXYzNTguNTk0MTIyYzAgMy41OTc5NDUgMi45MjA1MTYgNi41MDIwODggNi41MTMzNDQgNi41MDIwODdINzAwLjQ2NzQxOWMzLjU4NDY0MiAwIDYuNTEzMzQ0LTIuOTAyMDk2IDYuNTEzMzQ0LTYuNDY5MzQybC0wLjAwNTExNiAwLjAyMDQ2N3ogbS0yNTIuNTc2NTMtMC4wNDQwMDNhNi40OTI4NzggNi40OTI4NzggMCAwIDEtNi41MDkyNSA2LjUwOTI1MUgzMjIuODQ0OTE5Yy0zLjYxMTI0OCAwLTYuNTM1ODU3LTIuOTExMzA2LTYuNTM1ODU3LTYuNTA5MjUxVjQ1NC40Njc2NzljMC0zLjU5Nzk0NSAyLjkyNDYwOS02LjUxODQ2IDYuNTM1ODU3LTYuNTE4NDYxaDEyNS4wNDQ5NDhhNi41MDMxMTEgNi41MDMxMTEgMCAwIDEgNi41MDkyNSA2LjUxODQ2MVY3OTQuMzY0OTczdi0wLjAxNzM5N201MDAuMDQ1NzM3IDBjMCAzLjYwMTAxNS0yLjkyODcwMiA2LjUwOTI1MS02LjUzODkyNiA2LjUwOTI1MUg4MjIuODg5NjMzYy0zLjYyMDQ1NyAwLTYuNTY0NTA5LTIuOTExMzA2LTYuNTY0NTA5LTYuNTA5MjUxVjIyOS4zNDY0NTVjMC0zLjYxNDMxNyAyLjk0NDA1Mi02LjUzMTc2MyA2LjU2NDUwOS02LjUzMTc2M2gxMjUuMDE2Mjk1YTYuNTI4Njk0IDYuNTI4Njk0IDAgMCAxIDYuNTM4OTI2IDYuNTMxNzYzdjU2NS4wMDExMjEiIGZpbGw9IiMyNzI1MzYiLz48L2c+PC9zdmc+Cg==";
+
+/***/ }),
+
+/***/ "./src/icons/category/accessory.svg":
+/*!******************************************!*\
+  !*** ./src/icons/category/accessory.svg ***!
+  \******************************************/
+/***/ (function(module) {
+
+module.exports = "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDI0IDEwMjQiPjxwYXRoIGQ9Ik01MTIgMEMyMjkuMjM2MzY0IDAgMCAyMjkuMjM2MzY0IDAgNTEyczIyOS4yMzYzNjQgNTEyIDUxMiA1MTIgNTEyLTIyOS4yMzYzNjQgNTEyLTUxMlM3OTQuNzYzNjM2IDAgNTEyIDB6TTU1OC41NDU0NTUgOTc1LjA4MDcyNyA1NTguNTQ1NDU1IDc5MS4yNzI3MjdsNDYuNTQ1NDU1IDBjNTEuMzg2MTgyIDAgOTMuMDkwOTA5LTQxLjcwNDcyNyA5My4wOTA5MDktOTMuMDkwOTA5TDY5OC4xODE4MTggMzcyLjM2MzYzNmwtOTMuMDkwOTA5IDBMNjA1LjA5MDkwOSAyMzIuNzI3MjczIDQxOC45MDkwOTEgMjMyLjcyNzI3M2wwIDEzOS42MzYzNjRMMzI1LjgxODE4MiAzNzIuMzYzNjM2bDAgMzI1LjgxODE4MmMwIDUxLjM4NjE4MiA0MS43MDQ3MjcgOTMuMDkwOTA5IDkzLjA5MDkwOSA5My4wOTA5MDlsNDYuNTQ1NDU1IDAgMCAxODMuODA4QzIzMC4yNjAzNjQgOTUxLjcxNDkwOSA0Ni41NDU0NTUgNzUzLjM4NDcyNyA0Ni41NDU0NTUgNTEyIDQ2LjU0NTQ1NSAyNTQuOTI5NDU1IDI1NC45NzYgNDYuNTQ1NDU1IDUxMiA0Ni41NDU0NTVzNDY1LjQ1NDU0NSAyMDguMzg0IDQ2NS40NTQ1NDUgNDY1LjQ1NDU0NUM5NzcuNDU0NTQ1IDc1My4zODQ3MjcgNzkzLjczOTYzNiA5NTEuNzE0OTA5IDU1OC41NDU0NTUgOTc1LjA4MDcyN3oiIGZpbGw9IiM0QTcyQTgiLz48L3N2Zz4K";
+
+/***/ }),
+
+/***/ "./src/icons/category/coffee.svg":
+/*!***************************************!*\
+  !*** ./src/icons/category/coffee.svg ***!
+  \***************************************/
+/***/ (function(module) {
+
+module.exports = "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjZmZmIiBzdHJva2Utd2lkdGg9IjEuNSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIj48cGF0aCBkPSJNMTggOGgxYTQgNCAwIDAxMCA4aC0xIi8+PHBhdGggZD0iTTIgOGgxNnY5YTQgNCAwIDAxLTQgNEg2YTQgNCAwIDAxLTQtNFY4eiIvPjxsaW5lIHgxPSI2IiB5MT0iMSIgeDI9IjYiIHkyPSI0Ii8+PGxpbmUgeDE9IjEwIiB5MT0iMSIgeDI9IjEwIiB5Mj0iNCIvPjxsaW5lIHgxPSIxNCIgeTE9IjEiIHgyPSIxNCIgeTI9IjQiLz48L3N2Zz4=";
+
+/***/ }),
+
+/***/ "./src/icons/category/food.svg":
+/*!*************************************!*\
+  !*** ./src/icons/category/food.svg ***!
+  \*************************************/
+/***/ (function(module) {
+
+module.exports = "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjZmZmIiBzdHJva2Utd2lkdGg9IjEuNSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIj48Y2lyY2xlIGN4PSI5IiBjeT0iMjEiIHI9IjEiLz48Y2lyY2xlIGN4PSIyMCIgY3k9IjIxIiByPSIxIi8+PHBhdGggZD0iTTEgMWg0bDIuNjggMTMuMzlhMiAyIDAgMDAyIDEuNjFoOS43MmEyIDIgMCAwMDItMS42MUwyMyA2SDYiLz48L3N2Zz4=";
+
+/***/ }),
+
+/***/ "./src/icons/category/nutsnack.svg":
+/*!*****************************************!*\
+  !*** ./src/icons/category/nutsnack.svg ***!
+  \*****************************************/
+/***/ (function(module) {
+
+module.exports = "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDI0IDEwMjQiPjxwYXRoIGQ9Ik01MTIgOTYwYzIwMC4zMiAwIDM2Mi42ODgtMTM2LjE5MiAzNjIuNjg4LTM0MC40OCAwLTIzMi45Ni0xNjUuNjMyLTU1NS41Mi0yODYuMzM2LTU1NS41Mi0xMTkuMTY4IDAtMTc1LjE2OCAzOTIuOTYtMTg5LjU2OCA0OTQuMDgtMTAuMjQgNzIuMDY0LTM1LjkwNCA4Mi4zNjgtNDkuNTM2IDY1LjcyOC03Ny42MzItOTQuNTI4IDQyLjExMi00OTkuMiA0OS4yMTYtNTIyLjg4bDAuNjQtMi4yNGMyLjU2LTEwLjMwNC00LjI4OC0yOS42MzItMjcuNDU2LTE4LjA0OGE1MS40NTYgNTEuNDU2IDAgMCAwLTE1LjQ4OCAxMy4zMTJDMjA3LjU1MiAyNzAuNzIgMTQ5LjMxMiA0NDIuOTQ0IDE0OS4zMTIgNjE5LjUyIDE0OS4zMTIgODA3LjU1MiAzMTEuNzQ0IDk2MCA1MTIgOTYweiIgZmlsbD0iIzZCNDQyMyIvPjwvc3ZnPgo=";
+
+/***/ }),
+
+/***/ "./src/icons/category/phone.svg":
+/*!**************************************!*\
+  !*** ./src/icons/category/phone.svg ***!
+  \**************************************/
+/***/ (function(module) {
+
+module.exports = "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjZmZmIiBzdHJva2Utd2lkdGg9IjEuNSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIj48cmVjdCB4PSI1IiB5PSIyIiB3aWR0aD0iMTQiIGhlaWdodD0iMjAiIHJ4PSIyIiByeT0iMiIvPjxsaW5lIHgxPSIxMiIgeTE9IjE4IiB4Mj0iMTIuMDEiIHkyPSIxOCIvPjwvc3ZnPg==";
+
+/***/ }),
+
+/***/ "./src/icons/category/runningshoe.svg":
+/*!********************************************!*\
+  !*** ./src/icons/category/runningshoe.svg ***!
+  \********************************************/
+/***/ (function(module, __unused_webpack_exports, __webpack_require__) {
+
+module.exports = __webpack_require__.p + "icons/category/runningshoe.svg";
+
+/***/ }),
+
+/***/ "./src/icons/category/smartphone.svg":
+/*!*******************************************!*\
+  !*** ./src/icons/category/smartphone.svg ***!
+  \*******************************************/
+/***/ (function(module) {
+
+module.exports = "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDI0IDEwMjQiPjxwYXRoIGQ9Ik04MjAuNDA5NDQ5IDc5Ny4yMjgzNDZxMCAyNS4xOTY4NS0xMC4wNzg3NCA0Ni44NjYxNDJ0LTI3LjcxNjUzNSAzOC4yOTkyMTMtNDEuMzIyODM1IDI2LjIwNDcyNC01MC44OTc2MzggOS41NzQ4MDNsLTM1Ny43OTUyNzYgMHEtMjcuMjEyNTk4IDAtNTAuODk3NjM4LTkuNTc0ODAzdC00MS4zMjI4MzUtMjYuMjA0NzI0LTI3LjcxNjUzNS0zOC4yOTkyMTMtMTAuMDc4NzQtNDYuODY2MTQybDAtNjc1LjI3NTU5MXEwLTI1LjE5Njg1IDEwLjA3ODc0LTQ3LjM3MDA3OXQyNy43MTY1MzUtMzguODAzMTUgNDEuMzIyODM1LTI2LjIwNDcyNCA1MC44OTc2MzgtOS41NzQ4MDNsMzU3Ljc5NTI3NiAwcTI3LjIxMjU5OCAwIDUwLjg5NzYzOCA5LjU3NDgwM3Q0MS4zMjI4MzUgMjYuMjA0NzI0IDI3LjcxNjUzNSAzOC44MDMxNSAxMC4wNzg3NCA0Ny4zNzAwNzlsMCA2NzUuMjc1NTkxek03MzguNzcxNjU0IDE3MC4zMzA3MDlsLTQ1NS41NTkwNTUgMCAwIDU3Ny41MTE4MTEgNDU1LjU1OTA1NSAwIDAtNTc3LjUxMTgxMXpNNTEwLjk5MjEyNiA3NzYuMDYyOTkycS0yMS4xNjUzNTQgMC0zNi43ODc0MDIgMTUuMTE4MTF0LTE1LjYyMjA0NyAzNy4yOTEzMzlxMCAyMS4xNjUzNTQgMTUuNjIyMDQ3IDM2Ljc4NzQwMnQzNi43ODc0MDIgMTUuNjIyMDQ3cTIyLjE3MzIyOCAwIDM3LjI5MTMzOS0xNS42MjIwNDd0MTUuMTE4MTEtMzYuNzg3NDAycTAtMjIuMTczMjI4LTE1LjExODExLTM3LjI5MTMzOXQtMzcuMjkxMzM5LTE1LjExODExek01OTEuNjIyMDQ3IDg0LjY2MTQxN3EwLTguMDYyOTkyLTUuMDM5MzctMTIuNTk4NDI1dC0xMS4wODY2MTQtNC41MzU0MzNsLTEyOCAwcS01LjAzOTM3IDAtMTAuNTgyNjc3IDQuNTM1NDMzdC01LjU0MzMwNyAxMi41OTg0MjUgNS4wMzkzNyAxMi41OTg0MjUgMTEuMDg2NjE0IDQuNTM1NDMzbDEyOCAwcTYuMDQ3MjQ0IDAgMTEuMDg2NjE0LTQuNTM1NDMzdDUuMDM5MzctMTIuNTk4NDI1eiIgZmlsbD0iIzRBNzJBOCIvPjwvc3ZnPgo=";
+
+/***/ }),
+
+/***/ "./src/icons/category/sneaker.svg":
+/*!****************************************!*\
+  !*** ./src/icons/category/sneaker.svg ***!
+  \****************************************/
+/***/ (function(module) {
+
+module.exports = "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjZmZmIiBzdHJva2Utd2lkdGg9IjEuNSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIj48cGF0aCBkPSJNMiAxN2gyMGEwIDAgMCAxMCAwIDB2MmEwIDAgMCAwMSAwIDBIMmEwIDAgMCAwMSAwIDB2LTJ6IiBzdHlsZT0ic3Ryb2tlLXdpZHRoOjEuNSIvPjxwYXRoIGQ9Ik0yIDE3bDEuNS02aDNsMi01aDZsNCA1aDR2NkgyeiIvPjxwYXRoIGQ9Ik04IDEybDItMyIvPjxwYXRoIGQ9Ik0xMSAxMmwxLjUtMyIvPjwvc3ZnPg==";
+
+/***/ })
+
+}]);
+//# sourceMappingURL=common.js.map

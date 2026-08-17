@@ -3,7 +3,7 @@ import { View, Text, Image, ScrollView } from '@tarojs/components';
 import Taro from '@tarojs/taro';
 import { fetchRefundList } from '@/api/cart';
 import { getImageUrl, lazyImgProps } from '@/utils/image';
-import styles from '@/styles/cart/order-list.module.scss';
+import styles from './index.module.scss';
 
 const refundStatusTextMap: { [key: string]: string } = {
   'pending': '待审核',

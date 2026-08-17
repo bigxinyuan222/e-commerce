@@ -29,8 +29,10 @@ export type WSMessageType =
   | 'pong'
   | 'auth'              // 鉴权消息
   | 'auth_ack'          // 鉴权确认
+  | 'chat'              // 聊天消息（发送/回推）
   | 'message/new'        // 新消息推送
   | 'message/read'       // 消息已读通知
+  | 'messages/history'   // 历史消息请求/响应
   | 'conversation/update' // 会话更新
   | 'conversation/read'   // 会话标记已读
   | 'error'

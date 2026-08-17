@@ -1,1 +1,846 @@
-"use strict";(wx["webpackJsonp"]=wx["webpackJsonp"]||[]).push([[1732],{541:function(e,n,a){var r=a(8870),i=a(1212),c=a(9379);function t(e,n){if(null==e)return{};var a={};for(var r in e)if({}.hasOwnProperty.call(e,r)){if(-1!==n.indexOf(r))continue;a[r]=e[r]}return a}function s(e,n){if(null==e)return{};var a,r,i=t(e,n);if(Object.getOwnPropertySymbols){var c=Object.getOwnPropertySymbols(e);for(r=0;r<c.length;r++)a=c[r],-1===n.indexOf(a)&&{}.propertyIsEnumerable.call(e,a)&&(i[a]=e[a])}return i}var o=a(467),l=a(5544),d=a(6540),_=a(118),m=a(758),u=a.n(m),k=a(63),h=a(2458),f=a(1432),p=a(678),x={personalInfoPage:"personal-info-module__personalInfoPage___Kuud5",header:"personal-info-module__header___CbEb9",backBtn:"personal-info-module__backBtn___BxAWe",backIcon:"personal-info-module__backIcon___P43by",headerTitle:"personal-info-module__headerTitle___ElnDy",headerRight:"personal-info-module__headerRight___hwd2V",content:"personal-info-module__content___luZZA",infoItem:"personal-info-module__infoItem___HD8zg",itemLabel:"personal-info-module__itemLabel___h4w4y",itemContent:"personal-info-module__itemContent___DzxsQ",itemValue:"personal-info-module__itemValue___tgOy7",itemArrow:"personal-info-module__itemArrow___SnRIY",avatar:"personal-info-module__avatar___pWYNk",datePickerOverlay:"personal-info-module__datePickerOverlay___ki8Iq",datePickerContent:"personal-info-module__datePickerContent___BThPl",datePickerHeader:"personal-info-module__datePickerHeader___Fqz8R",datePickerCancel:"personal-info-module__datePickerCancel___gxxZp",datePickerConfirm:"personal-info-module__datePickerConfirm___nmgqA",datePickerWheels:"personal-info-module__datePickerWheels___URMLQ",wheel:"personal-info-module__wheel___NygGZ",wheelItem:"personal-info-module__wheelItem___mDmUn",wheelItemActive:"personal-info-module__wheelItemActive___Zdmx6",datePickerLine:"personal-info-module__datePickerLine___bTzcJ",avatarPickerOverlay:"personal-info-module__avatarPickerOverlay___iwYFn",avatarPickerContent:"personal-info-module__avatarPickerContent___ZkyS3",avatarPickerHeader:"personal-info-module__avatarPickerHeader___kYtpL",avatarPickerTitle:"personal-info-module__avatarPickerTitle___P6Fxs",avatarPickerClose:"personal-info-module__avatarPickerClose___Q9qm6",avatarPickerBody:"personal-info-module__avatarPickerBody___t7yJJ",avatarPickerOption:"personal-info-module__avatarPickerOption___hx4GW",avatarPickerOptionText:"personal-info-module__avatarPickerOptionText___SzaN2",avatarPickerDivider:"personal-info-module__avatarPickerDivider___fE35v",avatarPickerCancel:"personal-info-module__avatarPickerCancel___zuxHl",avatarPickerCancelText:"personal-info-module__avatarPickerCancelText___wbBBm",nicknameModalOverlay:"personal-info-module__nicknameModalOverlay___LGaay",nicknameModalContent:"personal-info-module__nicknameModalContent___QCx87",nicknameModalHeader:"personal-info-module__nicknameModalHeader___hu9ON",nicknameModalTitle:"personal-info-module__nicknameModalTitle____ZmxH",nicknameModalBody:"personal-info-module__nicknameModalBody___o6GWZ",nicknameInput:"personal-info-module__nicknameInput___gzLHs",nicknameModalFooter:"personal-info-module__nicknameModalFooter___OQ8HE",nicknameModalBtn:"personal-info-module__nicknameModalBtn___NNxpp",nicknameModalBtnText:"personal-info-module__nicknameModalBtnText___hHxrz",nicknameModalBtnConfirm:"personal-info-module__nicknameModalBtnConfirm___ga23J",genderPickerOverlay:"personal-info-module__genderPickerOverlay___VSW9a",genderPickerContent:"personal-info-module__genderPickerContent___PCIxL",genderPickerHeader:"personal-info-module__genderPickerHeader___KZtgT",genderPickerTitle:"personal-info-module__genderPickerTitle___RefVx",genderPickerClose:"personal-info-module__genderPickerClose___mDTYP",genderPickerBody:"personal-info-module__genderPickerBody___R8hly",genderPickerOption:"personal-info-module__genderPickerOption___ui25w",genderPickerOptionText:"personal-info-module__genderPickerOptionText___x0aFy",genderPickerDivider:"personal-info-module__genderPickerDivider___WVuHZ",accountSection:"personal-info-module__accountSection___Zf1CB",accountBtn:"personal-info-module__accountBtn___J2cFs",accountBtnLogout:"personal-info-module__accountBtnLogout___LXOIj",accountBtnText:"personal-info-module__accountBtnText___dfyQv"},v=a(4848),g=["registerDate"],P=function(){var e=(0,k.Us)(),n=e.userInfo,a=e.setUserInfo,r=(0,d.useState)({avatar:(null===n||void 0===n?void 0:n.avatar)||"",accountName:(null===n||void 0===n?void 0:n.accountName)||"",nickname:(null===n||void 0===n?void 0:n.nickname)||"",gender:(null===n||void 0===n?void 0:n.gender)||"\u4fdd\u5bc6",birthday:(null===n||void 0===n?void 0:n.birthday)||"",registerDate:(null===n||void 0===n?void 0:n.registerDate)||""}),t=(0,l.A)(r,2),m=t[0],P=t[1],N=function(e){var n=e.match(/(\d+)\u5e74(\d+)\u6708(\d+)\u65e5/);return n?"".concat(n[1],"-").concat(String(n[2]).padStart(2,"0"),"-").concat(String(n[3]).padStart(2,"0")):e},j=function(){var e=(0,o.A)((0,i.A)().m(function e(r){var t,o,l,d,_,k;return(0,i.A)().w(function(e){while(1)switch(e.p=e.n){case 0:return e.p=0,u().showLoading({title:"\u4fdd\u5b58\u4e2d..."}),m.registerDate,t=s(m,g),o=(0,c.A)((0,c.A)({},t),r),l=(0,c.A)({},o),l.birthday&&(l.birthday=N(l.birthday)),e.n=1,(0,h.$P)(f.i$.updateProfile,l);case 1:u().hideLoading(),d=(0,c.A)((0,c.A)({},m),r),P(d),a((0,c.A)((0,c.A)((0,c.A)({},n),r),{},{isLoggedIn:!0})),u().showToast({title:"\u4fee\u6539\u6210\u529f",icon:"success"}),e.n=3;break;case 2:e.p=2,k=e.v,u().hideLoading(),_=(0,c.A)((0,c.A)({},m),r),P(_),a((0,c.A)((0,c.A)((0,c.A)({},n),r),{},{isLoggedIn:!0})),u().showToast({title:k.message||"\u4fee\u6539\u5931\u8d25\uff0c\u5df2\u672c\u5730\u4fdd\u5b58",icon:"none"});case 3:return e.a(2)}},e,null,[[0,2]])}));return function(n){return e.apply(this,arguments)}}(),S=function(){u().showModal({title:"\u5207\u6362\u8d26\u53f7",content:"\u786e\u5b9a\u8981\u5207\u6362\u5230\u5176\u4ed6\u8d26\u53f7\u5417\uff1f",confirmText:"\u786e\u5b9a",cancelText:"\u53d6\u6d88",success:function(e){e.confirm&&(u().removeStorageSync("lxg_user"),u().removeStorageSync("userInfo"),a({id:"",avatar:"",nickname:"",phone:"",gender:"",birthday:"",registerDate:"",accountName:"",email:"",isLoggedIn:!1}),u().navigateTo({url:"/pages/user/login/index"}))}})},C=function(){u().showModal({title:"\u9000\u51fa\u767b\u5f55",content:"\u786e\u5b9a\u8981\u9000\u51fa\u767b\u5f55\u5417\uff1f",confirmText:"\u786e\u5b9a",cancelText:"\u53d6\u6d88",success:function(e){e.confirm&&(u().removeStorageSync("lxg_user"),u().removeStorageSync("userInfo"),a({id:"",avatar:"",nickname:"",phone:"",gender:"",birthday:"",registerDate:"",accountName:"",email:"",isLoggedIn:!1}),u().switchTab({url:"/pages/home/index"}))}})},y=(0,d.useState)(!1),w=(0,l.A)(y,2),b=w[0],T=w[1],I=(0,d.useState)((new Date).getFullYear()),E=(0,l.A)(I,2),O=E[0],Y=E[1],A=(0,d.useState)((new Date).getMonth()+1),B=(0,l.A)(A,2),M=B[0],L=B[1],D=(0,d.useState)((new Date).getDate()),H=(0,l.A)(D,2),V=H[0],F=H[1],Z=(0,d.useState)(!1),z=(0,l.A)(Z,2),W=z[0],R=z[1],J=(0,d.useState)(!1),Q=(0,l.A)(J,2),G=Q[0],U=Q[1],q=(0,d.useState)(""),$=(0,l.A)(q,2),K=$[0],X=$[1],ee=(0,d.useState)(!1),ne=(0,l.A)(ee,2),ae=ne[0],re=ne[1],ie=function(){for(var e=[],n=1900;n<=2100;n++)e.push(n);return e},ce=function(){return[1,2,3,4,5,6,7,8,9,10,11,12]},te=function(){for(var e=new Date(O,M,0).getDate(),n=[],a=1;a<=e;a++)n.push(a);return n},se=function(){var e="".concat(O,"\u5e74").concat(String(M).padStart(2,"0"),"\u6708").concat(String(V).padStart(2,"0"),"\u65e5");T(!1),j({birthday:e})},oe=function(e){R(!1),u().chooseImage({count:1,sizeType:["compressed"],sourceType:[e],success:function(){var e=(0,o.A)((0,i.A)().m(function e(n){var a,r,c;return(0,i.A)().w(function(e){while(1)switch(e.p=e.n){case 0:return a=n.tempFilePaths[0],u().showLoading({title:"\u4e0a\u4f20\u4e2d...",mask:!0}),e.p=1,e.n=2,(0,h.V6)(f.i$.upload,a,"file",{type:"avatar"});case 2:return r=e.v,u().hideLoading(),e.n=3,j({avatar:r});case 3:e.n=5;break;case 4:e.p=4,c=e.v,u().hideLoading(),console.error("\u5934\u50cf\u4e0a\u4f20\u5931\u8d25:",c),u().showToast({title:(null===c||void 0===c?void 0:c.message)||"\u5934\u50cf\u4e0a\u4f20\u5931\u8d25",icon:"none"});case 5:return e.a(2)}},e,null,[[1,4]])}));function n(n){return e.apply(this,arguments)}return n}(),fail:function(e){console.log("\u53d6\u6d88\u9009\u62e9\u56fe\u7247\u6216\u9009\u62e9\u5931\u8d25:",e)}})},le=function(e){switch(e){case"\u5934\u50cf":R(!0);break;case"\u6635\u79f0":X(m.nickname),U(!0);break;case"\u6027\u522b":re(!0);break;case"\u51fa\u751f\u65e5\u671f":if("\u8bf7\u586b\u5199\u60a8\u7684\u751f\u65e5"!==m.birthday){var n=m.birthday.match(/(\d+)\u5e74(\d+)\u6708(\d+)\u65e5/);n&&(Y(parseInt(n[1])),L(parseInt(n[2])),F(parseInt(n[3])))}T(!0);break;default:break}},de=function(){u().navigateBack({fail:function(){u().switchTab({url:"/pages/user/mine/index"})}})};(0,d.useEffect)(function(){var e=new Date(O,M,0).getDate();V>e&&F(e)},[O,M]);var _e=ie(),me=ce(),ue=te();return(0,v.jsxs)(_.Ss,{className:x.personalInfoPage,children:[(0,v.jsxs)(_.Ss,{className:x.header,children:[(0,v.jsx)(_.Ss,{className:x.backBtn,onClick:de,children:(0,v.jsx)(_.EY,{className:x.backIcon,children:"\u2039"})}),(0,v.jsx)(_.EY,{className:x.headerTitle,children:"\u4e2a\u4eba\u4fe1\u606f"}),(0,v.jsx)(_.Ss,{className:x.headerRight})]}),(0,v.jsxs)(_.Ss,{className:x.content,children:[(0,v.jsxs)(_.Ss,{className:x.infoItem,onClick:function(){return le("\u5934\u50cf")},children:[(0,v.jsx)(_.EY,{className:x.itemLabel,children:"\u5934\u50cf"}),(0,v.jsxs)(_.Ss,{className:x.itemContent,children:[(0,v.jsx)(_._V,{src:(0,p.VG)(m.avatar),className:x.avatar,mode:"aspectFill"}),(0,v.jsx)(_.EY,{className:x.itemArrow,children:"\u203a"})]})]}),(0,v.jsxs)(_.Ss,{className:x.infoItem,children:[(0,v.jsx)(_.EY,{className:x.itemLabel,children:"\u8d26\u53f7/\u624b\u673a\u53f7"}),(0,v.jsx)(_.Ss,{className:x.itemContent,children:(0,v.jsx)(_.EY,{className:x.itemValue,children:m.accountName})})]}),(0,v.jsxs)(_.Ss,{className:x.infoItem,onClick:function(){return le("\u6635\u79f0")},children:[(0,v.jsx)(_.EY,{className:x.itemLabel,children:"\u6635\u79f0"}),(0,v.jsxs)(_.Ss,{className:x.itemContent,children:[(0,v.jsx)(_.EY,{className:x.itemValue,children:m.nickname}),(0,v.jsx)(_.EY,{className:x.itemArrow,children:"\u203a"})]})]}),(0,v.jsxs)(_.Ss,{className:x.infoItem,onClick:function(){return le("\u6027\u522b")},children:[(0,v.jsx)(_.EY,{className:x.itemLabel,children:"\u6027\u522b"}),(0,v.jsxs)(_.Ss,{className:x.itemContent,children:[(0,v.jsx)(_.EY,{className:x.itemValue,children:m.gender}),(0,v.jsx)(_.EY,{className:x.itemArrow,children:"\u203a"})]})]}),(0,v.jsxs)(_.Ss,{className:x.infoItem,onClick:function(){return le("\u51fa\u751f\u65e5\u671f")},children:[(0,v.jsx)(_.EY,{className:x.itemLabel,children:"\u51fa\u751f\u65e5\u671f"}),(0,v.jsxs)(_.Ss,{className:x.itemContent,children:[(0,v.jsx)(_.EY,{className:x.itemValue,children:m.birthday}),(0,v.jsx)(_.EY,{className:x.itemArrow,children:"\u203a"})]})]}),(0,v.jsxs)(_.Ss,{className:x.infoItem,children:[(0,v.jsx)(_.EY,{className:x.itemLabel,children:"\u6ce8\u518c\u65e5\u671f"}),(0,v.jsx)(_.EY,{className:x.itemValue,children:m.registerDate})]})]}),(0,v.jsxs)(_.Ss,{className:x.accountSection,children:[(0,v.jsx)(_.Ss,{className:x.accountBtn,onClick:S,children:(0,v.jsx)(_.EY,{className:x.accountBtnText,children:"\u5207\u6362\u8d26\u53f7"})}),(0,v.jsx)(_.Ss,{className:x.accountBtn+" "+x.accountBtnLogout,onClick:C,children:(0,v.jsx)(_.EY,{className:x.accountBtnText,children:"\u9000\u51fa\u767b\u5f55"})})]}),b&&(0,v.jsx)(_.Ss,{className:x.datePickerOverlay,onClick:function(){return T(!1)},children:(0,v.jsxs)(_.Ss,{className:x.datePickerContent,onClick:function(e){return e.stopPropagation()},children:[(0,v.jsxs)(_.Ss,{className:x.datePickerHeader,children:[(0,v.jsx)(_.EY,{className:x.datePickerCancel,onClick:function(){return T(!1)},children:"\u53d6\u6d88"}),(0,v.jsx)(_.EY,{className:x.datePickerConfirm,onClick:se,children:"\u786e\u5b9a"})]}),(0,v.jsxs)(_.Ss,{className:x.datePickerWheels,children:[(0,v.jsx)(_.Ss,{className:x.wheel,children:_e.map(function(e){return(0,v.jsxs)(_.EY,{className:"".concat(x.wheelItem," ").concat(O===e?x.wheelItemActive:""),onClick:function(){return Y(e)},children:[e,"\u5e74"]},e)})}),(0,v.jsx)(_.Ss,{className:x.wheel,children:me.map(function(e){return(0,v.jsxs)(_.EY,{className:"".concat(x.wheelItem," ").concat(M===e?x.wheelItemActive:""),onClick:function(){return L(e)},children:[String(e).padStart(2,"0"),"\u6708"]},e)})}),(0,v.jsx)(_.Ss,{className:x.wheel,children:ue.map(function(e){return(0,v.jsxs)(_.EY,{className:"".concat(x.wheelItem," ").concat(V===e?x.wheelItemActive:""),onClick:function(){return F(e)},children:[String(e).padStart(2,"0"),"\u65e5"]},e)})})]}),(0,v.jsx)(_.Ss,{className:x.datePickerLine})]})}),W&&(0,v.jsx)(_.Ss,{className:x.avatarPickerOverlay,onClick:function(){return R(!1)},children:(0,v.jsxs)(_.Ss,{className:x.avatarPickerContent,onClick:function(e){return e.stopPropagation()},children:[(0,v.jsxs)(_.Ss,{className:x.avatarPickerHeader,children:[(0,v.jsx)(_.EY,{className:x.avatarPickerTitle,children:"\u9009\u62e9\u56fe\u7247"}),(0,v.jsx)(_.EY,{className:x.avatarPickerClose,onClick:function(){return R(!1)},children:"\xd7"})]}),(0,v.jsxs)(_.Ss,{className:x.avatarPickerBody,children:[(0,v.jsx)(_.Ss,{className:x.avatarPickerOption,onClick:function(){return oe("album")},children:(0,v.jsx)(_.EY,{className:x.avatarPickerOptionText,children:"\u4ece\u76f8\u518c\u9009\u62e9"})}),(0,v.jsx)(_.Ss,{className:x.avatarPickerDivider}),(0,v.jsx)(_.Ss,{className:x.avatarPickerOption,onClick:function(){return oe("camera")},children:(0,v.jsx)(_.EY,{className:x.avatarPickerOptionText,children:"\u62cd\u7167"})})]}),(0,v.jsx)(_.Ss,{className:x.avatarPickerCancel,onClick:function(){return R(!1)},children:(0,v.jsx)(_.EY,{className:x.avatarPickerCancelText,children:"\u53d6\u6d88"})})]})}),G&&(0,v.jsx)(_.Ss,{className:x.nicknameModalOverlay,onClick:function(){return U(!1)},children:(0,v.jsxs)(_.Ss,{className:x.nicknameModalContent,onClick:function(e){return e.stopPropagation()},children:[(0,v.jsx)(_.Ss,{className:x.nicknameModalHeader,children:(0,v.jsx)(_.EY,{className:x.nicknameModalTitle,children:"\u4fee\u6539\u6635\u79f0"})}),(0,v.jsx)(_.Ss,{className:x.nicknameModalBody,children:(0,v.jsx)(_.pd,{className:x.nicknameInput,value:K,onInput:function(e){return X(e.detail.value)},placeholder:"\u8bf7\u8f93\u5165\u65b0\u6635\u79f0",maxlength:20})}),(0,v.jsxs)(_.Ss,{className:x.nicknameModalFooter,children:[(0,v.jsx)(_.Ss,{className:x.nicknameModalBtn,onClick:function(){return U(!1)},children:(0,v.jsx)(_.EY,{className:x.nicknameModalBtnText,children:"\u53d6\u6d88"})}),(0,v.jsx)(_.Ss,{className:x.nicknameModalBtn,onClick:function(){K.trim()?(U(!1),j({nickname:K.trim()})):u().showToast({title:"\u8bf7\u8f93\u5165\u6635\u79f0",icon:"none"})},children:(0,v.jsx)(_.EY,{className:x.nicknameModalBtnText+" "+x.nicknameModalBtnConfirm,children:"\u786e\u5b9a"})})]})]})}),ae&&(0,v.jsx)(_.Ss,{className:x.genderPickerOverlay,onClick:function(){return re(!1)},children:(0,v.jsxs)(_.Ss,{className:x.genderPickerContent,onClick:function(e){return e.stopPropagation()},children:[(0,v.jsxs)(_.Ss,{className:x.genderPickerHeader,children:[(0,v.jsx)(_.EY,{className:x.genderPickerTitle,children:"\u9009\u62e9\u6027\u522b"}),(0,v.jsx)(_.EY,{className:x.genderPickerClose,onClick:function(){return re(!1)},children:"\xd7"})]}),(0,v.jsxs)(_.Ss,{className:x.genderPickerBody,children:[(0,v.jsx)(_.Ss,{className:x.genderPickerOption,onClick:function(){re(!1),j({gender:"\u7537"})},children:(0,v.jsx)(_.EY,{className:x.genderPickerOptionText,children:"\u7537"})}),(0,v.jsx)(_.Ss,{className:x.genderPickerDivider}),(0,v.jsx)(_.Ss,{className:x.genderPickerOption,onClick:function(){re(!1),j({gender:"\u5973"})},children:(0,v.jsx)(_.EY,{className:x.genderPickerOptionText,children:"\u5973"})}),(0,v.jsx)(_.Ss,{className:x.genderPickerDivider}),(0,v.jsx)(_.Ss,{className:x.genderPickerOption,onClick:function(){re(!1),j({gender:"\u4fdd\u5bc6"})},children:(0,v.jsx)(_.EY,{className:x.genderPickerOptionText,children:"\u4fdd\u5bc6"})})]})]})})]})},N=P,j={},S=(0,r.eU)(N,"pages/user/personal-info/index",{root:{cn:[]}},j||{});N&&N.behaviors&&(S.behaviors=(S.behaviors||[]).concat(N.behaviors));Page(S)}},function(e){var n=function(n){return e(e.s=n)};e.O(0,[6907,8096,2076],function(){return n(541)});e.O()}]);
+"use strict";
+(wx["webpackJsonp"] = wx["webpackJsonp"] || []).push([["pages/user/personal-info/index"],{
+
+/***/ "./node_modules/@tarojs/taro-loader/lib/entry-cache.js?name=pages/user/personal-info/index!./src/pages/user/personal-info/index.tsx":
+/*!******************************************************************************************************************************************!*\
+  !*** ./node_modules/@tarojs/taro-loader/lib/entry-cache.js?name=pages/user/personal-info/index!./src/pages/user/personal-info/index.tsx ***!
+  \******************************************************************************************************************************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+/* harmony import */ var D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./node_modules/@babel/runtime/helpers/esm/regenerator.js */ "./node_modules/@babel/runtime/helpers/esm/regenerator.js");
+/* harmony import */ var D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ./node_modules/@babel/runtime/helpers/esm/objectSpread2.js */ "./node_modules/@babel/runtime/helpers/esm/objectSpread2.js");
+/* harmony import */ var D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectWithoutProperties_js__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ./node_modules/@babel/runtime/helpers/esm/objectWithoutProperties.js */ "./node_modules/@babel/runtime/helpers/esm/objectWithoutProperties.js");
+/* harmony import */ var D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./node_modules/@babel/runtime/helpers/esm/asyncToGenerator.js */ "./node_modules/@babel/runtime/helpers/esm/asyncToGenerator.js");
+/* harmony import */ var D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_slicedToArray_js__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./node_modules/@babel/runtime/helpers/esm/slicedToArray.js */ "./node_modules/@babel/runtime/helpers/esm/slicedToArray.js");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _tarojs_components__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! @tarojs/components */ "./node_modules/@tarojs/plugin-platform-weapp/dist/components-react.js");
+/* harmony import */ var _tarojs_taro__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @tarojs/taro */ "./node_modules/@tarojs/taro/index.js");
+/* harmony import */ var _tarojs_taro__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_tarojs_taro__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _store_AppContext__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @/store/AppContext */ "./src/store/AppContext.tsx");
+/* harmony import */ var _api_common__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @/api/common */ "./src/api/common/index.ts");
+/* harmony import */ var _api_user__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @/api/user */ "./src/api/user/index.ts");
+/* harmony import */ var _utils_image__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @/utils/image */ "./src/utils/image.ts");
+/* harmony import */ var _styles_user_personal_info_module_scss__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @/styles/user/personal-info.module.scss */ "./src/styles/user/personal-info.module.scss");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/cjs/react-jsx-runtime.production.min.js");
+
+
+
+
+
+var _excluded = ["registerDate"];
+
+
+
+
+
+
+
+
+
+var PersonalInfoPage = function PersonalInfoPage() {
+  var _useAppContext = (0,_store_AppContext__WEBPACK_IMPORTED_MODULE_2__.useAppContext)(),
+    userInfo = _useAppContext.userInfo,
+    setUserInfo = _useAppContext.setUserInfo;
+  var _useState = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)({
+      avatar: (userInfo === null || userInfo === void 0 ? void 0 : userInfo.avatar) || '',
+      accountName: (userInfo === null || userInfo === void 0 ? void 0 : userInfo.accountName) || '',
+      nickname: (userInfo === null || userInfo === void 0 ? void 0 : userInfo.nickname) || '',
+      gender: (userInfo === null || userInfo === void 0 ? void 0 : userInfo.gender) || '保密',
+      birthday: (userInfo === null || userInfo === void 0 ? void 0 : userInfo.birthday) || '',
+      registerDate: (userInfo === null || userInfo === void 0 ? void 0 : userInfo.registerDate) || ''
+    }),
+    _useState2 = (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_slicedToArray_js__WEBPACK_IMPORTED_MODULE_8__["default"])(_useState, 2),
+    formData = _useState2[0],
+    setFormData = _useState2[1];
+
+  // 将中文日期 "2025年01月01日" 转换为后端要求的 "2025-01-01" 格式
+  var normalizeBirthday = function normalizeBirthday(val) {
+    var match = val.match(/(\d+)年(\d+)月(\d+)日/);
+    if (match) {
+      return "".concat(match[1], "-").concat(String(match[2]).padStart(2, '0'), "-").concat(String(match[3]).padStart(2, '0'));
+    }
+    return val;
+  };
+
+  // 调用 POST 接口更新用户信息，并同步到本地状态
+  var updateProfile = /*#__PURE__*/function () {
+    var _ref = (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_9__["default"])(/*#__PURE__*/(0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_10__["default"])().m(function _callee(updates) {
+      var registerDate, restFormData, merged, payload, newFormData, _newFormData, _t;
+      return (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_10__["default"])().w(function (_context) {
+        while (1) switch (_context.p = _context.n) {
+          case 0:
+            _context.p = 0;
+            _tarojs_taro__WEBPACK_IMPORTED_MODULE_1___default().showLoading({
+              title: '保存中...'
+            });
+            // 后端对 nickname/avatar/gender/birthday 均设为必填，
+            // 因此将当前表单全量字段（排除 registerDate 只读字段）合并 updates 后一起提交，
+            // 确保任意单字段更新都能通过后端必填校验。
+            registerDate = formData.registerDate, restFormData = (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectWithoutProperties_js__WEBPACK_IMPORTED_MODULE_11__["default"])(formData, _excluded);
+            merged = (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_12__["default"])((0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_12__["default"])({}, restFormData), updates); // birthday 需转换为 YYYY-MM-DD 格式
+            payload = (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_12__["default"])({}, merged);
+            if (payload.birthday) {
+              payload.birthday = normalizeBirthday(payload.birthday);
+            }
+            _context.n = 1;
+            return (0,_api_common__WEBPACK_IMPORTED_MODULE_3__.apiPost)(_api_user__WEBPACK_IMPORTED_MODULE_4__.userApi.updateProfile, payload);
+          case 1:
+            _tarojs_taro__WEBPACK_IMPORTED_MODULE_1___default().hideLoading();
+            // 更新本地状态
+            newFormData = (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_12__["default"])((0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_12__["default"])({}, formData), updates);
+            setFormData(newFormData);
+            setUserInfo((0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_12__["default"])((0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_12__["default"])((0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_12__["default"])({}, userInfo), updates), {}, {
+              isLoggedIn: true
+            }));
+            _tarojs_taro__WEBPACK_IMPORTED_MODULE_1___default().showToast({
+              title: '修改成功',
+              icon: 'success'
+            });
+            _context.n = 3;
+            break;
+          case 2:
+            _context.p = 2;
+            _t = _context.v;
+            _tarojs_taro__WEBPACK_IMPORTED_MODULE_1___default().hideLoading();
+            // 即使接口失败，也本地更新保证体验
+            _newFormData = (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_12__["default"])((0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_12__["default"])({}, formData), updates);
+            setFormData(_newFormData);
+            setUserInfo((0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_12__["default"])((0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_12__["default"])((0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_objectSpread2_js__WEBPACK_IMPORTED_MODULE_12__["default"])({}, userInfo), updates), {}, {
+              isLoggedIn: true
+            }));
+            _tarojs_taro__WEBPACK_IMPORTED_MODULE_1___default().showToast({
+              title: _t.message || '修改失败，已本地保存',
+              icon: 'none'
+            });
+          case 3:
+            return _context.a(2);
+        }
+      }, _callee, null, [[0, 2]]);
+    }));
+    return function updateProfile(_x) {
+      return _ref.apply(this, arguments);
+    };
+  }();
+
+  // 切换账号
+  var handleSwitchAccount = function handleSwitchAccount() {
+    _tarojs_taro__WEBPACK_IMPORTED_MODULE_1___default().showModal({
+      title: '切换账号',
+      content: '确定要切换到其他账号吗？',
+      confirmText: '确定',
+      cancelText: '取消',
+      success: function success(res) {
+        if (res.confirm) {
+          // 清除用户信息（含 token 的 lxg_user 必须清除，否则未真正退出）
+          _tarojs_taro__WEBPACK_IMPORTED_MODULE_1___default().removeStorageSync('lxg_user');
+          _tarojs_taro__WEBPACK_IMPORTED_MODULE_1___default().removeStorageSync('userInfo');
+          setUserInfo({
+            id: '',
+            avatar: '',
+            nickname: '',
+            phone: '',
+            gender: '',
+            birthday: '',
+            registerDate: '',
+            accountName: '',
+            email: '',
+            isLoggedIn: false
+          });
+          // 跳转到登录页面
+          _tarojs_taro__WEBPACK_IMPORTED_MODULE_1___default().navigateTo({
+            url: '/pages/user/login/index'
+          });
+        }
+      }
+    });
+  };
+
+  // 退出登录
+  var handleLogout = function handleLogout() {
+    _tarojs_taro__WEBPACK_IMPORTED_MODULE_1___default().showModal({
+      title: '退出登录',
+      content: '确定要退出登录吗？',
+      confirmText: '确定',
+      cancelText: '取消',
+      success: function success(res) {
+        if (res.confirm) {
+          // 清除用户信息（含 token 的 lxg_user 必须清除，否则未真正退出）
+          _tarojs_taro__WEBPACK_IMPORTED_MODULE_1___default().removeStorageSync('lxg_user');
+          _tarojs_taro__WEBPACK_IMPORTED_MODULE_1___default().removeStorageSync('userInfo');
+          setUserInfo({
+            id: '',
+            avatar: '',
+            nickname: '',
+            phone: '',
+            gender: '',
+            birthday: '',
+            registerDate: '',
+            accountName: '',
+            email: '',
+            isLoggedIn: false
+          });
+          // 返回首页
+          _tarojs_taro__WEBPACK_IMPORTED_MODULE_1___default().switchTab({
+            url: '/pages/home/index'
+          });
+        }
+      }
+    });
+  };
+
+  // 日期选择器相关状态
+  var _useState3 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(false),
+    _useState4 = (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_slicedToArray_js__WEBPACK_IMPORTED_MODULE_8__["default"])(_useState3, 2),
+    showDatePicker = _useState4[0],
+    setShowDatePicker = _useState4[1];
+  var _useState5 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(new Date().getFullYear()),
+    _useState6 = (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_slicedToArray_js__WEBPACK_IMPORTED_MODULE_8__["default"])(_useState5, 2),
+    selectedYear = _useState6[0],
+    setSelectedYear = _useState6[1];
+  var _useState7 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(new Date().getMonth() + 1),
+    _useState8 = (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_slicedToArray_js__WEBPACK_IMPORTED_MODULE_8__["default"])(_useState7, 2),
+    selectedMonth = _useState8[0],
+    setSelectedMonth = _useState8[1];
+  var _useState9 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(new Date().getDate()),
+    _useState0 = (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_slicedToArray_js__WEBPACK_IMPORTED_MODULE_8__["default"])(_useState9, 2),
+    selectedDay = _useState0[0],
+    setSelectedDay = _useState0[1];
+
+  // 头像选择弹窗状态
+  var _useState1 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(false),
+    _useState10 = (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_slicedToArray_js__WEBPACK_IMPORTED_MODULE_8__["default"])(_useState1, 2),
+    showAvatarPicker = _useState10[0],
+    setShowAvatarPicker = _useState10[1];
+
+  // 昵称修改弹窗状态
+  var _useState11 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(false),
+    _useState12 = (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_slicedToArray_js__WEBPACK_IMPORTED_MODULE_8__["default"])(_useState11, 2),
+    showNicknameModal = _useState12[0],
+    setShowNicknameModal = _useState12[1];
+  var _useState13 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(''),
+    _useState14 = (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_slicedToArray_js__WEBPACK_IMPORTED_MODULE_8__["default"])(_useState13, 2),
+    nicknameInput = _useState14[0],
+    setNicknameInput = _useState14[1];
+
+  // 性别选择弹窗状态
+  var _useState15 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(false),
+    _useState16 = (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_slicedToArray_js__WEBPACK_IMPORTED_MODULE_8__["default"])(_useState15, 2),
+    showGenderPicker = _useState16[0],
+    setShowGenderPicker = _useState16[1];
+
+  // 生成年份列表（1900-2100）
+  var generateYears = function generateYears() {
+    var years = [];
+    for (var i = 1900; i <= 2100; i++) {
+      years.push(i);
+    }
+    return years;
+  };
+
+  // 生成月份列表
+  var generateMonths = function generateMonths() {
+    return [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
+  };
+
+  // 生成日期列表
+  var generateDays = function generateDays() {
+    var daysInMonth = new Date(selectedYear, selectedMonth, 0).getDate();
+    var days = [];
+    for (var i = 1; i <= daysInMonth; i++) {
+      days.push(i);
+    }
+    return days;
+  };
+
+  // 处理日期选择确认
+  var handleDateConfirm = function handleDateConfirm() {
+    var birthdayStr = "".concat(selectedYear, "\u5E74").concat(String(selectedMonth).padStart(2, '0'), "\u6708").concat(String(selectedDay).padStart(2, '0'), "\u65E5");
+    setShowDatePicker(false);
+    updateProfile({
+      birthday: birthdayStr
+    });
+  };
+
+  // 选择并上传头像：先调 /api/v1/user/upload 拿到URL，再更新用户资料
+  var handleAvatarChoose = function handleAvatarChoose(sourceType) {
+    setShowAvatarPicker(false);
+    _tarojs_taro__WEBPACK_IMPORTED_MODULE_1___default().chooseImage({
+      count: 1,
+      sizeType: ['compressed'],
+      sourceType: [sourceType],
+      success: function () {
+        var _success = (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_9__["default"])(/*#__PURE__*/(0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_10__["default"])().m(function _callee2(res) {
+          var tempFilePath, avatarUrl, _t2;
+          return (0,D_ceshi_lxg_frontend_node_modules_babel_runtime_helpers_esm_regenerator_js__WEBPACK_IMPORTED_MODULE_10__["default"])().w(function (_context2) {
+            while (1) switch (_context2.p = _context2.n) {
+              case 0:
+                tempFilePath = res.tempFilePaths[0];
+                _tarojs_taro__WEBPACK_IMPORTED_MODULE_1___default().showLoading({
+                  title: '上传中...',
+                  mask: true
+                });
+                _context2.p = 1;
+                _context2.n = 2;
+                return (0,_api_common__WEBPACK_IMPORTED_MODULE_3__.uploadImage)(_api_user__WEBPACK_IMPORTED_MODULE_4__.userApi.upload, tempFilePath, 'file', {
+                  type: 'avatar'
+                });
+              case 2:
+                avatarUrl = _context2.v;
+                _tarojs_taro__WEBPACK_IMPORTED_MODULE_1___default().hideLoading();
+                _context2.n = 3;
+                return updateProfile({
+                  avatar: avatarUrl
+                });
+              case 3:
+                _context2.n = 5;
+                break;
+              case 4:
+                _context2.p = 4;
+                _t2 = _context2.v;
+                _tarojs_taro__WEBPACK_IMPORTED_MODULE_1___default().hideLoading();
+                console.error('头像上传失败:', _t2);
+                _tarojs_taro__WEBPACK_IMPORTED_MODULE_1___default().showToast({
+                  title: (_t2 === null || _t2 === void 0 ? void 0 : _t2.message) || '头像上传失败',
+                  icon: 'none'
+                });
+              case 5:
+                return _context2.a(2);
+            }
+          }, _callee2, null, [[1, 4]]);
+        }));
+        function success(_x2) {
+          return _success.apply(this, arguments);
+        }
+        return success;
+      }(),
+      fail: function fail(err) {
+        console.log('取消选择图片或选择失败:', err);
+      }
+    });
+  };
+  var handleItemClick = function handleItemClick(title) {
+    switch (title) {
+      case '头像':
+        setShowAvatarPicker(true);
+        break;
+      case '昵称':
+        setNicknameInput(formData.nickname);
+        setShowNicknameModal(true);
+        break;
+      case '性别':
+        setShowGenderPicker(true);
+        break;
+      case '出生日期':
+        if (formData.birthday !== '请填写您的生日') {
+          var match = formData.birthday.match(/(\d+)年(\d+)月(\d+)日/);
+          if (match) {
+            setSelectedYear(parseInt(match[1]));
+            setSelectedMonth(parseInt(match[2]));
+            setSelectedDay(parseInt(match[3]));
+          }
+        }
+        setShowDatePicker(true);
+        break;
+      default:
+        break;
+    }
+  };
+  var handleBack = function handleBack() {
+    _tarojs_taro__WEBPACK_IMPORTED_MODULE_1___default().navigateBack({
+      fail: function fail() {
+        _tarojs_taro__WEBPACK_IMPORTED_MODULE_1___default().switchTab({
+          url: '/pages/user/mine/index'
+        });
+      }
+    });
+  };
+
+  // 监听年份或月份变化，确保日期有效
+  (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(function () {
+    var daysInMonth = new Date(selectedYear, selectedMonth, 0).getDate();
+    if (selectedDay > daysInMonth) {
+      setSelectedDay(daysInMonth);
+    }
+  }, [selectedYear, selectedMonth]);
+  var years = generateYears();
+  var months = generateMonths();
+  var days = generateDays();
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_13__.View, {
+    className: _styles_user_personal_info_module_scss__WEBPACK_IMPORTED_MODULE_6__["default"].personalInfoPage,
+    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_13__.View, {
+      className: _styles_user_personal_info_module_scss__WEBPACK_IMPORTED_MODULE_6__["default"].header,
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_13__.View, {
+        className: _styles_user_personal_info_module_scss__WEBPACK_IMPORTED_MODULE_6__["default"].backBtn,
+        onClick: handleBack,
+        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_13__.Text, {
+          className: _styles_user_personal_info_module_scss__WEBPACK_IMPORTED_MODULE_6__["default"].backIcon,
+          children: "\u2039"
+        })
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_13__.Text, {
+        className: _styles_user_personal_info_module_scss__WEBPACK_IMPORTED_MODULE_6__["default"].headerTitle,
+        children: "\u4E2A\u4EBA\u4FE1\u606F"
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_13__.View, {
+        className: _styles_user_personal_info_module_scss__WEBPACK_IMPORTED_MODULE_6__["default"].headerRight
+      })]
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_13__.View, {
+      className: _styles_user_personal_info_module_scss__WEBPACK_IMPORTED_MODULE_6__["default"].content,
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_13__.View, {
+        className: _styles_user_personal_info_module_scss__WEBPACK_IMPORTED_MODULE_6__["default"].infoItem,
+        onClick: function onClick() {
+          return handleItemClick('头像');
+        },
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_13__.Text, {
+          className: _styles_user_personal_info_module_scss__WEBPACK_IMPORTED_MODULE_6__["default"].itemLabel,
+          children: "\u5934\u50CF"
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_13__.View, {
+          className: _styles_user_personal_info_module_scss__WEBPACK_IMPORTED_MODULE_6__["default"].itemContent,
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_13__.Image, {
+            src: (0,_utils_image__WEBPACK_IMPORTED_MODULE_5__.getImageUrl)(formData.avatar),
+            className: _styles_user_personal_info_module_scss__WEBPACK_IMPORTED_MODULE_6__["default"].avatar,
+            mode: "aspectFill"
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_13__.Text, {
+            className: _styles_user_personal_info_module_scss__WEBPACK_IMPORTED_MODULE_6__["default"].itemArrow,
+            children: "\u203A"
+          })]
+        })]
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_13__.View, {
+        className: _styles_user_personal_info_module_scss__WEBPACK_IMPORTED_MODULE_6__["default"].infoItem,
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_13__.Text, {
+          className: _styles_user_personal_info_module_scss__WEBPACK_IMPORTED_MODULE_6__["default"].itemLabel,
+          children: "\u8D26\u53F7/\u624B\u673A\u53F7"
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_13__.View, {
+          className: _styles_user_personal_info_module_scss__WEBPACK_IMPORTED_MODULE_6__["default"].itemContent,
+          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_13__.Text, {
+            className: _styles_user_personal_info_module_scss__WEBPACK_IMPORTED_MODULE_6__["default"].itemValue,
+            children: formData.accountName
+          })
+        })]
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_13__.View, {
+        className: _styles_user_personal_info_module_scss__WEBPACK_IMPORTED_MODULE_6__["default"].infoItem,
+        onClick: function onClick() {
+          return handleItemClick('昵称');
+        },
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_13__.Text, {
+          className: _styles_user_personal_info_module_scss__WEBPACK_IMPORTED_MODULE_6__["default"].itemLabel,
+          children: "\u6635\u79F0"
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_13__.View, {
+          className: _styles_user_personal_info_module_scss__WEBPACK_IMPORTED_MODULE_6__["default"].itemContent,
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_13__.Text, {
+            className: _styles_user_personal_info_module_scss__WEBPACK_IMPORTED_MODULE_6__["default"].itemValue,
+            children: formData.nickname
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_13__.Text, {
+            className: _styles_user_personal_info_module_scss__WEBPACK_IMPORTED_MODULE_6__["default"].itemArrow,
+            children: "\u203A"
+          })]
+        })]
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_13__.View, {
+        className: _styles_user_personal_info_module_scss__WEBPACK_IMPORTED_MODULE_6__["default"].infoItem,
+        onClick: function onClick() {
+          return handleItemClick('性别');
+        },
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_13__.Text, {
+          className: _styles_user_personal_info_module_scss__WEBPACK_IMPORTED_MODULE_6__["default"].itemLabel,
+          children: "\u6027\u522B"
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_13__.View, {
+          className: _styles_user_personal_info_module_scss__WEBPACK_IMPORTED_MODULE_6__["default"].itemContent,
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_13__.Text, {
+            className: _styles_user_personal_info_module_scss__WEBPACK_IMPORTED_MODULE_6__["default"].itemValue,
+            children: formData.gender
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_13__.Text, {
+            className: _styles_user_personal_info_module_scss__WEBPACK_IMPORTED_MODULE_6__["default"].itemArrow,
+            children: "\u203A"
+          })]
+        })]
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_13__.View, {
+        className: _styles_user_personal_info_module_scss__WEBPACK_IMPORTED_MODULE_6__["default"].infoItem,
+        onClick: function onClick() {
+          return handleItemClick('出生日期');
+        },
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_13__.Text, {
+          className: _styles_user_personal_info_module_scss__WEBPACK_IMPORTED_MODULE_6__["default"].itemLabel,
+          children: "\u51FA\u751F\u65E5\u671F"
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_13__.View, {
+          className: _styles_user_personal_info_module_scss__WEBPACK_IMPORTED_MODULE_6__["default"].itemContent,
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_13__.Text, {
+            className: _styles_user_personal_info_module_scss__WEBPACK_IMPORTED_MODULE_6__["default"].itemValue,
+            children: formData.birthday
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_13__.Text, {
+            className: _styles_user_personal_info_module_scss__WEBPACK_IMPORTED_MODULE_6__["default"].itemArrow,
+            children: "\u203A"
+          })]
+        })]
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_13__.View, {
+        className: _styles_user_personal_info_module_scss__WEBPACK_IMPORTED_MODULE_6__["default"].infoItem,
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_13__.Text, {
+          className: _styles_user_personal_info_module_scss__WEBPACK_IMPORTED_MODULE_6__["default"].itemLabel,
+          children: "\u6CE8\u518C\u65E5\u671F"
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_13__.Text, {
+          className: _styles_user_personal_info_module_scss__WEBPACK_IMPORTED_MODULE_6__["default"].itemValue,
+          children: formData.registerDate
+        })]
+      })]
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_13__.View, {
+      className: _styles_user_personal_info_module_scss__WEBPACK_IMPORTED_MODULE_6__["default"].accountSection,
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_13__.View, {
+        className: _styles_user_personal_info_module_scss__WEBPACK_IMPORTED_MODULE_6__["default"].accountBtn,
+        onClick: handleSwitchAccount,
+        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_13__.Text, {
+          className: _styles_user_personal_info_module_scss__WEBPACK_IMPORTED_MODULE_6__["default"].accountBtnText,
+          children: "\u5207\u6362\u8D26\u53F7"
+        })
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_13__.View, {
+        className: _styles_user_personal_info_module_scss__WEBPACK_IMPORTED_MODULE_6__["default"].accountBtn + ' ' + _styles_user_personal_info_module_scss__WEBPACK_IMPORTED_MODULE_6__["default"].accountBtnLogout,
+        onClick: handleLogout,
+        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_13__.Text, {
+          className: _styles_user_personal_info_module_scss__WEBPACK_IMPORTED_MODULE_6__["default"].accountBtnText,
+          children: "\u9000\u51FA\u767B\u5F55"
+        })
+      })]
+    }), showDatePicker && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_13__.View, {
+      className: _styles_user_personal_info_module_scss__WEBPACK_IMPORTED_MODULE_6__["default"].datePickerOverlay,
+      onClick: function onClick() {
+        return setShowDatePicker(false);
+      },
+      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_13__.View, {
+        className: _styles_user_personal_info_module_scss__WEBPACK_IMPORTED_MODULE_6__["default"].datePickerContent,
+        onClick: function onClick(e) {
+          return e.stopPropagation();
+        },
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_13__.View, {
+          className: _styles_user_personal_info_module_scss__WEBPACK_IMPORTED_MODULE_6__["default"].datePickerHeader,
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_13__.Text, {
+            className: _styles_user_personal_info_module_scss__WEBPACK_IMPORTED_MODULE_6__["default"].datePickerCancel,
+            onClick: function onClick() {
+              return setShowDatePicker(false);
+            },
+            children: "\u53D6\u6D88"
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_13__.Text, {
+            className: _styles_user_personal_info_module_scss__WEBPACK_IMPORTED_MODULE_6__["default"].datePickerConfirm,
+            onClick: handleDateConfirm,
+            children: "\u786E\u5B9A"
+          })]
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_13__.View, {
+          className: _styles_user_personal_info_module_scss__WEBPACK_IMPORTED_MODULE_6__["default"].datePickerWheels,
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_13__.View, {
+            className: _styles_user_personal_info_module_scss__WEBPACK_IMPORTED_MODULE_6__["default"].wheel,
+            children: years.map(function (year) {
+              return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_13__.Text, {
+                className: "".concat(_styles_user_personal_info_module_scss__WEBPACK_IMPORTED_MODULE_6__["default"].wheelItem, " ").concat(selectedYear === year ? _styles_user_personal_info_module_scss__WEBPACK_IMPORTED_MODULE_6__["default"].wheelItemActive : ''),
+                onClick: function onClick() {
+                  return setSelectedYear(year);
+                },
+                children: [year, "\u5E74"]
+              }, year);
+            })
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_13__.View, {
+            className: _styles_user_personal_info_module_scss__WEBPACK_IMPORTED_MODULE_6__["default"].wheel,
+            children: months.map(function (month) {
+              return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_13__.Text, {
+                className: "".concat(_styles_user_personal_info_module_scss__WEBPACK_IMPORTED_MODULE_6__["default"].wheelItem, " ").concat(selectedMonth === month ? _styles_user_personal_info_module_scss__WEBPACK_IMPORTED_MODULE_6__["default"].wheelItemActive : ''),
+                onClick: function onClick() {
+                  return setSelectedMonth(month);
+                },
+                children: [String(month).padStart(2, '0'), "\u6708"]
+              }, month);
+            })
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_13__.View, {
+            className: _styles_user_personal_info_module_scss__WEBPACK_IMPORTED_MODULE_6__["default"].wheel,
+            children: days.map(function (day) {
+              return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_13__.Text, {
+                className: "".concat(_styles_user_personal_info_module_scss__WEBPACK_IMPORTED_MODULE_6__["default"].wheelItem, " ").concat(selectedDay === day ? _styles_user_personal_info_module_scss__WEBPACK_IMPORTED_MODULE_6__["default"].wheelItemActive : ''),
+                onClick: function onClick() {
+                  return setSelectedDay(day);
+                },
+                children: [String(day).padStart(2, '0'), "\u65E5"]
+              }, day);
+            })
+          })]
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_13__.View, {
+          className: _styles_user_personal_info_module_scss__WEBPACK_IMPORTED_MODULE_6__["default"].datePickerLine
+        })]
+      })
+    }), showAvatarPicker && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_13__.View, {
+      className: _styles_user_personal_info_module_scss__WEBPACK_IMPORTED_MODULE_6__["default"].avatarPickerOverlay,
+      onClick: function onClick() {
+        return setShowAvatarPicker(false);
+      },
+      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_13__.View, {
+        className: _styles_user_personal_info_module_scss__WEBPACK_IMPORTED_MODULE_6__["default"].avatarPickerContent,
+        onClick: function onClick(e) {
+          return e.stopPropagation();
+        },
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_13__.View, {
+          className: _styles_user_personal_info_module_scss__WEBPACK_IMPORTED_MODULE_6__["default"].avatarPickerHeader,
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_13__.Text, {
+            className: _styles_user_personal_info_module_scss__WEBPACK_IMPORTED_MODULE_6__["default"].avatarPickerTitle,
+            children: "\u9009\u62E9\u56FE\u7247"
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_13__.Text, {
+            className: _styles_user_personal_info_module_scss__WEBPACK_IMPORTED_MODULE_6__["default"].avatarPickerClose,
+            onClick: function onClick() {
+              return setShowAvatarPicker(false);
+            },
+            children: "\xD7"
+          })]
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_13__.View, {
+          className: _styles_user_personal_info_module_scss__WEBPACK_IMPORTED_MODULE_6__["default"].avatarPickerBody,
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_13__.View, {
+            className: _styles_user_personal_info_module_scss__WEBPACK_IMPORTED_MODULE_6__["default"].avatarPickerOption,
+            onClick: function onClick() {
+              return handleAvatarChoose('album');
+            },
+            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_13__.Text, {
+              className: _styles_user_personal_info_module_scss__WEBPACK_IMPORTED_MODULE_6__["default"].avatarPickerOptionText,
+              children: "\u4ECE\u76F8\u518C\u9009\u62E9"
+            })
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_13__.View, {
+            className: _styles_user_personal_info_module_scss__WEBPACK_IMPORTED_MODULE_6__["default"].avatarPickerDivider
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_13__.View, {
+            className: _styles_user_personal_info_module_scss__WEBPACK_IMPORTED_MODULE_6__["default"].avatarPickerOption,
+            onClick: function onClick() {
+              return handleAvatarChoose('camera');
+            },
+            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_13__.Text, {
+              className: _styles_user_personal_info_module_scss__WEBPACK_IMPORTED_MODULE_6__["default"].avatarPickerOptionText,
+              children: "\u62CD\u7167"
+            })
+          })]
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_13__.View, {
+          className: _styles_user_personal_info_module_scss__WEBPACK_IMPORTED_MODULE_6__["default"].avatarPickerCancel,
+          onClick: function onClick() {
+            return setShowAvatarPicker(false);
+          },
+          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_13__.Text, {
+            className: _styles_user_personal_info_module_scss__WEBPACK_IMPORTED_MODULE_6__["default"].avatarPickerCancelText,
+            children: "\u53D6\u6D88"
+          })
+        })]
+      })
+    }), showNicknameModal && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_13__.View, {
+      className: _styles_user_personal_info_module_scss__WEBPACK_IMPORTED_MODULE_6__["default"].nicknameModalOverlay,
+      onClick: function onClick() {
+        return setShowNicknameModal(false);
+      },
+      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_13__.View, {
+        className: _styles_user_personal_info_module_scss__WEBPACK_IMPORTED_MODULE_6__["default"].nicknameModalContent,
+        onClick: function onClick(e) {
+          return e.stopPropagation();
+        },
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_13__.View, {
+          className: _styles_user_personal_info_module_scss__WEBPACK_IMPORTED_MODULE_6__["default"].nicknameModalHeader,
+          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_13__.Text, {
+            className: _styles_user_personal_info_module_scss__WEBPACK_IMPORTED_MODULE_6__["default"].nicknameModalTitle,
+            children: "\u4FEE\u6539\u6635\u79F0"
+          })
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_13__.View, {
+          className: _styles_user_personal_info_module_scss__WEBPACK_IMPORTED_MODULE_6__["default"].nicknameModalBody,
+          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_13__.Input, {
+            className: _styles_user_personal_info_module_scss__WEBPACK_IMPORTED_MODULE_6__["default"].nicknameInput,
+            value: nicknameInput,
+            onInput: function onInput(e) {
+              return setNicknameInput(e.detail.value);
+            },
+            placeholder: "\u8BF7\u8F93\u5165\u65B0\u6635\u79F0",
+            maxlength: 20
+          })
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_13__.View, {
+          className: _styles_user_personal_info_module_scss__WEBPACK_IMPORTED_MODULE_6__["default"].nicknameModalFooter,
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_13__.View, {
+            className: _styles_user_personal_info_module_scss__WEBPACK_IMPORTED_MODULE_6__["default"].nicknameModalBtn,
+            onClick: function onClick() {
+              return setShowNicknameModal(false);
+            },
+            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_13__.Text, {
+              className: _styles_user_personal_info_module_scss__WEBPACK_IMPORTED_MODULE_6__["default"].nicknameModalBtnText,
+              children: "\u53D6\u6D88"
+            })
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_13__.View, {
+            className: _styles_user_personal_info_module_scss__WEBPACK_IMPORTED_MODULE_6__["default"].nicknameModalBtn,
+            onClick: function onClick() {
+              if (nicknameInput.trim()) {
+                setShowNicknameModal(false);
+                updateProfile({
+                  nickname: nicknameInput.trim()
+                });
+              } else {
+                _tarojs_taro__WEBPACK_IMPORTED_MODULE_1___default().showToast({
+                  title: '请输入昵称',
+                  icon: 'none'
+                });
+              }
+            },
+            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_13__.Text, {
+              className: _styles_user_personal_info_module_scss__WEBPACK_IMPORTED_MODULE_6__["default"].nicknameModalBtnText + ' ' + _styles_user_personal_info_module_scss__WEBPACK_IMPORTED_MODULE_6__["default"].nicknameModalBtnConfirm,
+              children: "\u786E\u5B9A"
+            })
+          })]
+        })]
+      })
+    }), showGenderPicker && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_13__.View, {
+      className: _styles_user_personal_info_module_scss__WEBPACK_IMPORTED_MODULE_6__["default"].genderPickerOverlay,
+      onClick: function onClick() {
+        return setShowGenderPicker(false);
+      },
+      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_13__.View, {
+        className: _styles_user_personal_info_module_scss__WEBPACK_IMPORTED_MODULE_6__["default"].genderPickerContent,
+        onClick: function onClick(e) {
+          return e.stopPropagation();
+        },
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_13__.View, {
+          className: _styles_user_personal_info_module_scss__WEBPACK_IMPORTED_MODULE_6__["default"].genderPickerHeader,
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_13__.Text, {
+            className: _styles_user_personal_info_module_scss__WEBPACK_IMPORTED_MODULE_6__["default"].genderPickerTitle,
+            children: "\u9009\u62E9\u6027\u522B"
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_13__.Text, {
+            className: _styles_user_personal_info_module_scss__WEBPACK_IMPORTED_MODULE_6__["default"].genderPickerClose,
+            onClick: function onClick() {
+              return setShowGenderPicker(false);
+            },
+            children: "\xD7"
+          })]
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)(_tarojs_components__WEBPACK_IMPORTED_MODULE_13__.View, {
+          className: _styles_user_personal_info_module_scss__WEBPACK_IMPORTED_MODULE_6__["default"].genderPickerBody,
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_13__.View, {
+            className: _styles_user_personal_info_module_scss__WEBPACK_IMPORTED_MODULE_6__["default"].genderPickerOption,
+            onClick: function onClick() {
+              setShowGenderPicker(false);
+              updateProfile({
+                gender: '男'
+              });
+            },
+            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_13__.Text, {
+              className: _styles_user_personal_info_module_scss__WEBPACK_IMPORTED_MODULE_6__["default"].genderPickerOptionText,
+              children: "\u7537"
+            })
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_13__.View, {
+            className: _styles_user_personal_info_module_scss__WEBPACK_IMPORTED_MODULE_6__["default"].genderPickerDivider
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_13__.View, {
+            className: _styles_user_personal_info_module_scss__WEBPACK_IMPORTED_MODULE_6__["default"].genderPickerOption,
+            onClick: function onClick() {
+              setShowGenderPicker(false);
+              updateProfile({
+                gender: '女'
+              });
+            },
+            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_13__.Text, {
+              className: _styles_user_personal_info_module_scss__WEBPACK_IMPORTED_MODULE_6__["default"].genderPickerOptionText,
+              children: "\u5973"
+            })
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_13__.View, {
+            className: _styles_user_personal_info_module_scss__WEBPACK_IMPORTED_MODULE_6__["default"].genderPickerDivider
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_13__.View, {
+            className: _styles_user_personal_info_module_scss__WEBPACK_IMPORTED_MODULE_6__["default"].genderPickerOption,
+            onClick: function onClick() {
+              setShowGenderPicker(false);
+              updateProfile({
+                gender: '保密'
+              });
+            },
+            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_tarojs_components__WEBPACK_IMPORTED_MODULE_13__.Text, {
+              className: _styles_user_personal_info_module_scss__WEBPACK_IMPORTED_MODULE_6__["default"].genderPickerOptionText,
+              children: "\u4FDD\u5BC6"
+            })
+          })]
+        })]
+      })
+    })]
+  });
+};
+/* harmony default export */ __webpack_exports__["default"] = (PersonalInfoPage);
+
+/***/ }),
+
+/***/ "./src/pages/user/personal-info/index.tsx":
+/*!************************************************!*\
+  !*** ./src/pages/user/personal-info/index.tsx ***!
+  \************************************************/
+/***/ (function(__unused_webpack_module, __unused_webpack___webpack_exports__, __webpack_require__) {
+
+/* harmony import */ var _tarojs_runtime__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @tarojs/runtime */ "./node_modules/@tarojs/runtime/dist/dsl/common.js");
+/* harmony import */ var _node_modules_tarojs_taro_loader_lib_entry_cache_js_name_pages_user_personal_info_index_index_tsx__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! !!../../../../node_modules/@tarojs/taro-loader/lib/entry-cache.js?name=pages/user/personal-info/index!./index.tsx */ "./node_modules/@tarojs/taro-loader/lib/entry-cache.js?name=pages/user/personal-info/index!./src/pages/user/personal-info/index.tsx");
+
+
+var config = {};
+
+
+
+var taroOption = (0,_tarojs_runtime__WEBPACK_IMPORTED_MODULE_1__.createPageConfig)(_node_modules_tarojs_taro_loader_lib_entry_cache_js_name_pages_user_personal_info_index_index_tsx__WEBPACK_IMPORTED_MODULE_0__["default"], 'pages/user/personal-info/index', {root:{cn:[]}}, config || {})
+if (_node_modules_tarojs_taro_loader_lib_entry_cache_js_name_pages_user_personal_info_index_index_tsx__WEBPACK_IMPORTED_MODULE_0__["default"] && _node_modules_tarojs_taro_loader_lib_entry_cache_js_name_pages_user_personal_info_index_index_tsx__WEBPACK_IMPORTED_MODULE_0__["default"].behaviors) {
+  taroOption.behaviors = (taroOption.behaviors || []).concat(_node_modules_tarojs_taro_loader_lib_entry_cache_js_name_pages_user_personal_info_index_index_tsx__WEBPACK_IMPORTED_MODULE_0__["default"].behaviors)
+}
+var inst = Page(taroOption)
+
+
+
+/* unused harmony default export */ var __WEBPACK_DEFAULT_EXPORT__ = (_node_modules_tarojs_taro_loader_lib_entry_cache_js_name_pages_user_personal_info_index_index_tsx__WEBPACK_IMPORTED_MODULE_0__["default"]);
+
+
+/***/ }),
+
+/***/ "./src/styles/user/personal-info.module.scss":
+/*!***************************************************!*\
+  !*** ./src/styles/user/personal-info.module.scss ***!
+  \***************************************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__) {
+
+// extracted by mini-css-extract-plugin
+/* harmony default export */ __webpack_exports__["default"] = ({"personalInfoPage":"personal-info-module__personalInfoPage___Kuud5","header":"personal-info-module__header___CbEb9","backBtn":"personal-info-module__backBtn___BxAWe","backIcon":"personal-info-module__backIcon___P43by","headerTitle":"personal-info-module__headerTitle___ElnDy","headerRight":"personal-info-module__headerRight___hwd2V","content":"personal-info-module__content___luZZA","infoItem":"personal-info-module__infoItem___HD8zg","itemLabel":"personal-info-module__itemLabel___h4w4y","itemContent":"personal-info-module__itemContent___DzxsQ","itemValue":"personal-info-module__itemValue___tgOy7","itemArrow":"personal-info-module__itemArrow___SnRIY","avatar":"personal-info-module__avatar___pWYNk","datePickerOverlay":"personal-info-module__datePickerOverlay___ki8Iq","datePickerContent":"personal-info-module__datePickerContent___BThPl","datePickerHeader":"personal-info-module__datePickerHeader___Fqz8R","datePickerCancel":"personal-info-module__datePickerCancel___gxxZp","datePickerConfirm":"personal-info-module__datePickerConfirm___nmgqA","datePickerWheels":"personal-info-module__datePickerWheels___URMLQ","wheel":"personal-info-module__wheel___NygGZ","wheelItem":"personal-info-module__wheelItem___mDmUn","wheelItemActive":"personal-info-module__wheelItemActive___Zdmx6","datePickerLine":"personal-info-module__datePickerLine___bTzcJ","avatarPickerOverlay":"personal-info-module__avatarPickerOverlay___iwYFn","avatarPickerContent":"personal-info-module__avatarPickerContent___ZkyS3","avatarPickerHeader":"personal-info-module__avatarPickerHeader___kYtpL","avatarPickerTitle":"personal-info-module__avatarPickerTitle___P6Fxs","avatarPickerClose":"personal-info-module__avatarPickerClose___Q9qm6","avatarPickerBody":"personal-info-module__avatarPickerBody___t7yJJ","avatarPickerOption":"personal-info-module__avatarPickerOption___hx4GW","avatarPickerOptionText":"personal-info-module__avatarPickerOptionText___SzaN2","avatarPickerDivider":"personal-info-module__avatarPickerDivider___fE35v","avatarPickerCancel":"personal-info-module__avatarPickerCancel___zuxHl","avatarPickerCancelText":"personal-info-module__avatarPickerCancelText___wbBBm","nicknameModalOverlay":"personal-info-module__nicknameModalOverlay___LGaay","nicknameModalContent":"personal-info-module__nicknameModalContent___QCx87","nicknameModalHeader":"personal-info-module__nicknameModalHeader___hu9ON","nicknameModalTitle":"personal-info-module__nicknameModalTitle____ZmxH","nicknameModalBody":"personal-info-module__nicknameModalBody___o6GWZ","nicknameInput":"personal-info-module__nicknameInput___gzLHs","nicknameModalFooter":"personal-info-module__nicknameModalFooter___OQ8HE","nicknameModalBtn":"personal-info-module__nicknameModalBtn___NNxpp","nicknameModalBtnText":"personal-info-module__nicknameModalBtnText___hHxrz","nicknameModalBtnConfirm":"personal-info-module__nicknameModalBtnConfirm___ga23J","genderPickerOverlay":"personal-info-module__genderPickerOverlay___VSW9a","genderPickerContent":"personal-info-module__genderPickerContent___PCIxL","genderPickerHeader":"personal-info-module__genderPickerHeader___KZtgT","genderPickerTitle":"personal-info-module__genderPickerTitle___RefVx","genderPickerClose":"personal-info-module__genderPickerClose___mDTYP","genderPickerBody":"personal-info-module__genderPickerBody___R8hly","genderPickerOption":"personal-info-module__genderPickerOption___ui25w","genderPickerOptionText":"personal-info-module__genderPickerOptionText___x0aFy","genderPickerDivider":"personal-info-module__genderPickerDivider___WVuHZ","accountSection":"personal-info-module__accountSection___Zf1CB","accountBtn":"personal-info-module__accountBtn___J2cFs","accountBtnLogout":"personal-info-module__accountBtnLogout___LXOIj","accountBtnText":"personal-info-module__accountBtnText___dfyQv"});
+
+/***/ }),
+
+/***/ "./node_modules/@babel/runtime/helpers/esm/objectWithoutProperties.js":
+/*!****************************************************************************!*\
+  !*** ./node_modules/@babel/runtime/helpers/esm/objectWithoutProperties.js ***!
+  \****************************************************************************/
+/***/ (function(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": function() { return /* binding */ _objectWithoutProperties; }
+/* harmony export */ });
+/* harmony import */ var _objectWithoutPropertiesLoose_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./objectWithoutPropertiesLoose.js */ "./node_modules/@babel/runtime/helpers/esm/objectWithoutPropertiesLoose.js");
+
+function _objectWithoutProperties(e, t) {
+  if (null == e) return {};
+  var o,
+    r,
+    i = (0,_objectWithoutPropertiesLoose_js__WEBPACK_IMPORTED_MODULE_0__["default"])(e, t);
+  if (Object.getOwnPropertySymbols) {
+    var n = Object.getOwnPropertySymbols(e);
+    for (r = 0; r < n.length; r++) o = n[r], -1 === t.indexOf(o) && {}.propertyIsEnumerable.call(e, o) && (i[o] = e[o]);
+  }
+  return i;
+}
+
+
+/***/ }),
+
+/***/ "./node_modules/@babel/runtime/helpers/esm/objectWithoutPropertiesLoose.js":
+/*!*********************************************************************************!*\
+  !*** ./node_modules/@babel/runtime/helpers/esm/objectWithoutPropertiesLoose.js ***!
+  \*********************************************************************************/
+/***/ (function(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": function() { return /* binding */ _objectWithoutPropertiesLoose; }
+/* harmony export */ });
+function _objectWithoutPropertiesLoose(r, e) {
+  if (null == r) return {};
+  var t = {};
+  for (var n in r) if ({}.hasOwnProperty.call(r, n)) {
+    if (-1 !== e.indexOf(n)) continue;
+    t[n] = r[n];
+  }
+  return t;
+}
+
+
+/***/ })
+
+},
+/******/ function(__webpack_require__) { // webpackRuntimeModules
+/******/ var __webpack_exec__ = function(moduleId) { return __webpack_require__(__webpack_require__.s = moduleId); }
+/******/ __webpack_require__.O(0, ["taro","vendors","common"], function() { return __webpack_exec__("./src/pages/user/personal-info/index.tsx"); });
+/******/ var __webpack_exports__ = __webpack_require__.O();
+/******/ }
+]);
+//# sourceMappingURL=index.js.map

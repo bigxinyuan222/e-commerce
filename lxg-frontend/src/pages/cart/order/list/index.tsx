@@ -4,7 +4,7 @@ import Taro from '@tarojs/taro';
 import { fetchOrderList, fetchRefundList, fetchOrderReviews, cancelOrder, payOrder, confirmOrder } from '@/api/cart';
 import { getImageUrl, lazyImgProps } from '@/utils/image';
 import { executeWechatPayment } from '@/utils/wechatPay';
-import styles from '@/styles/cart/order-list.module.scss';
+import styles from './index.module.scss';
 
 // 后端订单状态码：0=待支付 2=待发货 3=待自提 4=已完成 5=已取消
 const statusCodeMap: { [key: number]: string } = {

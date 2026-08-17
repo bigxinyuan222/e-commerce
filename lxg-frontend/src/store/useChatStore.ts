@@ -92,6 +92,7 @@ interface ChatStoreActions {
   fetchConversations: (forceRefresh?: boolean) => Promise<ChatConversation[]>;
   createConversation: (payload?: Record<string, any>) => Promise<ChatConversation | null>;
   markConversationRead: (conversationId: string) => Promise<void>;
+  transferToHuman: (conversationId: string) => Promise<boolean>;
   getConversation: (id: string) => ChatConversation | undefined;
 
   // ---------- 当前会话 ----------
@@ -145,23 +146,85 @@ function normalizeConversation(raw: any): ChatConversation {
 }
 
 // ---------- 当前用户信息获取 ----------
+// 优先读取 userInfo（登录后保存的完整用户信息，包含 id），然后读取 lxg_user，兼容多种 ID 字段名
 function _getCurrentUserId(): string | null {
   try {
-    // 优先使用 Taro.getStorageSync（兼容小程序和 H5），回退到 localStorage
-    let userInfoStr: string | null = null;
+    let raw: any = null;
+    let source = '';
+
+    // 1. 优先读取 userInfo（登录后保存的完整用户信息，包含 id）
     try {
-      userInfoStr = Taro.getStorageSync('userInfo') || null;
-    } catch {
-      // H5 环境可能使用 localStorage
-      if (typeof localStorage !== 'undefined') {
-        userInfoStr = localStorage.getItem('userInfo');
+      const userInfo = Taro.getStorageSync('userInfo');
+      console.log('[ChatStore] _getCurrentUserId: userInfo 原始值:', typeof userInfo, JSON.stringify(userInfo)?.slice(0, 200));
+      if (userInfo) {
+        raw = typeof userInfo === 'string' ? JSON.parse(userInfo) : userInfo;
+        source = 'userInfo';
+      }
+    } catch (e) {
+      console.error('[ChatStore] _getCurrentUserId: 读取 userInfo 失败:', e);
+    }
+
+    // 2. 回退读取 lxg_user（部分场景下 userInfo 不存在）
+    if (!raw) {
+      try {
+        const lxgUser = Taro.getStorageSync('lxg_user');
+        console.log('[ChatStore] _getCurrentUserId: lxg_user 原始值:', typeof lxgUser, JSON.stringify(lxgUser)?.slice(0, 200));
+        if (lxgUser) {
+          const parsed = typeof lxgUser === 'string' ? JSON.parse(lxgUser) : lxgUser;
+          // lxg_user 结构: { token, user }，但 user 里可能没有 id
+          raw = parsed?.user ?? parsed ?? null;
+          source = 'lxg_user';
+          console.log('[ChatStore] _getCurrentUserId: lxg_user 解析后 user:', JSON.stringify(parsed?.user)?.slice(0, 200));
+        }
+      } catch (e) {
+        console.error('[ChatStore] _getCurrentUserId: 读取 lxg_user 失败:', e);
       }
     }
-    if (userInfoStr) {
-      const info = JSON.parse(userInfoStr);
-      return String(info.id ?? info.userId ?? info.user_id ?? info.ID ?? '');
+
+    // 3. H5 环境再尝试 localStorage
+    if (!raw && typeof localStorage !== 'undefined') {
+      try {
+        const userInfo = localStorage.getItem('userInfo');
+        if (userInfo) {
+          raw = JSON.parse(userInfo);
+          source = 'localStorage.userInfo';
+        }
+        if (!raw) {
+          const lxgUser = localStorage.getItem('lxg_user');
+          if (lxgUser) {
+            const parsed = JSON.parse(lxgUser);
+            raw = parsed?.user ?? parsed ?? null;
+            source = 'localStorage.lxg_user';
+          }
+        }
+      } catch {}
     }
-  } catch {}
+
+    if (raw) {
+      const id =
+        raw.id ??
+        raw.ID ??
+        raw.Id ??
+        raw.userId ??
+        raw.UserId ??
+        raw.user_id ??
+        raw.User_id ??
+        raw.uid ??
+        raw.Uid ??
+        raw.userID ??
+        raw.sub ??
+        raw.openid ??
+        raw.OpenId ??
+        raw.open_id ??
+        '';
+      console.log('[ChatStore] _getCurrentUserId: 提取结果', { source, id, rawKeys: Object.keys(raw) });
+      return id !== undefined && id !== null && id !== '' ? String(id) : null;
+    }
+
+    console.warn('[ChatStore] _getCurrentUserId: 未找到任何用户信息');
+  } catch (err) {
+    console.error('[ChatStore] _getCurrentUserId 失败:', err);
+  }
   return null;
 }
 
@@ -387,10 +450,15 @@ export const useChatStore = create<ChatStore>((set, get) => ({
   },
 
   async markConversationRead(conversationId: string) {
-    if (!conversationId) return;
+    if (!conversationId) {
+      console.warn('[ChatStore] markConversationRead: conversationId 为空，跳过');
+      return;
+    }
     try {
-      // 后端"标记已读"接口为 PUT 方法（非 POST），路径 /chat/conversations/:id/read
-      await apiPut(chatApi.readConversation, {}, { id: conversationId });
+      console.log('[ChatStore] markConversationRead 开始, id:', conversationId);
+      // 后端"标记已读"接口为 PUT 方法，路径 /chat/conversations/:id/read
+      const res = await apiPut(chatApi.readConversation, {}, { id: conversationId });
+      console.log('[ChatStore] markConversationRead 成功, 后端返回:', res);
       // 乐观更新本地
       set((s) => ({
         conversations: s.conversations.map((c) =>
@@ -403,6 +471,28 @@ export const useChatStore = create<ChatStore>((set, get) => ({
       }));
     } catch (err: any) {
       console.error('[ChatStore] markConversationRead 失败:', err);
+    }
+  },
+
+  /**
+   * 转人工客服
+   * 后端接口: PUT /chat/conversations/:id/transfer-human
+   * 成功返回 true，失败返回 false
+   */
+  async transferToHuman(conversationId: string) {
+    if (!conversationId) return false;
+    try {
+      const res = await apiPut(chatApi.transferHuman, {}, { id: conversationId });
+      console.log('[ChatStore] transferToHuman 成功:', res);
+      // 刷新会话列表，获取最新的客服分配信息
+      get().fetchConversations(true).catch(() => {});
+      // 刷新当前会话消息，可能后端会推送一条系统消息（如"已为您转接人工客服"）
+      get().fetchMessages(conversationId, true).catch(() => {});
+      return true;
+    } catch (err: any) {
+      console.error('[ChatStore] transferToHuman 失败:', err);
+      Taro.showToast({ title: err?.message || '转人工失败', icon: 'none' });
+      return false;
     }
   },
 
@@ -476,7 +566,7 @@ export const useChatStore = create<ChatStore>((set, get) => ({
         unsubListener = chatWS.onMessage((inbound) => {
           if (resolved) return;
           const { type, data } = inbound;
-          if (type === 'messages/history' || type === 'message/history' || type === 'history') {
+          if (type === 'messages/history' || String(type) === 'message/history' || String(type) === 'history') {
             resolved = true;
             clearTimeout(timeoutId);
             cleanup();
@@ -492,13 +582,14 @@ export const useChatStore = create<ChatStore>((set, get) => ({
           }
         });
 
-        // 发送历史消息请求
+        // 发送历史消息请求（conversationId 统一为字符串格式）
+        const convIdStr = String(conversationId);
         chatWS.send({
-          type: 'messages/history' as any,
+          type: 'messages/history',
           data: {
-            conversationId,
-            conversation_id: conversationId,
-            conv_id: conversationId,
+            conversationId: convIdStr,
+            conversation_id: convIdStr,
+            conv_id: convIdStr,
           },
           id: `history-${Date.now()}`,
         });
@@ -541,13 +632,39 @@ export const useChatStore = create<ChatStore>((set, get) => ({
     }
 
     // 3. 通过 WebSocket 发送消息（后端 WS 处理器负责持久化到数据库 + 广播）
-    //    后端要求格式: { type: "chat", data: { conversationId: <number>, content: <string>, messageType: 1 } }
+    //    后端要求格式: { type: "chat", data: { conversationId: <string>, senderId: <string>, content: <string>, messageType: <number> } }
+    //    注意：conversationId 和 senderId 必须是字符串格式（带引号），不能是数字，也不能是空字符串
+    const currentUserId = _getCurrentUserId();
+    const convIdStr = String(conversationId).trim();
+    const senderIdStr = String(currentUserId ?? '').trim();
+
+    if (!convIdStr || !senderIdStr) {
+      console.error('[ChatStore] sendMessage: conversationId 或 senderId 为空，拒绝发送', {
+        conversationId,
+        convIdStr,
+        currentUserId,
+        senderIdStr,
+      });
+      Taro.showToast({ title: '会话信息不完整，请重新登录后重试', icon: 'none' });
+      get().updateMessage(conversationId, tempId, { status: 'failed' });
+      return null;
+    }
+
+    // 消息类型映射：1=文本消息 2=图片消息 3=订单消息 4=商品消息 0=系统消息
+    const messageTypeMap: Record<ChatMessageType, number> = {
+      text: 1,
+      image: 2,
+      order: 3,
+      product: 4,
+      system: 0,
+    };
     const wsMsg = {
       type: 'chat' as const,
       data: {
-        conversationId: Number(conversationId),
+        conversationId: convIdStr,
+        senderId: senderIdStr,
         content: payload.content,
-        messageType: 1,  // 1=文本消息
+        messageType: messageTypeMap[payload.type] ?? 1,
       },
       id: tempId,
     };

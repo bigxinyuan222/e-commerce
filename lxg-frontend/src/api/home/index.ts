@@ -7,7 +7,7 @@ const API_BASE_URL = process.env.TARO_ENV === 'h5'
 import { apiGet, apiPost, toNumericId } from '@/api/common';
 
 export const homeApi = {
-    banners: `${API_BASE_URL}/homepage/banners`,
+    banners: `${API_BASE_URL}/product/banner`,
     // 获取所有推荐位商品 GET /api/v1/product/recommend
     // 返回结构:{ code, message, data: [{ id, name, status, products: [完整商品] }] }
     recommend: `${API_BASE_URL}/product/recommend`,
@@ -181,7 +181,8 @@ export async function fetchReviewList(params: {
 export async function fetchReviewStats(productId: string | number) {
     // 后端要求参数名为 id（与 product/detail 接口一致）
     const query: Record<string, any> = { id: toNumericId(productId) };
-    const res = await apiGet(reviewApi.stats, query, {}, false);
+    // silent=true：未登录或 token 失效时不弹登录窗跳转，避免打断用户浏览商品
+    const res = await apiGet(reviewApi.stats, query, {}, true);
     return {
         ...res,
         data: normalizeReviewStats(res),
