@@ -248,7 +248,9 @@ async function loadProducts(activity?: Activity) {
     ? `/api/v1/admin/seckill/activities/activity/inproduct?id=${encodeURIComponent(activity.id)}`
     : '/api/v1/admin/product/list?page=1&size=100&status=1'
   const data = await request(url, { headers: headers() })
-  products.value = listFrom(data).map((item: any) => ({
+  const rows = listFrom(data)
+  if (activity?.status === 'active') activity.products = rows
+  products.value = rows.map((item: any) => ({
     id: Number(item.product_id ?? item.product?.id ?? item.ID ?? item.id),
     name: String(item.product_name ?? item.product?.name ?? item.name ?? ''),
     originalPrice: Number(item.normal_price ?? item.original_price ?? item.originalPrice ?? 0),
@@ -287,6 +289,24 @@ async function loadProductSkus() {
   if (!selectedProductId.value) return
   productLoading.value = true
   try {
+    if (productActivity.value?.status === 'active') {
+      const activityProduct = productActivity.value.products.find((item: any) => Number(item.product_id ?? item.product?.id ?? item.id) === Number(selectedProductId.value))
+      const rows = activityProduct?.skus ?? activityProduct?.items ?? activityProduct?.sku_list ?? []
+      productSkus.value = (Array.isArray(rows) ? rows : []).map((sku: any) => {
+        const normalStock = Math.max(0, Number(sku.normal_stock ?? sku.stock ?? 0))
+        return {
+          id: Number(sku.sku_id ?? sku.sku?.id ?? sku.id ?? sku.ID),
+          code: String(sku.sku_code ?? sku.skuCode ?? sku.sku_id ?? sku.id ?? ''),
+          specs: formatSpecs(sku.spec_values ?? sku.specValues),
+          originalPrice: Number(sku.normal_price ?? sku.price ?? sku.original_price ?? sku.originalPrice ?? 0),
+          stock: normalStock,
+          seckillPrice: String(sku.seckill_price ?? sku.seckillPrice ?? ''),
+          stockLimit: normalStock,
+          existing: true,
+        }
+      })
+      return
+    }
     const data = await request(`/api/v1/admin/product/detail?id=${encodeURIComponent(selectedProductId.value)}`, { headers: headers() })
     const rows = data?.skus ?? data?.product?.skus ?? []
     const activityProduct = (productActivity.value?.products || []).find((item: any) => Number(item.product_id ?? item.product?.id ?? item.id) === Number(selectedProductId.value))
@@ -321,7 +341,7 @@ async function loadProductSkus() {
 async function addProduct() {
   if (!productActivity.value || !selectedProductId.value || !productSkus.value.length) return notify('请选择包含 SKU 的商品', 'error')
   const activity = productActivity.value
-  if (productSkus.value.some(sku => ((!(activity.status === 'active' && sku.existing) && (sku.seckillPrice === '' || !Number.isFinite(Number(sku.seckillPrice)) || Number(sku.seckillPrice) < 0)) || !Number.isInteger(Number(sku.stockLimit)) || Number(sku.stockLimit) < 0))) {
+  if (productSkus.value.some(sku => (sku.seckillPrice === '' || !Number.isFinite(Number(sku.seckillPrice)) || Number(sku.seckillPrice) < 0 || !Number.isInteger(Number(sku.stockLimit)) || Number(sku.stockLimit) < 0))) {
     return notify('请完整填写有效的秒杀价和库存限制', 'error')
   }
   productSubmitting.value = true
@@ -332,7 +352,7 @@ async function addProduct() {
         product_id: Number(selectedProductId.value),
         skus: productSkus.value.map(sku => ({
           sku_id: sku.id,
-          ...(activity.status === 'active' && sku.existing ? {} : { seckill_price: Number(sku.seckillPrice) }),
+          seckill_price: Number(sku.seckillPrice),
           stock_limit: Number(sku.stockLimit),
         })),
       }),
@@ -548,7 +568,7 @@ watch(activityPage, refreshActivityPage)
   <!-- 添加秒杀商品弹窗 -->
   <template v-if="productActivity">
     <div class="modal-overlay" @click="productActivity = null"></div>
-    <div class="modal-content" style="width:680px">
+    <div class="modal-content seckill-product-modal">
       <div class="modal-header">
         <h3><i class="fas fa-box-open"></i> 添加秒杀商品</h3>
         <button class="modal-close" @click="productActivity = null"><i class="fas fa-times"></i></button>
@@ -564,7 +584,7 @@ watch(activityPage, refreshActivityPage)
           <div v-if="productLoading" class="product-state"><i class="fas fa-spinner fa-spin"></i> SKU 加载中...</div>
           <div v-else-if="!productSkus.length" class="product-state">选择商品后配置 SKU 秒杀价格</div>
           <div v-else class="table-wrap">
-            <table>
+            <table class="seckill-sku-table">
               <thead>
                 <tr>
                   <th>SKU</th>
@@ -580,7 +600,12 @@ watch(activityPage, refreshActivityPage)
                   <td>{{ sku.specs }}</td>
                   <td>¥{{ sku.originalPrice }}</td>
                   <td><input v-model="sku.seckillPrice" class="trade-form-input seckill-sku-price" type="number" min="0" step="0.01" :max="sku.originalPrice || undefined" :disabled="productActivity.status === 'active' && sku.existing" /></td>
-                  <td><input v-model.number="sku.stockLimit" class="trade-form-input seckill-sku-stock" type="number" min="0" step="1" :max="productActivity.status === 'active' && sku.existing ? undefined : sku.stock" /></td>
+                  <td>
+                    <div class="seckill-stock-editor">
+                      <input v-model.number="sku.stockLimit" class="trade-form-input seckill-sku-stock" type="number" min="0" step="1" :max="sku.stock" />
+                      <small v-if="productActivity.status === 'active' && sku.existing" class="seckill-stock-hint"><i class="fas fa-boxes"></i> 可增加 {{ sku.stock }}</small>
+                    </div>
+                  </td>
                 </tr>
               </tbody>
             </table>
@@ -635,6 +660,22 @@ watch(activityPage, refreshActivityPage)
 .stock-list-error{padding:10px 14px;color:#b91c1c;background:#fef2f2}
 /* 统计错误区域样式 */
 .marketing-stats-error{margin-bottom:12px;border-radius:6px}
+.seckill-product-modal{width:min(820px,calc(100vw - 32px))}
+.seckill-sku-table{width:100%;min-width:680px;table-layout:fixed;border-collapse:separate;border-spacing:0}
+.seckill-sku-table th{padding:12px 14px;background:#f8fafc;color:#64748b;font-size:12px;font-weight:700;text-align:left;white-space:nowrap}
+.seckill-sku-table td{padding:14px;border-bottom:1px solid #edf2f7;color:#1e293b;vertical-align:middle}
+.seckill-sku-table th:nth-child(1){width:12%}
+.seckill-sku-table th:nth-child(2){width:22%}
+.seckill-sku-table th:nth-child(3){width:14%}
+.seckill-sku-table th:nth-child(4){width:22%}
+.seckill-sku-table th:nth-child(5){width:30%}
+.seckill-sku-table .trade-form-input{height:40px;padding:8px 10px;border-color:#dbe3ee;background:#fff}
+.seckill-sku-table .seckill-sku-price{max-width:150px}
+.seckill-sku-table .trade-form-input:disabled{background:#f8fafc;color:#475569;opacity:1;cursor:not-allowed}
+.seckill-stock-editor{display:flex;align-items:center;gap:10px;min-width:0}
+.seckill-stock-editor .seckill-sku-stock{width:110px;flex:0 0 110px}
+.seckill-stock-hint{display:inline-flex;align-items:center;gap:5px;padding:5px 8px;border-radius:4px;background:#eef2ff;color:#4f6ef7;font-size:12px;font-weight:600;white-space:nowrap}
+@media (max-width:760px){.seckill-product-modal{width:calc(100vw - 20px)}.seckill-stock-editor{align-items:flex-start;flex-direction:column}.seckill-sku-table{min-width:650px}}
 /* 表格操作按钮间距 */
 td .btn+ .btn{margin-left:6px}
 </style>
