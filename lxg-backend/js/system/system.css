@@ -380,6 +380,15 @@
     background: #f59e0b;
 }
 
+.payment-error { margin:12px;padding:10px 12px;border:1px solid #fecaca;border-radius:6px;background:#fef2f2;color:#b91c1c;font-size:13px; }
+.payment-table-state { min-height:96px;display:flex;align-items:center;justify-content:center;gap:8px;color:#64748b; }
+.payment-pagination { min-height:52px;display:flex;align-items:center;justify-content:space-between;padding:8px 16px;border-top:1px solid #e2e8f0;color:#64748b;font-size:12px; }
+.payment-pagination > div { display:flex;gap:8px; }
+.payment-pagination .btn:disabled { opacity:.45;cursor:not-allowed; }
+.payment-refund-header { gap:12px;flex-wrap:wrap; }
+.payment-refund-filters { display:flex;align-items:center;justify-content:flex-end;gap:8px;flex-wrap:wrap; }
+.payment-refund-filters input[type="date"] { width:auto; }
+
 .system-chat-layout {
     display: flex;
     height: calc(100vh - 280px);
