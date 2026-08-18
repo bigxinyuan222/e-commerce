@@ -157,10 +157,25 @@ const LoginPage: React.FC = () => {
       throw new Error('登录失败：未获取到用户凭证');
     }
 
-    Taro.setStorageSync('lxg_user', JSON.stringify({ token, user }));
+    // 用户 ID 可能散落在 payload 的不同层级，优先从多个位置提取
+    const userId =
+      user?.id ?? user?.ID ?? user?.Id ??
+      user?.userId ?? user?.UserId ?? user?.user_id ??
+      payload?.id ?? payload?.ID ?? payload?.Id ??
+      payload?.data?.id ?? payload?.data?.ID ?? payload?.data?.Id ??
+      payload?.data?.userId ?? payload?.data?.user_id ??
+      '';
+
+    // 如果 user 对象里没有 id，但 payload 其他位置有，补到 user 中保证后续使用
+    const normalizedUser = {
+      ...user,
+      id: userId || user?.id || '',
+    };
+
+    Taro.setStorageSync('lxg_user', JSON.stringify({ token, user: normalizedUser }));
 
     const loggedInUser = {
-      id: String(user.id || user.userId || ''),
+      id: String(userId || user?.id || user?.userId || ''),
       nickname: user.nickname || user.phone || phone,
       avatar: user.avatar || '',
       phone: user.phone || phone,
@@ -879,13 +894,6 @@ const LoginPage: React.FC = () => {
           </View>
         </View>
       )}
-
-      <View className={styles.agreement}>
-        {isRegister ? '注册即表示同意' : '登录即表示同意'}
-        <Text className={styles.link}>《用户协议》</Text>
-        和
-        <Text className={styles.link}>《隐私政策》</Text>
-      </View>
 
       {/* 微信手机号授权弹窗 */}
       {showPhoneAuthModal && (

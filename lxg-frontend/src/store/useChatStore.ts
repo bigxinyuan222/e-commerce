@@ -146,6 +146,36 @@ function normalizeConversation(raw: any): ChatConversation {
 }
 
 // ---------- 当前用户信息获取 ----------
+// 兼容小程序与 H5 的 Base64 解码（JWT payload 解析用）
+function base64Decode(input: string): string {
+  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=';
+  let output = '';
+  let i = 0;
+  while (i < input.length) {
+    const enc1 = chars.indexOf(input.charAt(i++));
+    const enc2 = chars.indexOf(input.charAt(i++));
+    const enc3 = chars.indexOf(input.charAt(i++));
+    const enc4 = chars.indexOf(input.charAt(i++));
+    const chr1 = (enc1 << 2) | (enc2 >> 4);
+    const chr2 = ((enc2 & 15) << 4) | (enc3 >> 2);
+    const chr3 = ((enc3 & 3) << 6) | enc4;
+    output += String.fromCharCode(chr1);
+    if (enc3 !== 64) output += String.fromCharCode(chr2);
+    if (enc4 !== 64) output += String.fromCharCode(chr3);
+  }
+  // 将 Latin-1 字节序列转换为 UTF-8 字符串
+  try {
+    return decodeURIComponent(
+      output
+        .split('')
+        .map((c) => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
+        .join('')
+    );
+  } catch {
+    return output;
+  }
+}
+
 // 优先读取 userInfo（登录后保存的完整用户信息，包含 id），然后读取 lxg_user，兼容多种 ID 字段名
 function _getCurrentUserId(): string | null {
   try {
@@ -218,7 +248,35 @@ function _getCurrentUserId(): string | null {
         raw.open_id ??
         '';
       console.log('[ChatStore] _getCurrentUserId: 提取结果', { source, id, rawKeys: Object.keys(raw) });
-      return id !== undefined && id !== null && id !== '' ? String(id) : null;
+      if (id !== undefined && id !== null && id !== '') {
+        return String(id);
+      }
+    }
+
+    // 兜底：从 JWT token 中解析用户 ID（user_id / sub / id）
+    try {
+      const lxgUserRaw = Taro.getStorageSync('lxg_user');
+      if (lxgUserRaw) {
+        const lxgUser = typeof lxgUserRaw === 'string' ? JSON.parse(lxgUserRaw) : lxgUserRaw;
+        const token = lxgUser?.token ?? lxgUser?.Token ?? lxgUser?.user?.token ?? '';
+        if (token) {
+          const parts = token.split('.');
+          if (parts.length === 3) {
+            const payloadBase64 = parts[1].replace(/-/g, '+').replace(/_/g, '/');
+            const payloadJson = base64Decode(payloadBase64);
+            const payload = JSON.parse(payloadJson);
+            const tokenId =
+              payload.user_id ?? payload.userId ??
+              payload.sub ?? payload.id ?? payload.ID ?? '';
+            if (tokenId !== undefined && tokenId !== null && tokenId !== '') {
+              console.log('[ChatStore] _getCurrentUserId: 从 token 提取到用户 ID', tokenId);
+              return String(tokenId);
+            }
+          }
+        }
+      }
+    } catch (e) {
+      console.error('[ChatStore] _getCurrentUserId: 从 token 解析用户 ID 失败:', e);
     }
 
     console.warn('[ChatStore] _getCurrentUserId: 未找到任何用户信息');

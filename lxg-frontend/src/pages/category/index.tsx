@@ -4,7 +4,6 @@ import Taro, { useDidShow } from '@tarojs/taro';
 import { apiGet } from '@/api/common';
 import { categoryApi } from '@/api/home';
 import { getImageUrl, normalizeProductListImages, lazyImgProps } from '@/utils/image';
-import { getCategoryIcon } from '@/utils/categoryIcons';
 import styles from '@/styles/category/category.module.scss';
 
 function normalizeCategory(item: any): any {
@@ -37,7 +36,7 @@ const SubCategoryItem = React.memo(({
   subCategory: any; 
   onClick: (id: string) => void;
 }) => {
-  const iconSrc = getCategoryIcon(subCategory.name, subCategory.icon);
+  const iconSrc = subCategory.icon || '';
   return (
     <View 
       key={subCategory.id} 
@@ -46,7 +45,7 @@ const SubCategoryItem = React.memo(({
     >
       <View className={styles.subCategoryIcon}>
         <Image 
-          src={iconSrc.startsWith('data:') || iconSrc.includes('.svg') ? iconSrc : getImageUrl(iconSrc)} 
+          src={iconSrc ? (iconSrc.startsWith('data:') || iconSrc.includes('.svg') ? iconSrc : getImageUrl(iconSrc)) : ''} 
           mode="aspectFill" 
           {...lazyImgProps()} 
         />

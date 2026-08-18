@@ -4,9 +4,18 @@
 // 全局样式
 page {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'PingFang SC', 'Hiragino Sans GB',
-    sans-serif;
+    'Microsoft YaHei', sans-serif;
   font-size: $font-size-md;
   line-height: $line-height-normal;
   color: $color-text-primary;
   background-color: $color-bg-page;
+  -webkit-font-smoothing: antialiased;
+  letter-spacing: 0.5rpx;
+}
+
+// 全局滚动条隐藏（小程序兼容）
+::-webkit-scrollbar {
+  display: none;
+  width: 0;
+  height: 0;
 }

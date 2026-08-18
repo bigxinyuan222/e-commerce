@@ -6,11 +6,11 @@
 }
 
 .tabBar {
-  background-color: #ffffff;
+  background-color: $color-bg-card;
   position: sticky;
   top: 0;
   z-index: 100;
-  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.06);
+  box-shadow: 0 2rpx 12rpx rgba(28, 27, 26, 0.05);
 }
 
 .tabList {
@@ -25,19 +25,19 @@
   align-items: center;
   padding: 28rpx 32rpx;
   position: relative;
-  transition: all 0.3s ease;
+  transition: all $transition-base;
 
   .tabText {
     font-size: $font-size-md;
     color: $color-text-secondary;
-    font-weight: 400;
-    transition: all 0.3s ease;
+    font-weight: $font-weight-normal;
+    transition: all $transition-base;
   }
 
   &.active {
     .tabText {
       color: $color-primary;
-      font-weight: $font-weight-semibold;
+      font-weight: $font-weight-bold;
     }
   }
 }
@@ -49,7 +49,7 @@
   transform: translateX(-50%);
   width: 48rpx;
   height: 6rpx;
-  background-color: $color-primary;
+  background: $gradient-brand;
   border-radius: 3rpx;
 }
 
@@ -59,16 +59,16 @@
 }
 
 .orderCard {
-  background-color: #ffffff;
+  background-color: $color-bg-card;
   border-radius: $radius-lg;
   margin-bottom: 24rpx;
   overflow: hidden;
-  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.06);
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: $shadow-card;
+  transition: transform $transition-fast, box-shadow $transition-fast;
 
   &:active {
     transform: scale(0.99);
-    box-shadow: 0 2rpx 10rpx rgba(0, 0, 0, 0.08);
+    box-shadow: $shadow-card-hover;
   }
 }
 
@@ -77,19 +77,21 @@
   justify-content: space-between;
   align-items: center;
   padding: 24rpx 28rpx;
-  border-bottom: 1px solid $color-divider;
+  border-bottom: 1rpx solid $color-divider;
 
   .orderId {
     font-size: $font-size-sm;
     color: $color-text-secondary;
+    font-variant-numeric: tabular-nums;
   }
 
   .orderStatus {
     font-size: $font-size-sm;
     font-weight: $font-weight-semibold;
-    padding: 6rpx 16rpx;
-    border-radius: 20rpx;
-    background-color: rgba(226, 35, 26, 0.08);
+    padding: 6rpx 20rpx;
+    border-radius: $radius-button;
+    background-color: $color-tag-bg;
+    color: $color-tag-text;
   }
 }
 
@@ -97,12 +99,12 @@
   display: flex;
   align-items: center;
   padding: 16rpx 28rpx;
-  background-color: rgba(0, 0, 0, 0.02);
+  background-color: $color-bg-input;
 
   .storeName {
     font-size: $font-size-sm;
     color: $color-text-primary;
-    font-weight: 500;
+    font-weight: $font-weight-semibold;
     margin-right: 12rpx;
   }
 
@@ -125,15 +127,15 @@
   padding: 16rpx 0;
 
   &:not(:last-child) {
-    border-bottom: 1px dashed $color-divider;
+    border-bottom: 1rpx dashed $color-divider;
   }
 
   .productImage {
-    width: 160rpx;
-    height: 160rpx;
+    width: 168rpx;
+    height: 168rpx;
     border-radius: $radius-md;
     margin-right: 20rpx;
-    background-color: $color-bg-page;
+    background-color: $color-bg-input;
     flex-shrink: 0;
   }
 
@@ -152,7 +154,7 @@
       -webkit-line-clamp: 2;
       -webkit-box-orient: vertical;
       overflow: hidden;
-      font-weight: 500;
+      font-weight: $font-weight-medium;
     }
 
     .productSpecs {
@@ -168,12 +170,14 @@
       .productPrice {
         font-size: $font-size-lg;
         font-weight: $font-weight-bold;
-        color: $color-primary;
+        color: $color-price;
+        font-variant-numeric: tabular-nums;
       }
 
       .productQuantity {
         font-size: $font-size-sm;
         color: $color-text-tertiary;
+        font-variant-numeric: tabular-nums;
       }
     }
   }
@@ -184,8 +188,8 @@
   justify-content: space-between;
   align-items: center;
   padding: 20rpx 28rpx;
-  border-top: 1px solid $color-divider;
-  background-color: rgba(0, 0, 0, 0.02);
+  border-top: 1rpx solid $color-divider;
+  background-color: $color-bg-input;
 
   .orderTotal {
     display: flex;
@@ -198,9 +202,11 @@
     }
 
     .totalValue {
-      font-size: $font-size-xl;
+      font-size: 44rpx;
       font-weight: $font-weight-bold;
-      color: $color-primary;
+      color: $color-price;
+      font-variant-numeric: tabular-nums;
+      letter-spacing: -1rpx;
     }
   }
 
@@ -214,9 +220,9 @@
   padding: 16rpx 36rpx;
   border-radius: $radius-button;
   font-size: $font-size-sm;
-  font-weight: 500;
+  font-weight: $font-weight-medium;
   border: 2rpx solid transparent;
-  transition: all 0.2s ease;
+  transition: all $transition-fast;
 
   &:active {
     transform: scale(0.96);
@@ -224,13 +230,14 @@
   }
 
   &.primary {
-    background: linear-gradient(135deg, $color-primary 0%, #f54a42 100%);
+    background: $gradient-brand;
     color: #ffffff;
-    box-shadow: 0 4rpx 16rpx rgba(226, 35, 26, 0.35);
+    font-weight: $font-weight-semibold;
+    box-shadow: 0 4rpx 16rpx rgba(217, 30, 24, 0.3);
   }
 
   &.secondary {
-    background-color: #ffffff;
+    background-color: $color-bg-card;
     border-color: $color-border;
     color: $color-text-secondary;
 
@@ -240,12 +247,12 @@
   }
 
   &.danger {
-    background-color: #ffffff;
+    background-color: $color-bg-card;
     border-color: $color-primary;
     color: $color-primary;
 
     &:active {
-      background-color: rgba(226, 35, 26, 0.08);
+      background-color: $color-tag-bg;
     }
   }
 }
@@ -260,14 +267,14 @@
   .emptyIcon {
     width: 200rpx;
     height: 200rpx;
-    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    background: linear-gradient(135deg, #faf9f8 0%, #eceae7 100%);
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
     font-size: 80rpx;
     margin-bottom: 40rpx;
-    box-shadow: 0 8rpx 32rpx rgba(0, 0, 0, 0.08);
+    box-shadow: 0 8rpx 32rpx rgba(28, 27, 26, 0.06);
   }
 
   .emptyText {
@@ -277,18 +284,17 @@
   }
 
   .goShoppingBtn {
-    background: linear-gradient(135deg, $color-primary 0%, #f54a42 100%);
+    background: $gradient-brand;
     color: #ffffff;
     padding: 24rpx 80rpx;
     border-radius: $radius-button;
     font-size: $font-size-md;
-    font-weight: $font-weight-semibold;
-    box-shadow: 0 8rpx 24rpx rgba(226, 35, 26, 0.4);
-    transition: all 0.2s ease;
+    font-weight: $font-weight-bold;
+    box-shadow: $shadow-btn;
+    transition: all $transition-fast;
 
     &:active {
       transform: scale(0.96);
-      box-shadow: 0 4rpx 12rpx rgba(226, 35, 26, 0.3);
     }
   }
 }
@@ -306,9 +312,9 @@
 }
 
 .refundHeader {
-  background-color: #ffffff;
+  background-color: $color-bg-card;
   padding: 32rpx 28rpx;
-  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.06);
+  box-shadow: 0 2rpx 12rpx rgba(28, 27, 26, 0.05);
 
   .refundTitle {
     font-size: $font-size-xl;
@@ -321,18 +327,18 @@
   display: flex;
   gap: 20rpx;
   padding: 24rpx 28rpx;
-  background-color: rgba(0, 0, 0, 0.02);
-  border-top: 1px solid $color-divider;
+  background-color: $color-bg-input;
+  border-top: 1rpx solid $color-divider;
 }
 
 .refundStatusBtn {
   flex: 1;
   padding: 20rpx;
   border-radius: $radius-md;
-  background-color: #ffffff;
+  background-color: $color-bg-card;
   border: 2rpx solid $color-border;
   text-align: center;
-  transition: all 0.2s ease;
+  transition: all $transition-fast;
 
   text {
     font-size: $font-size-sm;
@@ -340,7 +346,7 @@
   }
 
   &.active {
-    background-color: rgba(226, 35, 26, 0.08);
+    background-color: $color-tag-bg;
     border-color: $color-primary;
 
     text {

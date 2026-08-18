@@ -39,14 +39,18 @@
   }
 
   .retryBtn {
-    padding: 16rpx 48rpx;
-    background-color: $color-primary;
+    padding: 18rpx 56rpx;
+    background: $gradient-brand;
     color: #ffffff;
     border-radius: $radius-button;
     font-size: $font-size-sm;
+    font-weight: $font-weight-medium;
+    box-shadow: $shadow-btn;
+    letter-spacing: 1rpx;
+    transition: transform $transition-fast;
 
     &:active {
-      opacity: 0.8;
+      transform: scale(0.96);
     }
   }
 }
@@ -54,12 +58,19 @@
 .storeCard {
   background-color: $color-bg-card;
   border-radius: $radius-lg;
-  padding: 24rpx;
+  padding: 28rpx 24rpx;
   margin-bottom: 24rpx;
   box-shadow: $shadow-card;
+  border: 2rpx solid transparent;
+  transition: transform $transition-fast, box-shadow $transition-fast;
+
+  &:active {
+    transform: scale(0.99);
+  }
 
   &.selected {
-    border: 2rpx solid $color-primary;
+    border-color: $color-primary;
+    box-shadow: 0 4rpx 20rpx rgba(217, 30, 24, 0.15);
   }
 
   .storeHeader {
@@ -152,7 +163,7 @@
   .detailBtn {
     flex: 1;
     height: $button-height-md;
-    background-color: $color-bg-page;
+    background-color: $color-bg-input;
     color: $color-text-primary;
     border-radius: $radius-button;
     display: flex;
@@ -160,30 +171,36 @@
     justify-content: center;
     font-size: $font-size-md;
     font-weight: $font-weight-medium;
+    transition: background-color $transition-fast, transform $transition-fast;
 
     &:active {
-      opacity: 0.8;
+      background-color: $color-bg-active;
+      transform: scale(0.97);
     }
   }
 
   .selectBtn {
     flex: 1;
     height: $button-height-md;
-    background-color: $color-primary;
+    background: $gradient-brand;
     color: #ffffff;
     border-radius: $radius-button;
     display: flex;
     align-items: center;
     justify-content: center;
     font-size: $font-size-md;
-    font-weight: $font-weight-medium;
+    font-weight: $font-weight-semibold;
+    box-shadow: $shadow-btn;
+    letter-spacing: 1rpx;
+    transition: transform $transition-fast;
 
     &:active {
-      opacity: 0.8;
+      transform: scale(0.97);
     }
 
     &.selectBtnDisabled {
-      background-color: $color-text-tertiary;
+      background: $color-text-tertiary;
+      box-shadow: none;
     }
   }
 }

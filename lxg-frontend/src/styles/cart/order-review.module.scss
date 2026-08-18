@@ -2,7 +2,7 @@
 
 .reviewPage {
   min-height: 100vh;
-  background: #f5f6f7;
+  background: $color-bg-page;
 }
 
 .navBar {
@@ -11,22 +11,22 @@
   left: 0;
   right: 0;
   z-index: 100;
-  background: linear-gradient(135deg, #e2231a 0%, #ff4d4d 100%);
+  background: $gradient-hero;
   padding-top: env(safe-area-inset-top);
   padding-bottom: 20rpx;
-  
+
   .navContent {
     display: flex;
     align-items: center;
     height: 88rpx;
     padding: 0 $page-padding;
-    
+
     .navBack {
       font-size: 44rpx;
       color: #fff;
       margin-right: 20rpx;
     }
-    
+
     .navTitle {
       flex: 1;
       font-size: $font-size-lg;
@@ -43,65 +43,71 @@
 }
 
 .storeSection {
-  background: #fff;
-  padding: 24rpx $page-padding;
-  margin-bottom: 16rpx;
-  
+  background: $color-bg-card;
+  padding: 28rpx $page-padding;
+  margin: 0 $page-spacing 16rpx;
+  border-radius: $radius-lg;
+  box-shadow: $shadow-card;
+
   .storeInfo {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    
+
     .storeName {
       font-size: $font-size-md;
-      font-weight: $font-weight-semibold;
+      font-weight: $font-weight-bold;
       color: $color-text-primary;
     }
-    
+
     .storeStatus {
       font-size: $font-size-sm;
-      color: #52c41a;
+      color: $color-success;
+      font-weight: $font-weight-medium;
     }
   }
-  
+
   .storeTags {
     display: flex;
     gap: 16rpx;
-    margin-top: 12rpx;
-    
+    margin-top: 14rpx;
+
     .storeTag {
       font-size: $font-size-xs;
-      color: #666;
-      background: #f5f5f5;
-      padding: 8rpx 16rpx;
-      border-radius: 8rpx;
+      color: $color-text-secondary;
+      background: $color-bg-input;
+      padding: 8rpx 18rpx;
+      border-radius: $radius-sm;
     }
   }
 }
 
 .productSection {
-  background: #fff;
-  padding: 24rpx $page-padding;
-  margin-bottom: 16rpx;
-  
+  background: $color-bg-card;
+  padding: 28rpx $page-padding;
+  margin: 0 $page-spacing 16rpx;
+  border-radius: $radius-lg;
+  box-shadow: $shadow-card;
+
   .productItem {
     display: flex;
-    
+
     .productImage {
-      width: 160rpx;
-      height: 160rpx;
-      border-radius: 12rpx;
+      width: 168rpx;
+      height: 168rpx;
+      border-radius: $radius-md;
       margin-right: 20rpx;
       flex-shrink: 0;
+      background-color: $color-bg-input;
     }
-    
+
     .productInfo {
       flex: 1;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
       min-width: 0;
-      
+
       .productName {
         font-size: $font-size-sm;
         color: $color-text-primary;
@@ -112,27 +118,29 @@
         -webkit-box-orient: vertical;
         overflow: hidden;
       }
-      
+
       .productSpec {
         font-size: $font-size-xs;
         color: $color-text-tertiary;
         margin-top: 8rpx;
       }
-      
+
       .productBottom {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        
+
         .productPrice {
           font-size: $font-size-md;
-          color: #e2231a;
+          color: $color-price;
           font-weight: $font-weight-bold;
+          font-variant-numeric: tabular-nums;
         }
-        
+
         .productQuantity {
           font-size: $font-size-xs;
           color: $color-text-tertiary;
+          font-variant-numeric: tabular-nums;
         }
       }
     }
@@ -140,75 +148,85 @@
 }
 
 .ratingSection {
-  background: #fff;
-  padding: 24rpx $page-padding;
-  margin-bottom: 16rpx;
-  
+  background: $color-bg-card;
+  padding: 28rpx $page-padding;
+  margin: 0 $page-spacing 16rpx;
+  border-radius: $radius-lg;
+  box-shadow: $shadow-card;
+
   .ratingLabel {
     font-size: $font-size-sm;
     color: $color-text-primary;
-    font-weight: $font-weight-medium;
-    margin-bottom: 20rpx;
+    font-weight: $font-weight-semibold;
+    margin-bottom: 24rpx;
     display: block;
   }
-  
+
   .ratingButtons {
     display: flex;
     gap: 32rpx;
     margin-bottom: 16rpx;
-    
+
     .ratingBtn {
       flex: 1;
       display: flex;
       align-items: center;
       justify-content: center;
       gap: 12rpx;
-      height: 88rpx;
-      border-radius: 44rpx;
+      height: 92rpx;
+      border-radius: $radius-button;
       font-size: $font-size-sm;
-      border: 2rpx solid #ddd;
-      transition: all 0.3s ease;
-      
+      border: 2rpx solid $color-border;
+      transition: all $transition-base;
+
       .ratingEmoji {
         font-size: 36rpx;
       }
-      
+
       .ratingText {
         font-weight: $font-weight-medium;
       }
-      
+
       &.goodBtn {
-        border-color: rgba(82, 196, 26, 0.3);
-        background-color: rgba(82, 196, 26, 0.05);
-        
+        border-color: rgba(7, 193, 96, 0.3);
+        background-color: rgba(7, 193, 96, 0.05);
+
         .ratingText {
-          color: #52c41a;
+          color: $color-success;
         }
-        
+
         &.active {
-          border-color: #52c41a;
-          background-color: rgba(82, 196, 26, 0.15);
-          box-shadow: 0 4rpx 16rpx rgba(82, 196, 26, 0.2);
+          border-color: $color-success;
+          background-color: $color-success-bg;
+          box-shadow: 0 4rpx 16rpx rgba(7, 193, 96, 0.2);
+
+          .ratingText {
+            font-weight: $font-weight-bold;
+          }
         }
       }
-      
+
       &.badBtn {
-        border-color: rgba(226, 35, 26, 0.3);
-        background-color: rgba(226, 35, 26, 0.05);
-        
+        border-color: rgba(217, 30, 24, 0.3);
+        background-color: rgba(217, 30, 24, 0.05);
+
         .ratingText {
-          color: #e2231a;
+          color: $color-primary;
         }
-        
+
         &.active {
-          border-color: #e2231a;
-          background-color: rgba(226, 35, 26, 0.15);
-          box-shadow: 0 4rpx 16rpx rgba(226, 35, 26, 0.2);
+          border-color: $color-primary;
+          background-color: $color-tag-bg;
+          box-shadow: 0 4rpx 16rpx rgba(217, 30, 24, 0.2);
+
+          .ratingText {
+            font-weight: $font-weight-bold;
+          }
         }
       }
     }
   }
-  
+
   .ratingDesc {
     font-size: $font-size-xs;
     color: $color-text-tertiary;
@@ -216,34 +234,37 @@
 }
 
 .contentSection {
-  background: #fff;
-  padding: 24rpx $page-padding;
-  margin-bottom: 16rpx;
-  
+  background: $color-bg-card;
+  padding: 28rpx $page-padding;
+  margin: 0 $page-spacing 16rpx;
+  border-radius: $radius-lg;
+  box-shadow: $shadow-card;
+
   .contentLabel {
     font-size: $font-size-sm;
     color: $color-text-primary;
-    font-weight: $font-weight-medium;
+    font-weight: $font-weight-semibold;
     margin-bottom: 16rpx;
     display: block;
   }
-  
+
   .contentInput {
     width: 100%;
     min-height: 200rpx;
     font-size: $font-size-sm;
     color: $color-text-primary;
-    line-height: 1.6;
-    padding: 16rpx;
-    background: #f5f6f7;
-    border-radius: 12rpx;
+    line-height: $line-height-loose;
+    padding: 20rpx;
+    background: $color-bg-input;
+    border-radius: $radius-md;
     box-sizing: border-box;
   }
-  
+
   .contentHint {
     font-size: $font-size-xs;
     color: $color-text-tertiary;
     text-align: right;
+    font-variant-numeric: tabular-nums;
   }
 
   .contentFooter {
@@ -254,9 +275,10 @@
   }
 
   .anonymousToggle {
-    padding: 8rpx 16rpx;
-    border-radius: 8rpx;
-    background: #f5f5f5;
+    padding: 10rpx 20rpx;
+    border-radius: $radius-button;
+    background: $color-bg-input;
+    transition: all $transition-fast;
 
     .anonymousText {
       font-size: $font-size-xs;
@@ -264,48 +286,52 @@
     }
 
     &.anonymousActive {
-      background: rgba(226, 35, 26, 0.08);
+      background: $color-tag-bg;
 
       .anonymousText {
-        color: #e2231a;
+        color: $color-primary;
+        font-weight: $font-weight-medium;
       }
     }
   }
 }
 
 .imageSection {
-  background: #fff;
-  padding: 24rpx $page-padding;
-  margin-bottom: 16rpx;
-  
+  background: $color-bg-card;
+  padding: 28rpx $page-padding;
+  margin: 0 $page-spacing 16rpx;
+  border-radius: $radius-lg;
+  box-shadow: $shadow-card;
+
   .imageLabel {
     font-size: $font-size-sm;
     color: $color-text-primary;
-    font-weight: $font-weight-medium;
+    font-weight: $font-weight-semibold;
     margin-bottom: 16rpx;
     display: block;
   }
-  
+
   .imageGrid {
     display: flex;
     flex-wrap: wrap;
     gap: 16rpx;
-    
+
     .imageItem {
       width: calc(33.33% - 12rpx);
       aspect-ratio: 1;
-      background: #f5f6f7;
-      border-radius: 12rpx;
+      background: $color-bg-input;
+      border-radius: $radius-md;
       display: flex;
       align-items: center;
       justify-content: center;
       font-size: 48rpx;
-      border: 2rpx dashed #ddd;
+      border: 2rpx dashed $color-border;
     }
-    
+
     .imageUpload {
-      border-color: #e2231a;
-      color: #e2231a;
+      border-color: $color-primary;
+      color: $color-primary;
+      background: $color-tag-bg;
     }
   }
 }
@@ -315,39 +341,43 @@
   bottom: 0;
   left: 0;
   right: 0;
-  background: #fff;
+  background: $color-bg-card;
   padding: 20rpx $page-padding;
   padding-bottom: calc(20rpx + env(safe-area-inset-bottom));
-  box-shadow: 0 -4rpx 20rpx rgba(0, 0, 0, 0.08);
+  box-shadow: $shadow-top;
   display: flex;
   gap: 20rpx;
-  
+  z-index: 100;
+
   .actionBtn {
     flex: 1;
     height: 96rpx;
-    border-radius: 48rpx;
+    border-radius: $radius-button;
     display: flex;
     align-items: center;
     justify-content: center;
     font-size: $font-size-sm;
     font-weight: $font-weight-semibold;
-    border: 2rpx solid #ddd;
+    border: 2rpx solid $color-border;
     color: $color-text-primary;
-    
+    transition: all $transition-fast;
+
     &:active {
-      opacity: 0.7;
+      transform: scale(0.97);
+      background-color: $color-bg-hover;
     }
   }
-  
+
   .actionBtnPrimary {
-    background: linear-gradient(135deg, #e2231a 0%, #ff4d4d 100%);
+    background: $gradient-brand;
     border: none;
     color: #fff;
-    box-shadow: 0 6rpx 20rpx rgba(226, 35, 26, 0.4);
+    font-weight: $font-weight-bold;
+    box-shadow: $shadow-btn;
   }
-  
+
   .actionBtnSecondary {
-    border-color: #e2231a;
-    color: #e2231a;
+    border-color: $color-primary;
+    color: $color-primary;
   }
 }
