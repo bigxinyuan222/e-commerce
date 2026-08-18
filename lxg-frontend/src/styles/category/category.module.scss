@@ -10,8 +10,8 @@
 .categoryNav {
   width: 192rpx;
   height: 100%;
-  background-color: $color-bg-card;
-  
+  background-color: #f2f1ee;
+
   .categoryItem {
     padding: $spacing-xl $spacing-md;
     font-size: $font-size-md;
@@ -23,12 +23,12 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    
+
     &.active {
       color: $color-primary;
-      background-color: $color-bg-page;
+      background-color: $color-bg-card;
       font-weight: $font-weight-bold;
-      
+
       &::before {
         content: '';
         position: absolute;
@@ -37,13 +37,13 @@
         transform: translateY(-50%);
         width: 8rpx;
         height: 56rpx;
-        background-color: $color-primary;
+        background: $gradient-brand;
         border-radius: 0 $radius-sm $radius-sm 0;
       }
     }
-    
+
     &:active {
-      background-color: $color-bg-hover;
+      opacity: 0.75;
     }
   }
 }
@@ -53,7 +53,8 @@
   flex: 1;
   padding: $page-padding;
   overflow-y: auto;
-  
+  background-color: $color-bg-card;
+
   // 子分类标题
   .subCategoryTitle {
     font-size: $font-size-lg;
@@ -62,44 +63,45 @@
     margin-bottom: $spacing-xl;
     padding-left: $spacing-md;
     border-left: 8rpx solid $color-primary;
+    letter-spacing: 1rpx;
   }
-  
+
   // 子分类网格
   .subCategoryGrid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: $spacing-xl;
     margin-bottom: $spacing-xxl;
-    
+
     .subCategoryItem {
       display: flex;
       flex-direction: column;
       align-items: center;
-      
+
       .subCategoryIcon {
         width: 140rpx;
         height: 140rpx;
         border-radius: $radius-lg;
-        background-color: $color-bg-card;
+        background: linear-gradient(160deg, #fdfcfb 0%, #f4f2ef 100%);
         margin-bottom: $spacing-md;
         display: flex;
         align-items: center;
         justify-content: center;
         box-shadow: $shadow-card;
         transition: all $transition-base;
-        
+
         &:active {
           transform: scale(0.95);
           opacity: 0.8;
         }
-        
+
         image {
           width: 96rpx;
           height: 96rpx;
           border-radius: $radius-md;
         }
       }
-      
+
       .subCategoryName {
         font-size: $font-size-sm;
         color: $color-text-secondary;
@@ -108,11 +110,11 @@
       }
     }
   }
-  
+
   // 品牌专区
-.brandSection {
+  .brandSection {
     margin-top: $spacing-xxl;
-    
+
     .brandTitle {
       font-size: $font-size-lg;
       font-weight: $font-weight-bold;
@@ -120,45 +122,48 @@
       margin-bottom: $spacing-xl;
       padding-left: $spacing-md;
       border-left: 8rpx solid $color-primary;
+      letter-spacing: 1rpx;
     }
-    
+
     .brandGrid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: $spacing-xl;
-      
+      gap: $spacing-lg;
+
       .brandItem {
         display: flex;
         flex-direction: column;
         align-items: center;
         background-color: $color-bg-card;
-        border-radius: $radius-xl;
+        border-radius: $radius-lg;
         padding: $spacing-xl $spacing-md;
         box-shadow: $shadow-card;
-        
+        border: 1rpx solid $color-border-light;
+        transition: transform $transition-fast;
+
         &:active {
-          opacity: 0.8;
-          transform: scale(0.98);
+          opacity: 0.85;
+          transform: scale(0.97);
         }
-        
+
         .brandLogo {
           width: 120rpx;
           height: 120rpx;
           border-radius: 50%;
-          background-color: $color-bg-page;
+          background: linear-gradient(160deg, #fdfcfb 0%, #f4f2ef 100%);
           margin-bottom: $spacing-md;
           display: flex;
           align-items: center;
           justify-content: center;
-          border: 4rpx solid rgba(226, 35, 26, 0.1);
-          
+          border: 2rpx solid $color-border-light;
+
           image {
             width: 72rpx;
             height: 72rpx;
             border-radius: 50%;
           }
         }
-        
+
         .brandName {
           font-size: $font-size-sm;
           color: $color-text-primary;
@@ -168,11 +173,11 @@
       }
     }
   }
-  
+
   // 推荐商品
   .recommendSection {
     margin-top: $spacing-xxl;
-    
+
     .recommendTitle {
       font-size: $font-size-lg;
       font-weight: $font-weight-bold;
@@ -180,36 +185,40 @@
       margin-bottom: $spacing-xl;
       padding-left: $spacing-md;
       border-left: 8rpx solid $color-primary;
+      letter-spacing: 1rpx;
     }
-    
+
     .recommendGrid {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
-      gap: $spacing-xl;
-      
+      gap: $spacing-lg;
+
       .recommendProduct {
         background-color: $color-bg-card;
-        border-radius: $radius-xl;
+        border-radius: $radius-lg;
         overflow: hidden;
         box-shadow: $shadow-card;
-        
+        border: 1rpx solid $color-border-light;
+        transition: transform $transition-fast;
+
         &:active {
-          opacity: 0.8;
+          opacity: 0.85;
           transform: scale(0.98);
         }
-        
+
         .productImage {
           width: 100%;
           height: 320rpx;
           background-color: $color-bg-page;
         }
-        
+
         .productInfo {
-          padding: $spacing-md;
-          
+          padding: $spacing-md $spacing-lg $spacing-lg;
+
           .productName {
             font-size: $font-size-md;
             color: $color-text-primary;
+            font-weight: $font-weight-medium;
             line-height: 1.4;
             display: -webkit-box;
             -webkit-line-clamp: 2;
@@ -217,24 +226,26 @@
             overflow: hidden;
             margin-bottom: $spacing-md;
           }
-          
+
           .productPrice {
             display: flex;
             align-items: baseline;
-            
+
             .priceSymbol {
-              font-size: $font-size-xl;
+              font-size: $font-size-md;
               font-weight: $font-weight-bold;
               color: $color-price;
               margin-right: 2rpx;
             }
-            
+
             .price {
-              font-size: $font-size-xl;
+              font-size: $font-size-xxl;
               font-weight: $font-weight-bold;
               color: $color-price;
+              line-height: 1;
+              font-variant-numeric: tabular-nums;
             }
-            
+
             .originalPrice {
               font-size: $font-size-sm;
               color: $color-text-tertiary;
@@ -252,7 +263,7 @@
 .hotTag {
   position: relative;
   padding: 40rpx $page-padding 20rpx;
-  
+
   .hotTitle {
     font-size: $font-size-lg;
     font-weight: $font-weight-bold;
@@ -261,7 +272,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    
+
     &::before,
     &::after {
       content: '';
@@ -270,7 +281,7 @@
       background: linear-gradient(to right, $color-primary, transparent);
       margin: 0 16rpx;
     }
-    
+
     &::after {
       background: linear-gradient(to left, $color-primary, transparent);
     }

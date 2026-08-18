@@ -10,102 +10,120 @@
   align-items: center;
   padding: 20rpx $page-padding;
   padding-top: calc(20rpx + env(safe-area-inset-top));
-  background-color: #fff;
-  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.05);
+  background-color: $color-bg-card;
+  box-shadow: 0 2rpx 12rpx rgba(28, 27, 26, 0.05);
   gap: 16rpx;
-  
+  position: relative;
+  z-index: 3;
+
   .backBtn {
     width: 64rpx;
     height: 64rpx;
     display: flex;
     align-items: center;
     justify-content: center;
-    
+    border-radius: 50%;
+    transition: background-color $transition-fast;
+
+    &:active {
+      background-color: $color-bg-active;
+    }
+
     .backIcon {
-      font-size: 48rpx;
+      font-size: 44rpx;
       color: $color-text-primary;
     }
   }
-  
+
   .searchInputWrap {
     flex: 1;
     display: flex;
     align-items: center;
-    background-color: $color-bg-page;
+    background-color: $color-bg-input;
     border-radius: $radius-button;
-    padding: 16rpx 20rpx;
+    padding: 16rpx 24rpx;
     gap: 12rpx;
-    
+
     .searchIcon {
       font-size: 28rpx;
+      color: $color-text-tertiary;
     }
-    
+
     .searchInput {
       flex: 1;
       font-size: $font-size-sm;
     }
-    
+
     .clearBtn {
       width: 40rpx;
       height: 40rpx;
       display: flex;
       align-items: center;
       justify-content: center;
-      
+
       .clearIcon {
-        font-size: 32rpx;
+        font-size: 30rpx;
         color: $color-text-tertiary;
       }
     }
   }
-  
+
   .searchBtn {
     padding: 16rpx 32rpx;
-    background: linear-gradient(135deg, $color-primary 0%, $color-primary-light 100%);
+    background: $gradient-brand;
     border-radius: $radius-button;
-    
+    box-shadow: 0 4rpx 12rpx rgba(217, 30, 24, 0.25);
+    transition: transform $transition-fast;
+
+    &:active {
+      transform: scale(0.96);
+    }
+
     .searchBtnText {
       font-size: $font-size-sm;
       color: #fff;
-      font-weight: $font-weight-medium;
+      font-weight: $font-weight-semibold;
     }
   }
 }
 
 .sortBar {
-  background-color: #fff;
-  border-bottom: 1rpx solid $color-border;
+  background-color: $color-bg-card;
   padding: 16rpx 0;
-  
+  box-shadow: 0 2rpx 8rpx rgba(28, 27, 26, 0.03);
+  position: relative;
+  z-index: 2;
+
   .sortScroll {
     white-space: nowrap;
   }
-  
+
   .sortItems {
     display: inline-flex;
     padding: 0 $page-padding;
     gap: 48rpx;
   }
-  
+
   .sortItem {
     font-size: $font-size-sm;
     color: $color-text-secondary;
     padding: 8rpx 0;
     position: relative;
-    
+    transition: color $transition-fast;
+
     &.active {
       color: $color-primary;
-      font-weight: $font-weight-semibold;
-      
+      font-weight: $font-weight-bold;
+
       &::after {
         content: '';
         position: absolute;
         bottom: 0;
         left: 50%;
         transform: translateX(-50%);
-        width: 32rpx;
+        width: 36rpx;
         height: 6rpx;
-        background-color: $color-primary;
+        background: $gradient-brand;
         border-radius: 3rpx;
       }
     }
@@ -113,98 +131,110 @@
 }
 
 .filterPanel {
-  background-color: #fff;
-  border-bottom: 1rpx solid $color-border;
+  background-color: $color-bg-card;
+  border-bottom: 1rpx solid $color-border-light;
   padding-bottom: 16rpx;
-  
+  box-shadow: 0 4rpx 16rpx rgba(28, 27, 26, 0.04);
+
   .filterHeader {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 20rpx $page-padding;
-    border-bottom: 1rpx solid $color-border;
-    
+    padding: 24rpx $page-padding;
+    border-bottom: 1rpx solid $color-divider;
+
     .filterTitle {
       font-size: $font-size-md;
-      font-weight: $font-weight-semibold;
+      font-weight: $font-weight-bold;
       color: $color-text-primary;
     }
-    
+
     .filterReset {
       font-size: $font-size-sm;
       color: $color-text-secondary;
     }
   }
-  
+
   .filterScroll {
     max-height: 500rpx;
   }
-  
+
   .filterSection {
-    padding: 20rpx $page-padding;
-    
+    padding: 24rpx $page-padding;
+
     .filterSectionTitle {
       font-size: $font-size-sm;
       color: $color-text-primary;
-      font-weight: $font-weight-medium;
-      margin-bottom: 16rpx;
+      font-weight: $font-weight-semibold;
+      margin-bottom: 20rpx;
       display: block;
     }
   }
-  
+
   .priceRange {
     display: flex;
     align-items: center;
     gap: 16rpx;
-    
+
     .priceInput {
       flex: 1;
-      height: 72rpx;
-      background-color: $color-bg-page;
-      border-radius: $radius-sm;
-      padding: 0 20rpx;
+      height: 76rpx;
+      background-color: $color-bg-input;
+      border-radius: $radius-md;
+      padding: 0 24rpx;
       font-size: $font-size-sm;
     }
-    
+
     .priceSeparator {
       font-size: $font-size-md;
       color: $color-text-tertiary;
     }
   }
-  
+
   .filterOptions {
     display: flex;
     flex-wrap: wrap;
     gap: 16rpx;
   }
-  
+
   .filterOption {
-    padding: 12rpx 28rpx;
-    background-color: $color-bg-page;
-    border-radius: 40rpx;
+    padding: 14rpx 30rpx;
+    background-color: $color-bg-input;
+    border-radius: $radius-button;
     font-size: $font-size-sm;
     color: $color-text-secondary;
     border: 2rpx solid transparent;
-    
+    transition: all $transition-fast;
+
+    &:active {
+      transform: scale(0.96);
+    }
+
     &.selected {
-      background-color: rgba(226, 35, 26, 0.08);
+      background-color: $color-tag-bg;
       color: $color-primary;
       border-color: $color-primary;
+      font-weight: $font-weight-medium;
     }
   }
-  
+
   .filterFooter {
-    padding: 16rpx $page-padding;
-    padding-top: 0;
-    
+    padding: 20rpx $page-padding 8rpx;
+
     .filterApply {
-      height: 80rpx;
-      background: linear-gradient(135deg, $color-primary 0%, $color-primary-light 100%);
+      height: 84rpx;
+      background: $gradient-brand;
       border-radius: $radius-button;
       display: flex;
       align-items: center;
       justify-content: center;
-      
+      box-shadow: $shadow-btn;
+      transition: transform $transition-fast;
+
+      &:active {
+        transform: scale(0.98);
+      }
+
       text {
         font-size: $font-size-md;
         color: #fff;
@@ -219,106 +249,117 @@
 }
 
 .resultsContainer {
-  padding: 16rpx $page-padding;
+  padding: 20rpx $page-padding;
 }
 
 .resultsHeader {
-  margin-bottom: 16rpx;
-  
+  margin-bottom: 20rpx;
+
   .resultsCount {
     font-size: $font-size-sm;
     color: $color-text-secondary;
+    font-variant-numeric: tabular-nums;
   }
 }
 
 .productList {
   display: flex;
   flex-direction: column;
-  gap: 16rpx;
+  gap: 20rpx;
+  padding-bottom: $spacing-xxxl;
 }
 
 .productCard {
   display: flex;
-  background-color: #fff;
-  border-radius: $radius-md;
+  background-color: $color-bg-card;
+  border-radius: $radius-lg;
   overflow: hidden;
   padding: 20rpx;
-  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.04);
-  
+  box-shadow: $shadow-card;
+  transition: all $transition-base;
+
   &:active {
-    opacity: 0.8;
+    transform: scale(0.98);
+    box-shadow: $shadow-card-hover;
   }
-  
+
   .productImage {
     width: 200rpx;
     height: 200rpx;
-    border-radius: $radius-sm;
-    background-color: #f5f5f5;
+    border-radius: $radius-md;
+    background-color: $color-bg-input;
     flex-shrink: 0;
   }
-  
+
   .productInfo {
     flex: 1;
-    margin-left: 20rpx;
+    margin-left: 24rpx;
     display: flex;
     flex-direction: column;
-    
+    min-width: 0;
+
     .productName {
       font-size: $font-size-sm;
       color: $color-text-primary;
-      line-height: 1.4;
+      font-weight: $font-weight-medium;
+      line-height: 1.45;
       display: -webkit-box;
       -webkit-line-clamp: 2;
       -webkit-box-orient: vertical;
       overflow: hidden;
       flex-shrink: 0;
     }
-    
+
     .productTags {
       display: flex;
       flex-wrap: wrap;
       gap: 8rpx;
       margin-top: 12rpx;
-      
+
       .tag {
-        font-size: $font-size-xs;
-        color: $color-primary;
-        background-color: rgba(226, 35, 26, 0.1);
-        padding: 4rpx 12rpx;
-        border-radius: 4rpx;
+        font-size: 22rpx;
+        color: $color-tag-text;
+        background-color: $color-tag-bg;
+        padding: 4rpx 14rpx;
+        border-radius: $radius-xs;
       }
     }
-    
+
     .productPrice {
       display: flex;
       align-items: baseline;
       margin-top: auto;
       gap: 4rpx;
-      
+
       .priceSymbol {
-        font-size: $font-size-xl;
+        font-size: $font-size-md;
         font-weight: $font-weight-bold;
         color: $color-price;
       }
-      
+
       .currentPrice {
-        font-size: $font-size-xl;
+        font-size: 48rpx;
         font-weight: $font-weight-bold;
         color: $color-price;
+        line-height: 1;
+        font-variant-numeric: tabular-nums;
+        letter-spacing: -1rpx;
       }
-      
+
       .originalPrice {
         font-size: $font-size-xs;
         color: $color-text-tertiary;
         text-decoration: line-through;
         margin-left: $spacing-sm;
+        font-variant-numeric: tabular-nums;
       }
     }
-    
+
     .salesInfo {
       font-size: $font-size-xs;
       color: $color-text-tertiary;
       margin-top: 8rpx;
+      font-variant-numeric: tabular-nums;
     }
   }
 }
@@ -328,19 +369,21 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 120rpx 40rpx;
-  
+  padding: 140rpx 40rpx;
+
   .emptyIcon {
-    font-size: 80rpx;
+    font-size: 88rpx;
     margin-bottom: 32rpx;
+    opacity: 0.85;
   }
-  
+
   .emptyText {
     font-size: $font-size-md;
     color: $color-text-primary;
+    font-weight: $font-weight-medium;
     margin-bottom: 12rpx;
   }
-  
+
   .emptyHint {
     font-size: $font-size-sm;
     color: $color-text-tertiary;

@@ -133,14 +133,6 @@ const MinePage: React.FC = () => {
     Taro.navigateTo({ url: '/pages/category/stores/index' });
   }, []);
 
-  const goToPersonalInfo = useCallback(() => {
-    if (!isLoggedIn) {
-      goToLogin();
-      return;
-    }
-    Taro.navigateTo({ url: '/pages/user/personal-info/index' });
-  }, [isLoggedIn, goToLogin]);
-
   return (
     <View className={styles.minePage}>
       <ScrollView scrollY>
@@ -149,7 +141,12 @@ const MinePage: React.FC = () => {
           <View className={styles.userInfoCard}>
             <View className={styles.avatar} onClick={goToProfile}>
               {isLoggedIn && (profile?.avatar || userInfo.avatar) ? (
-                <Image src={getImageUrl(profile?.avatar || userInfo.avatar)} mode="aspectFill" {...lazyImgProps()} />
+                <Image
+                  src={getImageUrl(profile?.avatar || userInfo.avatar)}
+                  mode="aspectFill"
+                  className={styles.avatarImg}
+                  {...lazyImgProps()}
+                />
               ) : (
                 <Text className={styles.avatarPlaceholder}>👤</Text>
               )}
@@ -220,12 +217,6 @@ const MinePage: React.FC = () => {
             name="门店自提" 
             desc="查看附近门店" 
             onClick={goToStores} 
-          />
-          <FunctionItem 
-            icon="⚙️" 
-            name="设置" 
-            desc="编辑个人信息" 
-            onClick={goToPersonalInfo} 
           />
         </View>
 

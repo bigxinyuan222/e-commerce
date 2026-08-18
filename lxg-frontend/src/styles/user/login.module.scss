@@ -2,34 +2,64 @@
 
 .loginPage {
   min-height: 100vh;
-  background: linear-gradient(135deg, $color-primary 0%, $color-primary-light 100%);
+  background: $gradient-hero;
   display: flex;
   flex-direction: column;
   align-items: center;
   padding: 120rpx $page-padding 40rpx;
+  position: relative;
+  overflow: hidden;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: -120rpx;
+    right: -80rpx;
+    width: 360rpx;
+    height: 360rpx;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.07);
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: 60rpx;
+    left: -100rpx;
+    width: 300rpx;
+    height: 300rpx;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.05);
+  }
 }
 
 .logoSection {
-  margin-bottom: 60rpx;
+  margin-bottom: 64rpx;
   text-align: center;
-  
+  position: relative;
+  z-index: 1;
+
   .logo {
-    width: 140rpx;
-    height: 140rpx;
-    background-color: rgba(255, 255, 255, 0.2);
-    border-radius: 40rpx;
-    margin: 0 auto 20rpx;
+    width: 148rpx;
+    height: 148rpx;
+    background-color: rgba(255, 255, 255, 0.22);
+    border-radius: 44rpx;
+    margin: 0 auto 24rpx;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 72rpx;
-    box-shadow: 0 8rpx 32rpx rgba(0, 0, 0, 0.15);
+    font-size: 76rpx;
+    box-shadow: 0 12rpx 40rpx rgba(120, 10, 6, 0.25);
+    backdrop-filter: blur(10rpx);
+    border: 2rpx solid rgba(255, 255, 255, 0.18);
   }
-  
+
   .appName {
-    font-size: 44rpx;
+    font-size: 48rpx;
     font-weight: $font-weight-bold;
     color: white;
+    letter-spacing: 4rpx;
+    text-shadow: 0 2rpx 12rpx rgba(120, 10, 6, 0.25);
   }
 }
 
@@ -37,68 +67,81 @@
   width: 100%;
   background-color: $color-bg-card;
   border-radius: $radius-xl;
-  padding: 40rpx 36rpx;
-  box-shadow: $shadow-popup;
-  
+  padding: 44rpx 36rpx;
+  box-shadow: 0 16rpx 48rpx rgba(120, 10, 6, 0.22);
+  position: relative;
+  z-index: 1;
+
   .formTitle {
     font-size: $font-size-xl;
     font-weight: $font-weight-bold;
     color: $color-text-primary;
     text-align: center;
-    margin-bottom: 36rpx;
+    margin-bottom: 40rpx;
+    letter-spacing: 2rpx;
   }
-  
+
   .inputGroup {
     margin-bottom: 32rpx;
-    
+
     .inputLabel {
       font-size: $font-size-sm;
       color: $color-text-secondary;
       margin-bottom: 12rpx;
       display: block;
+      font-weight: $font-weight-medium;
     }
-    
+
     .inputRow {
       display: flex;
       align-items: center;
-      background-color: $color-bg-page;
+      background-color: $color-bg-input;
       border-radius: $radius-md;
-      padding: 24rpx;
-      
+      padding: 26rpx 24rpx;
+      border: 2rpx solid transparent;
+      transition: border-color $transition-fast, background-color $transition-fast;
+
+      &:focus-within {
+        border-color: rgba(217, 30, 24, 0.35);
+        background-color: $color-bg-card;
+      }
+
       .inputIcon {
-        font-size: 32rpx;
+        font-size: 34rpx;
         margin-right: 16rpx;
       }
-      
+
       .input {
         flex: 1;
         font-size: $font-size-md;
         color: $color-text-primary;
       }
-      
+
       .codeBtn {
         font-size: $font-size-sm;
         color: $color-primary;
-        padding: 8rpx 16rpx;
-        background-color: rgba(226, 35, 26, 0.1);
-        border-radius: $radius-sm;
-        
+        padding: 10rpx 20rpx;
+        background-color: $color-tag-bg;
+        border-radius: $radius-button;
+        font-weight: $font-weight-medium;
+        transition: opacity $transition-fast;
+
         &:active {
           opacity: 0.7;
         }
-        
+
         &.disabled {
           color: $color-text-disabled;
-          background-color: #f5f5f5;
+          background-color: $color-bg-hover;
         }
       }
     }
   }
-  
+
   .loginBtn {
     width: 100%;
     height: $button-height-lg;
-    background: linear-gradient(135deg, $color-primary 0%, $color-primary-light 100%);
+    background: $gradient-brand;
     color: white;
     border-radius: $radius-button;
     font-size: $font-size-lg;
@@ -106,78 +149,58 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-top: 40rpx;
-    box-shadow: 0 4rpx 16rpx rgba(226, 35, 26, 0.3);
-    
+    margin-top: 44rpx;
+    box-shadow: $shadow-btn;
+    letter-spacing: 4rpx;
+    transition: transform $transition-fast, box-shadow $transition-fast;
+
     &:active {
-      opacity: 0.9;
-      transform: scale(0.98);
+      transform: scale(0.97);
+      box-shadow: 0 3rpx 10rpx rgba(217, 30, 24, 0.22);
     }
   }
-  
+
   .toggleMode {
     display: flex;
     justify-content: center;
     align-items: center;
     margin-top: 32rpx;
-    
+
     .toggleText {
       font-size: $font-size-sm;
       color: $color-text-tertiary;
     }
-    
+
     .toggleLink {
       font-size: $font-size-sm;
       color: $color-primary;
       margin-left: 8rpx;
       font-weight: $font-weight-semibold;
-      
+
       &:active {
         opacity: 0.7;
       }
     }
-  }
-  
-  .toggleMode {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-top: 28rpx;
-    
-    .toggleText {
-      font-size: $font-size-sm;
-      color: $color-text-tertiary;
-    }
-    
-    .toggleLink {
-      font-size: $font-size-sm;
-      color: $color-primary;
-      margin-left: 8rpx;
-      font-weight: $font-weight-semibold;
-      
-      &:active {
-        opacity: 0.7;
-      }
-    }
-    
+
     .divider {
       font-size: $font-size-sm;
       color: $color-text-tertiary;
       margin: 0 16rpx;
     }
   }
-  
+
   .wechatLoginBox {
     padding: 40rpx 0;
-    
+
     .wechatHint {
       text-align: center;
       color: $color-text-tertiary;
       font-size: $font-size-sm;
       margin-top: 20rpx;
+      line-height: $line-height-normal;
     }
   }
-  
+
   .forgotPassword {
     text-align: right;
     margin-top: 20rpx;
@@ -186,62 +209,67 @@
 
 .thirdPartyLogin {
   width: 100%;
-  margin-top: 48rpx;
+  margin-top: 52rpx;
   padding: 0 40rpx;
-  
+  position: relative;
+  z-index: 1;
+
   .divider {
     display: flex;
     align-items: center;
-    margin-bottom: 40rpx;
-    
+    margin-bottom: 44rpx;
+
     .dividerLine {
       flex: 1;
-      height: 1px;
-      background-color: rgba(255, 255, 255, 0.3);
+      height: 1rpx;
+      background-color: rgba(255, 255, 255, 0.35);
     }
-    
+
     .dividerText {
       font-size: $font-size-sm;
-      color: rgba(255, 255, 255, 0.7);
+      color: rgba(255, 255, 255, 0.8);
       margin: 0 24rpx;
       white-space: nowrap;
+      letter-spacing: 1rpx;
     }
   }
-  
+
   .loginMethods {
     display: flex;
     justify-content: center;
     gap: 80rpx;
-    
+
     .methodItem {
       display: flex;
       flex-direction: column;
       align-items: center;
       gap: 16rpx;
-      
+      transition: transform $transition-fast;
+
       .methodIcon {
-        width: 96rpx;
-        height: 96rpx;
-        background-color: rgba(255, 255, 255, 0.95);
+        width: 100rpx;
+        height: 100rpx;
+        background-color: rgba(255, 255, 255, 0.96);
         border-radius: 50%;
         display: flex;
         align-items: center;
         justify-content: center;
-        box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.15);
-        
+        box-shadow: 0 8rpx 24rpx rgba(120, 10, 6, 0.22);
+        border: 2rpx solid rgba(255, 255, 255, 0.5);
+
         .iconText {
-          font-size: 40rpx;
+          font-size: 44rpx;
         }
       }
-      
+
       .methodLabel {
         font-size: $font-size-sm;
         color: white;
+        text-shadow: 0 1rpx 6rpx rgba(120, 10, 6, 0.2);
       }
-      
+
       &:active {
-        opacity: 0.8;
-        transform: scale(0.95);
+        transform: scale(0.93);
       }
     }
 
@@ -251,20 +279,6 @@
   }
 }
 
-.agreement {
-  margin-top: 40rpx;
-  text-align: center;
-  font-size: $font-size-xs;
-  color: rgba(255, 255, 255, 0.7);
-  
-  .link {
-    color: white;
-    
-    &:active {
-      opacity: 0.7;
-    }
-  }
-}
 
 .disabledMethod {
   opacity: 0.6;
@@ -277,7 +291,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: $color-bg-mask;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -289,7 +303,7 @@
   max-width: 600rpx;
   background-color: $color-bg-card;
   border-radius: $radius-xl;
-  padding: 40rpx 36rpx;
+  padding: 44rpx 36rpx;
   box-shadow: $shadow-popup;
 }
 
@@ -300,6 +314,7 @@
   text-align: center;
   display: block;
   margin-bottom: 16rpx;
+  letter-spacing: 1rpx;
 }
 
 .modalDesc {
@@ -307,13 +322,14 @@
   color: $color-text-secondary;
   text-align: center;
   display: block;
-  margin-bottom: 32rpx;
+  margin-bottom: 36rpx;
+  line-height: $line-height-normal;
 }
 
 .modalBtn {
   width: 100%;
   height: $button-height-lg;
-  background: linear-gradient(135deg, $color-primary 0%, $color-primary-light 100%);
+  background: $gradient-brand;
   color: white;
   border-radius: $radius-button;
   font-size: $font-size-lg;
@@ -322,11 +338,12 @@
   align-items: center;
   justify-content: center;
   margin-top: 20rpx;
-  box-shadow: 0 4rpx 16rpx rgba(226, 35, 26, 0.3);
+  box-shadow: $shadow-btn;
+  letter-spacing: 2rpx;
+  transition: transform $transition-fast;
 
   &:active {
-    opacity: 0.9;
-    transform: scale(0.98);
+    transform: scale(0.97);
   }
 
   // 重置 Taro Button 组件默认样式
@@ -347,9 +364,11 @@
   align-items: center;
   justify-content: center;
   margin-top: 16rpx;
+  border-radius: $radius-button;
+  transition: background-color $transition-fast;
 
   &:active {
-    opacity: 0.7;
+    background-color: $color-bg-hover;
   }
 }
 
@@ -362,17 +381,25 @@
     color: $color-text-secondary;
     margin-bottom: 12rpx;
     display: block;
+    font-weight: $font-weight-medium;
   }
 
   .modalInputRow {
     display: flex;
     align-items: center;
-    background-color: $color-bg-page;
+    background-color: $color-bg-input;
     border-radius: $radius-md;
-    padding: 24rpx;
+    padding: 26rpx 24rpx;
+    border: 2rpx solid transparent;
+    transition: border-color $transition-fast, background-color $transition-fast;
+
+    &:focus-within {
+      border-color: rgba(217, 30, 24, 0.35);
+      background-color: $color-bg-card;
+    }
 
     .modalInputIcon {
-      font-size: 32rpx;
+      font-size: 34rpx;
       margin-right: 16rpx;
     }
 
@@ -387,7 +414,7 @@
 .modalLoginBtn {
   width: 100%;
   height: $button-height-lg;
-  background: linear-gradient(135deg, $color-primary 0%, $color-primary-light 100%);
+  background: $gradient-brand;
   color: white;
   border-radius: $radius-button;
   font-size: $font-size-lg;
@@ -396,11 +423,12 @@
   align-items: center;
   justify-content: center;
   margin-top: 32rpx;
-  box-shadow: 0 4rpx 16rpx rgba(226, 35, 26, 0.3);
+  box-shadow: $shadow-btn;
+  letter-spacing: 2rpx;
+  transition: transform $transition-fast;
 
   &:active {
-    opacity: 0.9;
-    transform: scale(0.98);
+    transform: scale(0.97);
   }
 
   &.disabled {

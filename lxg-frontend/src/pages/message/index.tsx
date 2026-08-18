@@ -186,7 +186,6 @@ const MessagePage: React.FC = () => {
           >
             全部已读
           </Text>
-          <Text className={styles.moreBtn}>···</Text>
         </View>
       </View>
 

@@ -1,55 +1,61 @@
 // ============================================
 // 主题配色变量（B2C电商平台 - 乐享购风格）
+// 精致电商风：保留品牌红，优化层次与质感
 // ============================================
 
 // 品牌主题色：乐享购红，体现电商促销氛围，稍暗更稳重
 $color-primary: #d91e18;
 $color-primary-light: #ff5252;
 $color-primary-dark: #b91510;
-$color-primary-gradient-start: #d91e18;
-$color-primary-gradient-end: #ff5252;
+$color-primary-gradient-start: #e63329;
+$color-primary-gradient-end: #ff6a5f;
+
+// 品牌渐变（新增：更细腻的品牌渐变，用于头部/主按钮）
+$gradient-brand: linear-gradient(135deg, #e63329 0%, #ff6a5f 100%);
+$gradient-brand-soft: linear-gradient(135deg, #ff6a5f 0%, #ff9a7b 100%);
+$gradient-hero: linear-gradient(160deg, #d91e18 0%, #ef4136 55%, #ff6a5f 100%);
 
 // 功能色（优化对比度）
 $color-success: #07c160;
 $color-success-light: #91d5a8;
-$color-success-bg: #f0fff4;
+$color-success-bg: #ecfbf2;
 $color-warning: #fa8c16;
 $color-warning-light: #ffc53d;
-$color-warning-bg: #fffbe6;
+$color-warning-bg: #fff7e8;
 $color-error: #ff4d4f;
 $color-error-light: #ffa39e;
 $color-error-bg: #fff1f0;
 $color-info: #1890ff;
 $color-info-light: #91caff;
-$color-info-bg: #e6f7ff;
+$color-info-bg: #e9f5ff;
 
-// 背景色（更柔和的灰色）
-$color-bg-page: #f7f8fa;
+// 背景色（更柔和、偏暖的灰，减少生硬感）
+$color-bg-page: #f6f5f3;
 $color-bg-card: #ffffff;
-$color-bg-hover: #f5f6f7;
-$color-bg-active: #ebecef;
-$color-bg-input: #f5f6f7;
-$color-bg-mask: rgba(0, 0, 0, 0.5);
+$color-bg-hover: #f5f4f2;
+$color-bg-active: #eceae7;
+$color-bg-input: #f4f3f1;
+$color-bg-mask: rgba(17, 17, 26, 0.55);
 
 // 文本色（优化对比度层级）
-$color-text-primary: #1a1a1a;
-$color-text-secondary: #4a4a4a;
-$color-text-tertiary: #8a8a8a;
-$color-text-disabled: #cccccc;
-$color-text-placeholder: #bfbfbf;
+$color-text-primary: #1c1b1a;
+$color-text-secondary: #52504d;
+$color-text-tertiary: #8f8c88;
+$color-text-disabled: #c9c7c4;
+$color-text-placeholder: #bdbab6;
 $color-text-white: #ffffff;
-$color-text-white-secondary: rgba(255, 255, 255, 0.8);
-$color-text-white-tertiary: rgba(255, 255, 255, 0.6);
+$color-text-white-secondary: rgba(255, 255, 255, 0.85);
+$color-text-white-tertiary: rgba(255, 255, 255, 0.65);
 
 // 边框色（更柔和）
-$color-border: #e8e8e8;
-$color-border-light: #f0f0f0;
-$color-divider: #f5f6f7;
+$color-border: #e9e7e4;
+$color-border-light: #f1efec;
+$color-divider: #f3f1ee;
 
 // 业务相关色
-$color-price: #d91e18; // 价格色
-$color-price-secondary: #ff5252; // 次要价格色
-$color-tag-bg: #fff0ef; // 标签背景
+$color-price: #e0261f; // 价格色
+$color-price-secondary: #ff5a52; // 次要价格色
+$color-tag-bg: #ffefec; // 标签背景
 $color-tag-text: #d91e18; // 标签文字
 $color-seckill: #ff4d4d; // 秒杀色
 $color-seckill-bg: linear-gradient(135deg, #ff4d4d 0%, #ff7d00 100%);
