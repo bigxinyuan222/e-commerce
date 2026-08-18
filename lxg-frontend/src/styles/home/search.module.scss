@@ -33,35 +33,36 @@
     flex: 1;
     display: flex;
     align-items: center;
-    background-color: $color-bg-page;
-    border-radius: $radius-lg;
-    padding: 16rpx 20rpx;
-    
+    background-color: $color-bg-input;
+    border-radius: $radius-button;
+    padding: 18rpx 24rpx;
+
     .searchIcon {
       font-size: 28rpx;
       margin-right: 12rpx;
     }
-    
+
     .input {
       flex: 1;
       font-size: $font-size-sm;
     }
-    
+
     .clearBtn {
       font-size: 32rpx;
       color: $color-text-tertiary;
       padding: 0 8rpx;
     }
   }
-  
+
   .searchBtn {
     font-size: $font-size-md;
     color: white;
-    background-color: $color-primary;
-    padding: 16rpx 32rpx;
-    border-radius: $radius-md;
+    background: $gradient-brand;
+    padding: 16rpx 36rpx;
+    border-radius: $radius-button;
     font-weight: $font-weight-semibold;
-    
+    box-shadow: 0 4rpx 12rpx rgba(217, 30, 24, 0.25);
+
     &:active {
       opacity: 0.9;
     }
@@ -150,37 +151,40 @@
     display: flex;
     flex-wrap: wrap;
     gap: 16rpx;
-    
+
     .keywordItem {
-      padding: 12rpx 24rpx;
+      padding: 14rpx 28rpx;
       background-color: $color-bg-card;
       border-radius: $radius-button;
       font-size: $font-size-sm;
       color: $color-text-secondary;
-      
+      box-shadow: 0 2rpx 8rpx rgba(28, 27, 26, 0.03);
+
       &:active {
         opacity: 0.7;
       }
-      
+
       &.topKeyword {
         color: $color-primary;
-        background-color: rgba(226, 35, 26, 0.1);
+        background-color: $color-tag-bg;
+        font-weight: $font-weight-medium;
       }
     }
   }
-  
+
   .historyList {
     display: flex;
     flex-wrap: wrap;
     gap: 16rpx;
-    
+
     .historyItem {
-      padding: 12rpx 24rpx;
+      padding: 14rpx 28rpx;
       background-color: $color-bg-card;
       border-radius: $radius-button;
       font-size: $font-size-sm;
       color: $color-text-secondary;
-      
+      box-shadow: 0 2rpx 8rpx rgba(28, 27, 26, 0.03);
+
       &:active {
         opacity: 0.7;
       }

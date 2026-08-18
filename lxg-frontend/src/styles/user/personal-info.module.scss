@@ -9,37 +9,42 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  height: 88rpx;
+  height: 96rpx;
   padding: 0 $page-padding;
   background-color: $color-bg-card;
-  
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  box-shadow: 0 2rpx 12rpx rgba(28, 27, 26, 0.04);
+
   .backBtn {
     width: 80rpx;
-    height: 88rpx;
+    height: 96rpx;
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
     position: relative;
     z-index: 10;
-    
+
     &:active {
       opacity: 0.7;
     }
   }
-  
+
   .backIcon {
-    font-size: 48rpx;
+    font-size: 44rpx;
     color: $color-text-primary;
     font-weight: bold;
   }
-  
+
   .headerTitle {
     font-size: $font-size-lg;
     font-weight: $font-weight-semibold;
     color: $color-text-primary;
+    letter-spacing: 1rpx;
   }
-  
+
   .headerRight {
     width: 60rpx;
   }
@@ -50,55 +55,66 @@
   background-color: $color-bg-card;
   border-radius: $radius-lg;
   overflow: hidden;
+  box-shadow: $shadow-card;
 }
 
 .infoItem {
   display: flex;
   align-items: center;
-  padding: 28rpx 24rpx;
-  border-bottom: 1px solid $color-divider;
-  
+  padding: 32rpx 28rpx;
+  border-bottom: 1rpx solid $color-divider;
+  transition: background-color $transition-fast;
+
   &:last-child {
     border-bottom: none;
   }
-  
+
   &:active {
     background-color: $color-bg-hover;
   }
-  
+
   .itemLabel {
     font-size: $font-size-md;
     color: $color-text-primary;
     width: 160rpx;
+    font-weight: $font-weight-medium;
   }
-  
+
   .itemContent {
     flex: 1;
     display: flex;
     align-items: center;
     justify-content: flex-end;
   }
-  
+
   .itemValue {
     flex: 1;
     text-align: right;
     font-size: $font-size-md;
     color: $color-text-secondary;
     margin-right: 12rpx;
+    @include text-ellipsis;
   }
-  
+
   .itemArrow {
     font-size: $font-size-lg;
     color: $color-text-tertiary;
+    transition: transform $transition-fast;
+  }
+
+  &:active .itemArrow {
+    transform: translateX(4rpx);
   }
 }
 
 .avatar {
-  width: 80rpx;
-  height: 80rpx;
+  width: 88rpx;
+  height: 88rpx;
   border-radius: 50%;
   background-color: $color-bg-page;
   margin-right: 12rpx;
+  border: 3rpx solid $color-border-light;
+  box-shadow: 0 2rpx 8rpx rgba(28, 27, 26, 0.08);
 }
 
 // 日期选择器样式
@@ -108,7 +124,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: $color-bg-mask;
   display: flex;
   align-items: flex-end;
   z-index: 1000;
@@ -117,35 +133,40 @@
 .datePickerContent {
   width: 100%;
   background-color: $color-bg-card;
-  border-radius: $radius-lg $radius-lg 0 0;
+  border-radius: $radius-xl $radius-xl 0 0;
   padding-bottom: env(safe-area-inset-bottom);
+  box-shadow: $shadow-popup;
 }
 
 .datePickerHeader {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 24rpx 32rpx;
-  border-bottom: 1px solid $color-divider;
-  
+  padding: 28rpx 32rpx;
+  border-bottom: 1rpx solid $color-divider;
+
   .datePickerCancel {
     font-size: $font-size-md;
     color: $color-text-secondary;
-    padding: 16rpx;
-    
+    padding: 16rpx 24rpx;
+    border-radius: $radius-button;
+    transition: background-color $transition-fast;
+
     &:active {
-      opacity: 0.7;
+      background-color: $color-bg-hover;
     }
   }
-  
+
   .datePickerConfirm {
     font-size: $font-size-md;
     color: $color-primary;
-    font-weight: $font-weight-medium;
-    padding: 16rpx;
-    
+    font-weight: $font-weight-semibold;
+    padding: 16rpx 24rpx;
+    border-radius: $radius-button;
+    transition: background-color $transition-fast;
+
     &:active {
-      opacity: 0.7;
+      background-color: $color-tag-bg;
     }
   }
 }
@@ -162,22 +183,23 @@
   height: 100%;
   text-align: center;
   overflow-y: auto;
-  
+
   .wheelItem {
     display: block;
     height: 80rpx;
     line-height: 80rpx;
     font-size: $font-size-lg;
     color: $color-text-tertiary;
-    
+    transition: color $transition-fast;
+
     &:active {
       background-color: $color-bg-hover;
     }
   }
-  
+
   .wheelItemActive {
     color: $color-primary;
-    font-weight: $font-weight-medium;
+    font-weight: $font-weight-semibold;
   }
 }
 
@@ -188,9 +210,10 @@
   right: 0;
   height: 80rpx;
   margin-top: -40rpx;
-  border-top: 1px solid $color-divider;
-  border-bottom: 1px solid $color-divider;
+  border-top: 1rpx solid $color-border;
+  border-bottom: 1rpx solid $color-border;
   pointer-events: none;
+  background-color: rgba(217, 30, 24, 0.03);
 }
 
 // 头像选择弹窗样式
@@ -200,7 +223,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: $color-bg-mask;
   display: flex;
   align-items: flex-end;
   z-index: 1000;
@@ -209,8 +232,9 @@
 .avatarPickerContent {
   width: 100%;
   background-color: $color-bg-card;
-  border-radius: $radius-lg $radius-lg 0 0;
+  border-radius: $radius-xl $radius-xl 0 0;
   padding-bottom: env(safe-area-inset-bottom);
+  box-shadow: $shadow-popup;
 }
 
 .avatarPickerHeader {
@@ -218,25 +242,27 @@
   align-items: center;
   justify-content: space-between;
   padding: 32rpx;
-  border-bottom: 1px solid $color-divider;
+  border-bottom: 1rpx solid $color-divider;
 }
 
 .avatarPickerTitle {
   font-size: $font-size-lg;
-  font-weight: $font-weight-medium;
+  font-weight: $font-weight-semibold;
   color: $color-text-primary;
 }
 
 .avatarPickerClose {
   font-size: $font-size-xl;
   color: $color-text-tertiary;
-  width: 60rpx;
-  height: 60rpx;
-  line-height: 60rpx;
+  width: 64rpx;
+  height: 64rpx;
+  line-height: 64rpx;
   text-align: center;
-  
+  border-radius: 50%;
+  transition: background-color $transition-fast;
+
   &:active {
-    opacity: 0.7;
+    background-color: $color-bg-hover;
   }
 }
 
@@ -249,7 +275,8 @@
   align-items: center;
   justify-content: center;
   padding: 40rpx;
-  
+  transition: background-color $transition-fast;
+
   &:active {
     background-color: $color-bg-hover;
   }
@@ -258,10 +285,11 @@
 .avatarPickerOptionText {
   font-size: $font-size-lg;
   color: $color-text-primary;
+  font-weight: $font-weight-medium;
 }
 
 .avatarPickerDivider {
-  height: 1px;
+  height: 1rpx;
   background-color: $color-divider;
   margin: 0 32rpx;
 }
@@ -271,9 +299,10 @@
   padding: 32rpx;
   background-color: $color-bg-hover;
   text-align: center;
-  
+  transition: background-color $transition-fast;
+
   &:active {
-    background-color: $color-divider;
+    background-color: $color-bg-active;
   }
 }
 
@@ -289,7 +318,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: $color-bg-mask;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -299,19 +328,20 @@
 .nicknameModalContent {
   width: 600rpx;
   background-color: $color-bg-card;
-  border-radius: $radius-lg;
+  border-radius: $radius-xl;
   overflow: hidden;
+  box-shadow: $shadow-popup;
 }
 
 .nicknameModalHeader {
-  padding: 32rpx;
+  padding: 36rpx 32rpx 28rpx;
   text-align: center;
-  border-bottom: 1px solid $color-divider;
+  border-bottom: 1rpx solid $color-divider;
 }
 
 .nicknameModalTitle {
   font-size: $font-size-lg;
-  font-weight: $font-weight-medium;
+  font-weight: $font-weight-semibold;
   color: $color-text-primary;
 }
 
@@ -321,31 +351,34 @@
 
 .nicknameInput {
   width: 100%;
-  height: 88rpx;
-  padding: 0 24rpx;
-  border: 1px solid $color-divider;
+  height: 92rpx;
+  padding: 0 28rpx;
+  border: 2rpx solid $color-border;
   border-radius: $radius-md;
   font-size: $font-size-md;
   color: $color-text-primary;
-  background-color: $color-bg-page;
+  background-color: $color-bg-input;
   box-sizing: border-box;
-  
+  transition: border-color $transition-fast, background-color $transition-fast;
+
   &:focus {
     border-color: $color-primary;
+    background-color: $color-bg-card;
     outline: none;
   }
 }
 
 .nicknameModalFooter {
   display: flex;
-  border-top: 1px solid $color-divider;
+  border-top: 1rpx solid $color-divider;
 }
 
 .nicknameModalBtn {
   flex: 1;
   padding: 32rpx;
   text-align: center;
-  
+  transition: background-color $transition-fast;
+
   &:active {
     background-color: $color-bg-hover;
   }
@@ -358,7 +391,7 @@
 
 .nicknameModalBtnConfirm {
   color: $color-primary;
-  font-weight: $font-weight-medium;
+  font-weight: $font-weight-semibold;
 }
 
 // 性别选择弹窗样式
@@ -368,7 +401,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: $color-bg-mask;
   display: flex;
   align-items: flex-end;
   z-index: 1000;
@@ -377,8 +410,9 @@
 .genderPickerContent {
   width: 100%;
   background-color: $color-bg-card;
-  border-radius: $radius-lg $radius-lg 0 0;
+  border-radius: $radius-xl $radius-xl 0 0;
   padding-bottom: env(safe-area-inset-bottom);
+  box-shadow: $shadow-popup;
 }
 
 .genderPickerHeader {
@@ -386,25 +420,27 @@
   align-items: center;
   justify-content: space-between;
   padding: 32rpx;
-  border-bottom: 1px solid $color-divider;
+  border-bottom: 1rpx solid $color-divider;
 }
 
 .genderPickerTitle {
   font-size: $font-size-lg;
-  font-weight: $font-weight-medium;
+  font-weight: $font-weight-semibold;
   color: $color-text-primary;
 }
 
 .genderPickerClose {
   font-size: $font-size-xl;
   color: $color-text-tertiary;
-  width: 60rpx;
-  height: 60rpx;
-  line-height: 60rpx;
+  width: 64rpx;
+  height: 64rpx;
+  line-height: 64rpx;
   text-align: center;
-  
+  border-radius: 50%;
+  transition: background-color $transition-fast;
+
   &:active {
-    opacity: 0.7;
+    background-color: $color-bg-hover;
   }
 }
 
@@ -417,7 +453,8 @@
   align-items: center;
   justify-content: center;
   padding: 40rpx;
-  
+  transition: background-color $transition-fast;
+
   &:active {
     background-color: $color-bg-hover;
   }
@@ -426,10 +463,11 @@
 .genderPickerOptionText {
   font-size: $font-size-lg;
   color: $color-text-primary;
+  font-weight: $font-weight-medium;
 }
 
 .genderPickerDivider {
-  height: 1px;
+  height: 1rpx;
   background-color: $color-divider;
   margin: 0 32rpx;
 }
@@ -447,18 +485,21 @@
   border-radius: $radius-lg;
   padding: 32rpx;
   text-align: center;
-  
+  box-shadow: $shadow-card;
+  transition: transform $transition-fast, box-shadow $transition-fast;
+
   &:active {
+    transform: scale(0.98);
     background-color: $color-bg-hover;
   }
-  
+
   &.accountBtnLogout {
     background-color: $color-danger-bg;
-    
+
     .accountBtnText {
       color: $color-danger;
     }
-    
+
     &:active {
       background-color: #ffe0df;
     }
@@ -468,5 +509,5 @@
 .accountBtnText {
   font-size: $font-size-lg;
   color: $color-text-primary;
-  font-weight: $font-weight-medium;
+  font-weight: $font-weight-semibold;
 }

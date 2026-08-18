@@ -12,9 +12,8 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 20rpx $page-padding;
+  padding: 24rpx $page-padding;
   background-color: $color-bg-card;
-  border-bottom: 1px solid $color-divider;
 
   .headerLeft {
     display: flex;
@@ -23,9 +22,10 @@
   }
 
   .headerTitle {
-    font-size: $font-size-lg;
+    font-size: $font-size-xl;
     font-weight: $font-weight-bold;
     color: $color-text-primary;
+    letter-spacing: 1rpx;
   }
 
   .unreadTotalBadge {
@@ -33,12 +33,13 @@
     height: 36rpx;
     padding: 0 10rpx;
     border-radius: 18rpx;
-    background-color: $color-primary;
+    background: $gradient-brand;
     color: #fff;
     font-size: $font-size-xs;
     display: flex;
     align-items: center;
     justify-content: center;
+    box-shadow: 0 2rpx 8rpx rgba(217, 30, 24, 0.25);
   }
 
   .headerActions {
@@ -66,9 +67,8 @@
 .typeTabs {
   display: flex;
   justify-content: space-around;
-  padding: 20rpx $page-padding;
+  padding: 24rpx $page-padding 28rpx;
   background-color: $color-bg-card;
-  border-bottom: 1px solid $color-divider;
 
   .typeItem {
     display: flex;
@@ -78,39 +78,46 @@
 
     .typeIconWrap {
       position: relative;
-      width: 80rpx;
-      height: 80rpx;
-      border-radius: 50%;
-      background: linear-gradient(135deg, $color-primary 0%, $color-primary-light 100%);
+      width: 88rpx;
+      height: 88rpx;
+      border-radius: 26rpx;
+      background: linear-gradient(145deg, #ffece9 0%, #ffd9d3 100%);
       display: flex;
       align-items: center;
       justify-content: center;
-      margin-bottom: 8rpx;
+      margin-bottom: 12rpx;
+      transition: transform $transition-fast;
+
+      &:active {
+        transform: scale(0.92);
+      }
 
       .typeIcon {
-        font-size: 36rpx;
+        font-size: 40rpx;
       }
 
       .typeBadge {
         position: absolute;
-        top: -4rpx;
-        right: -4rpx;
-        min-width: 28rpx;
-        height: 28rpx;
-        background-color: $color-warning;
-        border-radius: 14rpx;
+        top: -6rpx;
+        right: -6rpx;
+        min-width: 30rpx;
+        height: 30rpx;
+        background: $gradient-brand;
+        border-radius: 15rpx;
         font-size: $font-size-xs;
         color: white;
         display: flex;
         align-items: center;
         justify-content: center;
-        padding: 0 6rpx;
+        padding: 0 8rpx;
+        box-shadow: 0 2rpx 6rpx rgba(217, 30, 24, 0.3);
       }
     }
 
     .typeLabel {
       font-size: $font-size-xs;
       color: $color-text-secondary;
+      font-weight: $font-weight-medium;
     }
   }
 }
@@ -163,16 +170,22 @@
   display: flex;
   align-items: center;
   margin: $page-spacing;
-  padding: 28rpx $page-padding;
-  background: linear-gradient(135deg, $color-primary 0%, $color-primary-light 100%);
-  border-radius: $radius-lg;
-  box-shadow: $shadow-card;
+  padding: 32rpx $page-padding;
+  background: $gradient-hero;
+  border-radius: $radius-xl;
+  box-shadow: 0 10rpx 28rpx rgba(217, 30, 24, 0.24);
+  transition: transform $transition-fast;
+
+  &:active {
+    transform: scale(0.98);
+  }
 
   .quickEntryAvatar {
-    width: 88rpx;
-    height: 88rpx;
+    width: 96rpx;
+    height: 96rpx;
     border-radius: 50%;
     background: rgba(255, 255, 255, 0.25);
+    border: 2rpx solid rgba(255, 255, 255, 0.4);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -247,30 +260,35 @@
   .messageItem {
     display: flex;
     align-items: center;
-    padding: 20rpx;
+    padding: 24rpx;
     background-color: $color-bg-card;
     border-radius: $radius-lg;
-    margin-bottom: $page-spacing;
+    margin-bottom: $spacing-lg;
     box-shadow: $shadow-card;
+    transition: transform $transition-fast;
+
+    &:active {
+      transform: scale(0.98);
+    }
 
     .avatarWrap {
       position: relative;
       margin-right: 20rpx;
 
       .avatar {
-        width: 88rpx;
-        height: 88rpx;
-        border-radius: 50%;
-        background-color: #f5f5f5;
+        width: 92rpx;
+        height: 92rpx;
+        border-radius: 28rpx;
+        background-color: $color-bg-input;
       }
 
       .unreadBadge {
         position: absolute;
-        top: -4rpx;
-        right: -4rpx;
+        top: -6rpx;
+        right: -6rpx;
         min-width: 32rpx;
         height: 32rpx;
-        background-color: $color-primary;
+        background: $gradient-brand;
         border-radius: 16rpx;
         font-size: $font-size-xs;
         color: white;
@@ -278,6 +296,7 @@
         align-items: center;
         justify-content: center;
         padding: 0 8rpx;
+        box-shadow: 0 2rpx 6rpx rgba(217, 30, 24, 0.3);
       }
     }
 

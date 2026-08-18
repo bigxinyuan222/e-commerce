@@ -9,35 +9,40 @@
 .goodsSection {
   background-color: $color-bg-card;
   border-radius: $radius-lg;
-  padding: 24rpx;
+  padding: 28rpx;
   display: flex;
   margin-bottom: $page-spacing;
   box-shadow: $shadow-card;
-  
+
   .goodsImage {
-    width: 160rpx;
-    height: 160rpx;
-    border-radius: $radius-sm;
-    margin-right: 16rpx;
-    background-color: #f5f5f5;
+    width: 168rpx;
+    height: 168rpx;
+    border-radius: $radius-md;
+    margin-right: 20rpx;
+    background-color: $color-bg-input;
+    flex-shrink: 0;
   }
-  
+
   .goodsInfo {
     flex: 1;
     display: flex;
     flex-direction: column;
     justify-content: center;
-    
+    min-width: 0;
+
     .goodsName {
       font-size: $font-size-sm;
       color: $color-text-primary;
-      margin-bottom: 8rpx;
+      font-weight: $font-weight-medium;
+      line-height: 1.45;
+      margin-bottom: 12rpx;
     }
-    
+
     .goodsPrice {
       font-size: $font-size-md;
       font-weight: $font-weight-bold;
-      color: $color-primary;
+      color: $color-price;
+      font-variant-numeric: tabular-nums;
     }
   }
 }
@@ -45,83 +50,86 @@
 .formSection {
   background-color: $color-bg-card;
   border-radius: $radius-lg;
-  padding: 24rpx;
+  padding: 28rpx;
   margin-bottom: $page-spacing;
   box-shadow: $shadow-card;
-  
+
   .label {
     font-size: $font-size-sm;
-    font-weight: $font-weight-medium;
+    font-weight: $font-weight-semibold;
     color: $color-text-primary;
-    margin-bottom: 16rpx;
+    margin-bottom: 20rpx;
     display: block;
   }
-  
+
   .radioGroup {
     display: flex;
     gap: 40rpx;
-    
+
     .radioItem {
       display: flex;
       align-items: center;
-      gap: 8rpx;
+      gap: 10rpx;
       font-size: $font-size-sm;
       color: $color-text-secondary;
     }
   }
-  
+
   .reasonList {
     display: flex;
     flex-wrap: wrap;
     gap: 16rpx;
-    
+
     .reasonItem {
-      padding: 12rpx 24rpx;
-      background-color: $color-bg-page;
+      padding: 14rpx 28rpx;
+      background-color: $color-bg-input;
       border-radius: $radius-button;
       font-size: $font-size-sm;
       color: $color-text-secondary;
       border: 2rpx solid transparent;
-      
+      transition: all $transition-fast;
+
       &:active {
-        opacity: 0.7;
+        transform: scale(0.96);
       }
-      
+
       &.active {
         color: $color-primary;
         border-color: $color-primary;
-        background-color: rgba(226, 35, 26, 0.1);
+        background-color: $color-tag-bg;
+        font-weight: $font-weight-medium;
       }
     }
   }
-  
+
   .textarea {
     width: 100%;
-    min-height: 160rpx;
-    padding: 16rpx;
-    background-color: $color-bg-page;
+    min-height: 180rpx;
+    padding: 20rpx;
+    background-color: $color-bg-input;
     border-radius: $radius-md;
     font-size: $font-size-sm;
     box-sizing: border-box;
+    line-height: $line-height-loose;
   }
 }
 
 .submitBtn {
   width: 100%;
   height: $button-height-lg;
-  background: linear-gradient(135deg, $color-primary 0%, $color-primary-light 100%);
+  background: $gradient-brand;
   color: white;
   border-radius: $radius-button;
   font-size: $font-size-lg;
-  font-weight: $font-weight-semibold;
+  font-weight: $font-weight-bold;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 4rpx 16rpx rgba(226, 35, 26, 0.3);
+  box-shadow: $shadow-btn;
   margin-top: 40rpx;
-  
+  transition: transform $transition-fast;
+
   &:active {
-    opacity: 0.9;
     transform: scale(0.98);
   }
 }
