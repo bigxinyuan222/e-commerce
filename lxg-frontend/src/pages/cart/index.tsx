@@ -3,7 +3,7 @@ import { View, Text, Image, ScrollView } from '@tarojs/components';
 import Taro from '@tarojs/taro';
 import { useAppContext } from '@/store/AppContext';
 import { fetchCartList, updateCartItem, deleteCartItem, transformCartItem } from '@/api/cart';
-import { getImageUrl, lazyImgProps } from '@/utils/image';
+import { getImageUrl, lazyImgProps, isValidImageUrl } from '@/utils/image';
 import styles from '@/styles/cart/cart.module.scss';
 
 // 购物车商品项组件
@@ -70,8 +70,8 @@ const CartItemComponent = React.memo(({
     </View>
 
     {/* 删除按钮 */}
-    {isEditing && (
-      <View 
+    {isEditing && item.id && item.id !== '0' && (
+      <View
         className={styles.deleteBtn}
         onClick={() => onDelete(item.id)}
       >
@@ -111,7 +111,33 @@ const CartPage: React.FC = () => {
             image: getImageUrl(transformed.image),
           };
         });
-        setCartItems(normalized);
+
+        // 打印购物车图片调试信息，便于排查同商品图片不一致问题
+        console.log('[购物车] 加载记录:', normalized.map((it: any) => ({
+          id: it.id,
+          productId: it.productId,
+          skuId: it.skuId,
+          productName: it.productName,
+          imageRaw: it.image,
+          imageValid: isValidImageUrl(it.image),
+        })));
+
+        // 合并相同 productId + skuId 的记录，优先保留有效图片
+        const mergedMap = new Map<string, any>();
+        normalized.forEach((item: any) => {
+          const key = `${item.productId}-${item.skuId}`;
+          const existing = mergedMap.get(key);
+          if (!existing) {
+            mergedMap.set(key, { ...item });
+          } else {
+            existing.quantity += item.quantity;
+            existing.selected = existing.selected || item.selected;
+            if (isValidImageUrl(item.image) && !isValidImageUrl(existing.image)) {
+              existing.image = item.image;
+            }
+          }
+        });
+        setCartItems(Array.from(mergedMap.values()));
       }
     } catch (error) {
       console.error('加载购物车失败:', error);
@@ -140,6 +166,24 @@ const CartPage: React.FC = () => {
   }, [selectedCount]);
 
   const handleDelete = useCallback((id: string) => {
+    if (!id || id === '0') {
+      Taro.showToast({ title: '商品信息异常，请刷新购物车', icon: 'none' });
+      return;
+    }
+    // 前端本地临时 ID（未同步到后端），直接本地删除即可
+    if (String(id).startsWith('cart-')) {
+      Taro.showModal({
+        title: '确认删除',
+        content: '确定要删除该商品吗？',
+        success: (res) => {
+          if (res.confirm) {
+            removeFromCart(id);
+            Taro.showToast({ title: '已删除', icon: 'success' });
+          }
+        }
+      });
+      return;
+    }
     Taro.showModal({
       title: '确认删除',
       content: '确定要删除该商品吗？',
@@ -150,6 +194,7 @@ const CartPage: React.FC = () => {
             removeFromCart(id);
             Taro.showToast({ title: '已删除', icon: 'success' });
           } catch (error: any) {
+            console.error('[购物车删除] 失败，id:', id, 'error:', error);
             Taro.showToast({ title: error?.message || '删除失败', icon: 'none' });
           }
         }
@@ -157,16 +202,25 @@ const CartPage: React.FC = () => {
     });
   }, [removeFromCart]);
 
+  const isTempCartId = useCallback((id: string) => {
+    return String(id).startsWith('cart-');
+  }, []);
+
   const decreaseQuantity = useCallback(async (id: string, quantity: number) => {
     if (quantity <= 1) return;
     const newQuantity = quantity - 1;
+    if (isTempCartId(id)) {
+      updateCartQuantity(id, newQuantity);
+      return;
+    }
     try {
       await updateCartItem(id, { quantity: newQuantity });
       updateCartQuantity(id, newQuantity);
     } catch (error: any) {
+      console.error('[购物车减数量] 失败，id:', id, 'error:', error);
       Taro.showToast({ title: error?.message || '更新失败', icon: 'none' });
     }
-  }, [updateCartQuantity]);
+  }, [updateCartQuantity, isTempCartId]);
 
   const increaseQuantity = useCallback(async (id: string, quantity: number, stock: number) => {
     if (quantity >= stock) {
@@ -174,13 +228,18 @@ const CartPage: React.FC = () => {
       return;
     }
     const newQuantity = quantity + 1;
+    if (isTempCartId(id)) {
+      updateCartQuantity(id, newQuantity);
+      return;
+    }
     try {
       await updateCartItem(id, { quantity: newQuantity });
       updateCartQuantity(id, newQuantity);
     } catch (error: any) {
+      console.error('[购物车加数量] 失败，id:', id, 'error:', error);
       Taro.showToast({ title: error?.message || '更新失败', icon: 'none' });
     }
-  }, [updateCartQuantity]);
+  }, [updateCartQuantity, isTempCartId]);
 
   const handleSelectAll = useCallback(() => {
     selectAllCartItems(!allSelected);

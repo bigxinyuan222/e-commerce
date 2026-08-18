@@ -7,21 +7,27 @@
 
 // 搜索栏
 .searchBar {
-  padding: $page-spacing;
+  padding: 20rpx $page-padding;
+  padding-top: calc(20rpx + env(safe-area-inset-top));
   background-color: $color-bg-card;
-  border-bottom: 1px solid $color-divider;
 
   .searchInputWrap {
     display: flex;
     align-items: center;
-    background-color: $color-bg-page;
-    border-radius: $radius-lg;
-    padding: 0 $page-spacing;
-    height: 72rpx;
+    background-color: $color-bg-input;
+    border-radius: $radius-button;
+    padding: 0 28rpx;
+    height: 76rpx;
+    transition: box-shadow $transition-fast;
+
+    &:focus-within {
+      box-shadow: 0 0 0 2rpx rgba(217, 30, 24, 0.15);
+    }
 
     .searchIcon {
-      font-size: 28rpx;
+      font-size: 30rpx;
       margin-right: 12rpx;
+      color: $color-text-tertiary;
     }
 
     .searchInput {
@@ -33,7 +39,7 @@
     }
 
     .clearIcon {
-      font-size: 24rpx;
+      font-size: 26rpx;
       color: $color-text-tertiary;
       padding: 8rpx;
     }
@@ -43,30 +49,34 @@
 // 分类标签
 .tabs {
   display: flex;
-  padding: $page-spacing;
+  padding: 16rpx $page-padding 20rpx;
   background-color: $color-bg-card;
-  border-bottom: 1px solid $color-divider;
+  box-shadow: 0 2rpx 12rpx rgba(28, 27, 26, 0.04);
+  position: relative;
+  z-index: 2;
 
   .tab {
     font-size: $font-size-md;
     color: $color-text-secondary;
-    margin-right: 32rpx;
-    padding-bottom: 8rpx;
+    margin-right: 40rpx;
+    padding-bottom: 10rpx;
     position: relative;
+    transition: color $transition-fast;
 
     &.active {
       color: $color-primary;
-      font-weight: $font-weight-medium;
+      font-weight: $font-weight-bold;
 
       &::after {
         content: '';
         position: absolute;
         bottom: 0;
-        left: 0;
-        right: 0;
-        height: 4rpx;
-        background-color: $color-primary;
-        border-radius: 2rpx;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 40rpx;
+        height: 6rpx;
+        background: $gradient-brand;
+        border-radius: 3rpx;
       }
     }
   }
@@ -81,25 +91,31 @@
 .brandGrid {
   display: flex;
   flex-wrap: wrap;
-  gap: $page-spacing;
+  gap: 20rpx;
   justify-content: flex-start;
 }
 
 .brandItem {
-  width: calc(25% - 28rpx);
+  width: calc(25% - 15rpx);
   display: flex;
   flex-direction: column;
   background-color: $color-bg-card;
-  border-radius: $radius-md;
+  border-radius: $radius-lg;
   box-shadow: $shadow-card;
   overflow: hidden;
+  transition: all $transition-base;
+
+  &:active {
+    transform: scale(0.96);
+    box-shadow: $shadow-card-hover;
+  }
 
   // 图片区域：占满整张卡片顶部，正方形比例，logo 居中铺满
   .brandIconWrap {
     position: relative;
     width: 100%;
     padding-top: 100%; // 1:1 正方形
-    background: linear-gradient(135deg, #fafafa 0%, #f0f0f0 100%);
+    background: linear-gradient(150deg, #faf9f8 0%, #f1efec 100%);
     overflow: hidden;
 
     .brandIconImg {
@@ -130,34 +146,36 @@
       top: 8rpx;
       right: 8rpx;
       background: linear-gradient(135deg, $color-warning 0%, #ff6b35 100%);
-      border-radius: 8rpx;
-      padding: 2rpx 8rpx;
+      border-radius: $radius-sm;
+      padding: 4rpx 10rpx;
       z-index: 2;
+      box-shadow: 0 2rpx 8rpx rgba(250, 140, 22, 0.35);
 
       .hotTagText {
         font-size: 18rpx;
         color: white;
-        font-weight: $font-weight-medium;
+        font-weight: $font-weight-semibold;
       }
     }
   }
 
   .brandInfo {
-    padding: 12rpx 8rpx;
+    padding: 16rpx 8rpx 18rpx;
     text-align: center;
   }
 
   .brandName {
     font-size: $font-size-sm;
     color: $color-text-primary;
-    font-weight: $font-weight-medium;
-    margin-bottom: 4rpx;
+    font-weight: $font-weight-semibold;
+    margin-bottom: 6rpx;
     @include text-ellipsis;
   }
 
   .brandProductCount {
     font-size: $font-size-xs;
     color: $color-text-tertiary;
+    font-variant-numeric: tabular-nums;
   }
 }
 
@@ -167,11 +185,12 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 100rpx 0;
+  padding: 120rpx 0;
 
   .emptyIcon {
-    font-size: 80rpx;
-    margin-bottom: 20rpx;
+    font-size: 88rpx;
+    margin-bottom: 24rpx;
+    opacity: 0.85;
   }
 
   .emptyText {

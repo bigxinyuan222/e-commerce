@@ -2,7 +2,6 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { View, Text, Image, ScrollView } from '@tarojs/components';
 import Taro from '@tarojs/taro';
 import { useAppContext } from '@/store/AppContext';
-import { userInfo as defaultUserInfo } from '@/data/user/user';
 import { apiGet } from '@/api/common';
 import { userApi } from '@/api/user';
 import { normalizeUserProfile } from '@/api/user/normalize';
@@ -114,6 +113,14 @@ const MinePage: React.FC = () => {
     Taro.navigateTo({ url: `/pages/cart/order/list/index?status=${status || 'all'}` });
   }, [isLoggedIn, goToLogin]);
 
+  const goToRefundList = useCallback(() => {
+    if (!isLoggedIn) {
+      goToLogin();
+      return;
+    }
+    Taro.navigateTo({ url: '/pages/cart/order/refund-list/index' });
+  }, [isLoggedIn, goToLogin]);
+
   const goToMyCoupons = useCallback(() => {
     if (!isLoggedIn) {
       goToLogin();
@@ -126,14 +133,6 @@ const MinePage: React.FC = () => {
     Taro.navigateTo({ url: '/pages/category/stores/index' });
   }, []);
 
-  const goToPersonalInfo = useCallback(() => {
-    if (!isLoggedIn) {
-      goToLogin();
-      return;
-    }
-    Taro.navigateTo({ url: '/pages/user/personal-info/index' });
-  }, [isLoggedIn, goToLogin]);
-
   return (
     <View className={styles.minePage}>
       <ScrollView scrollY>
@@ -142,7 +141,12 @@ const MinePage: React.FC = () => {
           <View className={styles.userInfoCard}>
             <View className={styles.avatar} onClick={goToProfile}>
               {isLoggedIn && (profile?.avatar || userInfo.avatar) ? (
-                <Image src={getImageUrl(profile?.avatar || userInfo.avatar)} mode="aspectFill" {...lazyImgProps()} />
+                <Image
+                  src={getImageUrl(profile?.avatar || userInfo.avatar)}
+                  mode="aspectFill"
+                  className={styles.avatarImg}
+                  {...lazyImgProps()}
+                />
               ) : (
                 <Text className={styles.avatarPlaceholder}>👤</Text>
               )}
@@ -150,8 +154,8 @@ const MinePage: React.FC = () => {
             <View className={styles.userDetails}>
               {isLoggedIn ? (
                 <>
-                  <Text className={styles.nickname}>{profile?.nickname || userInfo.nickname || defaultUserInfo.nickname}</Text>
-                  <Text className={styles.userPhone}>{profile?.phone || userInfo.phone || defaultUserInfo.phone}</Text>
+                  <Text className={styles.nickname}>{profile?.nickname || userInfo.nickname}</Text>
+                  <Text className={styles.userPhone}>{profile?.phone || userInfo.phone}</Text>
                 </>
               ) : (
                 <>
@@ -195,7 +199,7 @@ const MinePage: React.FC = () => {
             <OrderStatusItem 
               icon="💳" 
               label="退款/售后" 
-              onClick={() => goToOrderList('refunding')} 
+              onClick={() => goToRefundList()} 
             />
           </View>
         </View>
@@ -213,12 +217,6 @@ const MinePage: React.FC = () => {
             name="门店自提" 
             desc="查看附近门店" 
             onClick={goToStores} 
-          />
-          <FunctionItem 
-            icon="⚙️" 
-            name="设置" 
-            desc="编辑个人信息" 
-            onClick={goToPersonalInfo} 
           />
         </View>
 

@@ -7,64 +7,82 @@
 
 // 用户信息区域
 .userInfoSection {
-  background: linear-gradient(135deg, $color-primary 0%, $color-primary-light 100%);
-  padding: $spacing-xxxl $page-padding $spacing-xxxl;
+  background: $gradient-hero;
+  padding: $spacing-xxxl $page-padding calc(#{$spacing-xxxl} + 40rpx);
   position: relative;
-  
+
   .userInfoCard {
     display: flex;
     align-items: center;
-    
+
     .avatar {
       width: 140rpx;
       height: 140rpx;
       border-radius: 50%;
       background-color: rgba(255, 255, 255, 0.25);
-      border: 6rpx solid rgba(255, 255, 255, 0.6);
+      border: 6rpx solid rgba(255, 255, 255, 0.55);
       margin-right: $spacing-xl;
       display: flex;
       align-items: center;
       justify-content: center;
-      box-shadow: 0 8rpx 24rpx rgba(0, 0, 0, 0.15);
-      
-      image {
+      box-shadow: 0 8rpx 24rpx rgba(120, 10, 6, 0.25);
+      overflow: hidden;
+      flex-shrink: 0;
+
+      image, .avatarImg {
         width: 100%;
         height: 100%;
         border-radius: 50%;
       }
-      
+
       .avatarPlaceholder {
         font-size: 72rpx;
         color: rgba(255, 255, 255, 0.9);
       }
     }
-    
+
     .userDetails {
       flex: 1;
-      
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      min-width: 0;
+
       .nickname {
         font-size: $font-size-xxl;
         font-weight: $font-weight-bold;
         color: $color-text-white;
         margin-bottom: $spacing-sm;
+        display: block;
+        width: 100%;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        letter-spacing: 1rpx;
       }
-      
+
       .userPhone {
         font-size: $font-size-md;
         color: $color-text-white-secondary;
+        display: block;
+        width: 100%;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
       }
     }
-    
+
     .editBtn {
       color: $color-text-white;
       font-size: $font-size-md;
       padding: $spacing-md $spacing-xl;
-      background-color: rgba(255, 255, 255, 0.25);
+      background-color: rgba(255, 255, 255, 0.22);
+      border: 1rpx solid rgba(255, 255, 255, 0.35);
       border-radius: $radius-button;
       display: flex;
       align-items: center;
       backdrop-filter: blur(8px);
-      
+
       &:active {
         background-color: rgba(255, 255, 255, 0.35);
       }
@@ -74,90 +92,93 @@
 
 // 订单区域
 .orderSection {
-  margin: -$spacing-xl $page-padding $spacing-xl;
+  margin: -40rpx $page-padding $spacing-xl;
   background-color: $color-bg-card;
   border-radius: $radius-xl;
   padding: $spacing-xl;
   box-shadow: $shadow-float;
-  
+
   .sectionHeader {
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: $spacing-xxl;
-    
+
     .sectionTitle {
       font-size: $font-size-lg;
       font-weight: $font-weight-bold;
       color: $color-text-primary;
+      letter-spacing: 1rpx;
     }
-    
+
     .viewAll {
       font-size: $font-size-md;
       color: $color-text-tertiary;
       display: flex;
       align-items: center;
-      
+
       &::after {
         content: '›';
         font-size: $font-size-lg;
         margin-left: $spacing-xs;
       }
-      
+
       &:active {
         color: $color-primary;
       }
     }
   }
-  
+
   .orderStatusList {
     display: flex;
-    justify-content: space-around;
-    
+    justify-content: space-between;
+
     .orderStatusItem {
+      flex: 1;
       display: flex;
       flex-direction: column;
       align-items: center;
       position: relative;
       padding: $spacing-md;
-      
+      min-width: 0;
+
       .statusIcon {
         width: 96rpx;
         height: 96rpx;
-        background: linear-gradient(135deg, rgba(226, 35, 26, 0.08) 0%, rgba(226, 35, 26, 0.04) 100%);
-        border-radius: 50%;
+        background: linear-gradient(145deg, #ffece9 0%, #ffd9d3 100%);
+        border-radius: 28rpx;
         display: flex;
         align-items: center;
         justify-content: center;
         margin-bottom: $spacing-md;
         font-size: 48rpx;
         position: relative;
-        border: $border-width-md solid rgba(226, 35, 26, 0.1);
-        
+
         .badge {
           position: absolute;
-          top: -4rpx;
-          right: -4rpx;
+          top: -6rpx;
+          right: -6rpx;
           min-width: 40rpx;
           height: 40rpx;
-          background-color: $color-primary;
+          background: $gradient-brand;
           color: white;
           font-size: $font-size-xs;
-          border-radius: 50%;
+          border-radius: 20rpx;
           display: flex;
           align-items: center;
           justify-content: center;
-          padding: 0 8rpx;
-          box-shadow: 0 4rpx 8rpx rgba(226, 35, 26, 0.3);
+          padding: 0 10rpx;
+          box-shadow: 0 4rpx 8rpx rgba(217, 30, 24, 0.3);
         }
       }
-      
+
       .statusLabel {
         font-size: $font-size-sm;
         color: $color-text-secondary;
         font-weight: $font-weight-medium;
+        white-space: nowrap;
       }
-      
+
       &:active {
         opacity: 0.7;
         transform: scale(0.95);
@@ -173,13 +194,13 @@
   border-radius: $radius-xl;
   overflow: hidden;
   box-shadow: $shadow-card;
-  
+
   .functionItem {
     display: flex;
     align-items: center;
     padding: $spacing-xxl $page-padding;
     position: relative;
-    
+
     &:not(:last-child)::after {
       content: '';
       position: absolute;
@@ -189,41 +210,41 @@
       height: $border-width-sm;
       background-color: $color-divider;
     }
-    
+
     &:active {
       background-color: $color-bg-hover;
     }
-    
+
     .functionIcon {
-      width: 72rpx;
-      height: 72rpx;
+      width: 76rpx;
+      height: 76rpx;
       margin-right: $spacing-xl;
-      font-size: 48rpx;
+      font-size: 44rpx;
       display: flex;
       align-items: center;
       justify-content: center;
-      background-color: rgba(226, 35, 26, 0.06);
-      border-radius: $radius-lg;
+      background: linear-gradient(145deg, #ffece9 0%, #ffd9d3 100%);
+      border-radius: 22rpx;
     }
-    
+
     .functionInfo {
       flex: 1;
-      
+
       .functionName {
         font-size: $font-size-lg;
         color: $color-text-primary;
         font-weight: $font-weight-semibold;
       }
-      
+
       .functionDesc {
         font-size: $font-size-sm;
         color: $color-text-tertiary;
         margin-top: $spacing-xs;
       }
     }
-    
+
     .functionArrow {
-      color: $color-text-tertiary;
+      color: $color-text-placeholder;
       font-size: $font-size-xl;
     }
   }

@@ -1,7 +1,7 @@
 @use '@/styles/variables.scss' as *;
 
 .customerServicePage {
-  min-height: 100vh;
+  height: 100vh;
   background-color: $color-bg-page;
   display: flex;
   flex-direction: column;
@@ -9,7 +9,7 @@
 
 // ------- 顶部 Header -------
 .header {
-  height: 100rpx;
+  height: 104rpx;
   background-color: $color-bg-card;
   display: flex;
   align-items: center;
@@ -18,13 +18,18 @@
   position: sticky;
   top: 0;
   z-index: 100;
-  border-bottom: 1px solid $color-divider;
+  box-shadow: 0 2rpx 12rpx rgba(28, 27, 26, 0.05);
 
   .backBtn {
-    font-size: 48rpx;
+    font-size: 44rpx;
     color: $color-text-primary;
     padding: 8rpx;
     min-width: 64rpx;
+    transition: opacity $transition-fast;
+
+    &:active {
+      opacity: 0.6;
+    }
   }
 
   .headerCenter {
@@ -35,26 +40,27 @@
   }
 
   .headerTitle {
-    font-size: 34rpx;
+    font-size: 36rpx;
     font-weight: $font-weight-bold;
     color: $color-text-primary;
     line-height: 1.2;
+    letter-spacing: 1rpx;
   }
 
   .headerStatus {
     font-size: 22rpx;
-    margin-top: 4rpx;
+    margin-top: 6rpx;
     cursor: default;
     transition: opacity 0.2s;
 
     &.ws-open {
-      color: #52c41a;
+      color: $color-success;
     }
     &.ws-connecting {
-      color: #faad14;
+      color: $color-warning;
     }
     &.ws-closed {
-      color: #999;
+      color: $color-text-tertiary;
     }
     &.ws-closing,
     &.ws-idle {
@@ -73,6 +79,7 @@
     margin-left: 4rpx;
     color: $color-primary;
     cursor: pointer;
+    font-weight: $font-weight-medium;
   }
 
   .headerRight {
@@ -83,8 +90,8 @@
 // ------- 聊天区 -------
 .chatContainer {
   flex: 1;
+  min-height: 0;
   padding: 24rpx;
-  overflow-y: auto;
   padding-bottom: 120rpx;
 }
 
@@ -97,9 +104,9 @@
   .dateText {
     font-size: 22rpx;
     color: $color-text-tertiary;
-    background: rgba(0, 0, 0, 0.05);
-    padding: 4rpx 20rpx;
-    border-radius: 20rpx;
+    background: rgba(28, 27, 26, 0.05);
+    padding: 6rpx 24rpx;
+    border-radius: $radius-button;
   }
 }
 
@@ -121,8 +128,9 @@
 
 .emptyChat {
   .emptyChatIcon {
-    font-size: 80rpx;
+    font-size: 88rpx;
     margin-bottom: 8rpx;
+    opacity: 0.85;
   }
 
   .emptyChatText {
@@ -130,7 +138,7 @@
     color: $color-text-secondary;
     text-align: center;
     max-width: 80%;
-    line-height: 1.6;
+    line-height: $line-height-loose;
   }
 }
 
@@ -150,11 +158,13 @@
 }
 
 .avatar {
-  width: 80rpx;
-  height: 80rpx;
+  width: 84rpx;
+  height: 84rpx;
   border-radius: 50%;
-  background-color: #f5f5f5;
+  background-color: $color-bg-input;
   flex-shrink: 0;
+  border: 2rpx solid $color-border-light;
+  box-shadow: 0 2rpx 8rpx rgba(28, 27, 26, 0.08);
 }
 
 .messageWrap.me .avatar {
@@ -180,20 +190,21 @@
 }
 
 .me .messageText {
-  background-color: $color-primary;
+  background: $gradient-brand;
   color: #ffffff;
-  border-radius: 24rpx 24rpx 0 24rpx;
-  box-shadow: $shadow-card;
+  border-radius: 24rpx 24rpx 4rpx 24rpx;
+  box-shadow: 0 4rpx 16rpx rgba(217, 30, 24, 0.22);
 }
 
 .other .messageText {
   background-color: $color-bg-card;
   color: $color-text-primary;
-  border-radius: 24rpx 24rpx 24rpx 0;
+  border-radius: 24rpx 24rpx 24rpx 4rpx;
+  box-shadow: $shadow-card;
 }
 
 .messageText {
-  padding: 20rpx 28rpx;
+  padding: 22rpx 28rpx;
   font-size: $font-size-md;
   line-height: 1.55;
   word-break: break-all;
@@ -204,7 +215,7 @@
   display: flex;
   align-items: center;
   gap: 16rpx;
-  margin-top: 6rpx;
+  margin-top: 8rpx;
   min-height: 24rpx;
 }
 
@@ -218,28 +229,78 @@
   color: $color-text-placeholder;
 }
 
+// ------- 底部操作栏 -------
+.bottomBar {
+  background-color: $color-bg-card;
+  border-top: 1rpx solid $color-divider;
+  position: sticky;
+  bottom: 0;
+  z-index: 99;
+  box-shadow: $shadow-top;
+}
+
+.quickActions {
+  display: flex;
+  align-items: center;
+  padding: 16rpx 32rpx 8rpx;
+  gap: 20rpx;
+}
+
+.humanBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8rpx;
+  padding: 14rpx 28rpx;
+  background: $gradient-brand;
+  border-radius: $radius-button;
+  box-shadow: 0 4rpx 16rpx rgba(217, 30, 24, 0.25);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+
+  &:active {
+    transform: scale(0.96);
+    box-shadow: 0 2rpx 8rpx rgba(217, 30, 24, 0.2);
+  }
+
+  .humanIcon {
+    font-size: 28rpx;
+    line-height: 1;
+  }
+
+  .humanText {
+    font-size: 26rpx;
+    font-weight: $font-weight-medium;
+    color: #ffffff;
+    line-height: 1;
+    letter-spacing: 1rpx;
+  }
+}
+
 // ------- 底部输入栏 -------
 .inputBar {
   min-height: 112rpx;
   background-color: $color-bg-card;
   display: flex;
   align-items: center;
-  padding: 16rpx 32rpx;
-  border-top: 1px solid $color-divider;
+  padding: 8rpx 32rpx 16rpx;
+  padding-bottom: calc(16rpx + env(safe-area-inset-bottom));
   gap: 20rpx;
-  position: sticky;
-  bottom: 0;
-  z-index: 99;
 }
 
 .input {
   flex: 1;
   min-height: 80rpx;
-  background-color: $color-bg-page;
+  background-color: $color-bg-input;
   border-radius: 40rpx;
   padding: 0 32rpx;
   font-size: $font-size-md;
   color: $color-text-primary;
+  border: 2rpx solid transparent;
+  transition: border-color $transition-fast, background-color $transition-fast;
+
+  &:focus {
+    border-color: rgba(217, 30, 24, 0.3);
+    background-color: $color-bg-card;
+  }
 
   &::placeholder {
     color: $color-text-placeholder;
@@ -249,7 +310,7 @@
 .sendBtn {
   min-width: 120rpx;
   height: 80rpx;
-  background-color: $color-primary;
+  background: $gradient-brand;
   color: #ffffff;
   border-radius: 40rpx;
   display: flex;
@@ -258,14 +319,17 @@
   font-size: $font-size-md;
   font-weight: $font-weight-medium;
   padding: 0 28rpx;
-  transition: opacity 0.15s ease;
+  box-shadow: 0 4rpx 12rpx rgba(217, 30, 24, 0.25);
+  transition: opacity 0.15s ease, transform 0.15s ease;
+  letter-spacing: 1rpx;
 
   &.disabled {
     opacity: 0.5;
     pointer-events: none;
+    box-shadow: none;
   }
 
   &:active:not(.disabled) {
-    opacity: 0.85;
+    transform: scale(0.96);
   }
 }

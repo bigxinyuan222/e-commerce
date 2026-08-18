@@ -16,19 +16,20 @@
     right: 32rpx;
     width: 68rpx;
     height: 68rpx;
-    background-color: rgba(150, 150, 150, 0.85);
+    background-color: rgba(28, 27, 26, 0.45);
+    backdrop-filter: blur(8px);
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
     z-index: 999;
-    
+
     .shareIcon {
       font-size: 34rpx;
       color: #fff;
       font-weight: bold;
     }
-    
+
     &:active {
       opacity: 0.7;
       transform: scale(0.95);
@@ -69,28 +70,29 @@
 // 价格信息
 .priceSection {
   background-color: $color-bg-card;
-  padding: 24rpx $page-padding;
-  
+  padding: 28rpx $page-padding;
+
   .priceRow {
     display: flex;
     align-items: baseline;
     margin-bottom: 12rpx;
-    
+
     .seckillBadge {
       background: linear-gradient(135deg, #ff7d00 0%, #ff4d4d 100%);
       padding: 8rpx 16rpx;
-      border-radius: 8rpx;
+      border-radius: 10rpx;
       display: flex;
       flex-direction: column;
       align-items: center;
       margin-left: auto;
-      
+      box-shadow: 0 4rpx 12rpx rgba(255, 77, 77, 0.25);
+
       .seckillBadgeText {
         font-size: 24rpx;
         color: #fff;
         font-weight: $font-weight-bold;
       }
-      
+
       .seckillBadgeTime {
         font-size: 22rpx;
         color: rgba(255, 255, 255, 0.95);
@@ -98,27 +100,31 @@
         margin-top: 4rpx;
       }
     }
-    
+
     .currentPrice {
-      font-size: 56rpx;
+      font-size: 60rpx;
       font-weight: $font-weight-bold;
-      color: $color-primary;
+      color: $color-price;
+      line-height: 1;
+      font-variant-numeric: tabular-nums;
+      letter-spacing: -1rpx;
     }
-    
+
     .originalPrice {
       font-size: $font-size-sm;
       color: $color-text-tertiary;
       text-decoration: line-through;
       margin-left: 16rpx;
     }
-    
+
     .discount {
       font-size: $font-size-xs;
       color: white;
-      background-color: $color-primary;
-      padding: 4rpx 12rpx;
-      border-radius: 4rpx;
+      background: $gradient-brand;
+      padding: 4rpx 14rpx;
+      border-radius: $radius-sm;
       margin-left: 12rpx;
+      font-weight: $font-weight-semibold;
     }
     
     .seckillCountdown {
@@ -164,46 +170,48 @@
     display: flex;
     flex-wrap: wrap;
     gap: 12rpx;
-    
+
     .tag {
       font-size: $font-size-xs;
       color: $color-primary;
-      background-color: rgba(226, 35, 26, 0.1);
+      background-color: $color-tag-bg;
       padding: 6rpx 16rpx;
-      border-radius: 4rpx;
+      border-radius: $radius-sm;
+      font-weight: $font-weight-medium;
     }
   }
-  
+
   .couponTags {
     display: flex;
     gap: 16rpx;
     margin-top: 16rpx;
-    
+
     .couponTag {
       display: flex;
       align-items: center;
       background: linear-gradient(135deg, #ff6b6b 0%, #ff8e8e 100%);
       padding: 8rpx 16rpx;
-      border-radius: 8rpx;
+      border-radius: 10rpx;
       overflow: hidden;
-      
+      box-shadow: 0 4rpx 12rpx rgba(255, 107, 107, 0.25);
+
       .couponTagValue {
         font-size: $font-size-md;
         font-weight: $font-weight-bold;
         color: white;
         margin-right: 8rpx;
       }
-      
+
       .couponTagDesc {
         font-size: $font-size-xs;
         color: rgba(255, 255, 255, 0.9);
         flex: 1;
       }
-      
+
       .couponTagBtn {
         font-size: $font-size-xs;
         color: white;
-        background-color: rgba(255, 255, 255, 0.2);
+        background-color: rgba(255, 255, 255, 0.25);
         padding: 4rpx 12rpx;
         border-radius: 16rpx;
         margin-left: 8rpx;
@@ -224,20 +232,21 @@
     color: $color-text-primary;
     line-height: 1.5;
     margin-bottom: 16rpx;
+    letter-spacing: 0.5rpx;
   }
-  
+
   .productTags {
     display: flex;
     flex-wrap: wrap;
     gap: 8rpx;
     margin-bottom: 20rpx;
-    
+
     .tag {
       font-size: $font-size-xs;
       color: $color-primary;
-      background-color: rgba(226, 35, 26, 0.1);
+      background-color: $color-tag-bg;
       padding: 4rpx 12rpx;
-      border-radius: 4rpx;
+      border-radius: $radius-sm;
     }
   }
   
@@ -1209,7 +1218,7 @@
     .addCartBtn {
       flex: 1;
       height: $button-height-sm;
-      background-color: $color-warning;
+      background: linear-gradient(135deg, #ffa940 0%, #ff8c1a 100%);
       color: white;
       border-radius: $radius-button;
       font-size: $font-size-sm;
@@ -1217,22 +1226,23 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      box-shadow: 0 4rpx 16rpx rgba(255, 125, 0, 0.3);
+      box-shadow: 0 4rpx 16rpx rgba(255, 140, 26, 0.3);
       min-width: 0;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
-      
+      letter-spacing: 1rpx;
+
       &:active {
         opacity: 0.9;
         transform: scale(0.98);
       }
     }
-    
+
     .buyNowBtn {
       flex: 1;
       height: $button-height-sm;
-      background: linear-gradient(135deg, $color-primary 0%, $color-primary-light 100%);
+      background: $gradient-brand;
       color: white;
       border-radius: $radius-button;
       font-weight: $font-weight-semibold;
@@ -1240,12 +1250,13 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      box-shadow: 0 4rpx 16rpx rgba(226, 35, 26, 0.3);
+      box-shadow: $shadow-btn;
       min-width: 0;
       white-space: nowrap;
       overflow: hidden;
       padding: 4rpx 6rpx;
       box-sizing: border-box;
+      letter-spacing: 1rpx;
       
       &:active {
         opacity: 0.9;
@@ -1327,11 +1338,23 @@
       .selectedInfo {
         flex: 1;
         
+        .selectedPriceRow {
+          display: flex;
+          align-items: baseline;
+          margin-bottom: 8rpx;
+        }
+
         .selectedPrice {
           font-size: $font-size-xl;
           font-weight: $font-weight-bold;
           color: $color-primary;
-          margin-bottom: 8rpx;
+        }
+
+        .selectedOriginalPrice {
+          font-size: $font-size-sm;
+          color: $color-text-tertiary;
+          text-decoration: line-through;
+          margin-left: 12rpx;
         }
         
         .selectedStock {

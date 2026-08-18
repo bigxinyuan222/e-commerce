@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import { View, Text, Image, Swiper, SwiperItem, ScrollView } from '@tarojs/components';
-import Taro from '@tarojs/taro';
+import Taro, { useDidHide } from '@tarojs/taro';
 import { apiGet } from '@/api/common';
 import { homeApi, categoryApi, brandApi } from '@/api/home';
 import { fetchSeckillActivities } from '@/api/seckill';
@@ -20,12 +20,12 @@ const ProductCard = React.memo(({ product, onClick }: { product: any; onClick: (
       {...lazyImgProps()}
     />
     <View className={styles.productInfo}>
-      <Text className={styles.productName}>{product.name}</Text>
-      <View className={styles.productTags}>
-        {product.tags?.slice(0, 1).map((tag: string) => (
-          <Text key={tag} className={styles.tag}>{tag}</Text>
-        ))}
-      </View>
+        <Text className={styles.productName}>{product.name}</Text>
+        <View className={styles.productTags}>
+          {Array.isArray(product.tags) && product.tags.slice(0, 1).map((tag: string) => (
+            <Text key={tag} className={styles.tag}>{tag}</Text>
+          ))}
+        </View>
       <View className={styles.productPrice}>
         <Text className={styles.priceSymbol}>¥</Text>
         <Text className={styles.currentPrice}>{product.price}</Text>
@@ -58,28 +58,40 @@ const BrandCard = React.memo(({ brand, onClick }: { brand: any; onClick: (id: st
   );
 });
 
-const SeckillProductCard = React.memo(({ product, onClick }: { product: any; onClick: (id: string) => void }) => (
-  <View 
-    className={styles.seckillProduct}
-    onClick={() => onClick(product.productId || product.id)}
-  >
-    <Image 
-      src={getImageUrl(product.image || product.images?.[0])}
-      className={styles.productImage}
-      mode="aspectFill"
-      {...lazyImgProps()}
-    />
-    <View className={styles.seckillPriceArea}>
-      {(product.seckillPrice || product.price) > 0 && (
-        <View className={styles.seckillPrice}>¥{product.seckillPrice || product.price}</View>
-      )}
-      {product.originalPrice > 0 && product.originalPrice !== (product.seckillPrice || product.price) && (
-        <View className={styles.originalPrice}>¥{product.originalPrice}</View>
-      )}
+const SeckillProductCard = React.memo(({ product, onClick }: { product: any; onClick: (id: string) => void }) => {
+  const soldPercent = Math.min(
+    Math.max(Number(product.soldPercent ?? product.sold_percent ?? 0), 0),
+    100
+  );
+  const soldText = soldPercent > 0 ? `已抢${soldPercent}%` : '热卖中';
+  return (
+    <View
+      className={styles.seckillProduct}
+      onClick={() => onClick(product.productId || product.id)}
+    >
+      <Image
+        src={getImageUrl(product.image || product.images?.[0])}
+        className={styles.productImage}
+        mode="aspectFill"
+        {...lazyImgProps()}
+      />
+      <Text className={styles.seckillName}>{product.productName || product.name || '秒杀商品'}</Text>
+      <View className={styles.seckillPriceArea}>
+        {(product.seckillPrice || product.price) > 0 && (
+          <View className={styles.seckillPrice}>¥{product.seckillPrice || product.price}</View>
+        )}
+        {product.originalPrice > 0 && product.originalPrice !== (product.seckillPrice || product.price) && (
+          <View className={styles.originalPrice}>¥{product.originalPrice}</View>
+        )}
+      </View>
+      <View className={styles.seckillProgress}>
+        <View className={styles.seckillProgressBar} style={{ width: `${soldPercent}%` }} />
+      </View>
+      <Text className={styles.seckillProgressText}>{soldText}</Text>
+      <View className={styles.seckillBtn}>马上抢</View>
     </View>
-    <View className={styles.seckillBtn}>抢</View>
-  </View>
-));
+  );
+});
 
 const CategoryNavItem = React.memo(({ category, onClick }: { category: any; onClick: (id?: string) => void }) => {
   const iconSrc = getCategoryIcon(category.name, category.icon);
@@ -153,6 +165,7 @@ const HomePage: React.FC = () => {
   // 所有推荐位数据（一次请求获取，切换 tab 直接从缓存取商品）
   const [recommendSlots, setRecommendSlots] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   // 动态推荐位 tab 列表（由接口返回的推荐位生成）
@@ -183,13 +196,17 @@ const HomePage: React.FC = () => {
     Taro.navigateTo({ url: '/pages/home/seckill/index' });
   }, []);
 
-  // 秒杀商品点击：携带活动ID与秒杀标识进入详情页
+  // 秒杀商品点击：有真实活动则携带秒杀标识，兜底推荐商品走普通详情
   const goToSeckillProductDetail = useCallback((productId: string) => {
     const activityId = seckillActivity.id || '';
-    Taro.navigateTo({
-      url: `/pages/home/detail/index?id=${productId}&seckill=1${activityId ? `&activityId=${activityId}` : ''}`
-    });
-  }, [seckillActivity.id]);
+    if (activityId) {
+      Taro.navigateTo({
+        url: `/pages/home/detail/index?id=${productId}&seckill=1&activityId=${activityId}`
+      });
+    } else {
+      goToProductDetail(productId);
+    }
+  }, [seckillActivity.id, goToProductDetail]);
 
   const goToCategory = useCallback((categoryId?: string) => {
     if (categoryId) {
@@ -211,6 +228,7 @@ const HomePage: React.FC = () => {
   // 加载首页数据
   const loadData = async () => {
       setLoading(true);
+      setError(null);
       try {
         const [bannerRes, categoryRes, seckillRes, brandRes, recommendRes] = await Promise.all([
           apiGet(homeApi.banners).catch(() => null),
@@ -221,15 +239,18 @@ const HomePage: React.FC = () => {
         ]);
 
         if (bannerRes?.data) {
+          console.log('[首页] banner 原始数据:', JSON.stringify(bannerRes.data).slice(0, 500));
           const rawBanners = Array.isArray(bannerRes.data)
             ? bannerRes.data
             : bannerRes.data?.list || bannerRes.data?.data || bannerRes.data?.banners || [];
           const normalized = rawBanners.map((item: any) => ({
-            id: item.id ?? item.ID ?? item.bannerId ?? String(Math.random()),
-            image: item.image ?? item.Image ?? item.imageUrl ?? item.ImageUrl ?? item.pic ?? item.Pic ?? '',
-            type: item.type ?? item.Type ?? item.linkType ?? '',
-            targetId: item.targetId ?? item.TargetId ?? item.productId ?? item.linkId ?? '',
+            id: item.id ?? item.ID ?? item.bannerId ?? item.BannerId ?? String(Math.random()),
+            image: item.image ?? item.Image ?? item.image_url ?? item.imageUrl ?? item.ImageUrl ?? item.pic ?? item.Pic ?? item.cover ?? item.Cover ?? item.url ?? item.Url ?? item.img ?? item.Img ?? '',
+            // 兼容两种字段命名：后端返回 linkType/linkUrl，旧数据可能用 type/targetId
+            linkType: Number(item.linkType ?? item.link_type ?? item.type ?? item.Type ?? 0),
+            linkUrl: item.linkUrl ?? item.link_url ?? item.url ?? item.Url ?? item.targetId ?? item.TargetId ?? item.productId ?? '',
           }));
+          console.log('[首页] banner 规范化后:', normalized);
           setBanners(normalized);
         }
 
@@ -243,19 +264,36 @@ const HomePage: React.FC = () => {
           setCategories(catData.slice(0, 8));
         }
 
+        // 构造秒杀兜底商品：从推荐商品取前 3 个
+        const makeFallbackProducts = () => {
+          const fallbackSlots = recommendRes?.data ? extractAllRecommendSlots(recommendRes.data) : [];
+          return fallbackSlots
+            .flatMap((slot: any) => slot?.products || [])
+            .filter(Boolean)
+            .slice(0, 3)
+            .map((item: any) => ({
+              ...item,
+              productId: item.id || item.productId,
+              seckillPrice: item.price ?? item.seckillPrice ?? 0,
+              originalPrice: item.originalPrice ?? item.marketPrice ?? 0,
+              image: item.image || (item.images?.[0]),
+            }));
+        };
+
         if (seckillRes?.data && Array.isArray(seckillRes.data) && seckillRes.data.length > 0) {
-          // 接口返回有效活动，取第一个展示
+          // 接口返回有效活动，取第一个展示；若活动本身没有商品，则用推荐商品兜底
           const seckillData = seckillRes.data[0];
+          const realProducts = seckillData.products || [];
           setSeckillActivity({
             id: seckillData.id || '',
-            products: seckillData.products || [],
+            products: realProducts.length > 0 ? realProducts : makeFallbackProducts(),
             endTime: seckillData.endTime || new Date(Date.now() + 3600000).toISOString()
           });
         } else {
-          // 接口无活动数据，秒杀板块显示空状态
+          // 接口无活动数据，直接用推荐商品兜底
           setSeckillActivity({
             id: '',
-            products: [],
+            products: makeFallbackProducts(),
             endTime: ''
           });
         }
@@ -283,9 +321,11 @@ const HomePage: React.FC = () => {
             setActiveSlotId(slots[0].id);
           }
         }
-      } catch (error) {
-        console.error('Failed to load home data:', error);
-        Taro.showToast({ title: '加载失败，下拉刷新', icon: 'none' });
+      } catch (err: any) {
+        console.error('Failed to load home data:', err);
+        const msg = err?.message || '加载失败，请下拉刷新重试';
+        setError(msg);
+        Taro.showToast({ title: msg, icon: 'none' });
       } finally {
         setLoading(false);
       }
@@ -328,9 +368,18 @@ const HomePage: React.FC = () => {
     return () => {
       if (timerRef.current) {
         clearInterval(timerRef.current);
+        timerRef.current = null;
       }
     };
   }, [seckillActivity.endTime]);
+
+  // 页面隐藏时立即清除定时器，避免微信框架内部页面帧已销毁导致 __subPageFrameEndTime__ 报错
+  useDidHide(() => {
+    if (timerRef.current) {
+      clearInterval(timerRef.current);
+      timerRef.current = null;
+    }
+  });
 
   const displayCategories = useMemo(() => categories.slice(0, 8), [categories]);
 
@@ -374,10 +423,37 @@ const HomePage: React.FC = () => {
                     mode="scaleToFill"
                     {...lazyImgProps()}
                     onClick={() => {
-                      if (banner.type === 'seckill') {
-                        goToSeckill();
-                      } else if (banner.type === 'product') {
-                        goToProductDetail(banner.targetId || '');
+                      // 后端 banner 跳转规则：linkType/linkUrl
+                      // 0=无跳转, 1=商品详情, 2=秒杀活动, 3=外部链接
+                      // 后端 linkUrl 可能是虚拟路径（如 /pages/seckill/detail?id=12），
+                      // 前端需根据 linkType 重新构建真实页面路径
+                      const rawUrl = String(banner.linkUrl || '');
+                      // 从 linkUrl 中提取 id 参数（兼容 ?id=X 或 &id=X）
+                      const idMatch = rawUrl.match(/[?&]id=(\d+)/);
+                      const extractedId = idMatch ? idMatch[1] : '';
+
+                      switch (banner.linkType) {
+                        case 0:
+                          break;
+                        case 1: {
+                          // 商品详情：/pages/home/detail/index?id=X
+                          const productId = extractedId || rawUrl;
+                          if (productId) Taro.navigateTo({ url: `/pages/home/detail/index?id=${productId}` });
+                          break;
+                        }
+                        case 2:
+                          // 秒杀活动：跳转秒杀列表页
+                          Taro.navigateTo({ url: '/pages/home/seckill/index' });
+                          break;
+                        case 3:
+                          // 外部链接：走 webview
+                          if (rawUrl) Taro.navigateTo({ url: `/pages/webview/index?url=${encodeURIComponent(rawUrl)}` });
+                          break;
+                        default:
+                          // 兜底：旧数据兼容 type/targetId
+                          if (banner.type === 'seckill') goToSeckill();
+                          else if (banner.type === 'product') goToProductDetail(banner.targetId || '');
+                          break;
                       }
                     }}
                   />
@@ -439,21 +515,6 @@ const HomePage: React.FC = () => {
         )}
 
         <View className={styles.activitySection}>
-          {seckillActivity.products.length > 0 ? (
-            <ScrollView scrollX className={styles.seckillProducts} showScrollbar={false}>
-              {seckillActivity.products.map((product) => (
-                <SeckillProductCard
-                  key={product.id || product.productId}
-                  product={product}
-                  onClick={goToSeckillProductDetail}
-                />
-              ))}
-            </ScrollView>
-          ) : (
-            <View className={styles.seckillEmpty}>
-              <Text className={styles.seckillEmptyText}>暂无秒杀商品</Text>
-            </View>
-          )}
           <View className={styles.seckillArea}>
             <View className={styles.seckillHeader}>
               <View>
@@ -461,19 +522,34 @@ const HomePage: React.FC = () => {
                 <Text className={styles.seckillSubtitle}>爆款限时抢</Text>
               </View>
               <View className={styles.seckillHeaderRight}>
-                <View className={styles.countdown}>
-                  <Text>距结束</Text>
-                  <Text className={styles.countdownItem}>{countdown.hours}</Text>
-                  <Text>:</Text>
-                  <Text className={styles.countdownItem}>{countdown.minutes}</Text>
-                  <Text>:</Text>
-                  <Text className={styles.countdownItem}>{countdown.seconds}</Text>
-                </View>
+                {seckillActivity.id ? (
+                  <View className={styles.countdown}>
+                    <Text>距结束</Text>
+                    <Text className={styles.countdownItem}>{countdown.hours}</Text>
+                    <Text>:</Text>
+                    <Text className={styles.countdownItem}>{countdown.minutes}</Text>
+                    <Text>:</Text>
+                    <Text className={styles.countdownItem}>{countdown.seconds}</Text>
+                  </View>
+                ) : (
+                  <Text className={styles.seckillTag}>精选好物</Text>
+                )}
                 <View className={styles.seckillArrow} onClick={goToSeckill}>
                   <Text className={styles.arrowIcon}>›</Text>
                 </View>
               </View>
             </View>
+            {seckillActivity.products.length > 0 && (
+              <ScrollView scrollX className={styles.seckillProducts} showScrollbar={false}>
+                {seckillActivity.products.map((product) => (
+                  <SeckillProductCard
+                    key={product.id || product.productId}
+                    product={product}
+                    onClick={goToSeckillProductDetail}
+                  />
+                ))}
+              </ScrollView>
+            )}
           </View>
         </View>
 
@@ -512,6 +588,26 @@ const HomePage: React.FC = () => {
               </View>
             )}
           </View>
+
+        {!banners.length && !displayCategories.length && !hotBrands.length && !seckillActivity.products.length && !recommendedProducts.length && !loading && (
+          <View style={{ padding: '200rpx 40rpx', textAlign: 'center' }}>
+            <Text style={{ color: '#999', fontSize: '28rpx', lineHeight: '1.6' }}>
+              {error || '首页内容为空，请下拉刷新重试'}
+            </Text>
+            <View
+              style={{
+                marginTop: '32rpx',
+                display: 'inline-block',
+                padding: '16rpx 48rpx',
+                background: 'linear-gradient(135deg, #e2231a 0%, #ff7d00 100%)',
+                borderRadius: '40rpx',
+              }}
+              onClick={loadData}
+            >
+              <Text style={{ color: '#fff', fontSize: '28rpx' }}>重新加载</Text>
+            </View>
+          </View>
+        )}
       </ScrollView>
     </View>
   );

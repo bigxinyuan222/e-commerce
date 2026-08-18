@@ -222,6 +222,19 @@ export function normalizeProductImages(product: any): any {
     ?? normalized.rich_text ?? normalized.html ?? normalized.Html
     ?? '';
 
+  // ====== 标签字段处理 ======
+  // 兼容 tags / Tags / tagList，确保返回数组
+  let tags = normalized.tags ?? normalized.Tags ?? normalized.tagList ?? normalized.TagList ?? [];
+  if (typeof tags === 'string') {
+    try {
+      const parsed = JSON.parse(tags);
+      tags = Array.isArray(parsed) ? parsed : [tags];
+    } catch {
+      tags = tags ? [tags] : [];
+    }
+  }
+  normalized.tags = Array.isArray(tags) ? tags : [];
+
   return normalized;
 }
 

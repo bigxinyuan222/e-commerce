@@ -181,7 +181,8 @@ const OrderDetailPage: React.FC = () => {
 
   return (
     <View className={styles.orderDetailPage}>
-      <ScrollView scrollY style={{ height: 'calc(100vh - 120rpx)', paddingBottom: '260rpx', boxSizing: 'border-box' }}>
+      <ScrollView scrollY style={{ height: 'calc(100vh - 120rpx)' }}>
+        <View style={{ paddingBottom: '260rpx', boxSizing: 'border-box' }}>
         <View className={styles.statusSection} style={{ backgroundColor: getStatusBgColor() }}>
           <Text className={styles.statusIcon}>{getStatusIcon()}</Text>
           <Text className={styles.statusText}>{order.statusText}</Text>
@@ -233,6 +234,7 @@ const OrderDetailPage: React.FC = () => {
           )}
           <View className={`${styles.amountRow} ${styles.highlight}`}><Text className={styles.amountLabel}>应付总额</Text><Text className={styles.amountValue}>¥{order.payAmount}</Text></View>
         </View>
+        </View>
       </ScrollView>
 
       <View className={styles.bottomBar}>
@@ -244,7 +246,7 @@ const OrderDetailPage: React.FC = () => {
           </>
         )}
         {isPendingDelivery && (
-          <View className={styles.actionBtn} onClick={handleCancel}>取消订单</View>
+          <View className={styles.actionBtn} onClick={handleRefund}>申请退款</View>
         )}
         {isPendingPickup && (
           <>

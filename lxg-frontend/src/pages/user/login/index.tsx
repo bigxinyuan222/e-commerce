@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { View, Text, Input, Button } from '@tarojs/components';
-import Taro from '@tarojs/taro';
+import Taro, { useDidHide } from '@tarojs/taro';
 import { useAppContext } from '@/store/AppContext';
 import { apiPost, apiGet } from '@/api/common';
 import { authApi, userApi } from '@/api/user';
@@ -55,7 +55,7 @@ function mapWechatError(err: any): string {
 const LoginPage: React.FC = () => {
   const { setUserInfo } = useAppContext();
   const [isRegister, setIsRegister] = useState(false);
-  const [loginMethod, setLoginMethod] = useState<'account' | 'phone'>('account');
+  const [loginMethod, setLoginMethod] = useState<'account'>('account');
   const [isForgotPassword, setIsForgotPassword] = useState(false);
   const [phone, setPhone] = useState('');
   const [password, setPassword] = useState('');
@@ -102,9 +102,18 @@ const LoginPage: React.FC = () => {
     return () => {
       if (countdownRef.current) {
         clearInterval(countdownRef.current);
+        countdownRef.current = null;
       }
     };
   }, []);
+
+  // 页面隐藏时立即清除定时器，避免微信框架内部页面帧已销毁导致 __subPageFrameEndTime__ 报错
+  useDidHide(() => {
+    if (countdownRef.current) {
+      clearInterval(countdownRef.current);
+      countdownRef.current = null;
+    }
+  });
 
   const getCurrentDate = () => {
     const now = new Date();
@@ -124,10 +133,13 @@ const LoginPage: React.FC = () => {
     }
   };
 
-  const saveUserSession = (result: any) => {
-    const payload = result?.data ?? result ?? {};
-    console.log('[微信登录] saveUserSession 原始响应:', JSON.stringify(result));
-    console.log('[微信登录] saveUserSession payload:', JSON.stringify(payload));
+  const saveUserSession = (result: any, source = '登录') => {
+    // data 可能为空字符串 ""（后端异常），需降级为空对象
+    const rawData = result?.data;
+    const payload = (rawData && typeof rawData === 'object') ? rawData
+      : (result && typeof result === 'object' ? result : {});
+    console.log(`[${source}] saveUserSession 原始响应:`, JSON.stringify(result));
+    console.log(`[${source}] saveUserSession payload:`, JSON.stringify(payload));
     // 注意：不包含 tempToken —— 临时 token 不能作为登录态保存
     // 兼容 token 在顶层或嵌套在 user 对象中的多种返回结构
     const token = payload.token ?? payload.Token ?? payload.accessToken ?? payload.access_token
@@ -137,18 +149,33 @@ const LoginPage: React.FC = () => {
       ?? payload.data?.token ?? payload.data?.Token ?? '';
     const user = payload.user_login ?? payload.user ?? payload.userInfo ?? payload.data?.user ?? payload;
 
-    console.log('[微信登录] 提取的 token:', token ? `${token.substring(0, 10)}...（长度:${token.length}）` : '空');
-    console.log('[微信登录] 提取的 user:', user ? JSON.stringify(user).substring(0, 100) : '空');
+    console.log(`[${source}] 提取的 token:`, token ? `${token.substring(0, 10)}...（长度:${token.length}）` : '空');
+    console.log(`[${source}] 提取的 user:`, user ? JSON.stringify(user).substring(0, 100) : '空');
 
     if (!token) {
-      console.error('[微信登录] 登录响应中未找到有效 token，完整响应:', JSON.stringify(result));
+      console.error(`[${source}] 响应中未找到有效 token，完整响应:`, JSON.stringify(result));
       throw new Error('登录失败：未获取到用户凭证');
     }
 
-    Taro.setStorageSync('lxg_user', JSON.stringify({ token, user }));
+    // 用户 ID 可能散落在 payload 的不同层级，优先从多个位置提取
+    const userId =
+      user?.id ?? user?.ID ?? user?.Id ??
+      user?.userId ?? user?.UserId ?? user?.user_id ??
+      payload?.id ?? payload?.ID ?? payload?.Id ??
+      payload?.data?.id ?? payload?.data?.ID ?? payload?.data?.Id ??
+      payload?.data?.userId ?? payload?.data?.user_id ??
+      '';
+
+    // 如果 user 对象里没有 id，但 payload 其他位置有，补到 user 中保证后续使用
+    const normalizedUser = {
+      ...user,
+      id: userId || user?.id || '',
+    };
+
+    Taro.setStorageSync('lxg_user', JSON.stringify({ token, user: normalizedUser }));
 
     const loggedInUser = {
-      id: String(user.id || user.userId || ''),
+      id: String(userId || user?.id || user?.userId || ''),
       nickname: user.nickname || user.phone || phone,
       avatar: user.avatar || '',
       phone: user.phone || phone,
@@ -216,7 +243,7 @@ const LoginPage: React.FC = () => {
     Taro.showLoading({ title: '登录中...' });
     try {
       const result = await apiPost(authApi.login, { phone, password }, {}, {}, true);
-      const loggedInUser = saveUserSession(result);
+      const loggedInUser = saveUserSession(result, '账号登录');
       // 登录成功后获取完整用户信息
       try {
         const profileRes = await apiGet(userApi.profile);
@@ -263,9 +290,32 @@ const LoginPage: React.FC = () => {
 
     Taro.showLoading({ title: '注册中...' });
     try {
-      const result = await apiPost(authApi.register, { phone, code, password }, {}, {}, true);
+      // 步骤1：调用注册接口。注册成功后 data 为空是正常设计（注册接口不返回 token）
+      await apiPost(authApi.register, { phone, code, password }, {}, {}, true);
+      // 步骤2：注册成功后，用刚注册的手机号 + 密码调用登录接口获取 token
+      Taro.showLoading({ title: '登录中...' });
+      const loginResult = await apiPost(authApi.login, { phone, password }, {}, {}, true);
+      const loggedInUser = saveUserSession(loginResult, '账号登录');
+      // 步骤3：登录成功后获取完整用户信息
+      try {
+        const profileRes = await apiGet(userApi.profile);
+        const normalized = normalizeUserProfile(profileRes);
+        setUserInfo({
+          id: normalized.id || loggedInUser.id,
+          nickname: normalized.nickname || loggedInUser.nickname,
+          avatar: normalized.avatar || loggedInUser.avatar,
+          phone: normalized.phone || loggedInUser.phone,
+          accountName: normalized.accountName || loggedInUser.accountName,
+          gender: normalized.gender || loggedInUser.gender,
+          birthday: normalized.birthday || loggedInUser.birthday,
+          registerDate: normalized.registerDate || loggedInUser.registerDate,
+          email: normalized.email || loggedInUser.email,
+          isLoggedIn: true
+        });
+      } catch (profileErr) {
+        console.error('获取用户信息失败，使用登录返回信息:', profileErr);
+      }
       Taro.hideLoading();
-      saveUserSession(result);
       Taro.showToast({ title: '注册成功', icon: 'success' });
       setTimeout(() => {
         goBackOrHome();
@@ -277,14 +327,6 @@ const LoginPage: React.FC = () => {
   };
 
   const handleAccountLogin = () => {
-    if (isRegister) {
-      doRegister();
-    } else {
-      doLogin();
-    }
-  };
-
-  const handlePhoneLogin = () => {
     if (isRegister) {
       doRegister();
     } else {
@@ -391,7 +433,7 @@ const LoginPage: React.FC = () => {
           setShowPhoneAuthModal(true);
         } else {
           // 步骤5：布尔值为 false，token 是正常的 240 小时用户 token
-          saveUserSession(result);
+          saveUserSession(result, '微信登录');
           Taro.showToast({ title: '登录成功', icon: 'success' });
           setTimeout(() => { goBackOrHome(); }, 1500);
         }
@@ -523,7 +565,7 @@ const LoginPage: React.FC = () => {
       Taro.hideLoading();
 
       // 步骤6：获取登录成功响应
-      saveUserSession(result);
+      saveUserSession(result, '微信手机号');
 
       // 校验是否成功提取到用户 token
       const savedToken = JSON.parse(Taro.getStorageSync('lxg_user') || '{}').token;
@@ -554,7 +596,7 @@ const LoginPage: React.FC = () => {
             'Authorization': `Bearer ${freshToken}`
           });
           Taro.hideLoading();
-          saveUserSession(retryResult);
+          saveUserSession(retryResult, '微信手机号');
           const retryToken = JSON.parse(Taro.getStorageSync('lxg_user') || '{}').token;
           if (!retryToken) {
             console.error('[微信登录] 重试后仍未找到用户 token，响应结构:', JSON.stringify(retryResult));
@@ -628,12 +670,6 @@ const LoginPage: React.FC = () => {
     setPassword('');
     setConfirmPassword('');
     setCode('');
-  };
-
-  const switchToPhoneLogin = () => {
-    setLoginMethod('phone');
-    setPassword('');
-    setConfirmPassword('');
   };
 
   const switchToAccountLogin = () => {
@@ -736,7 +772,7 @@ const LoginPage: React.FC = () => {
               </Text>
             </View>
           </>
-        ) : loginMethod === 'account' ? (
+        ) : (
           <>
             <Text className={styles.formTitle}>
               {isRegister ? '手机号注册' : '手机号登录'}
@@ -828,98 +864,6 @@ const LoginPage: React.FC = () => {
               )}
             </View>
           </>
-        ) : (
-          <>
-            <Text className={styles.formTitle}>
-              {isRegister ? '手机号注册' : '手机号登录'}
-            </Text>
-
-            <View className={styles.inputGroup}>
-              <Text className={styles.inputLabel}>手机号</Text>
-              <View className={styles.inputRow}>
-                <Text className={styles.inputIcon}>📱</Text>
-                <Input
-                  className={styles.input}
-                  type="number"
-                  maxlength={11}
-                  placeholder="请输入手机号"
-                  value={phone}
-                  onInput={(e) => setPhone(e.detail.value)}
-                />
-              </View>
-            </View>
-
-            <View className={styles.inputGroup}>
-              <Text className={styles.inputLabel}>{isRegister ? '验证码' : '密码'}</Text>
-              <View className={styles.inputRow}>
-                <Text className={styles.inputIcon}>{isRegister ? '🔐' : '🔑'}</Text>
-                <Input
-                  className={styles.input}
-                  type={isRegister ? 'number' : 'text'}
-                  password={!isRegister}
-                  maxlength={isRegister ? 6 : undefined}
-                  placeholder={isRegister ? '请输入验证码' : '请输入密码（至少6位）'}
-                  value={isRegister ? code : password}
-                  onInput={(e) => isRegister ? setCode(e.detail.value) : setPassword(e.detail.value)}
-                />
-                {isRegister && (
-                  <View
-                    className={`${styles.codeBtn} ${countdown > 0 ? styles.disabled : ''}`}
-                    onClick={countdown === 0 ? () => sendCode('register') : undefined}
-                  >
-                    {countdown > 0 ? `${countdown}s` : '获取验证码'}
-                  </View>
-                )}
-              </View>
-            </View>
-
-            {isRegister && (
-              <View className={styles.inputGroup}>
-                <Text className={styles.inputLabel}>密码</Text>
-                <View className={styles.inputRow}>
-                  <Text className={styles.inputIcon}>🔑</Text>
-                  <Input
-                    className={styles.input}
-                    password
-                    placeholder="请输入密码（至少6位）"
-                    value={password}
-                    onInput={(e) => setPassword(e.detail.value)}
-                  />
-                </View>
-              </View>
-            )}
-
-            <View
-              className={styles.loginBtn}
-              onClick={handlePhoneLogin}
-            >
-              {isRegister ? '注册' : '登录'}
-            </View>
-
-            <View className={styles.toggleMode}>
-              {isRegister ? (
-                <>
-                  <Text className={styles.toggleText}>已有账号？</Text>
-                  <Text className={styles.toggleLink} onClick={toggleRegisterMode}>
-                    立即登录
-                  </Text>
-                </>
-              ) : (
-                <>
-                  <Text className={styles.toggleLink} onClick={() => {
-                    setIsForgotPassword(true);
-                    setPassword('');
-                  }}>
-                    忘记密码
-                  </Text>
-                  <Text className={styles.divider}>|</Text>
-                  <Text className={styles.toggleLink} onClick={toggleRegisterMode}>
-                    立即注册
-                  </Text>
-                </>
-              )}
-            </View>
-          </>
         )}
       </View>
 
@@ -938,12 +882,6 @@ const LoginPage: React.FC = () => {
               </View>
               <Text className={styles.methodLabel}>账号</Text>
             </View>
-            <View className={styles.methodItem} onClick={switchToPhoneLogin}>
-              <View className={styles.methodIcon}>
-                <Text className={styles.iconText}>📱</Text>
-              </View>
-              <Text className={styles.methodLabel}>手机</Text>
-            </View>
             <View
               className={`${styles.methodItem} ${isWechatLogin ? styles.disabledMethod : ''} ${showWechatLogin ? '' : styles.methodItemHidden}`}
               onClick={isWechatLogin ? undefined : handleWechatLogin}
@@ -956,13 +894,6 @@ const LoginPage: React.FC = () => {
           </View>
         </View>
       )}
-
-      <View className={styles.agreement}>
-        {isRegister ? '注册即表示同意' : '登录即表示同意'}
-        <Text className={styles.link}>《用户协议》</Text>
-        和
-        <Text className={styles.link}>《隐私政策》</Text>
-      </View>
 
       {/* 微信手机号授权弹窗 */}
       {showPhoneAuthModal && (

@@ -43,8 +43,10 @@ export const chatApi = {
   messages: `${API_BASE_URL}/chat/conversations/:id/messages`,
   // 发送消息 POST（也走 WebSocket，HTTP 作为兜底）
   sendMessage: `${API_BASE_URL}/chat/conversations/:id/messages`,
-  // 标记会话已读（用户） POST
+  // 标记会话已读（用户） PUT
   readConversation: `${API_BASE_URL}/chat/conversations/:id/read`,
+  // 转人工客服 PUT
+  transferHuman: `${API_BASE_URL}/chat/conversations/:id/transfer-human`,
 };
 
 // 通知消息相关 API（保留原有路径）

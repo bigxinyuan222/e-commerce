@@ -1,14 +1,16 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef, useMemo } from 'react';
 import { View, Text, Image, Swiper, SwiperItem, ScrollView, Input, RichText } from '@tarojs/components';
-import Taro from '@tarojs/taro';
+import Taro, { useDidHide } from '@tarojs/taro';
 import { useAppContext } from '@/store/AppContext';
 import { apiGet } from '@/api/common';
 import { productApi, fetchReviewList, fetchReviewStats, fetchReviewAiSummary, likeReview, replyToReview, fetchReviewReplies } from '@/api/home';
-import { addToCartAPI } from '@/api/cart';
-import { fetchProductSeckillActivity, createSeckillPurchase, pollSeckillPurchaseResult } from '@/api/seckill';
+import { addToCartAPI, payOrder, fetchOrderList } from '@/api/cart';
+import { fetchProductSeckillActivity, fetchSeckillActivities, createSeckillPurchase, pollSeckillPurchaseResult, generateSeckillRequestNo } from '@/api/seckill';
+import { executeWechatPayment } from '@/utils/wechatPay';
 import { getImageUrl, normalizeProductImages, lazyImgProps } from '@/utils/image';
 import { formatDateTime } from '@/utils/time';
 import { getAllSpecOptions } from './utils';
+import useChatStore from '@/store/useChatStore';
 import styles from '@/styles/home/detail.module.scss';
 
 /**
@@ -163,6 +165,130 @@ const ProductDetailPage: React.FC = () => {
   const [seckillActivityId, setSeckillActivityId] = useState('');
   const [seckillInfo, setSeckillInfo] = useState<any>(null);
   const [purchasing, setPurchasing] = useState(false);
+  // 路由参数缓存（在 useEffect 中读取，避免 useMemo 渲染阶段调用 Taro.getCurrentInstance 导致小程序白屏）
+  const [routerParams, setRouterParams] = useState<Record<string, string>>({});
+  // 秒杀倒计时定时器引用（useDidHide 时需清除，避免微信框架 __subPageFrameEndTime__ 报错）
+  const seckillTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
+  // 健壮解析各种时间格式（ISO 8601、YYYY-MM-DD HH:mm:ss、时间戳等）
+  const parseTime = useCallback((timeStr: string | number | undefined): number => {
+    if (timeStr === undefined || timeStr === null || timeStr === '') return NaN;
+    if (typeof timeStr === 'number') return timeStr;
+    let t = new Date(timeStr).getTime();
+    if (!isNaN(t)) return t;
+    t = new Date(String(timeStr).replace(/-/g, '/')).getTime();
+    if (!isNaN(t)) return t;
+    t = new Date(String(timeStr).replace(/\//g, '-')).getTime();
+    if (!isNaN(t)) return t;
+    // 尝试解析纯数字时间戳（秒级转毫秒级）
+    const numeric = Number(timeStr);
+    if (!isNaN(numeric) && String(timeStr).trim() !== '') {
+      return numeric < 1e12 ? numeric * 1000 : numeric;
+    }
+    return NaN;
+  }, []);
+
+  // 当前秒杀价：优先使用列表页传入的价格，保证和列表一致；否则从 seckillInfo 提取
+  const seckillPrice = useMemo(() => {
+    if (!isSeckill) return null;
+
+    // 优先使用列表页传入的秒杀价（URL 参数），避免详情页重新请求后价格不一致
+    const urlSeckillPrice = routerParams.seckillPrice;
+    if (urlSeckillPrice !== undefined && urlSeckillPrice !== null && urlSeckillPrice !== '') {
+      const num = Number(urlSeckillPrice);
+      if (!isNaN(num) && num >= 0) {
+        return num;
+      }
+    }
+
+    if (!seckillInfo) return null;
+    const pid = product?.id;
+
+    // 辅助：从任意对象中提取秒杀价（兼容多种字段命名和结构）
+    const extractSeckillPrice = (target: any): number | null => {
+      if (!target || typeof target !== 'object') return null;
+      const candidates = [
+        target.seckillPrice, target.seckill_price, target.SeckillPrice,
+        target.price_seckill, target.seckill_price_cents,
+        target.activityPrice, target.activity_price, target.ActivityPrice,
+        target.flashSalePrice, target.flash_sale_price, target.FlashSalePrice,
+        target.raw?.seckillPrice, target.raw?.seckill_price, target.raw?.price,
+        target.raw?.seckill_price_cents, target.raw?.price_seckill,
+      ];
+      for (const v of candidates) {
+        if (v !== undefined && v !== null && v !== '') {
+          const num = Number(v);
+          if (!isNaN(num) && num > 0) return num;
+        }
+      }
+      return null;
+    };
+
+    // 1. 优先从活动对象的 products 中匹配当前商品
+    if (Array.isArray(seckillInfo.products) && pid) {
+      const matched = seckillInfo.products.find((p: any) =>
+        String(p.productId || p.id) === String(pid)
+      );
+      if (matched) {
+        const price = extractSeckillPrice(matched);
+        if (price !== null) {
+          console.log('[秒杀价格] 从活动 products 匹配到:', price);
+          return price;
+        }
+      }
+    }
+
+    // 2. 从 seckillInfo 本身提取
+    const infoPrice = extractSeckillPrice(seckillInfo);
+    if (infoPrice !== null) {
+      console.log('[秒杀价格] 从 seckillInfo 提取到:', infoPrice);
+      return infoPrice;
+    }
+
+    // 3. 兜底：从选中的 SKU 中提取秒杀价
+    if (selectedSku) {
+      const skuPrice = extractSeckillPrice(selectedSku);
+      if (skuPrice !== null) {
+        console.log('[秒杀价格] 从 SKU 提取到:', skuPrice);
+        return skuPrice;
+      }
+    }
+
+    console.log('[秒杀价格] 未提取到秒杀价，seckillInfo:', seckillInfo);
+    return null;
+  }, [isSeckill, seckillInfo, product?.id, selectedSku, routerParams]);
+
+  // 当前秒杀原价：优先使用列表页传入的原价，否则使用商品原价
+  const seckillOriginalPrice = useMemo(() => {
+    if (!isSeckill) return null;
+    if (routerParams.originalPrice !== undefined && routerParams.originalPrice !== null && routerParams.originalPrice !== '') {
+      const num = Number(routerParams.originalPrice);
+      if (!isNaN(num) && num > 0) return num;
+    }
+    return product?.price || null;
+  }, [isSeckill, product?.price, routerParams]);
+
+  // 当前秒杀活动结束时间：优先使用列表页传入的时间，保证和列表一致
+  const seckillEndTime = useMemo(() => {
+    if (!isSeckill) return null;
+
+    // 优先使用列表页传入的活动结束时间（URL 参数）
+    if (routerParams.activityEndTime) return String(routerParams.activityEndTime);
+
+    if (!seckillInfo) return null;
+    if (seckillInfo.endTime) return String(seckillInfo.endTime);
+    if (seckillInfo.end_time) return String(seckillInfo.end_time);
+    const raw = seckillInfo.raw;
+    if (raw) {
+      if (raw.endTime) return String(raw.endTime);
+      if (raw.end_time) return String(raw.end_time);
+      if (raw.activity?.endTime) return String(raw.activity.endTime);
+      if (raw.activity?.end_time) return String(raw.activity.end_time);
+      if (raw.activity_end_time) return String(raw.activity_end_time);
+      if (raw.activityEndTime) return String(raw.activityEndTime);
+    }
+    return null;
+  }, [isSeckill, seckillInfo, routerParams]);
 
   const onBannerChange = useCallback((e: any) => {
     setCurrentImage(e.detail.current);
@@ -258,54 +384,155 @@ const ProductDetailPage: React.FC = () => {
     setShowSkuModal(false);
   }, [addToCart, product, selectedSku, quantity, isSeckill]);
 
-  // 秒杀购买流程：创建秒杀订单 -> 轮询购买结果
+  // 秒杀购买流程：
+  // 1. 生成 request_no -> 调用 createSeckillPurchase 创建秒杀订单
+  // 2. 如果返回 202（等待秒杀结果）-> 轮询 fetchSeckillPurchaseResult 查询结果
+  // 3. 秒杀成功后 -> 直接调用 payOrder + executeWechatPayment 进行支付
   const handleSeckillPurchase = useCallback(async () => {
     if (!product) return;
     if (purchasing) return;
+    if (!seckillActivityId) {
+      Taro.showToast({ title: '活动信息加载中，请稍后再试', icon: 'none' });
+      return;
+    }
+
+    // 从秒杀活动信息中提取 SeckillSKUPriceID
+    // 优先使用列表页传入的秒杀规格ID，避免详情页匹配错误
+    let seckillSkuPriceId = routerParams.seckillSkuPriceId || '';
+
+    if (!seckillSkuPriceId && seckillInfo) {
+      if (Array.isArray(seckillInfo.products) && seckillInfo.products.length > 0) {
+        const matched = seckillInfo.products.find((p: any) => {
+          const matchProductId = String(p.productId || p.id) === String(product.id);
+          const matchSkuId = selectedSku?.id ? String(p.skuId) === String(selectedSku.id) : false;
+          return matchProductId || matchSkuId;
+        });
+        seckillSkuPriceId = matched?.seckillSkuPriceId || '';
+      } else {
+        seckillSkuPriceId = seckillInfo.seckillSkuPriceId || '';
+      }
+    }
+    // 兜底：从原始秒杀数据或 SKU 中提取
+    if (!seckillSkuPriceId) {
+      const rawSeckill = seckillInfo?.raw || seckillInfo;
+      seckillSkuPriceId = rawSeckill?.seckill_sku_price_id
+        || rawSeckill?.SeckillSKUPriceID
+        || rawSeckill?.seckillSkuPriceId
+        || (selectedSku as any)?.seckill_sku_price_id
+        || (selectedSku as any)?.SeckillSKUPriceID
+        || (selectedSku as any)?.seckillSkuPriceId
+        || '';
+    }
+
+    console.log('[秒杀购买] 商品:', product.name, 'productId:', product.id, 'selectedSku:', selectedSku?.id, 'seckillSkuPriceId:', seckillSkuPriceId);
+    if (!seckillSkuPriceId) {
+      Taro.showToast({ title: '秒杀规格信息缺失，请刷新重试', icon: 'none' });
+      return;
+    }
+
     setPurchasing(true);
     Taro.showLoading({ title: '抢购中...', mask: true });
+
+    // 前端生成唯一 request_no，用于秒杀幂等控制和结果查询
+    const requestNo = generateSeckillRequestNo();
+
     try {
+      // 步骤1：创建秒杀购买
       const purchaseRes = await createSeckillPurchase({
         activityId: seckillActivityId,
-        productId: product.id,
-        skuId: selectedSku?.id,
+        seckillSkuPriceId,
+        storeId: (currentStore?.id as any) || 1,
+        requestNo,
         quantity: quantity,
       });
-      const purchaseId = purchaseRes?.data?.purchaseId || purchaseRes?.data?.id || purchaseRes?.data?.orderId || '';
-      if (!purchaseId) {
-        // 未返回 purchaseId：后端可能为同步处理，直接展示返回结果
-        const status = purchaseRes?.data?.status;
-        const statusText = purchaseRes?.data?.statusText;
+
+      let result: any = purchaseRes?.data ?? {};
+      const accepted = purchaseRes?.accepted === true;
+
+      // 步骤2：如果返回 202（等待秒杀结果），轮询查询结果
+      if (accepted) {
+        Taro.showLoading({ title: '查询秒杀结果...', mask: true });
+        result = await pollSeckillPurchaseResult(requestNo, { interval: 1500, timeout: 15000 });
+      }
+
+      const status = String(result.status ?? '');
+      const orderNo = result.orderNo || '';
+      const orderId = result.orderId || '';
+
+      // 秒杀失败/售罄/取消等非成功状态
+      if (status !== 'success' && status !== 'succeeded' && status !== 'paid') {
         Taro.hideLoading();
-        if (status === 'success' || status === 'succeeded' || status === 'paid') {
-          Taro.showToast({ title: '抢购成功', icon: 'success' });
+        if (status === 'out_of_stock' || status === 'out-of-stock' || status === 'sold_out') {
+          Taro.showToast({ title: '手慢了，商品已售罄', icon: 'none' });
         } else {
-          Taro.showToast({ title: statusText || purchaseRes?.data?.message || '抢购结果未知', icon: 'none' });
+          Taro.showToast({ title: result.statusText || result.message || '抢购失败', icon: 'none' });
         }
         return;
       }
 
-      // 轮询购买结果
-      const result = await pollSeckillPurchaseResult(purchaseId, { interval: 1500, timeout: 15000 });
-      Taro.hideLoading();
-      const status = String(result.status ?? '');
-      if (status === 'success' || status === 'succeeded' || status === 'paid') {
-        Taro.showModal({
-          title: '抢购成功',
-          content: `订单号：${result.orderId || purchaseId}`,
-          showCancel: true,
-          confirmText: '去支付',
-          cancelText: '继续逛',
-          success: (res) => {
-            if (res.confirm && result.orderId) {
-              Taro.navigateTo({ url: `/pages/cart/order/detail/index?id=${result.orderId}` });
-            }
+      // 步骤3：秒杀成功，查找真正的订单ID后发起支付
+      // 后端秒杀接口可能只返回 orderNo（订单编号，如202608131520094434）而非数据库订单ID
+      // payOrder / fetchOrderDetail 的路径参数 {id} 需要数据库ID，需通过订单列表匹配 orderNo 获取
+      Taro.showLoading({ title: '正在准备支付...', mask: true });
+      let realOrderId = orderId;
+      if (!realOrderId && orderNo) {
+        try {
+          const orderListRes = await fetchOrderList({ status: 'pending_payment', page: 1, size: 20 });
+          const orders = Array.isArray(orderListRes?.data) ? orderListRes.data : [];
+          const matched = orders.find((o: any) => o.orderNo === orderNo);
+          if (matched?.id) {
+            realOrderId = String(matched.id);
+            console.log('[秒杀支付] 通过 orderNo 匹配到订单ID:', realOrderId);
           }
-        });
-      } else if (status === 'out_of_stock' || status === 'out-of-stock' || status === 'sold_out') {
-        Taro.showToast({ title: '手慢了，商品已售罄', icon: 'none' });
-      } else {
-        Taro.showToast({ title: result.statusText || result.message || '抢购失败', icon: 'none' });
+        } catch (e) {
+          console.warn('[秒杀支付] 查询订单列表失败:', e);
+        }
+      }
+
+      if (!realOrderId) {
+        Taro.hideLoading();
+        Taro.showToast({ title: '抢购成功，请到订单中支付', icon: 'none' });
+        setTimeout(() => {
+          Taro.switchTab({ url: '/pages/cart/order/list/index' });
+        }, 1500);
+        return;
+      }
+
+      // 防护：微信支付最小金额为 1 分钱，0 元订单无法发起微信支付
+      // 如果秒杀价为 0 或无法获取，跳过支付，直接跳转订单详情
+      if (!seckillPrice || seckillPrice <= 0) {
+        Taro.hideLoading();
+        console.warn('[秒杀支付] 秒杀价格为 0 或未获取到，跳过微信支付。请检查后端秒杀订单金额是否正确写入。');
+        Taro.showToast({ title: '抢购成功，请到订单中查看', icon: 'none' });
+        setTimeout(() => {
+          Taro.redirectTo({ url: `/pages/cart/order/detail/index?id=${realOrderId}` });
+        }, 1500);
+        return;
+      }
+
+      Taro.showLoading({ title: '发起支付...', mask: true });
+      try {
+        const payRes = await payOrder(realOrderId, { paymentMethod: 'wechat' });
+        await executeWechatPayment(payRes, realOrderId);
+        Taro.hideLoading();
+        Taro.showToast({ title: '支付成功', icon: 'success' });
+        // 支付成功后跳转到订单详情
+        setTimeout(() => {
+          Taro.redirectTo({ url: `/pages/cart/order/detail/index?id=${realOrderId}` });
+        }, 1500);
+      } catch (payError: any) {
+        Taro.hideLoading();
+        const payErrMsg = payError?.message || '';
+        if (payErrMsg.includes('取消支付')) {
+          Taro.showToast({ title: '已取消支付，可到订单中重新支付', icon: 'none' });
+        } else {
+          console.error('秒杀支付失败:', payError);
+          Taro.showToast({ title: payErrMsg || '支付失败，可到订单中重新支付', icon: 'none' });
+        }
+        // 支付失败/取消都跳转到订单详情，方便用户重新支付
+        setTimeout(() => {
+          Taro.redirectTo({ url: `/pages/cart/order/detail/index?id=${realOrderId}` });
+        }, 1500);
       }
     } catch (error: any) {
       Taro.hideLoading();
@@ -314,7 +541,7 @@ const ProductDetailPage: React.FC = () => {
     } finally {
       setPurchasing(false);
     }
-  }, [product, selectedSku, quantity, seckillActivityId, purchasing]);
+  }, [product, selectedSku, quantity, seckillActivityId, seckillInfo, currentStore, purchasing, routerParams]);
 
   const handleBuyNow = useCallback(() => {
     if (!product) return;
@@ -373,8 +600,25 @@ const ProductDetailPage: React.FC = () => {
     Taro.navigateTo({ url: '/pages/category/stores/index' });
   }, []);
 
-  const goToCustomerService = useCallback(() => {
-    Taro.switchTab({ url: '/pages/message/index' });
+  const goToCustomerService = useCallback(async () => {
+    try {
+      Taro.showLoading({ title: '正在连接客服...', mask: true });
+      // 先创建/复用客服会话，获取 conversationId 后再跳转
+      const { createConversation } = useChatStore.getState();
+      const conv = await createConversation({ title: '乐享购官方客服' });
+      const convId = conv?.id || '';
+      Taro.hideLoading();
+      if (convId) {
+        Taro.navigateTo({ url: `/pages/message/customer-service/index?id=${encodeURIComponent(convId)}` });
+      } else {
+        // 创建失败，跳转到客服页由其自动创建
+        Taro.navigateTo({ url: '/pages/message/customer-service/index' });
+      }
+    } catch (e) {
+      Taro.hideLoading();
+      console.error('[客服] 创建会话失败:', e);
+      Taro.navigateTo({ url: '/pages/message/customer-service/index' });
+    }
   }, []);
 
   const handleShare = useCallback(() => {
@@ -480,7 +724,11 @@ const ProductDetailPage: React.FC = () => {
   }, [commentInput, currentEvaluation]);
 
   useEffect(() => {
-    const { id, seckill, activityId } = Taro.getCurrentInstance().router?.params || {};
+    const routerData = Taro.getCurrentInstance().router?.params || {};
+    // 缓存路由参数，供 useMemo 使用（避免渲染阶段直接调用 getCurrentInstance 导致小程序白屏）
+    setRouterParams(routerData as Record<string, string>);
+
+    const { id, seckill, activityId } = routerData;
     const isSeckillPage = seckill === '1';
     setIsSeckill(isSeckillPage);
     if (activityId) setSeckillActivityId(activityId);
@@ -595,6 +843,7 @@ const ProductDetailPage: React.FC = () => {
         setAiLoading(false);
 
         // 处理秒杀活动信息
+        let currentSeckillInfo: any = null;
         if (seckillRes?.data) {
           let data = seckillRes.data;
           // 如果返回的是数组，取第一个元素
@@ -604,12 +853,56 @@ const ProductDetailPage: React.FC = () => {
           if (data && typeof data === 'object') {
             // fetchProductSeckillActivity 可能返回活动对象（含 products）或单个商品活动
             if (data.products || data.endTime) {
+              currentSeckillInfo = data;
               setSeckillInfo(data);
               if (data.id) setSeckillActivityId(String(data.id));
             } else if (data.seckillPrice !== undefined || data.seckill_price !== undefined) {
+              currentSeckillInfo = data;
               setSeckillInfo(data);
               if (data.activityId) setSeckillActivityId(String(data.activityId));
             }
+          }
+        }
+
+        // 补充活动时间和价格：从活动列表获取更权威的数据（与列表页保持一致）
+        if (isSeckillPage && activityId && currentSeckillInfo) {
+          try {
+            const activitiesRes = await fetchSeckillActivities({ status: 'active' });
+            const activities = Array.isArray(activitiesRes?.data) ? activitiesRes.data : [];
+            const matchedActivity = activities.find((a: any) => String(a.id) === String(activityId));
+            if (matchedActivity) {
+              const merged: any = { ...currentSeckillInfo };
+              // 补充活动时间
+              if (matchedActivity.endTime) {
+                merged.endTime = matchedActivity.endTime;
+                merged.startTime = matchedActivity.startTime;
+              }
+              // 补充/覆盖秒杀价格：从活动列表的商品中匹配当前商品，确保和列表页价格一致
+              const pid = productRes?.data?.id ?? productRes?.data?.productId ?? productRes?.data?.product_id ?? id;
+              if (pid && Array.isArray(matchedActivity.products)) {
+                const matchedProduct = matchedActivity.products.find((p: any) =>
+                  String(p.productId || p.id) === String(pid)
+                );
+                if (matchedProduct?.seckillPrice !== undefined && matchedProduct?.seckillPrice !== null) {
+                  // 如果是活动对象，覆盖 products 中的价格
+                  if (Array.isArray(merged.products)) {
+                    merged.products = merged.products.map((p: any) =>
+                      String(p.productId || p.id) === String(pid)
+                        ? { ...p, seckillPrice: matchedProduct.seckillPrice, originalPrice: matchedProduct.originalPrice }
+                        : p
+                    );
+                  }
+                  // 如果是单个商品对象，直接覆盖 seckillPrice
+                  merged.seckillPrice = matchedProduct.seckillPrice;
+                  merged.originalPrice = matchedProduct.originalPrice;
+                  console.log('[秒杀详情] 从活动列表补充秒杀价格:', matchedProduct.seckillPrice);
+                }
+              }
+              currentSeckillInfo = merged;
+              setSeckillInfo(merged);
+            }
+          } catch (e) {
+            console.error('[秒杀详情] 补充活动信息失败:', e);
           }
         }
       } catch (error) {
@@ -628,12 +921,18 @@ const ProductDetailPage: React.FC = () => {
     if (!isSeckill) return;
 
     const updateCountdown = () => {
-      // 优先使用秒杀活动返回的 endTime，兜底默认 12 小时后
-      const endTimeStr = seckillInfo?.endTime
-        || seckillInfo?.end_time
-        || new Date(Date.now() + 12 * 60 * 60 * 1000).toISOString();
+      if (!seckillEndTime) {
+        setSeckillCountdown('');
+        return;
+      }
       const now = new Date().getTime();
-      const endTime = new Date(String(endTimeStr).replace(/-/g, '/')).getTime();
+      const endTime = parseTime(seckillEndTime);
+
+      if (isNaN(endTime)) {
+        setSeckillCountdown('');
+        return;
+      }
+
       const diff = endTime - now;
 
       if (diff <= 0) {
@@ -647,16 +946,29 @@ const ProductDetailPage: React.FC = () => {
       const seconds = Math.floor((diff % (1000 * 60)) / 1000);
 
       if (days > 0) {
-        setSeckillCountdown(`${days}天${hours}时${minutes}分`);
+        setSeckillCountdown(`${days}天 ${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`);
       } else {
         setSeckillCountdown(`${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`);
       }
     };
 
     updateCountdown();
-    const timer = setInterval(updateCountdown, 1000);
-    return () => clearInterval(timer);
-  }, [isSeckill, seckillInfo]);
+    seckillTimerRef.current = setInterval(updateCountdown, 1000);
+    return () => {
+      if (seckillTimerRef.current) {
+        clearInterval(seckillTimerRef.current);
+        seckillTimerRef.current = null;
+      }
+    };
+  }, [isSeckill, seckillEndTime]);
+
+  // 页面隐藏时立即清除定时器，避免微信框架内部页面帧已销毁导致 __subPageFrameEndTime__ 报错
+  useDidHide(() => {
+    if (seckillTimerRef.current) {
+      clearInterval(seckillTimerRef.current);
+      seckillTimerRef.current = null;
+    }
+  });
 
   if (loading || !product) {
     return (
@@ -700,12 +1012,19 @@ const ProductDetailPage: React.FC = () => {
 
         <View className={styles.priceSection}>
           <View className={styles.priceRow}>
-            <Text className={styles.currentPrice}>¥{selectedSku?.price || product.price}</Text>
-            {product.originalPrice && <Text className={styles.originalPrice}>¥{product.originalPrice}</Text>}
+            <Text className={styles.currentPrice}>
+              ¥{isSeckill && seckillPrice !== null ? seckillPrice : (selectedSku?.price || product.price)}
+            </Text>
+            {isSeckill && seckillPrice !== null && seckillOriginalPrice !== null && seckillOriginalPrice !== seckillPrice && (
+              <Text className={styles.originalPrice}>¥{seckillOriginalPrice}</Text>
+            )}
+            {!isSeckill && product.originalPrice && (
+              <Text className={styles.originalPrice}>¥{product.originalPrice}</Text>
+            )}
             {isSeckill && (
               <View className={styles.seckillBadge}>
                 <Text className={styles.seckillBadgeText}>限时秒杀</Text>
-                <Text className={styles.seckillBadgeTime}>{seckillCountdown}</Text>
+                {seckillCountdown && <Text className={styles.seckillBadgeTime}>{seckillCountdown}</Text>}
               </View>
             )}
           </View>
@@ -738,9 +1057,9 @@ const ProductDetailPage: React.FC = () => {
           <View className={styles.storeInfo}>
             <View className={styles.storeAvatar}>🏪</View>
             <View className={styles.storeDetails}>
-              <Text className={styles.storeName}>{currentStore?.name || '深圳南山科技园店'}</Text>
-              <Text className={styles.storeAddress}>{currentStore?.address || '广东省深圳市南山区科技园南区A2栋1楼'}</Text>
-              <Text className={styles.storeHours}>营业时间: {currentStore?.hours || '09:00-22:00'}</Text>
+              <Text className={styles.storeName}>{currentStore?.name || '请选择门店'}</Text>
+              <Text className={styles.storeAddress}>{currentStore?.address || ''}</Text>
+              <Text className={styles.storeHours}>营业时间: {currentStore?.hours || ''}</Text>
             </View>
             <View className={styles.storeAction} onClick={callStore}>
               <Text className={styles.phoneIcon}>📞</Text>
@@ -882,7 +1201,7 @@ const ProductDetailPage: React.FC = () => {
       </ScrollView>
 
       <View className={styles.bottomBar}>
-        <View className={styles.actionIcons}>
+        <View className={styles.actionIcons} style={{ width: isSeckill ? '150rpx' : '220rpx' }}>
           <View className={styles.actionItem} onClick={goHome}>
             <Text className={styles.icon}>🏠</Text>
             <Text>首页</Text>
@@ -891,17 +1210,21 @@ const ProductDetailPage: React.FC = () => {
             <Text className={styles.icon}>💬</Text>
             <Text>客服</Text>
           </View>
-          <View className={styles.actionItem} onClick={goToCart}>
-            <Text className={styles.icon}>🛒</Text>
-            <Text>购物车</Text>
-          </View>
+          {!isSeckill && (
+            <View className={styles.actionItem} onClick={goToCart}>
+              <Text className={styles.icon}>🛒</Text>
+              <Text>购物车</Text>
+            </View>
+          )}
         </View>
         <View className={styles.actionButtons}>
-          <View className={styles.addCartBtn} onClick={() => openSkuModal('cart')}>
-            加入购物车
-          </View>
+          {!isSeckill && (
+            <View className={styles.addCartBtn} onClick={() => openSkuModal('cart')}>
+              加入购物车
+            </View>
+          )}
           <View
-            className={`${styles.buyNowBtn} ${purchasing ? styles.disabled : ''}`}
+            className={`${styles.buyNowBtn} ${purchasing ? styles.disabled : ''} ${isSeckill ? styles.seckillBuyBtn : ''}`}
             onClick={() => !purchasing && openSkuModal('buy')}
           >
             <Text className={styles.buyBtnText}>{purchasing ? '抢购中...' : (isSeckill ? '立即抢购' : '立即购买')}</Text>
@@ -924,7 +1247,14 @@ const ProductDetailPage: React.FC = () => {
                 {...lazyImgProps()}
               />
               <View className={styles.selectedInfo}>
-                <Text className={styles.selectedPrice}>¥{selectedSku?.price || product.price}</Text>
+                <View className={styles.selectedPriceRow}>
+                  <Text className={styles.selectedPrice}>
+                    ¥{isSeckill && seckillPrice !== null ? seckillPrice : (selectedSku?.price || product.price)}
+                  </Text>
+                  {isSeckill && seckillPrice !== null && seckillOriginalPrice !== null && seckillOriginalPrice !== seckillPrice && (
+                    <Text className={styles.selectedOriginalPrice}>¥{seckillOriginalPrice}</Text>
+                  )}
+                </View>
                 <Text className={styles.selectedStock}>库存: {selectedSku?.stock || 0} 件</Text>
                 <Text className={styles.selectedName}>{selectedSku?.name || '请选择规格'}</Text>
               </View>
@@ -959,8 +1289,11 @@ const ProductDetailPage: React.FC = () => {
             </View>
             
             <View className={styles.modalFooter}>
-              <View className={styles.confirmBtn} onClick={skuModalType === 'cart' ? handleAddToCart : handleBuyNow}>
-                确定{skuModalType === 'cart' ? '加入购物车' : '立即购买'}
+              <View
+                className={`${styles.confirmBtn} ${isSeckill ? styles.seckillConfirmBtn : ''}`}
+                onClick={isSeckill ? handleBuyNow : (skuModalType === 'cart' ? handleAddToCart : handleBuyNow)}
+              >
+                确定{isSeckill ? '立即抢购' : (skuModalType === 'cart' ? '加入购物车' : '立即购买')}
               </View>
             </View>
           </View>
